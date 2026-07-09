@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 02 — Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --amber-950:#1c0a00;
+  --amber-900:#2a1200;
+  --amber-800:#451a03;
+  --amber-700:#78350f;
+  --amber-500:#b45309;
+  --amber-400:#d97706;
+  --amber-300:#f59e0b;
+  --amber-200:#fbbf24;
+  --amber-100:#fcd34d;
+  --white:#ffffff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(251,191,36,.05);
+  --code-bg:#130a00;
+  --code-border:rgba(251,191,36,.18);
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--amber-950);
+  color:var(--text-primary);
+  font-family:'Inter',sans-serif;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* ═══ CAPA ═══════════════════════════════════════ */
+.capa{
+  min-height:100vh;
+  display:grid;grid-template-columns:1fr 1.4fr;
+  position:relative;overflow:hidden;
+}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;}
+.blob-1{width:700px;height:700px;background:var(--amber-700);top:-250px;left:-200px;}
+.blob-2{width:600px;height:600px;background:var(--amber-800);bottom:-220px;right:-150px;}
+.blob-3{width:350px;height:350px;background:var(--amber-500);top:38%;left:38%;opacity:.12;}
+
+.capa-left{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:4rem 3rem;
+  border-right:1px solid rgba(251,191,36,.15);
+}
+.semana-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--amber-200);border:1px solid rgba(251,191,36,.28);
+  padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;
+}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--amber-200);animation:pulsar 2s ease-in-out infinite;}
+@keyframes pulsar{0%,100%{opacity:1}50%{opacity:.2}}
+
+.semana-num{
+  font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;
+  color:rgba(251,191,36,.1);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;
+}
+.capa-titulo{
+  font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;
+  color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;
+}
+.capa-titulo em{font-style:normal;color:var(--amber-200);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--amber-200);border-radius:2px;margin-bottom:2rem;}
+
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{
+  display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;
+  background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.12);
+  color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;
+}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}
+.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}
+.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;
+  background:rgba(251,191,36,.18);color:var(--amber-200);
+  display:flex;align-items:center;justify-content:center;font-size:.82rem;
+}
+.atividade-box{
+  margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;
+  background:rgba(251,191,36,.05);border-left:3px solid var(--amber-200);
+}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+
+.capa-right{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:4rem 3rem;gap:1.25rem;
+}
+.info-card{
+  background:var(--card-bg);border:1px solid var(--card-border);
+  border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;
+}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}
+.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{
+  font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;
+  color:var(--amber-200);text-transform:uppercase;letter-spacing:.1em;
+  margin-bottom:.75rem;display:flex;align-items:center;gap:8px;
+}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--amber-200);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+
+.tipo-badge{
+  position:absolute;top:1.5rem;right:1.5rem;z-index:10;
+  font-size:.63rem;padding:4px 12px;border-radius:100px;
+  text-transform:uppercase;letter-spacing:.09em;font-weight:700;
+}
+.tipo-conteudo{background:rgba(251,191,36,.12);color:var(--amber-200);border:1px solid rgba(251,191,36,.28);}
+
+.scroll-hint{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;
+  animation:bounce 2.5s ease-in-out infinite;z-index:10;
+}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ════════════════════════════════════ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+
+.secao{margin-bottom:4rem;}
+.secao-header{
+  display:flex;align-items:center;gap:14px;margin-bottom:2rem;
+  padding-bottom:1rem;border-bottom:1px solid rgba(251,191,36,.14);
+}
+.secao-num{
+  font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;
+  color:rgba(251,191,36,.16);line-height:1;letter-spacing:-.04em;flex-shrink:0;
+}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--amber-200);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+
+.card{
+  background:var(--card-bg);border:1px solid var(--card-border);
+  border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;
+  transition:border-color .2s,background .2s;
+}
+.card:hover{border-color:rgba(251,191,36,.2);background:var(--card-hover);}
+.card-titulo{
+  font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;
+  color:var(--amber-200);text-transform:uppercase;letter-spacing:.08em;
+  margin-bottom:.85rem;display:flex;align-items:center;gap:8px;
+}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+
+.destaque{
+  padding:1rem 1.25rem;border-radius:10px;
+  background:rgba(251,191,36,.07);border-left:3px solid var(--amber-200);
+  font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.6;
+}
+.destaque strong{color:var(--amber-200);}
+
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(251,191,36,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--amber-200);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(251,191,36,.18);}
+td{padding:.6rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(251,191,36,.03);}
+
+/* ── Code blocks ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(251,191,36,.07);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;cursor:pointer;background:none;border:none;color:var(--text-muted);letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--amber-200);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#fde68a;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#86efac;}.cm{color:#4b5563;font-style:italic;}
+.num{color:#fca5a5;}.op{color:#c4b5fd;}.tag{color:#fdba74;}.attr{color:#a78bfa;}.val{color:#86efac;}
+.jsx{color:#fb923c;} /* JSX components — laranja */
+.hook{color:#34d399;} /* hooks — verde */
+
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.85);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:var(--amber-200);flex-shrink:0;margin-top:2px;}
+.aviso-info{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);font-size:.86rem;color:rgba(186,230,253,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-info i{color:#60a5fa;flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--amber-200);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dificuldade{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;}
+.dif-basico{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:.5rem 1rem;color:var(--amber-200);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(251,191,36,.07);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--amber-200);margin-bottom:.5rem;display:block;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);margin-top:3rem;text-decoration:none;transition:background .2s,border-color .2s;}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--amber-200);}
+
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(251,191,36,.1);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+/* ── Badge inline ── */
+.badge-inline{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;background:rgba(251,191,36,.12);color:var(--amber-200);border:1px solid rgba(251,191,36,.2);}
+
+/* ── React flow diagram ── */
+.react-flow{
+  display:flex;align-items:center;justify-content:center;
+  gap:0;flex-wrap:wrap;
+  padding:1.5rem;
+  background:rgba(0,0,0,.2);
+  border:1px solid rgba(251,191,36,.12);
+  border-radius:14px;margin:.75rem 0;
+}
+.rf-box{
+  background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);
+  border-radius:10px;padding:.6rem 1rem;font-size:.8rem;
+  font-family:'JetBrains Mono',monospace;color:var(--amber-200);
+  text-align:center;min-width:120px;
+}
+.rf-box small{display:block;font-size:.65rem;color:var(--text-muted);margin-top:2px;font-family:'Inter',sans-serif;}
+.rf-arrow{color:rgba(251,191,36,.4);font-size:1.1rem;padding:0 .5rem;}
+
+/* ── Props flow ── */
+.props-flow{
+  display:flex;flex-direction:column;gap:.5rem;
+  padding:1rem 1.25rem;
+  background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;margin:.75rem 0;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;
+}
+.pf-parent{color:#fbbf24;}
+.pf-arrow{color:rgba(255,255,255,.2);padding-left:1rem;}
+.pf-child{color:#93c5fd;padding-left:2rem;}
+.pf-prop{color:#86efac;padding-left:3rem;}
+
+/* ── Mini chatbot demo ── */
+.chatbot-demo{
+  background:#0a0f1e;border:1px solid rgba(251,191,36,.15);
+  border-radius:16px;overflow:hidden;margin:.75rem 0;
+}
+.chatbot-header{
+  display:flex;align-items:center;gap:10px;
+  padding:.75rem 1rem;
+  background:rgba(251,191,36,.07);border-bottom:1px solid rgba(251,191,36,.12);
+}
+.chatbot-header-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;}
+.chatbot-header-title{font-size:.8rem;font-weight:700;color:var(--amber-200);}
+.chatbot-header-sub{font-size:.7rem;color:var(--text-muted);margin-left:auto;}
+
+.chatbot-messages{
+  height:220px;overflow-y:auto;
+  padding:1rem;display:flex;flex-direction:column;gap:.75rem;
+}
+.chat-msg{max-width:75%;padding:.6rem .9rem;border-radius:12px;font-size:.83rem;line-height:1.5;}
+.chat-msg--user{
+  align-self:flex-end;
+  background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.25);
+  color:var(--amber-100);border-radius:12px 12px 2px 12px;
+}
+.chat-msg--bot{
+  align-self:flex-start;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:var(--text-primary);border-radius:12px 12px 12px 2px;
+}
+.chat-msg--typing{
+  align-self:flex-start;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:var(--text-muted);font-style:italic;border-radius:12px 12px 12px 2px;
+}
+
+.chatbot-input{
+  display:flex;gap:.5rem;padding:.75rem 1rem;
+  border-top:1px solid rgba(255,255,255,.06);
+  background:rgba(0,0,0,.15);
+}
+.chatbot-input input{
+  flex:1;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);border-radius:8px;
+  padding:.5rem .875rem;color:var(--text-primary);
+  font-size:.83rem;font-family:'Inter',sans-serif;outline:none;
+  transition:border-color .2s;
+}
+.chatbot-input input:focus{border-color:rgba(251,191,36,.4);}
+.chatbot-input input::placeholder{color:var(--text-muted);}
+.chatbot-send{
+  background:linear-gradient(135deg,var(--amber-300),var(--amber-400));
+  border:none;border-radius:8px;padding:.5rem .875rem;
+  color:#1c0a00;font-size:.82rem;font-weight:700;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:opacity .2s;
+}
+.chatbot-send:hover{opacity:.88;}
+
+/* ── State diagram ── */
+.state-flow{
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+  padding:1rem 1.25rem;background:rgba(0,0,0,.2);
+  border:1px solid rgba(255,255,255,.06);border-radius:12px;margin:.75rem 0;
+}
+.state-box{
+  background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);
+  border-radius:8px;padding:.5rem .9rem;
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#93c5fd;
+  text-align:center;
+}
+.state-box small{display:block;font-size:.65rem;color:var(--text-muted);margin-top:2px;font-family:'Inter',sans-serif;}
+.state-arrow{color:rgba(255,255,255,.25);font-size:.9rem;}
+.event-box{
+  background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);
+  border-radius:8px;padding:.5rem .9rem;
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--amber-200);
+}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}
+  .capa-right{display:none;}
+  .grid-2{grid-template-columns:1fr;}
+  .resumo-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:540px){
+  .resumo-grid{grid-template-columns:1fr;}
+  .capa-titulo{font-size:1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ CAPA ═══════════════════════ -->
+<section class="capa">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <span class="tipo-badge tipo-conteudo">📚 Conteúdo</span>
+
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Front-end para IA · Bacharelado · 3º Período</div>
+    <div class="semana-num">02</div>
+    <h1 class="capa-titulo">React: componentes,<br>props e <em>useState</em></h1>
+    <p class="capa-sub">4 aulas · 200 minutos · Pré-requisito: Semana 1</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-puzzle-piece"></i></div><span>Componentes funcionais e JSX — o que o React realmente é</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-exchange-alt"></i></div><span>Props: passar dados de pai para filho</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-memory"></i></div><span>Estado com useState — reatividade na prática</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-code-branch"></i></div><span>Renderização condicional e listas com map</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-comment-dots"></i></div><span>Prática: componente de chat com resposta estática</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade Prática</div>
+      <p>Componente de chat: input de mensagem, lista de mensagens renderizada com map e resposta estática automática do "bot".</p>
+    </div>
+  </div>
+
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-link"></i>Conexão com a Semana 1</div>
+      <ul class="info-lista">
+        <li>JSX usa tudo que você aprendeu: arrow functions, destructuring, map</li>
+        <li>Componentes são funções JavaScript que retornam HTML</li>
+        <li>useState usa destructuring de array: <code>const [v, setV] = useState(0)</code></li>
+        <li>A base de ES6+ da Sem. 1 é pré-requisito direto para React</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-brain"></i>Por que React para IA?</div>
+      <ul class="info-lista">
+        <li>Semana 5: interface que chama API de LLM e exibe resposta</li>
+        <li>Semana 7: streaming token a token requer estado reativo</li>
+        <li>Semana 9: dashboards de classificação com Recharts</li>
+        <li>Todo projeto de IA com front-end usa React ou Next.js</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>Setup desta semana</div>
+      <ul class="info-lista">
+        <li>Node.js 18+ instalado: <code>node -v</code></li>
+        <li>Criar projeto: <code>npm create vite@latest meu-app -- --template react</code></li>
+        <li>Rodar: <code>npm install &amp;&amp; npm run dev</code></li>
+        <li>Ou use: <code>codesandbox.io</code> sem instalar nada</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="scroll-hint"><span>role para o conteúdo</span><i class="fas fa-chevron-down"></i></div>
+</section>
+
+<!-- ═══════════════════════ CONTEÚDO ═══════════════════ -->
+<main class="conteudo">
+
+<!-- ══════════════════════════════════
+     AULA 1 — COMPONENTES E JSX
+══════════════════════════════════ -->
+<section class="secao">
+  <div class="secao-header">
+    <div class="secao-num">01</div>
+    <div>
+      <div class="secao-label">Aula 1 · ~50 minutos</div>
+      <div class="secao-titulo">Componentes funcionais e JSX — o modelo mental do React</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo"><i class="fas fa-question-circle"></i>O que é React, de verdade?</div>
+    <p>React é uma <strong>biblioteca JavaScript para construir interfaces</strong>. A ideia central é simples: a UI é uma função do estado. Você descreve <em>como a tela deve parecer</em> dado um estado, e o React garante que o DOM reflita isso.</p>
+    <div class="react-flow">
+      <div class="rf-box">Estado<small>dados / variáveis</small></div>
+      <div class="rf-arrow">→</div>
+      <div class="rf-box">Componente<small>função JS</small></div>
+      <div class="rf-arrow">→</div>
+      <div class="rf-box">JSX<small>descreve a UI</small></div>
+      <div class="rf-arrow">→</div>
+      <div class="rf-box">DOM<small>o que o usuário vê</small></div>
+    </div>
+    <div class="destaque">
+      <strong>Mudou o estado → o React atualiza o DOM automaticamente.</strong> Você nunca escreve <code>document.getElementById</code> em React. Você descreve a UI e o React faz o resto.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo"><i class="fas fa-cube"></i>Componente funcional — a unidade básica</div>
+    <p>Um componente React é uma <strong>função JavaScript</strong> que começa com letra maiúscula e retorna JSX. É só isso.</p>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">JSX — primeiro componente</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+      <pre><code><span class="cm">// Componente mais simples possível</span>
+<span class="kw">function</span> <span class="jsx">OlaMundo</span>() {
+  <span class="kw">return</span> <span class="tag">&lt;h1&gt;</span>Olá, React!<span class="tag">&lt;/h1&gt;</span>;
+}
+
+<span class="cm">// Exportar para usar em outros arquivos</span>
+<span class="kw">export default function</span> <span class="jsx">CartaoUsuario</span>() {
+  <span class="kw">const</span> nome = <span class="str">"Ana Lima"</span>;
+  <span class="kw">const</span> papel = <span class="str">"Engenheira de ML"</span>;
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"cartao"</span><span class="tag">&gt;</span>          {<span class="cm">/* className, não class! */</span>}
+      <span class="tag">&lt;h2&gt;</span>{nome}<span class="tag">&lt;/h2&gt;</span>                   {<span class="cm">/* { } para JS dentro do JSX */</span>}
+      <span class="tag">&lt;p&gt;</span>{papel}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Hoje: {<span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">toLocaleDateString</span>(<span class="str">'pt-BR'</span>)}<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}
+
+<span class="cm">// Usar o componente em outro lugar</span>
+<span class="kw">function</span> <span class="jsx">App</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;main&gt;</span>
+      <span class="tag">&lt;</span><span class="jsx">CartaoUsuario</span> <span class="tag">/&gt;</span>   {<span class="cm">/* componente como tag HTML */</span>}
+      <span class="tag">&lt;</span><span class="jsx">CartaoUsuario</span> <span class="tag">/&gt;</span>   {<span class="cm">/* reutilizável! */</span>}
+    <span class="tag">&lt;/main&gt;</span>
+  );
+}</code></pre>
+    </div>
+    <div class="aviso">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span><strong>JSX não é HTML.</strong> Diferenças importantes: <code>className</code> em vez de <code>class</code> · <code>htmlFor</code> em vez de <code>for</code> · toda tag deve fechar (<code>&lt;img /&gt;</code>) · expressões JS ficam dentro de <code>{ }</code> · retornar múltiplos elementos exige um elemento pai ou <code>&lt;&gt;...&lt;/&gt;</code> (Fragment).</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo"><i class="fas fa-layer-group"></i>Composição — construindo com peças</div>
+    <p>React encoraja dividir a UI em componentes pequenos e compô-los. Um componente pode conter outros componentes — essa é a estrutura de qualquer app real.</p>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">JSX — composição de componentes</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+      <pre><code><span class="cm">// Componentes pequenos e focados</span>
+<span class="kw">function</span> <span class="jsx">Avatar</span>() {
+  <span class="kw">return</span> <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"avatar"</span><span class="tag">&gt;</span>🤖<span class="tag">&lt;/div&gt;</span>;
+}
+
+<span class="kw">function</span> <span class="jsx">NomeBadge</span>() {
+  <span class="kw">return</span> <span class="tag">&lt;span</span> <span class="attr">className</span>=<span class="val">"badge"</span><span class="tag">&gt;</span>IA Assistant<span class="tag">&lt;/span&gt;</span>;
+}
+
+<span class="kw">function</span> <span class="jsx">ChatHeader</span>() {
+  <span class="cm">// Compõe Avatar + NomeBadge</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;header</span> <span class="attr">className</span>=<span class="val">"chat-header"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;</span><span class="jsx">Avatar</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;</span><span class="jsx">NomeBadge</span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/header&gt;</span>
+  );
+}
+
+<span class="cm">// Fragment — retornar sem div extra</span>
+<span class="kw">function</span> <span class="jsx">DoisItens</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Primeiro<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Segundo<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/&gt;</span>
+  );
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo"><i class="fas fa-balance-scale"></i>JSX vs HTML — diferenças que vão te pegar</div>
+    <div class="tabela-wrap">
+      <table>
+        <thead><tr><th>HTML</th><th>JSX</th><th>Motivo</th></tr></thead>
+        <tbody>
+          <tr><td><code>class="btn"</code></td><td><code>className="btn"</code></td><td><code>class</code> é palavra reservada em JS</td></tr>
+          <tr><td><code>for="email"</code></td><td><code>htmlFor="email"</code></td><td><code>for</code> é palavra reservada em JS</td></tr>
+          <tr><td><code>&lt;img src="..."&gt;</code></td><td><code>&lt;img src="..." /&gt;</code></td><td>Toda tag deve fechar</td></tr>
+          <tr><td><code>onclick="fn()"</code></td><td><code>onClick={fn}</code></td><td>camelCase + referência à função</td></tr>
+          <tr><td><code>style="color:red"</code></td><td><code>style={{"{"}}{"}"}color: 'red'{"}"}{"}"}</code></td><td>Objeto JS, não string CSS</td></tr>
+          <tr><td>Comentários <code>&lt;!-- --&gt;</code></td><td><code>{"{"}/* comentário */{"}"}</code></td><td>JS dentro de { }</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="sep"><span>Aula 2</span></div>
+
+<!-- ══════════════════════════════════
+     AULA 2 — PROPS E ESTADO
+══════════════════════════════════ -->
+<section class="secao">
+  <div class="secao-header">
+    <div class="secao-num">02</div>
+    <div>
+      <div class="secao-label">Aula 2 · ~50 minutos</div>
+      <div class="secao-titulo">Props e useState — dados que fluem e dados que mudam</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo"><i class="fas fa-arrow-down"></i>Props — dados de pai para filho</div>
+    <p>Props são os <strong>parâmetros dos componentes</strong>. O componente pai passa dados, o filho os recebe como objeto. O fluxo é sempre de cima para baixo — nunca de filho para pai via props.</p>
+    <div class="props-flow">
+      <div class="pf-parent">&lt;App /&gt; — componente pai</div>
+      <div class="pf-arrow">↓ passa props</div>
+      <div class="pf-child">&lt;CartaoMensagem autor="Ana" texto="Olá!" /&gt;</div>
+      <div class="pf-prop">props.autor → "Ana"</div>
+      <div class="pf-prop">props.texto → "Olá!"</div>
+    </div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">JSX — Props na prática</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+      <pre><code><span class="cm">// Receber props via destructuring (padrão de mercado)</span>
+<span class="kw">function</span> <span class="jsx">MensagemChat</span>({ autor, texto, horario, isBot = <span class="kw">false</span> }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="attr">className</span>={isBot ? <span class="str">"msg msg--bot"</span> : <span class="str">"msg msg--user"</span>}<span class="tag">&gt;</span>
+      <span class="tag">&lt;span</span> <span class="attr">className</span>=<span class="val">"msg-autor"</span><span class="tag">&gt;</span>{autor}<span class="tag">&lt;/span&gt;</span>
+      <span class="tag">&lt;p</span> <span class="attr">className</span>=<span class="val">"msg-texto"</span><span class="tag">&gt;</span>{texto}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;time&gt;</span>{horario}<span class="tag">&lt;/time&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}
+
+<span class="cm">// Usar o componente — passando props como atributos</span>
+<span class="kw">function</span> <span class="jsx">App</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;section&gt;</span>
+      <span class="tag">&lt;</span><span class="jsx">MensagemChat</span>
+        <span class="attr">autor</span>=<span class="val">"Ana"</span>
+        <span class="attr">texto</span>=<span class="val">"Qual modelo devo usar para RAG?"</span>
+        <span class="attr">horario</span>=<span class="val">"14:32"</span>
+      <span class="tag">/&gt;</span>
+      <span class="tag">&lt;</span><span class="jsx">MensagemChat</span>
+        <span class="attr">autor</span>=<span class="val">"IA"</span>
+        <span class="attr">texto</span>=<span class="val">"Para RAG, recomendo text-embedding-3-small..."</span>
+        <span class="attr">horario</span>=<span class="val">"14:32"</span>
+        <span class="attr">isBot</span>={<span class="kw">true</span>}
+      <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/section&gt;</span>
+  );
+}</code></pre>
+    </div>
+    <div class="aviso-info">
+      <i class="fas fa-info-circle"></i>
+      <span><strong>Props são imutáveis dentro do componente filho.</strong> Um filho nunca modifica as props que recebe. Se precisar comunicar algo ao pai, o pai passa uma função como prop — isso é o padrão de "lifting state up" que veremos na Semana 3.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo"><i class="fas fa-memory"></i>useState — estado reativo</div>
+    <p>Estado é a <strong>memória do componente</strong>. Quando o estado muda, o React re-renderiza o componente automaticamente. <code>useState</code> retorna um array com dois elementos: o valor atual e a função para atualizá-lo.</p>
+    <div class="state-flow">
+      <div class="state-box">estado inicial<small>useState(valorInicial)</small></div>
+      <div class="state-arrow">→</div>
+      <div class="event-box">evento do usuário<br><small>clique, digitação...</small></div>
+      <div class="state-arrow">→</div>
+      <div class="state-box">setEstado(novoValor)<small>atualiza o estado</small></div>
+      <div class="state-arrow">→</div>
+      <div class="state-box">re-render<small>React atualiza o DOM</small></div>
+    </div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">JSX — useState na prática</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+      <pre><code><span class="kw">import</span> { <span class="hook">useState</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">export default function</span> <span class="jsx">ContadorMensagens</span>() {
+  <span class="cm">// [valor atual, função de atualização] = useState(valor inicial)</span>
+  <span class="kw">const</span> [<span class="hook">contador</span>, <span class="hook">setContador</span>] = <span class="fn">useState</span>(<span class="num">0</span>);
+  <span class="kw">const</span> [<span class="hook">nome</span>, <span class="hook">setNome</span>]         = <span class="fn">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> [<span class="hook">ativo</span>, <span class="hook">setAtivo</span>]       = <span class="fn">useState</span>(<span class="kw">false</span>);
+
+  <span class="kw">const</span> <span class="fn">incrementar</span> = () => <span class="hook">setContador</span>(c => c <span class="op">+</span> <span class="num">1</span>); <span class="cm">// forma funcional (segura)</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Mensagens enviadas: {<span class="hook">contador</span>}<span class="tag">&lt;/p&gt;</span>
+
+      <span class="tag">&lt;input</span>
+        <span class="attr">value</span>={<span class="hook">nome</span>}
+        <span class="attr">onChange</span>={e => <span class="hook">setNome</span>(e.target.value)}  <span class="cm">/* controlado */</span>
+        <span class="attr">placeholder</span>=<span class="val">"Seu nome"</span>
+      <span class="tag">/&gt;</span>
+
+      <span class="tag">&lt;button</span> <span class="attr">onClick</span>={<span class="fn">incrementar</span>}<span class="tag">&gt;</span>
+        Enviar mensagem
+      <span class="tag">&lt;/button&gt;</span>
+
+      <span class="tag">&lt;p&gt;</span>Olá, {<span class="hook">nome</span> || <span class="str">'visitante'</span>}! Você enviou {<span class="hook">contador</span>} msgs.<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+    </div>
+    <div class="aviso">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span><strong>NUNCA modifique o estado diretamente.</strong> <code>contador = contador + 1</code> não funciona — React não vai detectar a mudança. Sempre use a função setter: <code>setContador(c => c + 1)</code>. Para objetos e arrays, crie uma cópia com spread: <code>setLista([...lista, novoItem])</code>.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo"><i class="fas fa-database"></i>useState com objetos e arrays</div>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">JSX — estado com arrays (base do chat)</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+      <pre><code><span class="kw">import</span> { <span class="hook">useState</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">export default function</span> <span class="jsx">ChatSimples</span>() {
+  <span class="kw">const</span> [<span class="hook">mensagens</span>, <span class="hook">setMensagens</span>] = <span class="fn">useState</span>([
+    { id: <span class="num">1</span>, texto: <span class="str">'Olá! Como posso ajudar?'</span>, isBot: <span class="kw">true</span> }
+  ]);
+  <span class="kw">const</span> [<span class="hook">input</span>, <span class="hook">setInput</span>] = <span class="fn">useState</span>(<span class="str">''</span>);
+
+  <span class="kw">const</span> <span class="fn">enviarMensagem</span> = () => {
+    <span class="kw">if</span> (!<span class="hook">input</span>.trim()) <span class="kw">return</span>;
+
+    <span class="cm">// ✅ Adicionar ao array: spread + novo item</span>
+    <span class="hook">setMensagens</span>(prev => [...prev, {
+      id: Date.<span class="fn">now</span>(),
+      texto: <span class="hook">input</span>,
+      isBot: <span class="kw">false</span>
+    }]);
+
+    <span class="hook">setInput</span>(<span class="str">''</span>); <span class="cm">// limpa o campo</span>
+
+    <span class="cm">// Resposta automática do bot (estática por enquanto)</span>
+    <span class="fn">setTimeout</span>(() => {
+      <span class="hook">setMensagens</span>(prev => [...prev, {
+        id: Date.<span class="fn">now</span>() <span class="op">+</span> <span class="num">1</span>,
+        texto: <span class="str">'Entendido! Na Semana 5 vou ser uma IA de verdade. 🤖'</span>,
+        isBot: <span class="kw">true</span>
+      }]);
+    }, <span class="num">800</span>);
+  };
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"chat"</span><span class="tag">&gt;</span>
+      <span class="cm">{/* renderizar lista — aula 3 */}</span>
+      <span class="tag">&lt;input</span> <span class="attr">value</span>={<span class="hook">input</span>} <span class="attr">onChange</span>={e => <span class="hook">setInput</span>(e.target.value)} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;button</span> <span class="attr">onClick</span>={<span class="fn">enviarMensagem</span>}<span class="tag">&gt;</span>Enviar<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<div class="sep"><span>Aula 3 & 4</span></div>
+
+<!-- ══════════════════════════════════
+     AULA 3 — CONDICIONAL, LISTAS E CHATBOT
+══════════════════════════════════ -->
+<section class="secao">
+  <div class="secao-header">
+    <div class="secao-num">03 & 04</div>
+    <div>
+      <div class="secao-label">Aula 3 & 4 · ~100 minutos</div>
+      <div class="secao-titulo">Renderização condicional, listas e o componente de chat completo</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo"><i class="fas fa-code-branch"></i>Renderização condicional — mostrar ou esconder</div>
+    <p>Em React você não usa <code>if</code> fora do return para controlar o que aparece na tela. Existem três padrões que você vai usar todo dia:</p>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">JSX — padrões de condicional</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+      <pre><code><span class="kw">function</span> <span class="jsx">PainelIA</span>({ carregando, erro, resposta, logado }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+
+      {<span class="cm">/* Padrão 1: operador ternário — if/else */</span>}
+      {carregando
+        ? <span class="tag">&lt;p&gt;</span>Gerando resposta...<span class="tag">&lt;/p&gt;</span>
+        : <span class="tag">&lt;p&gt;</span>Pronto!<span class="tag">&lt;/p&gt;</span>
+      }
+
+      {<span class="cm">/* Padrão 2: && — só renderiza se verdadeiro */</span>}
+      {erro <span class="op">&amp;&amp;</span> <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"erro"</span><span class="tag">&gt;</span>Erro: {erro}<span class="tag">&lt;/div&gt;</span>}
+
+      {resposta <span class="op">&amp;&amp;</span> <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"resposta"</span><span class="tag">&gt;</span>{resposta}<span class="tag">&lt;/div&gt;</span>}
+
+      {<span class="cm">/* Padrão 3: retorno antecipado (early return) — fora do JSX */</span>}
+      {<span class="cm">/* if (!logado) return &lt;Redirect to="/login" /&gt;; — antes do return */</span>}
+
+      {<span class="cm">/* Padrão 4: nulo não renderiza nada */</span>}
+      {logado ? <span class="tag">&lt;</span><span class="jsx">BotaoLogout</span> <span class="tag">/&gt;</span> : <span class="kw">null</span>}
+
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+    </div>
+    <div class="aviso">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span><strong>Armadilha com &&:</strong> <code>{"{"}0 && &lt;Componente /&gt;{"}"}</code> vai renderizar o número <code>0</code> na tela, não nada. Use <code>{"{"}lista.length &gt; 0 && ...{"}"}</code> ou <code>{"{"}!!valor && ...{"}"}</code> para garantir um booleano.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo"><i class="fas fa-list"></i>Renderizando listas com map — e o atributo key</div>
+    <p>Para renderizar arrays em React, você usa <code>.map()</code>. Cada item <strong>obrigatoriamente</strong> precisa de um <code>key</code> único — sem ele, React não consegue identificar quais itens mudaram.</p>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">JSX — listas com map e key</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+      <pre><code><span class="kw">const</span> mensagens = [
+  { id: <span class="num">1</span>, texto: <span class="str">'Olá!'</span>,           isBot: <span class="kw">true</span>  },
+  { id: <span class="num">2</span>, texto: <span class="str">'Como vai?'</span>,       isBot: <span class="kw">false</span> },
+  { id: <span class="num">3</span>, texto: <span class="str">'Tudo bem, e você?'</span>, isBot: <span class="kw">true</span>  },
+];
+
+<span class="kw">function</span> <span class="jsx">ListaMensagens</span>({ mensagens }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"lista"</span><span class="tag">&gt;</span>
+      {mensagens.<span class="fn">map</span>(msg => (
+        <span class="tag">&lt;</span><span class="jsx">MensagemChat</span>
+          <span class="attr">key</span>={msg.id}            {<span class="cm">/* key obrigatório e único */</span>}
+          <span class="attr">texto</span>={msg.texto}
+          <span class="attr">isBot</span>={msg.isBot}
+        <span class="tag">/&gt;</span>
+      ))}
+
+      {<span class="cm">/* Lista vazia — condicional */</span>}
+      {mensagens.length === <span class="num">0</span> <span class="op">&amp;&amp;</span> (
+        <span class="tag">&lt;p</span> <span class="attr">className</span>=<span class="val">"vazio"</span><span class="tag">&gt;</span>Nenhuma mensagem ainda.<span class="tag">&lt;/p&gt;</span>
+      )}
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}
+
+<span class="cm">// ❌ Nunca use o índice como key em listas dinâmicas</span>
+<span class="cm">// mensagens.map((msg, index) => &lt;Item key={index} /&gt;) — EVITAR</span>
+<span class="cm">// ✅ Use um ID único do dado</span></code></pre>
+    </div>
+    <div class="destaque">
+      <strong>Por que key importa?</strong> React usa o <code>key</code> para identificar qual item foi adicionado, removido ou reordenado. Sem key único, o React pode reutilizar o DOM errado — causando bugs visuais difíceis de detectar.
+    </div>
+  </div>
+
+  <!-- Demo do chatbot --------------------------------------------------- -->
+  <div class="card">
+    <div class="card-titulo"><i class="fas fa-comment-dots"></i>Demo — Chatbot com resposta estática</div>
+    <p>Este é o componente que você vai construir na atividade. Ele já funciona — experimente agora:</p>
+
+    <div class="chatbot-demo">
+      <div class="chatbot-header">
+        <div class="chatbot-header-dot"></div>
+        <span class="chatbot-header-title">IA Assistant</span>
+        <span class="chatbot-header-sub" id="chat-status">online</span>
+      </div>
+      <div class="chatbot-messages" id="chat-messages">
+        <div class="chat-msg chat-msg--bot">Olá! Sou a IA estática da Semana 2. Na Semana 5 serei uma IA de verdade. 🤖</div>
+      </div>
+      <div class="chatbot-input">
+        <input type="text" id="chat-input" placeholder="Digite uma mensagem..." autocomplete="off"/>
+        <button class="chatbot-send" onclick="enviarMsgDemo()">Enviar</button>
+      </div>
+    </div>
+
+    <p style="margin-top:.75rem;font-size:.82rem;color:var(--text-muted);">Código do componente completo:</p>
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">JSX — ChatBot.jsx completo</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+      <pre><code><span class="kw">import</span> { <span class="hook">useState</span>, useRef, useEffect } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="cm">// Respostas estáticas do bot (Semana 5 vai substituir por API real)</span>
+<span class="kw">const</span> RESPOSTAS_BOT = [
+  <span class="str">'Interessante! Me conte mais sobre isso.'</span>,
+  <span class="str">'Ótima pergunta. Na Semana 5 vou usar a OpenAI para responder melhor!'</span>,
+  <span class="str">'Entendido! Estou processando sua mensagem... 🤔'</span>,
+  <span class="str">'Isso está relacionado a IA? Adoro esse assunto!'</span>,
+];
+
+<span class="kw">export default function</span> <span class="jsx">ChatBot</span>() {
+  <span class="kw">const</span> [<span class="hook">mensagens</span>, <span class="hook">setMensagens</span>] = <span class="fn">useState</span>([
+    { id: <span class="num">1</span>, texto: <span class="str">'Olá! Como posso ajudar?'</span>, isBot: <span class="kw">true</span> }
+  ]);
+  <span class="kw">const</span> [<span class="hook">input</span>, <span class="hook">setInput</span>]         = <span class="fn">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> [<span class="hook">digitando</span>, <span class="hook">setDigitando</span>] = <span class="fn">useState</span>(<span class="kw">false</span>);
+  <span class="kw">const</span> fimRef                    = useRef(<span class="kw">null</span>);
+
+  <span class="cm">// Scroll automático para o final</span>
+  <span class="fn">useEffect</span>(() => {
+    fimRef.current?.<span class="fn">scrollIntoView</span>({ behavior: <span class="str">'smooth'</span> });
+  }, [<span class="hook">mensagens</span>]);
+
+  <span class="kw">const</span> <span class="fn">enviar</span> = () => {
+    <span class="kw">if</span> (!<span class="hook">input</span>.<span class="fn">trim</span>() <span class="op">||</span> <span class="hook">digitando</span>) <span class="kw">return</span>;
+
+    <span class="cm">// Adiciona mensagem do usuário</span>
+    <span class="hook">setMensagens</span>(prev => [...prev, {
+      id: Date.<span class="fn">now</span>(), texto: <span class="hook">input</span>, isBot: <span class="kw">false</span>
+    }]);
+    <span class="hook">setInput</span>(<span class="str">''</span>);
+    <span class="hook">setDigitando</span>(<span class="kw">true</span>);
+
+    <span class="cm">// Simula bot "digitando" e responde</span>
+    <span class="fn">setTimeout</span>(() => {
+      <span class="kw">const</span> resposta = RESPOSTAS_BOT[
+        Math.<span class="fn">floor</span>(Math.<span class="fn">random</span>() <span class="op">*</span> RESPOSTAS_BOT.length)
+      ];
+      <span class="hook">setMensagens</span>(prev => [...prev, {
+        id: Date.<span class="fn">now</span>(), texto: resposta, isBot: <span class="kw">true</span>
+      }]);
+      <span class="hook">setDigitando</span>(<span class="kw">false</span>);
+    }, <span class="num">900</span>);
+  };
+
+  <span class="kw">const</span> <span class="fn">handleKeyDown</span> = (e) => {
+    <span class="kw">if</span> (e.key === <span class="str">'Enter'</span>) <span class="fn">enviar</span>();
+  };
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"chatbot"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;header</span> <span class="attr">className</span>=<span class="val">"chatbot-header"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;span</span> <span class="attr">className</span>=<span class="val">"dot"</span><span class="tag">&gt;&lt;/span&gt;</span>
+        <span class="tag">&lt;strong&gt;</span>IA Assistant<span class="tag">&lt;/strong&gt;</span>
+        <span class="tag">&lt;small&gt;</span>{<span class="hook">digitando</span> ? <span class="str">'digitando...'</span> : <span class="str">'online'</span>}<span class="tag">&lt;/small&gt;</span>
+      <span class="tag">&lt;/header&gt;</span>
+
+      <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"mensagens"</span><span class="tag">&gt;</span>
+        {<span class="hook">mensagens</span>.<span class="fn">map</span>(msg => (
+          <span class="tag">&lt;</span><span class="jsx">Mensagem</span> <span class="attr">key</span>={msg.id} {<span class="cm">...msg</span>} <span class="tag">/&gt;</span>
+        ))}
+        {<span class="hook">digitando</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"digitando"</span><span class="tag">&gt;</span>● ● ●<span class="tag">&lt;/div&gt;</span>}
+        <span class="tag">&lt;div</span> <span class="attr">ref</span>={fimRef} <span class="tag">/&gt;</span>   {<span class="cm">/* âncora de scroll */</span>}
+      <span class="tag">&lt;/div&gt;</span>
+
+      <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"input-area"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;input</span>
+          <span class="attr">value</span>={<span class="hook">input</span>}
+          <span class="attr">onChange</span>={e => <span class="hook">setInput</span>(e.target.value)}
+          <span class="attr">onKeyDown</span>={<span class="fn">handleKeyDown</span>}
+          <span class="attr">placeholder</span>=<span class="val">"Mensagem..."</span>
+          <span class="attr">disabled</span>={<span class="hook">digitando</span>}
+        <span class="tag">/&gt;</span>
+        <span class="tag">&lt;button</span> <span class="attr">onClick</span>={<span class="fn">enviar</span>} <span class="attr">disabled</span>={<span class="hook">digitando</span>}<span class="tag">&gt;</span>Enviar<span class="tag">&lt;/button&gt;</span>
+      <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}
+
+<span class="cm">// Componente de mensagem separado</span>
+<span class="kw">function</span> <span class="jsx">Mensagem</span>({ texto, isBot }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="attr">className</span>={<span class="str">`msg ${isBot ? 'msg--bot' : 'msg--user'}`</span>}<span class="tag">&gt;</span>
+      {texto}
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+    </div>
+    <div class="aviso-green">
+      <i class="fas fa-rocket"></i>
+      <span><strong>Conexão Semana 5:</strong> a função <code>enviar()</code> vai ser substituída por uma chamada real à API da OpenAI com <code>fetch</code> e <code>async/await</code>. O componente inteiro permanece igual — só a resposta do bot muda de estática para real.</span>
+    </div>
+  </div>
+</section>
+
+<div class="sep"><span>Atividade Prática</span></div>
+
+<!-- ══════════════════════════════════
+     EXERCÍCIOS
+══════════════════════════════════ -->
+<section class="secao">
+  <div class="secao-header">
+    <div class="secao-num">→</div>
+    <div>
+      <div class="secao-label">Atividade · Banco de componentes</div>
+      <div class="secao-titulo">6 Exercícios — Componentes, Props, Estado e Listas</div>
+    </div>
+  </div>
+
+  <div class="aviso-info">
+    <i class="fas fa-info-circle"></i>
+    <span>Use <strong>Vite + React</strong> (<code>npm create vite@latest</code>) ou <strong>CodeSandbox</strong> (codesandbox.io → React template). Tente resolver antes de ver o gabarito.</span>
+  </div>
+
+  <div class="exercicio">
+    <div class="exercicio-num">Exercício 01</div>
+    <p>Crie um componente <code>CartaoModelo</code> que receba as props <strong>nome</strong>, <strong>empresa</strong>, <strong>tipo</strong> e <strong>gratis</strong> (boolean). Renderize um card com as informações e um badge verde "Gratuito" ou vermelho "Pago" dependendo da prop <strong>gratis</strong>. Instancie 3 modelos diferentes no App.</p>
+    <span class="dificuldade dif-basico">Básico — Componente + Props + Condicional</span><br>
+    <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+    
+        <pre><code><span class="kw">function</span> <span class="jsx">CartaoModelo</span>({ nome, empresa, tipo, gratis = <span class="kw">false</span> }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="attr">style</span>={{ border: <span class="str">'1px solid #333'</span>, padding: <span class="str">'1rem'</span>, borderRadius: <span class="str">'8px'</span> }}<span class="tag">&gt;</span>
+      <span class="tag">&lt;h3&gt;</span>{nome}<span class="tag">&lt;/h3&gt;</span>
+      <span class="tag">&lt;p&gt;</span>{empresa} · {tipo}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;span</span> <span class="attr">style</span>={{ color: gratis ? <span class="str">'#4ade80'</span> : <span class="str">'#f87171'</span> }}<span class="tag">&gt;</span>
+        {gratis ? <span class="str">'✅ Gratuito'</span> : <span class="str">'💳 Pago'</span>}
+      <span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}
+
+<span class="kw">export default function</span> <span class="jsx">App</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;main&gt;</span>
+      <span class="tag">&lt;</span><span class="jsx">CartaoModelo</span> <span class="attr">nome</span>=<span class="val">"GPT-4o"</span>        <span class="attr">empresa</span>=<span class="val">"OpenAI"</span>     <span class="attr">tipo</span>=<span class="val">"LLM"</span> <span class="attr">gratis</span>={<span class="kw">false</span>} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;</span><span class="jsx">CartaoModelo</span> <span class="attr">nome</span>=<span class="val">"Gemini 1.5"</span>    <span class="attr">empresa</span>=<span class="val">"Google"</span>     <span class="attr">tipo</span>=<span class="val">"LLM"</span> <span class="attr">gratis</span>={<span class="kw">true</span>}  <span class="tag">/&gt;</span>
+      <span class="tag">&lt;</span><span class="jsx">CartaoModelo</span> <span class="attr">nome</span>=<span class="val">"Llama 3.1"</span>     <span class="attr">empresa</span>=<span class="val">"Meta"</span>       <span class="attr">tipo</span>=<span class="val">"LLM"</span> <span class="attr">gratis</span>={<span class="kw">true</span>}  <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/main&gt;</span>
+  );
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercicio">
+    <div class="exercicio-num">Exercício 02</div>
+    <p>Crie um componente <code>Contador</code> com estado <code>valor</code> iniciado em 0. Adicione três botões: <strong>+1</strong>, <strong>-1</strong> e <strong>Zerar</strong>. O contador nunca deve ficar abaixo de 0. Exiba o valor com cor verde se acima de 5, amarela se entre 1 e 5, cinza se 0.</p>
+    <span class="dificuldade dif-basico">Básico — useState + Condicional</span><br>
+    <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+    
+        <pre><code><span class="kw">import</span> { <span class="hook">useState</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">export default function</span> <span class="jsx">Contador</span>() {
+  <span class="kw">const</span> [<span class="hook">valor</span>, <span class="hook">setValor</span>] = <span class="fn">useState</span>(<span class="num">0</span>);
+
+  <span class="kw">const</span> cor = <span class="hook">valor</span> <span class="op">&gt;</span> <span class="num">5</span> ? <span class="str">'#4ade80'</span> : <span class="hook">valor</span> <span class="op">&gt;</span> <span class="num">0</span> ? <span class="str">'#fbbf24'</span> : <span class="str">'#6b7280'</span>;
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;p</span> <span class="attr">style</span>={{ fontSize: <span class="str">'3rem'</span>, color: cor }}<span class="tag">&gt;</span>{<span class="hook">valor</span>}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;button</span> <span class="attr">onClick</span>={() => <span class="hook">setValor</span>(v => v <span class="op">+</span> <span class="num">1</span>)}<span class="tag">&gt;</span>+1<span class="tag">&lt;/button&gt;</span>
+      <span class="tag">&lt;button</span> <span class="attr">onClick</span>={() => <span class="hook">setValor</span>(v => Math.<span class="fn">max</span>(<span class="num">0</span>, v <span class="op">-</span> <span class="num">1</span>))}<span class="tag">&gt;</span>-1<span class="tag">&lt;/button&gt;</span>
+      <span class="tag">&lt;button</span> <span class="attr">onClick</span>={() => <span class="hook">setValor</span>(<span class="num">0</span>)}<span class="tag">&gt;</span>Zerar<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercicio">
+    <div class="exercicio-num">Exercício 03</div>
+    <p>Dado o array de modelos abaixo, crie um componente <code>ListaModelos</code> que renderize cada item usando <code>.map()</code> e o componente <code>CartaoModelo</code> do Ex. 01. Adicione um botão <strong>"Mostrar só gratuitos"</strong> que filtra a lista usando estado.</p>
+    <div class="code-block" style="margin:.75rem 0;">
+      <div class="code-header"><span class="code-lang">JS — dados</span></div>
+      <pre><code><span class="kw">const</span> modelos = [
+  { id: <span class="num">1</span>, nome: <span class="str">'GPT-4o'</span>,         empresa: <span class="str">'OpenAI'</span>,     tipo: <span class="str">'LLM'</span>,       gratis: <span class="kw">false</span> },
+  { id: <span class="num">2</span>, nome: <span class="str">'Gemini 1.5 Flash'</span>, empresa: <span class="str">'Google'</span>,     tipo: <span class="str">'LLM'</span>,       gratis: <span class="kw">true</span>  },
+  { id: <span class="num">3</span>, nome: <span class="str">'Llama 3.1 8B'</span>,    empresa: <span class="str">'Meta'</span>,       tipo: <span class="str">'LLM'</span>,       gratis: <span class="kw">true</span>  },
+  { id: <span class="num">4</span>, nome: <span class="str">'DALL-E 3'</span>,        empresa: <span class="str">'OpenAI'</span>,     tipo: <span class="str">'Imagem'</span>,    gratis: <span class="kw">false</span> },
+  { id: <span class="num">5</span>, nome: <span class="str">'Whisper'</span>,         empresa: <span class="str">'OpenAI'</span>,     tipo: <span class="str">'Audio'</span>,     gratis: <span class="kw">true</span>  },
+];</code></pre>
+    </div>
+    <span class="dificuldade dif-medio">Médio — map + filter + useState</span><br>
+    <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+    
+        <pre><code><span class="kw">import</span> { <span class="hook">useState</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">export default function</span> <span class="jsx">ListaModelos</span>() {
+  <span class="kw">const</span> [<span class="hook">apenasGratis</span>, <span class="hook">setApenasGratis</span>] = <span class="fn">useState</span>(<span class="kw">false</span>);
+
+  <span class="kw">const</span> modelosFiltrados = <span class="hook">apenasGratis</span>
+    ? modelos.<span class="fn">filter</span>(m => m.gratis)
+    : modelos;
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;button</span> <span class="attr">onClick</span>={() => <span class="hook">setApenasGratis</span>(v => !v)}<span class="tag">&gt;</span>
+        {<span class="hook">apenasGratis</span> ? <span class="str">'Mostrar todos'</span> : <span class="str">'Mostrar só gratuitos'</span>}
+      <span class="tag">&lt;/button&gt;</span>
+      <span class="tag">&lt;p&gt;</span>{modelosFiltrados.length} modelos<span class="tag">&lt;/p&gt;</span>
+      {modelosFiltrados.<span class="fn">map</span>(m => (
+        <span class="tag">&lt;</span><span class="jsx">CartaoModelo</span> <span class="attr">key</span>={m.id} {<span class="cm">...m</span>} <span class="tag">/&gt;</span>
+      ))}
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercicio">
+    <div class="exercicio-num">Exercício 04</div>
+    <p>Crie um componente <code>FormularioPrompt</code> com: um <code>textarea</code> controlado para o prompt, um <code>select</code> para escolher o modelo (GPT-4o, Gemini, Llama), um contador de caracteres que muda de cor ao atingir 80% do limite de 500 chars, e um botão "Enviar" desabilitado quando o prompt estiver vazio.</p>
+    <span class="dificuldade dif-medio">Médio — múltiplos estados + condicional</span><br>
+    <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+    
+        <pre><code><span class="kw">import</span> { <span class="hook">useState</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">const</span> LIMITE = <span class="num">500</span>;
+
+<span class="kw">export default function</span> <span class="jsx">FormularioPrompt</span>() {
+  <span class="kw">const</span> [<span class="hook">prompt</span>,  <span class="hook">setPrompt</span>]  = <span class="fn">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> [<span class="hook">modelo</span>,  <span class="hook">setModelo</span>]  = <span class="fn">useState</span>(<span class="str">'gpt-4o'</span>);
+  <span class="kw">const</span> [<span class="hook">enviado</span>, <span class="hook">setEnviado</span>] = <span class="fn">useState</span>(<span class="kw">false</span>);
+
+  <span class="kw">const</span> pct    = (<span class="hook">prompt</span>.length <span class="op">/</span> LIMITE) <span class="op">*</span> <span class="num">100</span>;
+  <span class="kw">const</span> corCont = pct <span class="op">&gt;=</span> <span class="num">100</span> ? <span class="str">'#f87171'</span> : pct <span class="op">&gt;=</span> <span class="num">80</span> ? <span class="str">'#fbbf24'</span> : <span class="str">'#6b7280'</span>;
+
+  <span class="kw">const</span> <span class="fn">handleEnviar</span> = () => {
+    <span class="fn">alert</span>(`Enviando para ${<span class="hook">modelo</span>}: "${<span class="hook">prompt</span>}"`);
+    <span class="hook">setEnviado</span>(<span class="kw">true</span>);
+  };
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;form</span> <span class="attr">onSubmit</span>={e => { e.<span class="fn">preventDefault</span>(); <span class="fn">handleEnviar</span>(); }}<span class="tag">&gt;</span>
+      <span class="tag">&lt;select</span> <span class="attr">value</span>={<span class="hook">modelo</span>} <span class="attr">onChange</span>={e => <span class="hook">setModelo</span>(e.target.value)}<span class="tag">&gt;</span>
+        <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="val">"gpt-4o"</span><span class="tag">&gt;</span>GPT-4o<span class="tag">&lt;/option&gt;</span>
+        <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="val">"gemini"</span><span class="tag">&gt;</span>Gemini 1.5<span class="tag">&lt;/option&gt;</span>
+        <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="val">"llama"</span><span class="tag">&gt;</span>Llama 3.1<span class="tag">&lt;/option&gt;</span>
+      <span class="tag">&lt;/select&gt;</span>
+      <span class="tag">&lt;textarea</span>
+        <span class="attr">value</span>={<span class="hook">prompt</span>}
+        <span class="attr">onChange</span>={e => { <span class="hook">setPrompt</span>(e.target.value); <span class="hook">setEnviado</span>(<span class="kw">false</span>); }}
+        <span class="attr">maxLength</span>={LIMITE}
+        <span class="attr">rows</span>={<span class="num">4</span>}
+        <span class="attr">placeholder</span>=<span class="val">"Digite seu prompt..."</span>
+      <span class="tag">/&gt;</span>
+      <span class="tag">&lt;p</span> <span class="attr">style</span>={{ color: corCont }}<span class="tag">&gt;</span>{<span class="hook">prompt</span>.length}/{LIMITE}<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;button</span> <span class="attr">type</span>=<span class="val">"submit"</span> <span class="attr">disabled</span>={!<span class="hook">prompt</span>.trim()}<span class="tag">&gt;</span>
+        {<span class="hook">enviado</span> ? <span class="str">'✓ Enviado'</span> : <span class="str">'Enviar'</span>}
+      <span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/form&gt;</span>
+  );
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercicio">
+    <div class="exercicio-num">Exercício 05</div>
+    <p>Construa o componente de chat completo baseado no código da Aula 3. Deve ter: lista de mensagens com <code>.map()</code> e <code>key</code> correto, indicador "digitando..." enquanto o bot responde, input que envia com Enter ou botão, e scroll automático para a última mensagem com <code>useRef</code>.</p>
+    <span class="dificuldade dif-medio">Médio — ChatBot completo</span><br>
+    <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+  
+  <div class="exercicio">
+    <div class="exercicio-num">Exercício 06 — Desafio</div>
+    <p>Expanda o chatbot com: (a) um <strong>seletor de modo</strong> que muda entre "Formal" e "Casual" e altera as respostas estáticas do bot; (b) um botão <strong>"Limpar conversa"</strong> que reseta o estado para a mensagem inicial; (c) um contador de mensagens enviadas pelo usuário exibido no header. Nenhuma biblioteca extra — React puro.</p>
+    <span class="dificuldade dif-desafio">Desafio — Estado composto + props de callback</span><br>
+    <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+  
+        <pre><code><span class="kw">import</span> { <span class="hook">useState</span>, useRef, useEffect } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">const</span> RESPOSTAS = {
+  formal:  [<span class="str">'Compreendido. Processando sua solicitação.'</span>, <span class="str">'Obrigado pelo contato. Retorno em breve.'</span>],
+  casual:  [<span class="str">'Boa pergunta! 😄'</span>, <span class="str">'Entendi, manda mais detalhes!'</span>, <span class="str">'Interessante isso! 🤔'</span>],
+};
+
+<span class="kw">const</span> MSG_INICIAL = [{ id: <span class="num">0</span>, texto: <span class="str">'Olá! Como posso ajudar?'</span>, isBot: <span class="kw">true</span> }];
+
+<span class="kw">export default function</span> <span class="jsx">ChatBotExpandido</span>() {
+  <span class="kw">const</span> [<span class="hook">msgs</span>,       <span class="hook">setMsgs</span>]       = <span class="fn">useState</span>(MSG_INICIAL);
+  <span class="kw">const</span> [<span class="hook">input</span>,      <span class="hook">setInput</span>]      = <span class="fn">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> [<span class="hook">digitando</span>,  <span class="hook">setDigitando</span>]  = <span class="fn">useState</span>(<span class="kw">false</span>);
+  <span class="kw">const</span> [<span class="hook">modo</span>,       <span class="hook">setModo</span>]       = <span class="fn">useState</span>(<span class="str">'casual'</span>);
+  <span class="kw">const</span> [<span class="hook">enviadas</span>,   <span class="hook">setEnviadas</span>]   = <span class="fn">useState</span>(<span class="num">0</span>);
+  <span class="kw">const</span> fimRef = useRef(<span class="kw">null</span>);
+
+  <span class="fn">useEffect</span>(() => { fimRef.current?.<span class="fn">scrollIntoView</span>({ behavior: <span class="str">'smooth'</span> }); }, [<span class="hook">msgs</span>]);
+
+  <span class="kw">const</span> <span class="fn">enviar</span> = () => {
+    <span class="kw">if</span> (!<span class="hook">input</span>.<span class="fn">trim</span>() <span class="op">||</span> <span class="hook">digitando</span>) <span class="kw">return</span>;
+    <span class="hook">setMsgs</span>(p => [...p, { id: Date.<span class="fn">now</span>(), texto: <span class="hook">input</span>, isBot: <span class="kw">false</span> }]);
+    <span class="hook">setEnviadas</span>(n => n <span class="op">+</span> <span class="num">1</span>);
+    <span class="hook">setInput</span>(<span class="str">''</span>);
+    <span class="hook">setDigitando</span>(<span class="kw">true</span>);
+    <span class="fn">setTimeout</span>(() => {
+      <span class="kw">const</span> lista = RESPOSTAS[<span class="hook">modo</span>];
+      <span class="hook">setMsgs</span>(p => [...p, {
+        id: Date.<span class="fn">now</span>() <span class="op">+</span> <span class="num">1</span>,
+        texto: lista[Math.<span class="fn">floor</span>(Math.<span class="fn">random</span>() <span class="op">*</span> lista.length)],
+        isBot: <span class="kw">true</span>
+      }]);
+      <span class="hook">setDigitando</span>(<span class="kw">false</span>);
+    }, <span class="num">800</span>);
+  };
+
+  <span class="kw">const</span> <span class="fn">limpar</span> = () => { <span class="hook">setMsgs</span>(MSG_INICIAL); <span class="hook">setEnviadas</span>(<span class="num">0</span>); };
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;header&gt;</span>
+        <span class="tag">&lt;span&gt;</span>IA · {<span class="hook">enviadas</span>} msgs enviadas<span class="tag">&lt;/span&gt;</span>
+        <span class="tag">&lt;select</span> <span class="attr">value</span>={<span class="hook">modo</span>} <span class="attr">onChange</span>={e => <span class="hook">setModo</span>(e.target.value)}<span class="tag">&gt;</span>
+          <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="val">"casual"</span><span class="tag">&gt;</span>Casual<span class="tag">&lt;/option&gt;</span>
+          <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="val">"formal"</span><span class="tag">&gt;</span>Formal<span class="tag">&lt;/option&gt;</span>
+        <span class="tag">&lt;/select&gt;</span>
+        <span class="tag">&lt;button</span> <span class="attr">onClick</span>={<span class="fn">limpar</span>}<span class="tag">&gt;</span>Limpar<span class="tag">&lt;/button&gt;</span>
+      <span class="tag">&lt;/header&gt;</span>
+      <span class="tag">&lt;div&gt;</span>
+        {<span class="hook">msgs</span>.<span class="fn">map</span>(m => <span class="tag">&lt;div</span> <span class="attr">key</span>={m.id}<span class="tag">&gt;</span>{m.texto}<span class="tag">&lt;/div&gt;</span>)}
+        {<span class="hook">digitando</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;div&gt;</span>● ● ●<span class="tag">&lt;/div&gt;</span>}
+        <span class="tag">&lt;div</span> <span class="attr">ref</span>={fimRef} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;/div&gt;</span>
+      <span class="tag">&lt;input</span> <span class="attr">value</span>={<span class="hook">input</span>} <span class="attr">onChange</span>={e => <span class="hook">setInput</span>(e.target.value)}
+             <span class="attr">onKeyDown</span>={e => e.key === <span class="str">'Enter'</span> <span class="op">&amp;&amp;</span> <span class="fn">enviar</span>()} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;button</span> <span class="attr">onClick</span>={<span class="fn">enviar</span>} <span class="attr">disabled</span>={<span class="hook">digitando</span>}<span class="tag">&gt;</span>Enviar<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"><span>Resumo</span></div>
+
+<!-- ══════════════════════════════════
+     RESUMO
+══════════════════════════════════ -->
+<section class="secao">
+  <div class="secao-header">
+    <div class="secao-num">✓</div>
+    <div>
+      <div class="secao-label">Fechamento</div>
+      <div class="secao-titulo">O que vimos na Semana 2</div>
+    </div>
+  </div>
+
+  <div class="resumo-grid">
+    <div class="resumo-item">
+      <i class="fas fa-puzzle-piece"></i>
+      <strong>Componentes e JSX</strong>
+      <p>Funções que retornam JSX. className, htmlFor, eventos em camelCase, expressões JS entre { }. Composição de componentes.</p>
+    </div>
+    <div class="resumo-item">
+      <i class="fas fa-exchange-alt"></i>
+      <strong>Props e Estado</strong>
+      <p>Props fluem de pai para filho (imutáveis). useState retorna [valor, setter]. Nunca modifique estado diretamente.</p>
+    </div>
+    <div class="resumo-item">
+      <i class="fas fa-list"></i>
+      <strong>Listas e Condicionais</strong>
+      <p>.map() para listas com key obrigatório. Ternário para if/else. && para renderizar só se verdadeiro.</p>
+    </div>
+  </div>
+
+  <div class="proxima">
+    <div>
+      <div class="proxima-label">Próxima semana</div>
+      <div class="proxima-titulo">Semana 3 — React avançado: useEffect, Context API e React Router</div>
+    </div>
+    <i class="fas fa-arrow-right"></i>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ── Gabarito toggle ── */
+function toggleGab(btn) {
+  const content = btn.nextElementSibling;
+  content.classList.toggle('open');
+  btn.innerHTML = content.classList.contains('open')
+    ? '<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    : '<i class="fas fa-eye"></i> ver gabarito';
+}
+
+/* ── Copiar código ── */
+function copiar(btn) {
+  const code = btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(() => {
+    btn.textContent = 'copiado!';
+    setTimeout(() => btn.textContent = 'copiar', 2000);
+  });
+}
+
+/* ── Demo chatbot ── */
+const RESPOSTAS_DEMO = [
+  'Boa pergunta! Na Semana 5 vou ser uma IA de verdade. 🤖',
+  'Entendido! Estou processando... ⚡',
+  'Isso é o que um bot estático diria. Em breve uso a OpenAI!',
+  'Interessante! Guarda isso para a Semana 5. 😄',
+  'useState + map = magia do React. Você está aprendendo bem!',
+];
+
+function enviarMsgDemo() {
+  const input = document.getElementById('chat-input');
+  const messages = document.getElementById('chat-messages');
+  const status = document.getElementById('chat-status');
+  const texto = input.value.trim();
+  if (!texto) return;
+
+  // mensagem do usuário
+  const msgUser = document.createElement('div');
+  msgUser.className = 'chat-msg chat-msg--user';
+  msgUser.textContent = texto;
+  messages.appendChild(msgUser);
+  input.value = '';
+  messages.scrollTop = messages.scrollHeight;
+
+  // indicador digitando
+  status.textContent = 'digitando...';
+  const typing = document.createElement('div');
+  typing.className = 'chat-msg chat-msg--typing';
+  typing.textContent = '● ● ●';
+  messages.appendChild(typing);
+  messages.scrollTop = messages.scrollHeight;
+
+  setTimeout(() => {
+    messages.removeChild(typing);
+    const msgBot = document.createElement('div');
+    msgBot.className = 'chat-msg chat-msg--bot';
+    msgBot.textContent = RESPOSTAS_DEMO[Math.floor(Math.random() * RESPOSTAS_DEMO.length)];
+    messages.appendChild(msgBot);
+    messages.scrollTop = messages.scrollHeight;
+    status.textContent = 'online';
+  }, 900);
+}
+
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') enviarMsgDemo();
+});
+</script>
+</body>
+</html>

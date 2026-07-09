@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Semana 03 — Front-end para IA — Versão Aluno</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --amber-950:#1c0a00;--amber-900:#2a1200;--amber-800:#451a03;
+  --amber-700:#78350f;--amber-500:#b45309;--amber-400:#d97706;
+  --amber-300:#f59e0b;--amber-200:#fbbf24;--amber-100:#fcd34d;
+  --white:#ffffff;
+  --text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(251,191,36,.05);
+  --code-bg:#130a00;--code-border:rgba(251,191,36,.18);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--amber-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═════════════════════════════════════ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;}
+.blob-1{width:700px;height:700px;background:var(--amber-700);top:-250px;left:-200px;}
+.blob-2{width:600px;height:600px;background:var(--amber-800);bottom:-220px;right:-150px;}
+.blob-3{width:350px;height:350px;background:var(--amber-500);top:38%;left:38%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(251,191,36,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--amber-200);border:1px solid rgba(251,191,36,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--amber-200);animation:pulsar 2s ease-in-out infinite;}
+@keyframes pulsar{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(251,191,36,.1);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--amber-200);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--amber-200);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.12);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(251,191,36,.18);color:var(--amber-200);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(251,191,36,.05);border-left:3px solid var(--amber-200);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--amber-200);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--amber-200);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;}
+.tipo-conteudo{background:rgba(251,191,36,.12);color:var(--amber-200);border:1px solid rgba(251,191,36,.28);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ══════════════════════════════════ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(251,191,36,.14);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(251,191,36,.16);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--amber-200);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(251,191,36,.2);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--amber-200);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.07);border-left:3px solid var(--amber-200);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.6;}
+.destaque strong{color:var(--amber-200);}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(251,191,36,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--amber-200);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(251,191,36,.18);}
+td{padding:.6rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(251,191,36,.03);}
+
+/* code blocks */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(251,191,36,.07);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;cursor:pointer;background:none;border:none;color:var(--text-muted);letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--amber-200);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#fde68a;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#86efac;}.cm{color:#4b5563;font-style:italic;}
+.num{color:#fca5a5;}.op{color:#c4b5fd;}.tag{color:#fdba74;}.attr{color:#a78bfa;}.val{color:#86efac;}
+.jsx{color:#fb923c;}.hook{color:#34d399;}
+
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.85);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:var(--amber-200);flex-shrink:0;margin-top:2px;}
+.aviso-info{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);font-size:.86rem;color:rgba(186,230,253,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-info i{color:#60a5fa;flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+
+/* exercícios */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--amber-200);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dificuldade{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;}
+.dif-basico{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+
+/* resumo */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--amber-200);margin-bottom:.5rem;display:block;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);margin-top:3rem;text-decoration:none;}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--amber-200);}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(251,191,36,.1);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+/* ── diagramas ── */
+.lifecycle-flow{display:flex;flex-direction:column;gap:.5rem;padding:1.25rem;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:12px;margin:.75rem 0;}
+.lf-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+.lf-box{padding:.45rem .9rem;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;white-space:nowrap;}
+.lf-mount{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.25);}
+.lf-update{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25);}
+.lf-unmount{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25);}
+.lf-effect{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.25);}
+.lf-arrow{color:rgba(255,255,255,.2);font-size:.85rem;}
+.lf-label{font-size:.72rem;color:var(--text-muted);font-style:italic;}
+
+.context-flow{display:grid;grid-template-columns:auto 1fr;gap:.75rem 1rem;align-items:center;padding:1.25rem;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:12px;margin:.75rem 0;}
+.cf-provider{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:10px;padding:.6rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--amber-200);text-align:center;grid-column:1/-1;}
+.cf-arrow{color:rgba(255,255,255,.18);font-size:.85rem;text-align:center;}
+.cf-consumer{background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);border-radius:8px;padding:.45rem .85rem;font-family:'JetBrains Mono',monospace;font-size:.77rem;color:#93c5fd;}
+
+.router-flow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:1rem 1.25rem;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:12px;margin:.75rem 0;}
+.rf-url{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);border-radius:6px;padding:.35rem .8rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--amber-200);}
+.rf-sep{color:rgba(255,255,255,.2);font-size:.85rem;padding:0 .15rem;}
+.rf-comp{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:6px;padding:.35rem .8rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#4ade80;}
+
+/* demo mini-app */
+.mini-app{background:#0a0f1e;border:1px solid rgba(251,191,36,.15);border-radius:14px;overflow:hidden;margin:.75rem 0;}
+.mini-nav{display:flex;gap:2px;background:rgba(0,0,0,.3);padding:.5rem .75rem;border-bottom:1px solid rgba(255,255,255,.06);}
+.mini-nav-btn{padding:.35rem .8rem;border-radius:6px;border:none;background:transparent;color:var(--text-muted);font-size:.78rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
+.mini-nav-btn.active{background:rgba(251,191,36,.15);color:var(--amber-200);}
+.mini-page{padding:1.25rem;min-height:140px;display:none;}
+.mini-page.active{display:block;}
+.mini-page h3{font-family:'Montserrat',sans-serif;font-size:.95rem;font-weight:700;color:#f0f4ff;margin-bottom:.5rem;}
+.mini-page p{font-size:.82rem;color:var(--text-secondary);}
+.mini-theme-toggle{margin-top:.75rem;display:flex;align-items:center;gap:.75rem;}
+.mini-theme-btn{padding:.35rem .8rem;border-radius:6px;border:1px solid rgba(251,191,36,.25);background:rgba(251,191,36,.1);color:var(--amber-200);font-size:.78rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.mini-status{font-size:.78rem;color:var(--text-muted);font-style:italic;}
+
+@media(max-width:900px){.capa{grid-template-columns:1fr;}.capa-right{display:none;}.grid-2{grid-template-columns:1fr;}.resumo-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:540px){.resumo-grid{grid-template-columns:1fr;}.capa-titulo{font-size:1.5rem;}}
+</style>
+</head>
+<body>
+<!-- ═══════════════ CAPA ═══════════════════════ -->
+<section class="capa">
+<div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+<span class="tipo-badge tipo-conteudo">📚 Conteúdo</span>
+<div class="capa-left">
+<div class="semana-badge"><span class="dot"></span>Front-end para IA · Bacharelado · 3º Período</div>
+<div class="semana-num">03</div>
+<h1 class="capa-titulo">React avançado:<br/><em>useEffect, Context</em><br/>e React Router</h1>
+<p class="capa-sub">4 aulas · 200 minutos · Pré-requisito: Semana 2</p>
+<div class="divider"></div>
+<div class="topicos">
+<div class="topico"><div class="topico-icon"><i class="fas fa-sync-alt"></i></div><span>useEffect — efeitos colaterais e ciclo de vida</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-arrow-up"></i></div><span>Lifting state up — comunicação filho → pai</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-broadcast-tower"></i></div><span>Context API — estado global sem prop drilling</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-route"></i></div><span>React Router v6 — navegação entre páginas</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-th-large"></i></div><span>Prática: app multi-página com estado compartilhado</span></div>
+</div>
+<div class="atividade-box">
+<div class="label">Atividade Prática</div>
+<p>Aplicação multi-página com React Router, Context de tema (claro/escuro) e histórico de conversas compartilhado entre páginas.</p>
+</div>
+</div>
+<div class="capa-right">
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-link"></i>Conexão com as semanas anteriores</div>
+<ul class="info-lista">
+<li>useState da Sem. 2 não consegue compartilhar estado entre componentes distantes</li>
+<li>Context resolve o "prop drilling" — passar props por 5 níveis só para chegar no filho</li>
+<li>useEffect substitui o pattern de setTimeout que usamos no chatbot</li>
+<li>Router transforma o chatbot em uma aplicação com múltiplas páginas</li>
+</ul>
+</div>
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-brain"></i>Por que isso importa para IA?</div>
+<ul class="info-lista">
+<li>Sem. 5: useEffect faz o fetch para a API de LLM quando o componente monta</li>
+<li>Sem. 7: streaming de tokens usa useEffect + EventSource</li>
+<li>Sem. 16: histórico de conversas é um estado global — Context ou Zustand</li>
+<li>Apps de IA têm múltiplas páginas: chat, dashboard, configurações</li>
+</ul>
+</div>
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-tools"></i>O que instalar</div>
+<ul class="info-lista">
+<li>Projeto da Sem. 2 já serve como base</li>
+<li>React Router: <code>npm install react-router-dom</code></li>
+<li>Versão 6 — API diferente da v5, cuidado com tutoriais antigos</li>
+</ul>
+</div>
+</div>
+<div class="scroll-hint"><span>role para o conteúdo</span><i class="fas fa-chevron-down"></i></div>
+</section>
+<!-- ═══════════════ CONTEÚDO ══════════════════ -->
+<main class="conteudo">
+<!-- ══════════════════════════════════
+     AULA 1 — useEffect
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">01</div>
+<div>
+<div class="secao-label">Aula 1 · ~50 minutos</div>
+<div class="secao-titulo">useEffect — efeitos colaterais e ciclo de vida</div>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-question-circle"></i>O que é um "efeito colateral"?</div>
+<p>Em React, <strong>efeito colateral</strong> é qualquer coisa que acontece fora do fluxo puro de renderização: buscar dados de uma API, ouvir eventos, manipular o DOM diretamente, configurar timers ou sincronizar com sistemas externos.</p>
+<p><code>useEffect</code> é o hook que diz ao React: <em>"depois de renderizar, execute isso"</em>.</p>
+<div class="lifecycle-flow">
+<div class="lf-row">
+<div class="lf-box lf-mount">Componente monta</div>
+<div class="lf-arrow">→</div>
+<div class="lf-box lf-effect">useEffect roda</div>
+<div class="lf-arrow">→</div>
+<div class="lf-label">[] — só na montagem</div>
+</div>
+<div class="lf-row">
+<div class="lf-box lf-update">Estado / prop muda</div>
+<div class="lf-arrow">→</div>
+<div class="lf-box lf-effect">useEffect roda</div>
+<div class="lf-arrow">→</div>
+<div class="lf-label">[dep] — quando dep muda</div>
+</div>
+<div class="lf-row">
+<div class="lf-box lf-unmount">Componente desmonta</div>
+<div class="lf-arrow">→</div>
+<div class="lf-box lf-effect">cleanup roda</div>
+<div class="lf-arrow">→</div>
+<div class="lf-label">return () =&gt; ... — limpeza</div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-code"></i>useEffect — os três padrões essenciais</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — useEffect na prática</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="kw">import</span> { <span class="hook">useState</span>, <span class="hook">useEffect</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">function</span> <span class="jsx">ExemploEffect</span>() {
+  <span class="kw">const</span> [<span class="hook">dados</span>,   <span class="hook">setDados</span>]   = <span class="fn">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> [<span class="hook">query</span>,   <span class="hook">setQuery</span>]   = <span class="fn">useState</span>(<span class="str">'react'</span>);
+  <span class="kw">const</span> [<span class="hook">online</span>,  <span class="hook">setOnline</span>]  = <span class="fn">useState</span>(<span class="kw">true</span>);
+
+  <span class="cm">// ── Padrão 1: [] — roda UMA VEZ ao montar ──────────────────────</span>
+  <span class="fn">useEffect</span>(() =&gt; {
+    document.title = <span class="str">'IA Assistant — Bem-vindo!'</span>;
+    <span class="fn">console.log</span>(<span class="str">'Componente montou'</span>);
+  }, []); <span class="cm">// array vazio = só na montagem</span>
+
+  <span class="cm">// ── Padrão 2: [dep] — roda quando "query" muda ─────────────────</span>
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="kw">if</span> (!<span class="hook">query</span>) <span class="kw">return</span>;
+
+    <span class="kw">let</span> cancelado = <span class="kw">false</span>; <span class="cm">// evita atualizar estado após desmontar</span>
+
+    <span class="kw">async function</span> <span class="fn">buscar</span>() {
+      <span class="kw">const</span> res  = <span class="kw">await</span> <span class="fn">fetch</span>(`https://api.exemplo.com/search?q=${<span class="hook">query</span>}`);
+      <span class="kw">const</span> json = <span class="kw">await</span> res.<span class="fn">json</span>();
+      <span class="kw">if</span> (!cancelado) <span class="hook">setDados</span>(json);
+    }
+
+    <span class="fn">buscar</span>();
+
+    <span class="cm">// cleanup — cancela se o componente desmontar antes da resposta</span>
+    <span class="kw">return</span> () =&gt; { cancelado = <span class="kw">true</span>; };
+  }, [<span class="hook">query</span>]); <span class="cm">// roda sempre que query mudar</span>
+
+  <span class="cm">// ── Padrão 3: cleanup de event listener ────────────────────────</span>
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="kw">const</span> <span class="fn">atualizar</span> = () =&gt; <span class="hook">setOnline</span>(navigator.onLine);
+
+    window.<span class="fn">addEventListener</span>(<span class="str">'online'</span>,  <span class="fn">atualizar</span>);
+    window.<span class="fn">addEventListener</span>(<span class="str">'offline'</span>, <span class="fn">atualizar</span>);
+
+    <span class="cm">// ← cleanup: remove os listeners quando o componente desmontar</span>
+    <span class="kw">return</span> () =&gt; {
+      window.<span class="fn">removeEventListener</span>(<span class="str">'online'</span>,  <span class="fn">atualizar</span>);
+      window.<span class="fn">removeEventListener</span>(<span class="str">'offline'</span>, <span class="fn">atualizar</span>);
+    };
+  }, []); <span class="cm">// sem deps = registra uma vez, limpa ao desmontar</span>
+
+  <span class="kw">return</span> <span class="tag">&lt;p&gt;</span>{<span class="hook">online</span> ? <span class="str">'🟢 Online'</span> : <span class="str">'🔴 Offline'</span>}<span class="tag">&lt;/p&gt;</span>;
+}</code></pre>
+</div>
+<div class="tabela-wrap">
+<table>
+<thead><tr><th>Dependências</th><th>Quando roda</th><th>Caso de uso típico</th></tr></thead>
+<tbody>
+<tr><td>Sem array</td><td>A cada render</td><td>Raramente — quase sempre um bug</td></tr>
+<tr><td><code>[]</code> vazio</td><td>Só na montagem</td><td>Busca inicial, event listeners, timers</td></tr>
+<tr><td><code>[dep]</code></td><td>Quando dep muda</td><td>Busca com filtro, sincronizar com prop</td></tr>
+<tr><td><code>return () =&gt; {}</code></td><td>Ao desmontar / antes de re-rodar</td><td>Remover listeners, cancelar fetches</td></tr>
+</tbody>
+</table>
+</div>
+<div class="aviso">
+<i class="fas fa-exclamation-triangle"></i>
+<span><strong>A regra das dependências:</strong> todo valor do componente que é usado dentro do useEffect deve estar no array de dependências. Se você usar <code>query</code> dentro do effect e não colocar <code>[query]</code>, o efeito vai sempre enxergar o valor inicial — bug difícil de detectar.</span>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-clock"></i>useEffect para o chatbot — substituindo setTimeout</div>
+<p>Na Semana 2 usamos <code>setTimeout</code> direto no handler. Com <code>useEffect</code> conseguimos reagir ao estado de forma mais limpa e com cleanup correto.</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — useEffect no chatbot</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="kw">function</span> <span class="jsx">ChatBot</span>() {
+  <span class="kw">const</span> [<span class="hook">msgs</span>,      <span class="hook">setMsgs</span>]      = <span class="fn">useState</span>([]);
+  <span class="kw">const</span> [<span class="hook">aguardando</span>, <span class="hook">setAguardando</span>] = <span class="fn">useState</span>(<span class="kw">false</span>);
+  <span class="kw">const</span> fimRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+
+  <span class="cm">// Scroll automático toda vez que mensagens mudam</span>
+  <span class="fn">useEffect</span>(() =&gt; {
+    fimRef.current?.<span class="fn">scrollIntoView</span>({ behavior: <span class="str">'smooth'</span> });
+  }, [<span class="hook">msgs</span>]);
+
+  <span class="cm">// Título da aba atualiza com número de mensagens</span>
+  <span class="fn">useEffect</span>(() =&gt; {
+    document.title = <span class="hook">msgs</span>.length &gt; <span class="num">0</span>
+      ? <span class="str">`(${</span><span class="hook">msgs</span><span class="str">.length}) IA Assistant`</span>
+      : <span class="str">'IA Assistant'</span>;
+  }, [<span class="hook">msgs</span>.length]);
+
+  <span class="cm">// Simula resposta da IA quando "aguardando" for true</span>
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="kw">if</span> (!<span class="hook">aguardando</span>) <span class="kw">return</span>;
+
+    <span class="kw">const</span> timer = <span class="fn">setTimeout</span>(() =&gt; {
+      <span class="hook">setMsgs</span>(p =&gt; [...p, {
+        id: Date.<span class="fn">now</span>(), texto: <span class="str">'Resposta da IA aqui!'</span>, isBot: <span class="kw">true</span>
+      }]);
+      <span class="hook">setAguardando</span>(<span class="kw">false</span>);
+    }, <span class="num">900</span>);
+
+    <span class="kw">return</span> () =&gt; <span class="fn">clearTimeout</span>(timer); <span class="cm">// cleanup se desmontar</span>
+  }, [<span class="hook">aguardando</span>]);
+
+  <span class="cm">// ... resto do componente</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<div class="sep"><span>Aula 2</span></div>
+<!-- ══════════════════════════════════
+     AULA 2 — LIFTING STATE + CONTEXT
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">02</div>
+<div>
+<div class="secao-label">Aula 2 · ~50 minutos</div>
+<div class="secao-titulo">Lifting state up e Context API — o estado que viaja</div>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-arrow-up"></i>Lifting state up — quando filho precisa falar com pai</div>
+<p>Props fluem para baixo. Para enviar dados de filho para pai, o pai passa uma <strong>função como prop</strong>. O filho chama essa função — isso é "lifting state up".</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — lifting state up</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="cm">// ── O pai controla o estado ──────────────────────────────────────</span>
+<span class="kw">function</span> <span class="jsx">PainelIA</span>() {
+  <span class="kw">const</span> [<span class="hook">modeloAtivo</span>, <span class="hook">setModeloAtivo</span>] = <span class="fn">useState</span>(<span class="str">'gpt-4o'</span>);
+  <span class="kw">const</span> [<span class="hook">historico</span>,   <span class="hook">setHistorico</span>]   = <span class="fn">useState</span>([]);
+
+  <span class="kw">const</span> <span class="fn">adicionarMensagem</span> = (msg) =&gt; {
+    <span class="hook">setHistorico</span>(prev =&gt; [...prev, msg]);
+  };
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      {<span class="cm">/* Filho 1: seletor — ao mudar, notifica o pai */</span>}
+      <span class="tag">&lt;</span><span class="jsx">SeletorModelo</span>
+        <span class="attr">modelo</span>={<span class="hook">modeloAtivo</span>}
+        <span class="attr">onMudar</span>={<span class="hook">setModeloAtivo</span>}    {<span class="cm">/* função como prop ← */</span>}
+      <span class="tag">/&gt;</span>
+
+      {<span class="cm">/* Filho 2: chat — ao enviar, notifica o pai */</span>}
+      <span class="tag">&lt;</span><span class="jsx">ChatInput</span>
+        <span class="attr">onEnviar</span>={<span class="fn">adicionarMensagem</span>}  {<span class="cm">/* função como prop ← */</span>}
+      <span class="tag">/&gt;</span>
+
+      {<span class="cm">/* Filho 3: lista — recebe o estado do pai */</span>}
+      <span class="tag">&lt;</span><span class="jsx">ListaMensagens</span> <span class="attr">msgs</span>={<span class="hook">historico</span>} <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}
+
+<span class="cm">// ── O filho usa a função recebida como prop ──────────────────────</span>
+<span class="kw">function</span> <span class="jsx">SeletorModelo</span>({ modelo, onMudar }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;select</span> <span class="attr">value</span>={modelo} <span class="attr">onChange</span>={e =&gt; <span class="fn">onMudar</span>(e.target.value)}<span class="tag">&gt;</span>
+      <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="val">"gpt-4o"</span><span class="tag">&gt;</span>GPT-4o<span class="tag">&lt;/option&gt;</span>
+      <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="val">"gemini"</span><span class="tag">&gt;</span>Gemini<span class="tag">&lt;/option&gt;</span>
+    <span class="tag">&lt;/select&gt;</span>
+  );
+}</code></pre>
+</div>
+<div class="destaque">
+<strong>Regra prática:</strong> coloque o estado no <strong>ancestral comum mais próximo</strong> dos componentes que precisam dele. Se dois irmãos precisam do mesmo dado, sobe para o pai. Se muitos níveis precisam, é hora da Context API.
+    </div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-broadcast-tower"></i>Context API — estado global sem prop drilling</div>
+<p><strong>Prop drilling</strong> é passar props por vários níveis intermediários só para chegar no componente que realmente precisa. Context resolve isso: você cria um "canal" de dados que qualquer componente da árvore pode acessar diretamente.</p>
+<div class="context-flow">
+<div class="cf-provider">&lt;TemaContext.Provider value={{ tema, setTema }}&gt;</div>
+<div class="cf-arrow">↓</div><div class="cf-consumer">App</div>
+<div class="cf-arrow">↓</div><div class="cf-consumer">Layout</div>
+<div class="cf-arrow">↓</div><div class="cf-consumer">Sidebar</div>
+<div class="cf-arrow">↓</div><div class="cf-consumer">BotaoTema → useContext(TemaContext) ← acessa direto!</div>
+</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — Context API passo a passo</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="cm">// ── Passo 1: criar o contexto ── contexts/TemaContext.jsx ────────</span>
+<span class="kw">import</span> { createContext, useContext, <span class="hook">useState</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">const</span> TemaContext = <span class="fn">createContext</span>(<span class="kw">null</span>); <span class="cm">// cria o canal</span>
+
+<span class="cm">// Provider — envolve a árvore e fornece o valor</span>
+<span class="kw">export function</span> <span class="jsx">TemaProvider</span>({ children }) {
+  <span class="kw">const</span> [<span class="hook">tema</span>, <span class="hook">setTema</span>] = <span class="fn">useState</span>(<span class="str">'escuro'</span>);
+
+  <span class="kw">const</span> <span class="fn">alternarTema</span> = () =&gt;
+    <span class="hook">setTema</span>(t =&gt; t === <span class="str">'escuro'</span> ? <span class="str">'claro'</span> : <span class="str">'escuro'</span>);
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;</span><span class="jsx">TemaContext.Provider</span> <span class="attr">value</span>={{ tema, alternarTema }}<span class="tag">&gt;</span>
+      {children}
+    <span class="tag">&lt;/</span><span class="jsx">TemaContext.Provider</span><span class="tag">&gt;</span>
+  );
+}
+
+<span class="cm">// Hook customizado — encapsula o useContext</span>
+<span class="kw">export function</span> <span class="fn">useTema</span>() {
+  <span class="kw">const</span> ctx = <span class="fn">useContext</span>(TemaContext);
+  <span class="kw">if</span> (!ctx) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'useTema deve ser usado dentro de TemaProvider'</span>);
+  <span class="kw">return</span> ctx;
+}
+
+<span class="cm">// ── Passo 2: envolver o app ── main.jsx ──────────────────────────</span>
+<span class="kw">import</span> { <span class="jsx">TemaProvider</span> } <span class="kw">from</span> <span class="str">'./contexts/TemaContext'</span>;
+
+<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)).<span class="fn">render</span>(
+  <span class="tag">&lt;</span><span class="jsx">TemaProvider</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;</span><span class="jsx">App</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;/</span><span class="jsx">TemaProvider</span><span class="tag">&gt;</span>
+);
+
+<span class="cm">// ── Passo 3: consumir em qualquer lugar ─ BotaoTema.jsx ──────────</span>
+<span class="kw">import</span> { <span class="fn">useTema</span> } <span class="kw">from</span> <span class="str">'../contexts/TemaContext'</span>;
+
+<span class="kw">function</span> <span class="jsx">BotaoTema</span>() {
+  <span class="kw">const</span> { tema, alternarTema } = <span class="fn">useTema</span>(); <span class="cm">// sem props!</span>
+  <span class="kw">return</span> (
+    <span class="tag">&lt;button</span> <span class="attr">onClick</span>={alternarTema}<span class="tag">&gt;</span>
+      {tema === <span class="str">'escuro'</span> ? <span class="str">'☀️ Claro'</span> : <span class="str">'🌙 Escuro'</span>}
+    <span class="tag">&lt;/button&gt;</span>
+  );
+}</code></pre>
+</div>
+<div class="aviso-info">
+<i class="fas fa-info-circle"></i>
+<span><strong>Context não é substituto do useState.</strong> Use Context para dados verdadeiramente globais: tema, usuário logado, idioma, histórico de conversas. Para estado local de um componente, continue usando useState. Para estado complexo de app grande, considere Zustand (Semana 16).</span>
+</div>
+</div>
+<!-- Demo mini-app -->
+<div class="card">
+<div class="card-titulo"><i class="fas fa-desktop"></i>Demo — Context de tema funcionando</div>
+<p style="margin-bottom:.75rem;">Este mini-app usa um Context fictício para controlar o tema. Clique em "Alternar Tema" e veja o estado se propagando entre as "páginas":</p>
+<div class="mini-app" id="demo-app">
+<div class="mini-nav">
+<button class="mini-nav-btn active" onclick="mudarPagina('home',this)">Home</button>
+<button class="mini-nav-btn" onclick="mudarPagina('chat',this)">Chat IA</button>
+<button class="mini-nav-btn" onclick="mudarPagina('config',this)">Configurações</button>
+</div>
+<div class="mini-page active" id="page-home">
+<h3>🏠 Home</h3>
+<p>Bem-vindo à IA App. Tema atual: <strong id="tema-home">Escuro 🌙</strong></p>
+<div class="mini-theme-toggle">
+<button class="mini-theme-btn" onclick="alternarTema()">Alternar Tema (Context)</button>
+<span class="mini-status" id="status-home">estado compartilhado via Context</span>
+</div>
+</div>
+<div class="mini-page" id="page-chat">
+<h3>💬 Chat IA</h3>
+<p>Tema propagado automaticamente: <strong id="tema-chat">Escuro 🌙</strong></p>
+<p style="margin-top:.5rem;font-size:.8rem;color:var(--text-muted);">Sem props! O componente leu o tema direto do Context.</p>
+</div>
+<div class="mini-page" id="page-config">
+<h3>⚙️ Configurações</h3>
+<p>Tema atual: <strong id="tema-config">Escuro 🌙</strong></p>
+<div class="mini-theme-toggle">
+<button class="mini-theme-btn" onclick="alternarTema()">Mudar aqui também funciona</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="sep"><span>Aula 3 &amp; 4</span></div>
+<!-- ══════════════════════════════════
+     AULA 3 — REACT ROUTER
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">03 &amp; 04</div>
+<div>
+<div class="secao-label">Aula 3 &amp; 4 · ~100 minutos</div>
+<div class="secao-titulo">React Router v6 — navegação client-side</div>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-route"></i>O que é roteamento client-side?</div>
+<p>Em apps tradicionais, cada URL faz uma nova requisição ao servidor. Com React Router, a <strong>navegação acontece no browser</strong>, sem recarregar a página. A URL muda, o componente muda, mas o estado global permanece.</p>
+<div class="router-flow">
+<div class="rf-url">/</div><div class="rf-sep">→</div><div class="rf-comp">&lt;Home /&gt;</div>
+<div class="rf-sep" style="margin:0 .5rem;">·</div>
+<div class="rf-url">/chat</div><div class="rf-sep">→</div><div class="rf-comp">&lt;Chat /&gt;</div>
+<div class="rf-sep" style="margin:0 .5rem;">·</div>
+<div class="rf-url">/chat/123</div><div class="rf-sep">→</div><div class="rf-comp">&lt;Chat id="123"/&gt;</div>
+<div class="rf-sep" style="margin:0 .5rem;">·</div>
+<div class="rf-url">/config</div><div class="rf-sep">→</div><div class="rf-comp">&lt;Config /&gt;</div>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-code"></i>Setup completo — BrowserRouter, Routes e Link</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — React Router v6 completo</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="cm">// ── main.jsx ─────────────────────────────────────────────────────</span>
+<span class="kw">import</span> { <span class="jsx">BrowserRouter</span> } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+
+<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)).<span class="fn">render</span>(
+  <span class="tag">&lt;</span><span class="jsx">BrowserRouter</span><span class="tag">&gt;</span>         {<span class="cm">/* envolve tudo */</span>}
+    <span class="tag">&lt;</span><span class="jsx">TemaProvider</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;</span><span class="jsx">App</span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/</span><span class="jsx">TemaProvider</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;/</span><span class="jsx">BrowserRouter</span><span class="tag">&gt;</span>
+);
+
+<span class="cm">// ── App.jsx — define as rotas ────────────────────────────────────</span>
+<span class="kw">import</span> { <span class="jsx">Routes</span>, <span class="jsx">Route</span>, <span class="jsx">Navigate</span> } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+
+<span class="kw">export default function</span> <span class="jsx">App</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;</span><span class="jsx">Navbar</span> <span class="tag">/&gt;</span>   {<span class="cm">/* fora das rotas — sempre visível */</span>}
+
+      <span class="tag">&lt;</span><span class="jsx">Routes</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;</span><span class="jsx">Route</span> <span class="attr">path</span>=<span class="val">"/"</span>         <span class="attr">element</span>={<span class="tag">&lt;</span><span class="jsx">Home</span>    <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+        <span class="tag">&lt;</span><span class="jsx">Route</span> <span class="attr">path</span>=<span class="val">"/chat"</span>     <span class="attr">element</span>={<span class="tag">&lt;</span><span class="jsx">Chat</span>    <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+        <span class="tag">&lt;</span><span class="jsx">Route</span> <span class="attr">path</span>=<span class="val">"/config"</span>   <span class="attr">element</span>={<span class="tag">&lt;</span><span class="jsx">Config</span>  <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+
+        {<span class="cm">/* Rota dinâmica — :id vira parâmetro */</span>}
+        <span class="tag">&lt;</span><span class="jsx">Route</span> <span class="attr">path</span>=<span class="val">"/chat/:id"</span> <span class="attr">element</span>={<span class="tag">&lt;</span><span class="jsx">ChatDetalhe</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+
+        {<span class="cm">/* Rota 404 */</span>}
+        <span class="tag">&lt;</span><span class="jsx">Route</span> <span class="attr">path</span>=<span class="val">"*"</span>         <span class="attr">element</span>={<span class="tag">&lt;</span><span class="jsx">Navigate</span> <span class="attr">to</span>=<span class="val">"/"</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;/</span><span class="jsx">Routes</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}
+
+<span class="cm">// ── Navbar.jsx — links de navegação ─────────────────────────────</span>
+<span class="kw">import</span> { <span class="jsx">Link</span>, <span class="jsx">NavLink</span>, <span class="fn">useNavigate</span> } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+
+<span class="kw">function</span> <span class="jsx">Navbar</span>() {
+  <span class="kw">const</span> navegar = <span class="fn">useNavigate</span>(); <span class="cm">// navegar por código</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;nav&gt;</span>
+      {<span class="cm">/* NavLink adiciona classe "active" na rota atual */</span>}
+      <span class="tag">&lt;</span><span class="jsx">NavLink</span> <span class="attr">to</span>=<span class="val">"/"</span>       <span class="attr">className</span>={({ isActive }) =&gt; isActive ? <span class="str">'ativo'</span> : <span class="str">''</span>}<span class="tag">&gt;</span>Home<span class="tag">&lt;/</span><span class="jsx">NavLink</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;</span><span class="jsx">NavLink</span> <span class="attr">to</span>=<span class="val">"/chat"</span>    <span class="attr">className</span>={({ isActive }) =&gt; isActive ? <span class="str">'ativo'</span> : <span class="str">''</span>}<span class="tag">&gt;</span>Chat<span class="tag">&lt;/</span><span class="jsx">NavLink</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;</span><span class="jsx">NavLink</span> <span class="attr">to</span>=<span class="val">"/config"</span>  <span class="attr">className</span>={({ isActive }) =&gt; isActive ? <span class="str">'ativo'</span> : <span class="str">''</span>}<span class="tag">&gt;</span>Config<span class="tag">&lt;/</span><span class="jsx">NavLink</span><span class="tag">&gt;</span>
+
+      {<span class="cm">/* Navegar por código — após login, por exemplo */</span>}
+      <span class="tag">&lt;button</span> <span class="attr">onClick</span>={() =&gt; <span class="fn">navegar</span>(<span class="str">'/chat'</span>)}<span class="tag">&gt;</span>Ir para o Chat<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/nav&gt;</span>
+  );
+}
+
+<span class="cm">// ── ChatDetalhe.jsx — ler parâmetro da URL ───────────────────────</span>
+<span class="kw">import</span> { <span class="fn">useParams</span>, <span class="fn">useSearchParams</span> } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+
+<span class="kw">function</span> <span class="jsx">ChatDetalhe</span>() {
+  <span class="kw">const</span> { id } = <span class="fn">useParams</span>();  <span class="cm">// /chat/42 → id = "42"</span>
+
+  <span class="cm">// query string: /chat/42?modo=compacto → modo = "compacto"</span>
+  <span class="kw">const</span> [params] = <span class="fn">useSearchParams</span>();
+  <span class="kw">const</span> modo = params.<span class="fn">get</span>(<span class="str">'modo'</span>);
+
+  <span class="kw">return</span> <span class="tag">&lt;h1&gt;</span>Chat #{id} — modo: {modo || <span class="str">'padrão'</span>}<span class="tag">&lt;/h1&gt;</span>;
+}</code></pre>
+</div>
+<div class="aviso">
+<i class="fas fa-exclamation-triangle"></i>
+<span><strong>Link vs &lt;a&gt;:</strong> nunca use <code>&lt;a href="/chat"&gt;</code> em React Router — isso recarrega a página inteira, perdendo todo o estado. Sempre use <code>&lt;Link to="/chat"&gt;</code> ou <code>useNavigate()</code>.</span>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-lock"></i>Rota protegida — redirecionar sem login</div>
+<p>Um padrão muito comum em apps de IA: proteger rotas que exigem autenticação ou configuração (como ter uma chave de API definida).</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — rota protegida</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="kw">import</span> { <span class="jsx">Navigate</span>, <span class="jsx">Outlet</span> } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+
+<span class="cm">// Componente de rota protegida genérico</span>
+<span class="kw">function</span> <span class="jsx">RotaProtegida</span>({ permitido }) {
+  <span class="kw">return</span> permitido
+    ? <span class="tag">&lt;</span><span class="jsx">Outlet</span> <span class="tag">/&gt;</span>                    <span class="cm">// renderiza a rota filha</span>
+    : <span class="tag">&lt;</span><span class="jsx">Navigate</span> <span class="attr">to</span>=<span class="val">"/config"</span> <span class="attr">replace</span> <span class="tag">/&gt;</span>; <span class="cm">// redireciona</span>
+}
+
+<span class="cm">// Usar no App.jsx</span>
+<span class="tag">&lt;</span><span class="jsx">Routes</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;</span><span class="jsx">Route</span> <span class="attr">path</span>=<span class="val">"/"</span>       <span class="attr">element</span>={<span class="tag">&lt;</span><span class="jsx">Home</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+  <span class="tag">&lt;</span><span class="jsx">Route</span> <span class="attr">path</span>=<span class="val">"/config"</span> <span class="attr">element</span>={<span class="tag">&lt;</span><span class="jsx">Config</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+
+  {<span class="cm">/* Rotas que exigem API key configurada */</span>}
+  <span class="tag">&lt;</span><span class="jsx">Route</span> <span class="attr">element</span>={<span class="tag">&lt;</span><span class="jsx">RotaProtegida</span> <span class="attr">permitido</span>={!!apiKey} <span class="tag">/&gt;</span>}<span class="tag">&gt;</span>
+    <span class="tag">&lt;</span><span class="jsx">Route</span> <span class="attr">path</span>=<span class="val">"/chat"</span>      <span class="attr">element</span>={<span class="tag">&lt;</span><span class="jsx">Chat</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+    <span class="tag">&lt;</span><span class="jsx">Route</span> <span class="attr">path</span>=<span class="val">"/dashboard"</span> <span class="attr">element</span>={<span class="tag">&lt;</span><span class="jsx">Dashboard</span> <span class="tag">/&gt;</span>} <span class="tag">/&gt;</span>
+  <span class="tag">&lt;/</span><span class="jsx">Route</span><span class="tag">&gt;</span>
+<span class="tag">&lt;/</span><span class="jsx">Routes</span><span class="tag">&gt;</span></code></pre>
+</div>
+<div class="aviso-green">
+<i class="fas fa-rocket"></i>
+<span><strong>Conexão Semana 5:</strong> na Semana 5 você vai proteger a rota <code>/chat</code> verificando se o usuário configurou uma chave de API. Sem chave → redireciona para <code>/config</code>. O padrão acima é exatamente o que você vai usar.</span>
+</div>
+</div>
+</section>
+<div class="sep"><span>Atividade Prática</span></div>
+<!-- ══════════════════════════════════
+     EXERCÍCIOS
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">→</div>
+<div>
+<div class="secao-label">Atividade · App multi-página</div>
+<div class="secao-titulo">6 Exercícios — useEffect, Context e React Router</div>
+</div>
+</div>
+<div class="aviso-info">
+<i class="fas fa-info-circle"></i>
+<span>Continue no projeto Vite da Semana 2. Instale React Router: <code>npm install react-router-dom</code>. O objetivo final é uma app com 3 páginas, Context de tema e histórico compartilhado.</span>
+</div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 01</div>
+<p>Crie um componente <code>TituloDocumento</code> que use <code>useEffect</code> para atualizar <code>document.title</code> sempre que receber uma prop <strong>titulo</strong> diferente. Ao desmontar, deve restaurar o título para <code>"IA App"</code>. Teste montando e desmontando o componente.</p>
+<span class="dificuldade dif-basico">Básico — useEffect com cleanup</span><br/>
+
+
+</div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 02</div>
+<p>Crie um hook customizado <code>useLocalStorage(chave, valorInicial)</code> que sincroniza um estado com o <code>localStorage</code>. Ao montar, lê o valor salvo. Ao mudar, salva no storage. Retorne <code>[valor, setValor]</code> como o useState normal.</p>
+<span class="dificuldade dif-basico">Básico — useEffect + localStorage</span><br/>
+
+
+</div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 03</div>
+<p>Crie um <code>HistoricoContext</code> que armazene um array de conversas. Exponha: a lista, uma função <code>adicionarConversa(titulo)</code> e uma função <code>limparHistorico()</code>. Use o hook <code>useLocalStorage</code> do Ex. 02 para persistir o histórico entre recargas.</p>
+<span class="dificuldade dif-medio">Médio — Context + useLocalStorage</span><br/>
+
+
+</div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 04</div>
+<p>Configure o <strong>React Router v6</strong> com três rotas: <code>/</code> (Home), <code>/chat</code> (Chat), <code>/config</code> (Configurações). Crie uma <code>Navbar</code> com <code>NavLink</code> que destaca a rota ativa. A rota <code>/chat</code> deve ser protegida: se não houver <code>apiKey</code> no localStorage, redireciona para <code>/config</code>.</p>
+<span class="dificuldade dif-medio">Médio — Router + NavLink + rota protegida</span><br/>
+
+
+</div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 05</div>
+<p>Na página <code>/config</code>, crie um formulário que permite o usuário salvar uma <strong>chave de API</strong> (string) e escolher o <strong>tema</strong> (claro/escuro). A chave deve ser salva no localStorage via <code>useLocalStorage</code>. O tema deve ser salvo via <code>TemaContext</code>. Ao salvar, redirecione automaticamente para <code>/chat</code>.</p>
+<span class="dificuldade dif-medio">Médio — Context + useLocalStorage + useNavigate</span><br/>
+
+
+</div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 06 — Desafio</div>
+<p>Monte a <strong>aplicação completa</strong> integrando tudo: (a) <code>BrowserRouter</code> + <code>TemaProvider</code> + <code>HistoricoProvider</code> no <code>main.jsx</code>; (b) 3 páginas com React Router e rota protegida para o chat; (c) página de Chat que usa o chatbot da Sem. 2 e, ao enviar a primeira mensagem, chama <code>adicionarConversa()</code> do <code>HistoricoContext</code>; (d) página Home que exibe o histórico de conversas com map.</p>
+<span class="dificuldade dif-desafio">Desafio — App completo com Router + Context + useEffect</span><br/>
+
+
+</div>
+</section>
+<div class="sep"><span>Resumo</span></div>
+<!-- ══════════════════════════════════
+     RESUMO
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">✓</div>
+<div>
+<div class="secao-label">Fechamento</div>
+<div class="secao-titulo">O que vimos na Semana 3</div>
+</div>
+</div>
+<div class="resumo-grid">
+<div class="resumo-item">
+<i class="fas fa-sync-alt"></i>
+<strong>useEffect</strong>
+<p>[] para montar, [dep] para reagir a mudanças, return cleanup para desmontar. Nunca esqueça as dependências.</p>
+</div>
+<div class="resumo-item">
+<i class="fas fa-broadcast-tower"></i>
+<strong>Context API</strong>
+<p>createContext → Provider com value → useContext (ou hook customizado). Para tema, usuário, idioma e dados globais.</p>
+</div>
+<div class="resumo-item">
+<i class="fas fa-route"></i>
+<strong>React Router v6</strong>
+<p>BrowserRouter → Routes → Route. NavLink para menu ativo. useNavigate para redirecionamento. Outlet para rotas protegidas.</p>
+</div>
+</div>
+<div class="proxima">
+<div>
+<div class="proxima-label">Próxima semana</div>
+<div class="proxima-titulo">Semana 4 — Consumindo APIs REST: fetch, async/await, Axios e variáveis de ambiente</div>
+</div>
+<i class="fas fa-arrow-right"></i>
+</div>
+</section>
+</main>
+<script>
+function copiar(btn) {
+  const code = btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(() => {
+    btn.textContent = 'copiado!';
+    setTimeout(() => btn.textContent = 'copiar', 2000);
+  });
+}
+
+/* ── Demo mini-app ── */
+let temaAtual = 'escuro';
+
+function mudarPagina(id, btn) {
+  document.querySelectorAll('.mini-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.mini-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function alternarTema() {
+  temaAtual = temaAtual === 'escuro' ? 'claro' : 'escuro';
+  const label = temaAtual === 'escuro' ? 'Escuro 🌙' : 'Claro ☀️';
+  document.getElementById('tema-home').textContent   = label;
+  document.getElementById('tema-chat').textContent   = label;
+  document.getElementById('tema-config').textContent = label;
+  const status = document.getElementById('status-home');
+  if (status) status.textContent = `tema "${temaAtual}" propagado via Context`;
+}
+</script>
+</body>
+</html>
