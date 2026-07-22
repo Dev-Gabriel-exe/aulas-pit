@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 11 — Integridade, Consistência e Recuperação de Dados</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ind-950:#181330;--ind-900:#211a45;--ind-800:#2d2260;
+  --ind-700:#4338ca;--ind-500:#6366f1;--ind-400:#818cf8;--ind-300:#a5b4fc;
+  --white:#fff;--text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);--card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);--card-hover:rgba(129,140,248,.07);
+  --code-bg:#140f28;--code-border:rgba(129,140,248,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--ind-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:var(--ind-700);top:-220px;left:-180px;}
+.blob-2{width:550px;height:550px;background:var(--ind-800);bottom:-200px;right:-120px;}
+.blob-3{width:280px;height:280px;background:var(--ind-500);top:38%;left:42%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(129,140,248,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ind-400);border:1px solid rgba(129,140,248,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--ind-400);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(129,140,248,.12);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--ind-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--ind-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.13);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(129,140,248,.18);color:var(--ind-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(129,140,248,.05);border-left:3px solid var(--ind-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--ind-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(129,140,248,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(129,140,248,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ind-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(129,140,248,.22);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.07);border-left:3px solid var(--ind-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--ind-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-ind{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.18);font-size:.86rem;color:rgba(165,180,252,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-ind i{color:var(--ind-400);flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(129,140,248,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--ind-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(129,140,248,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(129,140,248,.03);}
+td strong{color:var(--text-primary);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--ind-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+.icon-list li i.bad{color:#f87171;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(129,140,248,.12);color:var(--ind-400);border:1px solid rgba(129,140,248,.22);}
+
+/* ── comparativo lado a lado ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:.75rem 0;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.1rem;margin:.75rem 0;}
+.mini-card{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;}
+.mini-card.bad{border-color:rgba(248,113,113,.2);background:rgba(248,113,113,.04);}
+.mini-card.good{border-color:rgba(129,140,248,.25);background:rgba(129,140,248,.05);}
+.mini-card-titulo{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:700;margin-bottom:.6rem;display:flex;align-items:center;gap:8px;}
+.mini-card.bad .mini-card-titulo{color:#f87171;}
+.mini-card.good .mini-card-titulo{color:var(--ind-400);}
+.mini-card p{font-size:.83rem;color:var(--text-secondary);line-height:1.55;margin:0;}
+
+/* ── código ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(129,140,248,.08);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+pre{padding:1.1rem 1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;color:#c7d2fe;}
+.cm{color:#6b7280;font-style:italic;}
+
+/* ── linha de tempo de recuperação ── */
+.timeline{position:relative;margin:1.5rem 0;padding-left:2rem;}
+.timeline::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:linear-gradient(to bottom,rgba(129,140,248,.5),rgba(129,140,248,.1));}
+.tl-item{position:relative;padding-bottom:1.5rem;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-dot{position:absolute;left:-2rem;top:2px;width:16px;height:16px;border-radius:50%;background:var(--ind-900);border:2px solid var(--ind-400);}
+.tl-ano{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--ind-400);font-weight:600;margin-bottom:2px;}
+.tl-titulo{font-size:.92rem;font-weight:700;color:var(--text-primary);margin-bottom:3px;}
+.tl-desc{font-size:.83rem;color:var(--text-secondary);line-height:1.55;}
+
+/* ── ficha ── */
+.perfil-card{display:flex;gap:1rem;padding:1.1rem;border-radius:12px;background:rgba(129,140,248,.04);border:1px solid rgba(129,140,248,.15);margin:.75rem 0;}
+.perfil-icone{width:48px;height:48px;border-radius:12px;background:rgba(129,140,248,.15);color:var(--ind-400);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.perfil-corpo strong{display:block;color:var(--text-primary);font-size:.92rem;margin-bottom:.3rem;}
+.perfil-corpo p{font-size:.85rem;color:var(--text-secondary);line-height:1.6;margin:0;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;background:rgba(129,140,248,.1);color:var(--ind-400);border:1px solid rgba(129,140,248,.2);}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--ind-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(129,140,248,.12);border-color:rgba(129,140,248,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--ind-400);}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(129,140,248,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .resumo-grid,.grid-2,.grid-3{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:580px){
+  .resumo-grid,.grid-2,.grid-3{grid-template-columns:1fr;}
+  .perfil-card{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Fundamentos de Banco de Dados · BD1.02 · Sexta-feira</div>
+    <div class="semana-num">11</div>
+    <h1 class="capa-titulo">Integridade, <em>Consistência</em><br>e Recuperação de Dados</h1>
+    <p class="capa-sub">3 aulas · 150 minutos · Garantindo que os dados continuem confiáveis, mesmo quando algo dá errado</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-check-double"></i></div><span>Integridade de domínio, de entidade e referencial</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-scale-balanced"></i></div><span>Consistência de dados: além das restrições técnicas</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-triangle-exclamation"></i></div><span>Integridade × consistência: onde uma termina e a outra começa</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-clock-rotate-left"></i></div><span>Recuperação de dados: log de transações e pontos de restauração</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-house-fire"></i></div><span>Tipos de falha e o que acontece com o banco em cada uma</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade da semana</div>
+      <p>Estudo de caso: para um cenário de e-commerce, os alunos identificam violações de integridade e inconsistências de negócio propositalmente inseridas em um conjunto de dados fictício, e propõem a restrição SQL ou regra que evitaria cada uma.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 6 — Avaliação P1</li>
+        <li>Sem. 8 — Modelo lógico: de ER para tabelas</li>
+        <li>Sem. 9 — Usuários e funções em bancos de dados</li>
+        <li>Sem. 10 — Independência de dados</li>
+        <li>▶ Sem. 11 — Integridade, consistência e recuperação</li>
+        <li>🔴 Sem. 13 — Avaliação P2 (conteúdo das Sem. 7 a 12)</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que esta semana importa</div>
+      <ul class="info-lista">
+        <li>Chaves primárias e estrangeiras (Semana 8) até aqui foram tratadas como "regras de desenho" — hoje entendemos que elas são, na prática, o principal mecanismo de integridade de um banco relacional</li>
+        <li>Um modelo de IA treinado sobre dados inconsistentes aprende padrões errados — a qualidade dos dados que estudamos aqui é literalmente a base de qualquer projeto de dados ou IA</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-link"></i>Conexão direta</div>
+      <ul class="info-lista">
+        <li>Chaves primária e estrangeira (Semana 8) → são o mecanismo técnico da integridade de entidade e referencial</li>
+        <li>Papéis e permissões (Semana 9) → são a primeira linha de defesa contra inconsistências causadas por acesso indevido</li>
+        <li>Backup e recuperação de desastres (Semana 14) → aprofunda tecnicamente o conceito de recuperação que abrimos hoje</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">Integridade de dados: as três garantias fundamentais</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-shield"></i>O que significa, de fato, "integridade de dados"</div>
+      <p><strong>Integridade de dados</strong> é a garantia de que os dados armazenados em um banco são <strong>válidos, corretos e obedecem às regras estruturais</strong> definidas no seu esquema. Diferente do que se possa imaginar, integridade não é um conceito vago de "qualidade dos dados" — é algo bem concreto, imposto pelo próprio SGBD através de <strong>restrições (constraints)</strong> declaradas junto com as tabelas.</p>
+      <p>A literatura de banco de dados costuma dividir a integridade em três categorias bem definidas. Vamos ver cada uma com exemplos práticos, retomando as tabelas <code>Aluno</code>, <code>Curso</code> e <code>Matricula</code> que vimos construindo desde a Semana 7.</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Tipo de integridade</th><th>O que garante</th><th>Mecanismo SQL típico</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Integridade de domínio</strong></td><td>Cada valor armazenado em uma coluna pertence ao conjunto de valores válidos para aquele campo (tipo, formato, faixa)</td><td><code>CHECK</code>, tipo de dado da coluna, <code>NOT NULL</code></td></tr>
+            <tr><td><strong>Integridade de entidade</strong></td><td>Cada linha de uma tabela é unicamente identificável — nenhuma chave primária se repete ou fica vazia</td><td><code>PRIMARY KEY</code></td></tr>
+            <tr><td><strong>Integridade referencial</strong></td><td>Toda referência entre tabelas aponta para um registro que realmente existe</td><td><code>FOREIGN KEY</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-ruler-combined"></i>Integridade de domínio: valores dentro do esperado</div>
+      <p>A integridade de domínio garante que uma coluna nunca receba um valor sem sentido para o que ela representa — uma idade negativa, uma nota de prova de 15 em uma escala de 0 a 10, um e-mail sem "@". Ela é imposta principalmente através do <strong>tipo de dado</strong> da coluna e de restrições <code>CHECK</code> explícitas.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — restrições de domínio na tabela Matricula</span></div>
+        <pre><code>CREATE TABLE Matricula (
+    id INT PRIMARY KEY,
+    aluno_id INT NOT NULL,
+    disciplina_id INT NOT NULL,
+    nota DECIMAL(4,2) CHECK (nota >= 0 AND nota <= 10),
+    status VARCHAR(20) CHECK (status IN ('cursando', 'aprovado', 'reprovado')),
+    data_matricula DATE NOT NULL
+);
+
+<span class="cm">-- Tentativas que a integridade de domínio bloqueia automaticamente:</span>
+INSERT INTO Matricula (id, aluno_id, disciplina_id, nota, status, data_matricula)
+VALUES (1, 10, 3, 15.0, 'aprovado', '2025-03-01');
+<span class="cm">-- ERRO: nota 15.0 viola o CHECK (nota <= 10)</span>
+
+INSERT INTO Matricula (id, aluno_id, disciplina_id, nota, status, data_matricula)
+VALUES (2, 10, 3, 8.5, 'matriculado', '2025-03-01');
+<span class="cm">-- ERRO: 'matriculado' não está na lista de status permitidos</span></code></pre>
+      </div>
+      <p>Note que essas validações acontecem <strong>dentro do próprio SGBD</strong>, e não dependem de nenhum programa aplicativo lembrar de checá-las — exatamente o ganho de "integridade centralizada" que apontamos, lá na Semana 2, como uma das razões de existir dos SGBDs.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-fingerprint"></i>Integridade de entidade: cada linha, um identificador único</div>
+      <p>A integridade de entidade garante duas coisas simultaneamente sobre a chave primária de uma tabela: ela nunca pode ser <code>NULL</code>, e ela nunca pode se repetir entre duas linhas diferentes. Sem essa garantia, seria impossível apontar, de forma confiável, para "um" registro específico — a própria noção de "linha única" desmoronaria.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — integridade de entidade em ação</span></div>
+        <pre><code>CREATE TABLE Aluno (
+    matricula VARCHAR(20) PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100)
+);
+
+INSERT INTO Aluno (matricula, nome) VALUES ('2024001234', 'Ana Souza');
+INSERT INTO Aluno (matricula, nome) VALUES ('2024001234', 'Outro Aluno');
+<span class="cm">-- ERRO: matrícula '2024001234' já existe (viola PRIMARY KEY)</span>
+
+INSERT INTO Aluno (matricula, nome) VALUES (NULL, 'Aluno Sem Matrícula');
+<span class="cm">-- ERRO: chave primária não pode ser NULL</span></code></pre>
+      </div>
+      <div class="destaque">
+        <strong>Por que isso conecta direto com a Semana 8:</strong> quando escolhemos uma chave primária ao modelar uma tabela, estamos, na prática, decidindo qual coluna (ou conjunto de colunas) vai carregar a responsabilidade de garantir a integridade de entidade daquela tabela. Uma escolha ruim de chave primária — por exemplo, usar <code>nome</code> como chave em vez de <code>matricula</code> — compromete diretamente essa garantia, já que nomes podem se repetir entre pessoas diferentes.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-link"></i>Integridade referencial: toda referência precisa "existir de verdade"</div>
+      <p>É a mais rica das três, porque envolve <strong>duas tabelas</strong> ao mesmo tempo. A integridade referencial garante que uma chave estrangeira (<code>FOREIGN KEY</code>) só aponte para valores que realmente existem como chave primária na tabela referenciada — nunca para um registro "fantasma".</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — integridade referencial entre Matricula e Aluno</span></div>
+        <pre><code>CREATE TABLE Matricula (
+    id INT PRIMARY KEY,
+    aluno_id VARCHAR(20) NOT NULL,
+    disciplina_id INT NOT NULL,
+    FOREIGN KEY (aluno_id) REFERENCES Aluno(matricula)
+);
+
+INSERT INTO Matricula (id, aluno_id, disciplina_id) VALUES (1, '9999999999', 3);
+<span class="cm">-- ERRO: não existe nenhum aluno com matrícula '9999999999'
+-- A FOREIGN KEY impede a criação dessa "referência fantasma"</span></code></pre>
+      </div>
+      <p>A integridade referencial também define <strong>o que fazer</strong> quando um registro referenciado é removido — e esse comportamento precisa ser decidido explicitamente pelo DBA ou modelador, através das cláusulas <code>ON DELETE</code>:</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Cláusula</th><th>Comportamento ao apagar o registro "pai"</th><th>Exemplo de uso</th></tr></thead>
+          <tbody>
+            <tr><td><code>ON DELETE CASCADE</code></td><td>Apaga automaticamente também os registros filhos</td><td>Apagar um <code>Curso</code> apaga suas <code>Disciplinas</code> associadas</td></tr>
+            <tr><td><code>ON DELETE RESTRICT</code></td><td>Impede a exclusão do "pai" enquanto existirem "filhos" ligados a ele</td><td>Impedir apagar um <code>Aluno</code> que ainda tem <code>Matriculas</code> ativas</td></tr>
+            <tr><td><code>ON DELETE SET NULL</code></td><td>Zera a referência nos registros filhos, sem apagá-los</td><td>Apagar um <code>Professor</code> deixa a <code>Disciplina</code> "sem professor" em vez de apagá-la</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Classificando violações de integridade</div>
+      <p>Para cada situação abaixo, identifique qual tipo de integridade está sendo violada (domínio, entidade ou referencial):</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Um sistema tenta inserir uma nova matrícula com <code>disciplina_id = 999</code>, mas nenhuma disciplina com esse identificador existe na tabela <code>Disciplina</code>.<br>
+        <strong>(b)</strong> Uma coluna <code>idade</code> recebe o valor <code>-5</code>.<br>
+        <strong>(c)</strong> Duas linhas diferentes da tabela <code>Aluno</code> têm o mesmo valor de <code>matricula</code>.<br>
+        <strong>(d)</strong> Uma coluna <code>data_nascimento</code>, definida como obrigatória, recebe um valor <code>NULL</code> em um <code>INSERT</code>.
+      </p>
+      <span class="dif-basico">Teórico · Fixação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Consistência de dados: além do que o SGBD consegue checar sozinho</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-scale-balanced"></i>Integridade × consistência: uma distinção que cai em prova</div>
+      <p>É comum confundir integridade com consistência, mas a diferença é importante — e frequentemente cobrada em avaliações. <strong>Integridade</strong>, como vimos na Aula 1, é sobre obedecer às <em>restrições estruturais</em> declaradas no esquema (tipos, chaves, relacionamentos). <strong>Consistência</strong> é um conceito mais amplo: é a garantia de que o banco de dados, como um todo, reflete <strong>fielmente as regras de negócio</strong> do mundo real que ele representa — mesmo quando essas regras vão além do que um simples <code>CHECK</code> ou <code>FOREIGN KEY</code> consegue expressar.</p>
+      <div class="grid-2">
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-check"></i>Integridade</div>
+          <p>Pode ser garantida inteiramente pelo SGBD, de forma automática, através de restrições declaradas na estrutura das tabelas.</p>
+        </div>
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-check"></i>Consistência</div>
+          <p>Muitas vezes depende de regras de negócio complexas que envolvem múltiplas tabelas, cálculos ou lógica que vai além do que uma simples restrição consegue expressar sozinha.</p>
+        </div>
+      </div>
+      <div class="destaque">
+        <strong>Um jeito simples de lembrar a diferença:</strong> todo dado <em>inconsistente</em> com as regras de negócio quebra alguma expectativa do sistema, mas nem todo dado inconsistente necessariamente viola uma restrição de integridade formal — porque a regra de negócio pode ser complexa demais para caber em um <code>CHECK</code> simples.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-magnifying-glass"></i>Exemplo: um dado que é íntegro, mas inconsistente</div>
+      <p>Considere o cenário de um sistema acadêmico onde a regra de negócio diz: <strong>"um aluno só pode se matricular em uma disciplina se já tiver cursado e sido aprovado nos pré-requisitos dela"</strong>. Suponha o seguinte <code>INSERT</code>:</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — passa nas restrições de integridade, mas quebra a regra de negócio</span></div>
+        <pre><code><span class="cm">-- Ana (matrícula '2024001234') tenta se matricular em
+-- "Banco de Dados II", cujo pré-requisito é "Banco de Dados I" —
+-- mas Ana nunca cursou "Banco de Dados I".</span>
+INSERT INTO Matricula (id, aluno_id, disciplina_id, status, data_matricula)
+VALUES (55, '2024001234', 12, 'cursando', '2025-08-01');
+
+<span class="cm">-- Esse INSERT passa perfeitamente por todas as restrições de integridade:
+-- • a chave primária 'id=55' é única (integridade de entidade) ✓
+-- • aluno_id '2024001234' existe na tabela Aluno (integridade referencial) ✓
+-- • disciplina_id '12' existe na tabela Disciplina (integridade referencial) ✓
+-- • status 'cursando' está entre os valores permitidos (integridade de domínio) ✓
+--
+-- Mas o dado é INCONSISTENTE: viola uma regra de negócio que
+-- nenhuma FOREIGN KEY ou CHECK simples consegue expressar sozinha.</span></code></pre>
+      </div>
+      <p>Esse é exatamente o ponto central da Aula 2: <strong>toda violação de integridade gera inconsistência, mas nem toda inconsistência é capturada como violação de integridade.</strong> Regras de negócio mais elaboradas — que dependem de consultar o histórico de outras tabelas, ou de lógica condicional mais complexa — costumam exigir mecanismos adicionais, como <strong>triggers</strong> (gatilhos automáticos) ou validações na camada de aplicação, temas que outras disciplinas do curso (como Desenvolvimento Front-end para IA) vão aprofundar.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-check"></i>Mais exemplos de inconsistência de negócio</div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Cenário</th><th>Por que é uma inconsistência</th><th>Por que uma restrição simples não resolve sozinha</th></tr></thead>
+          <tbody>
+            <tr><td>Uma disciplina tem carga horária de 60h, mas a soma das cargas horárias de suas turmas cadastradas soma 45h</td><td>Os dados relacionados não "fecham" entre si</td><td>Exige comparar valores agregados de tabelas diferentes, não um único valor isolado</td></tr>
+            <tr><td>Um aluno aparece como "aprovado" em uma disciplina, mas sua nota registrada é 4,0 (abaixo da média de aprovação, 6,0)</td><td>O status contradiz o dado numérico relacionado</td><td>Depende de comparar duas colunas da mesma linha sob uma regra específica de negócio (pode até ser resolvido com <code>CHECK</code> envolvendo as duas colunas, mas exige planejamento deliberado)</td></tr>
+            <tr><td>Um professor está cadastrado como responsável por duas turmas com horários que se sobrepõem</td><td>Fisicamente impossível de cumprir na realidade</td><td>Exige comparar horários entre múltiplas linhas de uma mesma tabela</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="aviso">
+        <i class="fas fa-lightbulb"></i>
+        <span><strong>Vale reforçar:</strong> nenhum desses três exemplos quebra uma <code>PRIMARY KEY</code>, uma <code>FOREIGN KEY</code> ou um <code>CHECK</code> simples — todos passariam despercebidos por uma verificação de integridade básica. É exatamente por isso que garantir consistência, na prática, costuma exigir mais do que apenas um bom desenho de restrições: exige processos, revisões e, em muitos casos, lógica adicional dentro ou fora do banco.</span>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Integridade ou consistência?</div>
+      <p>Para cada situação, diga se ela representa uma violação de <strong>integridade</strong> (capturável por uma restrição simples do SGBD) ou de <strong>consistência de negócio</strong> (que exige lógica adicional), justificando:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Um pedido de compra é registrado com <code>cliente_id</code> apontando para um cliente que não existe na tabela de clientes.<br>
+        <strong>(b)</strong> Um pedido tem status "entregue", mas nenhuma data de entrega foi registrada — e a regra da empresa diz que todo pedido entregue precisa ter data de entrega preenchida, embora o campo <code>data_entrega</code> permita valores nulos na estrutura da tabela.<br>
+        <strong>(c)</strong> Uma coluna <code>quantidade</code> em um pedido recebe o valor <code>-3</code>, sem que exista nenhuma restrição <code>CHECK</code> impedindo valores negativos.<br>
+        <strong>(d)</strong> Um funcionário aparece como gerente de dois departamentos diferentes ao mesmo tempo, quando a regra da empresa permite apenas um departamento por gerente.
+      </p>
+      <span class="dif-basico">Teórico · Aplicação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · ~50 minutos</div>
+        <div class="secao-titulo">Recuperação de dados: o que acontece quando algo dá errado</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-house-fire"></i>Por que falhas são inevitáveis — e por que isso não é motivo de pânico</div>
+      <p>Por mais bem projetado que um banco de dados seja em termos de integridade e consistência, ele continua rodando sobre hardware real, energia elétrica real e software escrito por seres humanos — e todos esses elementos podem falhar. <strong>Recuperação de dados</strong> é a capacidade de um SGBD retornar a um estado correto e consistente depois que algum tipo de falha acontece, sem perder (ou perdendo o mínimo possível) do trabalho já realizado.</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Tipo de falha</th><th>Exemplo concreto</th><th>O que normalmente é afetado</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Falha de transação</strong></td><td>Uma operação viola uma restrição no meio da execução, ou o programa aplicativo trava</td><td>Apenas a operação em andamento — o restante do banco permanece intacto</td></tr>
+            <tr><td><strong>Falha de sistema</strong></td><td>Queda de energia, travamento do sistema operacional, reinicialização inesperada do servidor</td><td>Dados que ainda estavam apenas em memória, não gravados em disco</td></tr>
+            <tr><td><strong>Falha de mídia</strong></td><td>O disco físico onde o banco está armazenado é danificado ou corrompido</td><td>Potencialmente todo o conteúdo gravado naquele disco</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Cada uma dessas falhas exige uma estratégia de recuperação diferente — mas todas elas dependem de um mesmo mecanismo central, que vamos detalhar a seguir: o <strong>log de transações</strong>.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-file-lines"></i>O log de transações: a "caixa-preta" do banco de dados</div>
+      <p>A grande maioria dos SGBDs relacionais modernos mantém um <strong>log de transações</strong> (também chamado de <em>write-ahead log</em>, ou WAL) — um registro sequencial e contínuo de <strong>todas</strong> as operações de escrita realizadas no banco, gravado <em>antes</em> mesmo de a alteração definitiva acontecer nos dados propriamente ditos.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Representação simplificada de um log de transações</span></div>
+        <pre><code><span class="cm">-- Cada linha do log registra uma operação, com identificador
+-- de transação, para permitir desfazer ou refazer se necessário:</span>
+
+[T101] INICIO
+[T101] INSERT Aluno (matricula='2024005678', nome='Bruno Lima')
+[T101] COMMIT
+
+[T102] INICIO
+[T102] UPDATE Matricula SET nota=8.5 WHERE id=203
+[T102] UPDATE Matricula SET status='aprovado' WHERE id=203
+<span class="cm">-- ↑ T102 ainda não deu COMMIT quando o sistema caiu.
+--   O log permite que o SGBD saiba exatamente onde parar
+--   e o que precisa ser desfeito na recuperação.</span></code></pre>
+      </div>
+      <p>Quando o SGBD é reiniciado após uma falha, ele passa por um processo automático chamado <strong>recuperação por log (log-based recovery)</strong>, que segue, em essência, duas ações complementares:</p>
+      <div class="grid-2">
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-rotate-right"></i>REDO (refazer)</div>
+          <p>Reaplica operações de transações que já haviam confirmado (<code>COMMIT</code>) no log, mas cujo efeito ainda não havia sido gravado fisicamente nos arquivos de dados no momento da falha.</p>
+        </div>
+        <div class="mini-card bad">
+          <div class="mini-card-titulo"><i class="fas fa-rotate-left"></i>UNDO (desfazer)</div>
+          <p>Reverte qualquer efeito parcial de transações que estavam em andamento, mas <strong>não</strong> haviam confirmado (<code>COMMIT</code>) antes da falha — como a transação <code>T102</code> do exemplo acima.</p>
+        </div>
+      </div>
+      <div class="destaque">
+        <strong>Por que isso garante consistência mesmo após uma queda de energia:</strong> como o log é escrito <em>antes</em> da alteração definitiva (daí o nome <em>write-ahead</em>), o SGBD sempre tem um registro confiável de exatamente onde parou — permitindo reconstruir com precisão o que deveria (REDO) e o que não deveria (UNDO) ter permanecido no banco.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-box-archive"></i>Backup: a rede de segurança para além do log</div>
+      <p>O log de transações resolve muito bem falhas de sistema (quedas de energia, travamentos) — mas não resolve uma falha de mídia, onde o próprio disco físico é danificado e o log também pode ser perdido junto. Para esse cenário, a estratégia complementar é o <strong>backup</strong>: uma cópia completa (ou parcial) dos dados, armazenada de forma separada e segura.</p>
+      <ul class="icon-list">
+        <li><i class="fas fa-copy"></i><span><strong>Backup completo:</strong> uma cópia integral de todo o banco de dados em um determinado momento — mais simples de restaurar, porém mais lento e pesado de gerar.</span></li>
+        <li><i class="fas fa-layer-group"></i><span><strong>Backup incremental:</strong> registra apenas o que mudou desde o último backup — mais rápido de gerar, mas a restauração exige aplicar vários incrementos em sequência.</span></li>
+        <li><i class="fas fa-clock"></i><span><strong>Combinação com o log:</strong> um backup completo periódico, somado ao log de transações contínuo, permite restaurar o banco para <strong>qualquer ponto exato no tempo</strong> — não apenas para o momento do último backup.</span></li>
+      </ul>
+      <div class="aviso">
+        <i class="fas fa-lightbulb"></i>
+        <span><strong>Isso é só o começo do assunto:</strong> hoje vimos o conceito e a lógica geral de backup e recuperação. A Semana 14 (nas disciplinas de banco de dados mais avançadas do curso) aprofunda estratégias completas de backup, recuperação de desastres e alta disponibilidade — aqui, o objetivo é entender <em>por que</em> essas estratégias existem antes de aprender a executá-las tecnicamente.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-timeline"></i>Linha do tempo de uma falha e recuperação — passo a passo</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">Passo 1</div>
+          <div class="tl-titulo">Operação normal</div>
+          <div class="tl-desc">Transações acontecem normalmente; cada operação é registrada no log de transações antes de ser efetivada nos dados.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">Passo 2</div>
+          <div class="tl-titulo">A falha ocorre</div>
+          <div class="tl-desc">Por exemplo, uma queda de energia interrompe o sistema no meio de uma transação que ainda não confirmou (COMMIT).</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">Passo 3</div>
+          <div class="tl-titulo">Sistema reinicia e lê o log</div>
+          <div class="tl-desc">O SGBD, ao voltar, examina o log de transações para identificar exatamente o que estava em andamento e o que já havia confirmado.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">Passo 4</div>
+          <div class="tl-titulo">REDO e UNDO são aplicados</div>
+          <div class="tl-desc">Transações confirmadas, mas não persistidas, são refeitas (REDO); transações não confirmadas são desfeitas (UNDO).</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">Passo 5</div>
+          <div class="tl-titulo">Banco volta a um estado consistente</div>
+          <div class="tl-desc">O sistema retoma operação normal, com garantia de que nenhuma transação ficou "pela metade" — a mesma ideia de atomicidade que retomaremos, formalmente, quando estudarmos transações em profundidade em disciplinas futuras.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="aviso-ind">
+      <i class="fas fa-route"></i>
+      <span><strong>Estudo de caso da semana:</strong> em duplas, analisem um pequeno conjunto de dados fictício de um e-commerce (pedidos, clientes e produtos) fornecido pelo professor. Identifiquem: (1) pelo menos uma violação de integridade (domínio, entidade ou referencial) e a restrição SQL que a evitaria; (2) pelo menos uma inconsistência de negócio que passaria despercebida por restrições simples, propondo como ela poderia ser detectada.</span>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Consolidação da semana</div>
+      <p>Responda de forma completa, articulando os conceitos das três aulas:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Explique, com suas próprias palavras, por que "toda violação de integridade gera inconsistência, mas nem toda inconsistência é uma violação de integridade".<br>
+        <strong>(b)</strong> Em uma queda de energia no meio de uma transação que ainda não confirmou, o log de transações leva o SGBD a fazer REDO ou UNDO dela? Justifique.<br>
+        <strong>(c)</strong> Por que o log de transações sozinho não é suficiente para proteger os dados contra uma falha de mídia (dano físico ao disco)? Que estratégia complementar cobre esse cenário?<br>
+        <strong>(d)</strong> Retomando a Semana 9 (usuários e funções): de que forma um controle de acesso bem definido (permissões mínimas necessárias) ajuda a reduzir a chance de inconsistências de negócio, mesmo sem substituir a necessidade de restrições formais de integridade?
+      </p>
+      <span class="dif-basico">Teórico · Consolidação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 11</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-check-double"></i>
+        <strong>Três tipos de integridade</strong>
+        <p>Domínio (valores válidos), entidade (chaves únicas e não-nulas) e referencial (chaves estrangeiras que sempre apontam para algo real).</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-scale-balanced"></i>
+        <strong>Consistência é mais ampla</strong>
+        <p>Regras de negócio podem ser violadas mesmo com toda a integridade técnica satisfeita — exigem lógica adicional além de restrições simples.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-clock-rotate-left"></i>
+        <strong>Recuperação via log e backup</strong>
+        <p>Log de transações permite REDO/UNDO após falhas de sistema; backup protege contra falhas de mídia — juntos, cobrem os principais riscos.</p>
+      </div>
+    </div>
+
+    <div class="proxima">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 12 — Segurança de dados: autenticação, criptografia e LGPD</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

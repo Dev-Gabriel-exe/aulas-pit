@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 8 — Modelo Lógico: de ER para Tabelas, Chaves e Cardinalidade</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ind-950:#181330;--ind-900:#211a45;--ind-800:#2d2260;
+  --ind-700:#4338ca;--ind-500:#6366f1;--ind-400:#818cf8;--ind-300:#a5b4fc;
+  --white:#fff;--text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);--card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);--card-hover:rgba(129,140,248,.07);
+  --code-bg:#140f28;--code-border:rgba(129,140,248,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--ind-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:var(--ind-700);top:-220px;left:-180px;}
+.blob-2{width:550px;height:550px;background:var(--ind-800);bottom:-200px;right:-120px;}
+.blob-3{width:280px;height:280px;background:var(--ind-500);top:38%;left:42%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(129,140,248,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ind-400);border:1px solid rgba(129,140,248,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--ind-400);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(129,140,248,.12);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--ind-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--ind-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.13);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(129,140,248,.18);color:var(--ind-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(129,140,248,.05);border-left:3px solid var(--ind-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--ind-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(129,140,248,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(129,140,248,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ind-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(129,140,248,.22);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.07);border-left:3px solid var(--ind-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--ind-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-ind{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.18);font-size:.86rem;color:rgba(165,180,252,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-ind i{color:var(--ind-400);flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(129,140,248,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--ind-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(129,140,248,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(129,140,248,.03);}
+td strong{color:var(--text-primary);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--ind-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+.icon-list li i.bad{color:#f87171;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(129,140,248,.12);color:var(--ind-400);border:1px solid rgba(129,140,248,.22);}
+
+/* ── Diagrama ER / SVG ── */
+.er-diagrama{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;padding:1.25rem;margin:.75rem 0;}
+.er-diagrama__titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;}
+
+/* ── Cards de conceito ── */
+.conceito-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
+.conceito-card{border-radius:12px;padding:1.1rem;border:1px solid rgba(129,140,248,.18);background:rgba(129,140,248,.03);}
+.conceito-card__titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--ind-300);margin-bottom:.5rem;display:flex;align-items:center;gap:8px;}
+.conceito-card p{font-size:.82rem;color:var(--text-secondary);line-height:1.55;margin-bottom:0;}
+
+/* ── comparativo lado a lado ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:.75rem 0;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.1rem;margin:.75rem 0;}
+.mini-card{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;}
+.mini-card.bad{border-color:rgba(248,113,113,.2);background:rgba(248,113,113,.04);}
+.mini-card.good{border-color:rgba(129,140,248,.25);background:rgba(129,140,248,.05);}
+.mini-card-titulo{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:700;margin-bottom:.6rem;display:flex;align-items:center;gap:8px;}
+.mini-card.bad .mini-card-titulo{color:#f87171;}
+.mini-card.good .mini-card-titulo{color:var(--ind-400);}
+.mini-card p{font-size:.83rem;color:var(--text-secondary);line-height:1.55;margin:0;}
+
+/* ── código ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(129,140,248,.08);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+pre{padding:1.1rem 1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;color:#c7d2fe;}
+.cm{color:#6b7280;font-style:italic;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;background:rgba(129,140,248,.1);color:var(--ind-400);border:1px solid rgba(129,140,248,.2);}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--ind-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(129,140,248,.12);border-color:rgba(129,140,248,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--ind-400);}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(129,140,248,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .resumo-grid,.conceito-grid,.grid-2,.grid-3{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:580px){
+  .resumo-grid,.conceito-grid,.grid-2,.grid-3{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Fundamentos de Banco de Dados · BD1.02 · Sexta-feira</div>
+    <div class="semana-num">08</div>
+    <h1 class="capa-titulo">Modelo Lógico: de <em>ER</em><br>para Tabelas, Chaves<br>e Cardinalidade</h1>
+    <p class="capa-sub">3 aulas · 150 minutos · O algoritmo que transforma um diagrama em um banco de dados de verdade</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-right-left"></i></div><span>Do modelo conceitual (ER) ao modelo lógico (tabelas)</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-key"></i></div><span>Chave primária: transformando o identificador da entidade</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-code-branch"></i></div><span>Cardinalidade: 1:1, 1:N e N:N — e onde cada chave estrangeira vai parar</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-link"></i></div><span>Chave estrangeira, integridade referencial e ações de CASCADE</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-list-ol"></i></div><span>O algoritmo completo de conversão, passo a passo</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade da semana</div>
+      <p>Exercício de conversão: pegar um diagrama ER pronto (entidades, atributos e relacionamentos com cardinalidade) e produzir, a partir dele, o modelo lógico completo — tabelas, colunas, chaves primárias e estrangeiras.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 6 — Avaliação P1</li>
+        <li>Sem. 7 — Modelagem conceitual: entidades, atributos, relacionamentos</li>
+        <li>▶ Sem. 8 — Modelo lógico: de ER para tabelas</li>
+        <li>Sem. 9 — Usuários e funções em bancos de dados</li>
+        <li>🔴 Sem. 13 — Avaliação P2 (conteúdo das Sem. 7 a 12)</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que esta semana pesa tanto</div>
+      <ul class="info-lista">
+        <li>Esta é a semana em que o diagrama ER da Semana 7 deixa de ser um desenho e vira, de fato, a estrutura que qualquer SGBD relacional vai conseguir armazenar</li>
+        <li>É também a semana mais aplicada da disciplina até aqui — cada regra que você aprender hoje será usada, sem exceção, em todo projeto de banco de dados da sua carreira</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-link"></i>Conexão direta</div>
+      <ul class="info-lista">
+        <li>Atributo chave (Semana 7) → vira <strong>chave primária (PK)</strong></li>
+        <li>Relacionamento com cardinalidade (Semana 7) → decide onde entra a <strong>chave estrangeira (FK)</strong></li>
+        <li>O <code>CREATE TABLE</code> que antecipamos na Semana 5 → hoje ganha sintaxe completa, com <code>PRIMARY KEY</code> e <code>FOREIGN KEY</code> de verdade</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">Do modelo conceitual ao modelo lógico</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-arrow-rotate-left"></i>Retomando a Semana 7 com um objetivo novo</div>
+      <p>Na semana passada, construímos nosso primeiro diagrama ER: identificamos as entidades <strong>Aluno</strong> e <strong>Curso</strong>, seus atributos (incluindo o atributo chave sublinhado de cada uma), e o relacionamento <strong>Matricula-se</strong> entre elas, com seu próprio atributo <code>data_matrícula</code>. Esse diagrama é excelente para <em>comunicar</em> a estrutura de um sistema — para um colega de equipe, para um cliente, para qualquer pessoa que precise entender "o que o banco vai guardar" sem precisar saber nada de SQL.</p>
+      <p>Só que existe um problema prático: <strong>nenhum SGBD relacional entende um diagrama ER diretamente</strong>. O PostgreSQL, o MySQL, o SQL Server — nenhum deles "lê" retângulos, elipses e losangos. Eles entendem exatamente uma coisa: <strong>tabelas</strong>, com colunas, tipos de dados e restrições. É exatamente essa lacuna que o <strong>modelo lógico</strong> preenche: ele é o resultado de um processo sistemático e bem definido de <strong>tradução</strong> do diagrama ER para uma estrutura de tabelas.</p>
+      <div class="destaque">
+        <strong>Por que essa etapa é intermediária, e não a etapa final:</strong> o modelo lógico ainda é, tecnicamente, independente do SGBD específico que você vai usar — as regras que veremos hoje valem igualmente para PostgreSQL, MySQL, Oracle ou qualquer outro SGBD relacional. É só na etapa seguinte, o <strong>modelo físico</strong> (que veremos de forma mais aplicada a partir da Semana 15, quando estudarmos DDL), que entram detalhes específicos de cada SGBD, como tipos de dado proprietários ou parâmetros de armazenamento.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-table"></i>Regra 1 — toda entidade forte vira uma tabela</div>
+      <p>A primeira e mais intuitiva das regras de conversão: <strong>cada entidade do diagrama ER se transforma em uma tabela no modelo lógico</strong>, e cada atributo simples da entidade se transforma em uma coluna dessa tabela. O atributo identificado como <strong>chave</strong> na modelagem conceitual se torna a <strong>chave primária (Primary Key, ou PK)</strong> da tabela — o mecanismo que, dentro do SGBD, garante que cada linha possa ser identificada de forma única e sem ambiguidade.</p>
+      <div class="grid-2">
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-shapes"></i>Modelo conceitual (Semana 7)</div>
+          <p>Entidade <strong>ALUNO</strong>, com atributos <code>matrícula</code> (chave), <code>nome</code> e <code>data_nasc</code>.</p>
+        </div>
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-table"></i>Modelo lógico (esta semana)</div>
+          <p>Tabela <strong>Aluno</strong>, com colunas <code>matricula</code> (PRIMARY KEY), <code>nome</code> e <code>data_nasc</code>.</p>
+        </div>
+      </div>
+      <p>Note que essa tradução é praticamente direta quando a entidade só tem atributos simples. A complicação real aparece quando entram em cena os outros tipos de atributo que estudamos na semana passada — compostos, multivalorados e derivados — porque nenhum deles se traduz da mesma forma simples de "um atributo, uma coluna". É isso que vamos resolver nos próximos três cartões.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-object-ungroup"></i>Regra 2 — atributos compostos são "achatados" em colunas separadas</div>
+      <p>Lembra do atributo composto <code>endereço</code> que vimos na Semana 7 — divisível em rua, número, bairro e cidade? Tabelas relacionais não têm um conceito nativo de "coluna dentro de coluna": cada coluna guarda exatamente um valor atômico. Por isso, a regra de conversão para atributos compostos é: <strong>"achatar" (flatten) cada subparte em uma coluna independente</strong>, geralmente prefixando o nome para preservar a origem.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Conversão de atributo composto — endereço</span></div>
+        <pre><code><span class="cm">-- Atributo composto no ER: endereço (rua, número, bairro, cidade)
+-- Vira QUATRO colunas independentes na tabela:</span>
+
+CREATE TABLE Aluno (
+    matricula     INT PRIMARY KEY,
+    nome          VARCHAR(100) NOT NULL,
+    endereco_rua      VARCHAR(80),
+    endereco_numero   VARCHAR(10),
+    endereco_bairro   VARCHAR(60),
+    endereco_cidade   VARCHAR(60)
+);</code></pre>
+      </div>
+      <p>Repare que a informação conceitual de que essas quatro colunas "pertencem" logicamente a um mesmo atributo composto se perde um pouco na tabela — ela existe apenas na convenção de nomenclatura (o prefixo <code>endereco_</code>). Isso é uma perda aceitável: o modelo relacional simplesmente não tem, nativamente, um conceito de atributo aninhado — e é exatamente esse tipo de estrutura aninhada que, décadas depois, bancos de documentos como o MongoDB reintroduziriam de forma nativa (como vimos na Semana 4).</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-layer-group"></i>Regra 3 — atributos multivalorados exigem uma tabela nova</div>
+      <p>Este é o caso mais delicado dos quatro, e também o mais importante de entender bem. Lembre do atributo <code>telefones</code> — um aluno pode ter vários telefones ao mesmo tempo. Por que não podemos simplesmente criar uma coluna <code>telefones</code> e guardar todos os números separados por vírgula dentro dela?</p>
+      <div class="grid-2">
+        <div class="mini-card bad">
+          <div class="mini-card-titulo"><i class="fas fa-thumbs-down"></i>Tentação (errada): uma coluna com vários valores</div>
+          <p><code>telefones = '86999998888, 86988887777'</code> — parece prático, mas quebra a <strong>atomicidade</strong> exigida pelo modelo relacional: fica impossível buscar "todos os alunos com um telefone específico" de forma eficiente, impossível garantir que cada telefone seja único, e a coluna vira um texto livre difícil de validar.</p>
+        </div>
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-thumbs-up"></i>Solução correta: nova tabela</div>
+          <p>Criar uma tabela separada, <strong>Telefone_Aluno</strong>, com uma linha para cada telefone, e uma <strong>chave estrangeira</strong> apontando de volta para o Aluno dono daquele telefone. Cada telefone vira um dado atômico, pesquisável e validável individualmente.</p>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Conversão de atributo multivalorado — telefones</span></div>
+        <pre><code><span class="cm">-- A entidade original permanece exatamente como antes:</span>
+CREATE TABLE Aluno (
+    matricula INT PRIMARY KEY,
+    nome      VARCHAR(100) NOT NULL
+);
+
+<span class="cm">-- O atributo multivalorado vira uma TABELA NOVA,
+-- com uma linha para cada telefone e uma chave
+-- estrangeira apontando para o Aluno dono dele:</span>
+CREATE TABLE Telefone_Aluno (
+    id             INT PRIMARY KEY,
+    numero         VARCHAR(20) NOT NULL,
+    aluno_matricula INT,
+    FOREIGN KEY (aluno_matricula) REFERENCES Aluno(matricula)
+);
+
+<span class="cm">-- Agora Maria pode ter quantos telefones precisar,
+-- cada um em sua própria linha, sem quebrar atomicidade.</span></code></pre>
+      </div>
+      <p>Adiantando um pouco o vocabulário da Aula 3 desta mesma semana: essa "tabela nova apontando de volta para a tabela original" é, tecnicamente, um relacionamento <strong>1:N</strong> entre Aluno e Telefone — um aluno pode ter vários telefones, mas cada telefone pertence a exatamente um aluno. Ou seja: um atributo multivalorado, no fundo, esconde um relacionamento 1:N implícito. Isso conecta diretamente com o assunto da Aula 2.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-calculator"></i>Regra 4 — atributos derivados normalmente não viram coluna nenhuma</div>
+      <p>Fechando o conjunto de regras desta aula: atributos derivados — como <code>idade</code>, calculável a partir de <code>data_nasc</code> — geralmente <strong>não são armazenados fisicamente</strong> no modelo lógico. A recomendação padrão é calcular o valor derivado sempre que ele for necessário, seja em uma consulta SQL, seja na camada de aplicação.</p>
+      <div class="destaque">
+        <strong>Por que essa regra existe:</strong> se você armazenasse a idade como uma coluna comum, ela ficaria desatualizada no dia seguinte ao aniversário do aluno, a menos que algum processo automático a atualizasse constantemente. Isso cria exatamente o tipo de <strong>redundância e risco de inconsistência</strong> que vimos, lá na Semana 2, como o problema histórico que os SGBDs foram criados para resolver. Existem exceções legítimas — por exemplo, quando o cálculo é muito custoso e o dado precisa ser consultado com altíssima frequência — mas elas são otimizações conscientes, feitas depois de entender o custo de manter o dado sincronizado, e não a regra geral.
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Convertendo atributos em colunas</div>
+      <p>Retome a entidade <strong>Produto</strong> do exercício da Semana 7 (código, nome, preço, categorias multivaloradas, dimensões compostas — altura, largura, profundidade).</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Escreva o comando <code>CREATE TABLE Produto</code> considerando apenas os atributos simples e compostos (ignorando, por ora, categorias).<br>
+        <strong>(b)</strong> Categorias é multivalorado — descreva (sem precisar escrever o SQL completo) que tabela nova seria necessária para representá-lo corretamente, e quais colunas ela teria.<br>
+        <strong>(c)</strong> Se existisse um atributo derivado <code>preco_com_desconto</code> (calculado a partir do preço e de um percentual fixo de desconto), por que normalmente não o armazenaríamos como coluna?
+      </p>
+      <span class="dif-basico">Teórico e prático · Fixação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Cardinalidade — decidindo onde entra a chave estrangeira</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-code-branch"></i>O que é cardinalidade, e por que ela é a peça que faltava</div>
+      <p>No diagrama da Semana 7, o relacionamento <strong>Matricula-se</strong> conectava Aluno e Curso — mas propositalmente deixamos uma pergunta em aberto: <strong>quantos</strong> alunos um curso pode ter, e em <strong>quantos</strong> cursos um aluno pode se matricular? Essa informação é chamada de <strong>cardinalidade</strong> do relacionamento, e ela é exatamente o dado que faltava para sabermos, com precisão, como transformar o relacionamento em algo que uma tabela consiga representar.</p>
+      <p>Existem três categorias fundamentais de cardinalidade entre duas entidades:</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Cardinalidade</th><th>Significado</th><th>Exemplo</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1:1 (um para um)</strong></td><td>Uma instância da entidade A se relaciona com no máximo uma instância da entidade B, e vice-versa.</td><td>Um Funcionário possui um único Crachá de acesso; um Crachá pertence a um único Funcionário.</td></tr>
+            <tr><td><strong>1:N (um para muitos)</strong></td><td>Uma instância de A pode se relacionar com várias instâncias de B, mas cada instância de B se relaciona com apenas uma instância de A.</td><td>Um Curso tem vários Alunos matriculados; cada Aluno pertence a um único Curso.</td></tr>
+            <tr><td><strong>N:N (muitos para muitos)</strong></td><td>Uma instância de A pode se relacionar com várias instâncias de B, e vice-versa, simultaneamente.</td><td>Um Aluno cursa várias Disciplinas; uma Disciplina é cursada por vários Alunos.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="aviso-ind">
+        <i class="fas fa-route"></i>
+        <span><strong>Eco da Semana 4:</strong> perceba que o problema do relacionamento N:N — que fez o modelo hierárquico "quebrar" lá na Semana 4 — é exatamente o mesmo tipo de relacionamento que vamos aprender a resolver hoje, com uma elegância que o modelo hierárquico nunca teve: uma tabela associativa.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-arrow-right"></i>Regra de ouro do 1:N — a chave estrangeira sempre vai para o lado "N"</div>
+      <p>Vamos usar o cenário <strong>Curso 1:N Aluno</strong> (um curso tem vários alunos; cada aluno pertence a um único curso) para fixar a regra mais importante desta aula, que vale para praticamente todo relacionamento 1:N que você vai modelar na sua carreira: <strong>a chave estrangeira é sempre adicionada na tabela do lado "N" do relacionamento</strong>, apontando para a chave primária do lado "1".</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — relacionamento 1:N entre Curso e Aluno</span></div>
+        <pre><code><span class="cm">-- Lado "1": Curso não recebe nenhuma coluna nova.</span>
+CREATE TABLE Curso (
+    codigo      INT PRIMARY KEY,
+    nome_curso  VARCHAR(80) NOT NULL
+);
+
+<span class="cm">-- Lado "N": Aluno recebe a CHAVE ESTRANGEIRA,
+-- apontando para o curso ao qual pertence.</span>
+CREATE TABLE Aluno (
+    matricula     INT PRIMARY KEY,
+    nome          VARCHAR(100) NOT NULL,
+    curso_codigo  INT,
+    FOREIGN KEY (curso_codigo) REFERENCES Curso(codigo)
+);</code></pre>
+      </div>
+      <p>Por que a chave vai para o lado N, e nunca o contrário? Pense na lógica: cada linha de Aluno só pode ter <em>um</em> valor de <code>curso_codigo</code> (uma coluna guarda um único valor) — e isso é exatamente compatível com "cada aluno pertence a um único curso". Já uma linha de Curso não conseguiria guardar, em uma única coluna, uma referência para <em>vários</em> alunos ao mesmo tempo — o que quebraria a atomicidade que já discutimos na Aula 1. Essa é, na prática, a mesma lógica que já apareceu no exemplo do atributo multivalorado <code>telefones</code>: um atributo multivalorado é, disfarçadamente, um relacionamento 1:N, e por isso se resolve exatamente da mesma forma.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-diagram-project"></i>Relacionamento N:N — quando nenhum dos dois lados pode receber a chave sozinho</div>
+      <p>Agora o caso mais rico da aula: <strong>Aluno N:N Disciplina</strong> (um aluno cursa várias disciplinas; uma disciplina é cursada por vários alunos). Se tentássemos colocar a chave estrangeira em qualquer um dos dois lados, teríamos o mesmo problema do parágrafo anterior — nenhuma coluna simples consegue representar "vários" valores ao mesmo tempo.</p>
+      <p>A solução, que é exatamente a mesma "virada de chave" que Codd introduziu no modelo relacional (Semana 4) para resolver esse problema de forma elegante, é criar uma <strong>terceira tabela</strong>, chamada de <strong>tabela associativa</strong> (ou tabela de junção, ou tabela ponte): ela contém, no mínimo, duas chaves estrangeiras — uma para cada entidade envolvida — e a combinação das duas normalmente forma a própria chave primária dessa nova tabela.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — relacionamento N:N entre Aluno e Disciplina</span></div>
+        <pre><code>CREATE TABLE Aluno (
+    matricula INT PRIMARY KEY,
+    nome      VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Disciplina (
+    codigo      INT PRIMARY KEY,
+    nome        VARCHAR(80) NOT NULL
+);
+
+<span class="cm">-- TABELA ASSOCIATIVA: representa o próprio
+-- relacionamento "Aluno CURSA Disciplina".
+-- A PRIMARY KEY é a COMBINAÇÃO das duas chaves
+-- estrangeiras (chave primária composta).</span>
+CREATE TABLE Matricula (
+    aluno_matricula   INT,
+    disciplina_codigo INT,
+    data_matricula    DATE,
+    PRIMARY KEY (aluno_matricula, disciplina_codigo),
+    FOREIGN KEY (aluno_matricula) REFERENCES Aluno(matricula),
+    FOREIGN KEY (disciplina_codigo) REFERENCES Disciplina(codigo)
+);</code></pre>
+      </div>
+      <p>Note que a tabela <code>Matricula</code> também é o lugar natural para guardar o atributo <code>data_matrícula</code> que identificamos, na Semana 7, como pertencente ao <em>relacionamento</em>, e não a nenhuma das duas entidades — mais uma prova de que a modelagem conceitual e o modelo lógico conversam entre si em cada detalhe. Cada linha dessa tabela associativa representa uma matrícula específica: "a Maria cursa a disciplina de Cálculo I, desde 03/02/2026" — uma combinação única de aluno e disciplina.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-equals"></i>O caso especial do 1:1 — quando a escolha de lado é uma decisão de projeto</div>
+      <p>O relacionamento 1:1 é o mais raro dos três na prática, mas merece atenção porque, diferente do 1:N, <strong>a escolha de qual tabela recebe a chave estrangeira não é imposta pela estrutura — é uma decisão de projeto</strong>. No exemplo Funcionário 1:1 Crachá, a chave estrangeira poderia estar tanto em Funcionário (apontando para o crachá) quanto em Crachá (apontando para o funcionário) — tecnicamente, ambas funcionam.</p>
+      <div class="grid-2">
+        <div class="mini-card">
+          <div class="mini-card-titulo"><i class="fas fa-scale-balanced"></i>Critério comum de escolha</div>
+          <p>Colocar a chave estrangeira na tabela que representa a entidade "opcional" ou "dependente" do relacionamento. Se nem todo Funcionário tem Crachá (alguns ainda aguardam emissão), faz mais sentido colocar a referência em Crachá, que sempre existirá em função de um Funcionário.</p>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-titulo"><i class="fas fa-shield-halved"></i>Garantindo a unicidade "1"</div>
+          <p>Não basta declarar a chave estrangeira — é preciso garantir também que ela não se repita, usando uma restrição <code>UNIQUE</code> sobre a coluna de chave estrangeira. Sem isso, nada impediria, tecnicamente, que dois funcionários apontassem para o mesmo crachá — o que quebraria a cardinalidade 1:1 pretendida.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Cardinalidade e posição da chave estrangeira</div>
+      <p>Considere os três cenários abaixo. Para cada um: identifique a cardinalidade (1:1, 1:N ou N:N) e diga exatamente onde entraria(m) a(s) chave(s) estrangeira(s), justificando com a mesma lógica usada em aula.</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Uma Editora publica vários Livros; cada Livro é publicado por uma única Editora.<br>
+        <strong>(b)</strong> Um Ator atua em vários Filmes; um Filme tem vários Atores no elenco.<br>
+        <strong>(c)</strong> Um País tem uma única Capital; uma Capital pertence a um único País.
+      </p>
+      <span class="dif-basico">Prático · Aplicação da regra</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · ~50 minutos</div>
+        <div class="secao-titulo">Chave estrangeira, integridade referencial e o algoritmo completo</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-link"></i>O que exatamente uma chave estrangeira garante</div>
+      <p>Já usamos a chave estrangeira (<em>foreign key</em>, ou FK) nas duas aulas anteriores, mas vale formalizar o que ela realmente <strong>garante</strong> dentro do SGBD, e não apenas "para que serve". Uma FK é uma coluna (ou conjunto de colunas) em uma tabela que referencia a chave primária de outra tabela (ou, ocasionalmente, da mesma tabela). O SGBD usa essa referência para impor uma regra chamada <strong>integridade referencial</strong>: <strong>toda vez que uma linha tiver um valor em uma coluna de chave estrangeira, esse valor precisa existir de fato como chave primária na tabela referenciada</strong>.</p>
+      <p>Em outras palavras: o SGBD nunca permite que uma linha de <code>Aluno</code> aponte, através de <code>curso_codigo</code>, para um curso que não existe. Uma referência inválida desse tipo é chamada de <strong>registro órfão</strong>, e é exatamente esse tipo de inconsistência silenciosa que a integridade referencial existe para impedir — sem ela, seria perfeitamente possível ter alunos "presos" a cursos fantasmas, uma inconsistência praticamente indetectável até que alguém tentasse gerar um relatório e os números não fechassem.</p>
+      <div class="destaque">
+        <strong>Conectando com a Semana 5:</strong> essa é uma manifestação muito concreta daquela ideia de "instância válida × instância inválida" que estudamos ao falar de esquema e instância — a chave estrangeira é uma das restrições do esquema que filtra, em tempo real, quais instâncias o SGBD permite que existam.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-triangle-exclamation"></i>O que acontece quando o registro "pai" é apagado ou alterado</div>
+      <p>Surge uma pergunta prática inevitável: se um Curso é excluído do banco de dados, o que deve acontecer com todos os Alunos que apontavam para ele através da chave estrangeira? Deixar esses alunos "órfãos" quebraria a integridade referencial que acabamos de estudar — então o SGBD precisa de uma regra explícita para essa situação, chamada de <strong>ação referencial</strong>, definida no momento em que a chave estrangeira é criada.</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Ação referencial</th><th>Comportamento ao apagar/alterar o registro "pai"</th><th>Quando costuma fazer sentido</th></tr></thead>
+          <tbody>
+            <tr><td><strong>RESTRICT</strong> (ou <strong>NO ACTION</strong>)</td><td>O SGBD <strong>impede</strong> a exclusão/alteração do pai enquanto existir qualquer registro filho apontando para ele.</td><td>Quando a existência do filho depende criticamente do pai e apagar o pai "por engano" seria perigoso — ex.: não permitir apagar um Curso que ainda tem alunos matriculados.</td></tr>
+            <tr><td><strong>CASCADE</strong></td><td>Ao apagar o pai, o SGBD <strong>apaga automaticamente</strong> todos os registros filhos relacionados (ou atualiza o valor, em caso de <code>UPDATE CASCADE</code>).</td><td>Quando o filho não faz sentido sem o pai — ex.: apagar um Pedido e, junto, apagar automaticamente todos os seus Itens_Pedido.</td></tr>
+            <tr><td><strong>SET NULL</strong></td><td>Ao apagar o pai, o SGBD define automaticamente a chave estrangeira do filho como <code>NULL</code>, "desvinculando" o registro sem apagá-lo.</td><td>Quando o filho pode existir de forma independente do pai — ex.: apagar uma Categoria de produto, mas manter os Produtos, apenas sem categoria.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — declarando a ação referencial na chave estrangeira</span></div>
+        <pre><code>CREATE TABLE Aluno (
+    matricula    INT PRIMARY KEY,
+    nome         VARCHAR(100) NOT NULL,
+    curso_codigo INT,
+    FOREIGN KEY (curso_codigo) REFERENCES Curso(codigo)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+<span class="cm">-- Leitura: "não deixe apagar um Curso que ainda tenha
+-- alunos matriculados nele; mas se o código do curso
+-- mudar, atualize automaticamente essa referência nos alunos."</span></code></pre>
+      </div>
+      <p>A escolha entre RESTRICT, CASCADE e SET NULL nunca é puramente técnica — ela reflete uma decisão sobre <strong>as regras de negócio</strong> do sistema que está sendo modelado, e é comum que times de desenvolvimento debatam bastante sobre qual ação faz mais sentido para cada relacionamento específico.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>O algoritmo completo de conversão ER → Relacional</div>
+      <p>Chegou o momento de juntar tudo o que vimos nas três aulas de hoje em um roteiro único, que você pode seguir sempre que precisar converter qualquer diagrama ER em um modelo lógico completo:</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Passo</th><th>Regra</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1</strong></td><td>Toda entidade forte vira uma tabela; seu atributo chave vira a chave primária (PK) dessa tabela.</td></tr>
+            <tr><td><strong>2</strong></td><td>Todo atributo simples vira uma coluna com o mesmo nome e um tipo de dado compatível.</td></tr>
+            <tr><td><strong>3</strong></td><td>Todo atributo composto é "achatado": cada subparte vira uma coluna independente.</td></tr>
+            <tr><td><strong>4</strong></td><td>Todo atributo multivalorado vira uma tabela nova, com chave estrangeira apontando de volta para a entidade original (relacionamento 1:N implícito).</td></tr>
+            <tr><td><strong>5</strong></td><td>Atributos derivados, em geral, não viram coluna nenhuma — são calculados quando necessário.</td></tr>
+            <tr><td><strong>6</strong></td><td>Para cada relacionamento <strong>1:N</strong>, a chave estrangeira vai na tabela do lado "N", apontando para a chave primária do lado "1".</td></tr>
+            <tr><td><strong>7</strong></td><td>Para cada relacionamento <strong>N:N</strong>, cria-se uma tabela associativa nova, com chaves estrangeiras para as duas entidades (compondo, normalmente, a própria chave primária) e com os atributos do relacionamento, se houver.</td></tr>
+            <tr><td><strong>8</strong></td><td>Para cada relacionamento <strong>1:1</strong>, escolhe-se um dos dois lados para receber a chave estrangeira (com restrição <code>UNIQUE</code>), com base em qual entidade é mais "dependente" da outra.</td></tr>
+            <tr><td><strong>9</strong></td><td>Para cada chave estrangeira, define-se explicitamente a ação referencial (<code>RESTRICT</code>, <code>CASCADE</code> ou <code>SET NULL</code>) de acordo com a regra de negócio do sistema.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="aviso">
+        <i class="fas fa-lightbulb"></i>
+        <span><strong>Vale memorizar para a P2:</strong> este algoritmo de 9 passos é, na prática, uma versão detalhada e aplicável do processo que Codd (Semana 4) descreveu apenas em termos matemáticos abstratos. É o elo prático entre a teoria dos conjuntos por trás do modelo relacional e o <code>CREATE TABLE</code> que você vai escrever a partir da Semana 15.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-diagram-project"></i>Exemplo guiado completo: aplicando o algoritmo do início ao fim</div>
+      <p>Vamos aplicar as 9 regras a um cenário levemente ampliado do exemplo da Semana 7, incluindo agora também a entidade <strong>Disciplina</strong>: um Aluno pertence a um único Curso (1:N), e um Aluno cursa várias Disciplinas ao mesmo tempo, sendo que cada Disciplina é cursada por vários Alunos (N:N).</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — modelo lógico final, resultado completo da conversão</span></div>
+        <pre><code><span class="cm">-- Passo 1, 2 e 3: entidades fortes viram tabelas</span>
+CREATE TABLE Curso (
+    codigo     INT PRIMARY KEY,
+    nome_curso VARCHAR(80) NOT NULL
+);
+
+CREATE TABLE Disciplina (
+    codigo      INT PRIMARY KEY,
+    nome        VARCHAR(80) NOT NULL,
+    carga_horaria INT
+);
+
+<span class="cm">-- Passo 6: relacionamento 1:N (Curso -> Aluno).
+-- A chave estrangeira "curso_codigo" fica no lado "N".</span>
+CREATE TABLE Aluno (
+    matricula     INT PRIMARY KEY,
+    nome          VARCHAR(100) NOT NULL,
+    curso_codigo  INT,
+    FOREIGN KEY (curso_codigo) REFERENCES Curso(codigo)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
+<span class="cm">-- Passo 7: relacionamento N:N (Aluno <-> Disciplina).
+-- Tabela associativa com chave primária composta.</span>
+CREATE TABLE Matricula (
+    aluno_matricula   INT,
+    disciplina_codigo INT,
+    data_matricula    DATE NOT NULL,
+    PRIMARY KEY (aluno_matricula, disciplina_codigo),
+    FOREIGN KEY (aluno_matricula) REFERENCES Aluno(matricula)
+        ON DELETE CASCADE,
+    FOREIGN KEY (disciplina_codigo) REFERENCES Disciplina(codigo)
+        ON DELETE RESTRICT
+);</code></pre>
+      </div>
+      <p>Esse é, de ponta a ponta, um modelo lógico completo e coerente: três tabelas, duas chaves estrangeiras simples e uma chave primária composta, cada decisão de cardinalidade e de ação referencial justificada pela regra de negócio (não faz sentido apagar um Curso que ainda tem alunos matriculados; mas se um Aluno for removido do sistema, é razoável que suas matrículas em disciplinas sejam removidas junto, via CASCADE).</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-arrow-right"></i>O que ainda falta — e onde vamos chegar em breve</div>
+      <p>O modelo lógico que construímos hoje já é suficiente para criar um banco de dados funcional. Mas duas perguntas importantes ainda não foram respondidas, e vão aparecer nas próximas semanas: <strong>quem tem permissão para criar, alterar ou consultar essas tabelas?</strong> (Semana 9, usuários e funções em bancos de dados) e <strong>como garantir que o esquema que projetamos hoje não permita, de forma mais ampla, dados redundantes ou inconsistentes?</strong> — pergunta que abre caminho para o tema de integridade de dados, na Semana 11.</p>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Conversão completa (consolidação)</div>
+      <p>Retome o cenário que você escolheu no Exercício 02 da Semana 7 (locadora de bicicletas, biblioteca ou delivery) e aplique o algoritmo completo de 9 passos estudado hoje:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Escreva o <code>CREATE TABLE</code> de cada entidade, já com a chave primária definida.<br>
+        <strong>(b)</strong> Identifique a cardinalidade do relacionamento principal do seu cenário e posicione corretamente a(s) chave(s) estrangeira(s), incluindo uma tabela associativa se o relacionamento for N:N.<br>
+        <strong>(c)</strong> Escolha e justifique uma ação referencial (RESTRICT, CASCADE ou SET NULL) para pelo menos uma das chaves estrangeiras do seu modelo, explicando a regra de negócio por trás da escolha.
+      </p>
+      <span class="dif-basico">Prático · Consolidação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 8</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-table"></i>
+        <strong>Modelo lógico</strong>
+        <p>Entidades viram tabelas; atributos simples viram colunas; compostos são achatados; multivalorados viram tabelas novas; derivados normalmente não são armazenados.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-code-branch"></i>
+        <strong>Cardinalidade</strong>
+        <p>1:N → chave estrangeira no lado "N". N:N → tabela associativa com chave composta. 1:1 → escolha de projeto, com UNIQUE.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-link"></i>
+        <strong>Chave estrangeira</strong>
+        <p>Garante integridade referencial — impede registros órfãos. Ações RESTRICT, CASCADE e SET NULL definem o que ocorre ao apagar o registro pai.</p>
+      </div>
+    </div>
+
+    <div class="proxima">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 9 — Usuários e funções em bancos de dados: DBA, desenvolvedor, analista de dados</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

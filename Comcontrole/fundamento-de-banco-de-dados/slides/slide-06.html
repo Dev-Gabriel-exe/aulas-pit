@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 6 — Avaliação P1 · Fundamentos de Banco de Dados</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ind-950:#181330;--ind-900:#211a45;--ind-800:#2d2260;
+  --ind-700:#4338ca;--ind-500:#6366f1;--ind-400:#818cf8;--ind-300:#a5b4fc;
+  --white:#fff;--text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);--card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);--card-hover:rgba(129,140,248,.07);
+  --code-bg:#140f28;--code-border:rgba(129,140,248,.2);
+  --exam-red:#ef4444;--exam-red-acc:#f87171;--ok-green:#4ade80;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--ind-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:var(--ind-700);top:-220px;left:-180px;}
+.blob-2{width:550px;height:550px;background:var(--ind-800);bottom:-200px;right:-120px;}
+.blob-3{width:280px;height:280px;background:var(--exam-red);top:38%;left:42%;opacity:.10;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(129,140,248,.15);}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(239,68,68,.15);color:var(--exam-red-acc);border:1px solid rgba(239,68,68,.35);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ind-400);border:1px solid rgba(129,140,248,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--ind-400);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(129,140,248,.12);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2.2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--exam-red-acc);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--ind-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.13);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-num{width:28px;height:28px;border-radius:8px;flex-shrink:0;background:rgba(129,140,248,.18);color:var(--ind-400);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:800;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(129,140,248,.05);border-left:3px solid var(--ind-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--ind-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(129,140,248,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(129,140,248,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ind-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(129,140,248,.22);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.07);border-left:3px solid var(--ind-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--ind-400);}
+.aviso-exam{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-exam i{color:var(--exam-red-acc);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:var(--ok-green);flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(129,140,248,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--ind-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(129,140,248,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(129,140,248,.03);}
+td strong{color:var(--text-primary);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--ind-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(129,140,248,.12);color:var(--ind-400);border:1px solid rgba(129,140,248,.22);white-space:nowrap;}
+.badge-cyan{background:rgba(34,211,238,.12);color:#22d3ee;border:1px solid rgba(34,211,238,.25);}
+.badge-blue{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.25);}
+.badge-violet{background:rgba(129,140,248,.15);color:var(--ind-400);border:1px solid rgba(129,140,248,.3);}
+.badge-pink{background:rgba(244,114,182,.12);color:#f472b6;border:1px solid rgba(244,114,182,.25);}
+.badge-amber{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25);}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:.75rem 0;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:.75rem 0;}
+
+/* ── Semana cards (revisão) ── */
+.semana-card{border-radius:14px;padding:1.25rem;border:1px solid;margin-bottom:0;}
+.s1{background:rgba(34,211,238,.04);border-color:rgba(34,211,238,.18);}
+.s2{background:rgba(96,165,250,.04);border-color:rgba(96,165,250,.18);}
+.s3{background:rgba(129,140,248,.05);border-color:rgba(129,140,248,.2);}
+.s4{background:rgba(244,114,182,.04);border-color:rgba(244,114,182,.18);}
+.s5{background:rgba(251,191,36,.04);border-color:rgba(251,191,36,.18);}
+.s-titulo{font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.7rem;display:flex;align-items:center;gap:8px;}
+.s1 .s-titulo{color:#22d3ee;}
+.s2 .s-titulo{color:#60a5fa;}
+.s3 .s-titulo{color:var(--ind-400);}
+.s4 .s-titulo{color:#f472b6;}
+.s5 .s-titulo{color:#fbbf24;}
+.s-item{font-size:.8rem;color:var(--text-secondary);margin-bottom:.4rem;padding-left:.7rem;position:relative;line-height:1.55;}
+.s-item::before{content:'▸';position:absolute;left:0;font-size:.6rem;color:var(--text-muted);margin-top:2px;}
+.s-armadilha{font-size:.75rem;margin-top:.6rem;padding:.55rem .8rem;border-radius:7px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.16);color:rgba(252,165,165,.82);}
+.s-armadilha::before{content:'⚠ ';font-weight:700;}
+
+/* ── Simulado (múltipla escolha) ── */
+.questao{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s;}
+.questao:hover{border-color:rgba(129,140,248,.22);}
+.q-header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;}
+.q-num{width:32px;height:32px;border-radius:9px;background:rgba(129,140,248,.15);color:var(--ind-400);font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.q-texto{font-size:.92rem;color:var(--text-primary);line-height:1.6;font-weight:500;flex:1;min-width:200px;}
+.q-opcoes{display:flex;flex-direction:column;gap:.45rem;}
+.q-op{display:flex;align-items:flex-start;gap:.65rem;padding:.6rem .85rem;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);transition:all .2s;font-size:.85rem;color:var(--text-secondary);}
+.q-op:hover{background:rgba(129,140,248,.06);border-color:rgba(129,140,248,.2);}
+.q-op.correto{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.35);color:#86efac;}
+.q-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);color:#fca5a5;}
+.q-letra{width:22px;height:22px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;margin-top:1px;background:rgba(129,140,248,.15);color:var(--ind-300);}
+.q-gabarito{display:none;margin-top:.85rem;padding:.85rem 1rem;border-radius:9px;font-size:.83rem;line-height:1.6;}
+.q-gabarito.show{display:block;}
+
+/* ── Dissertativas ── */
+.dissertativa{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;}
+.d-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}
+.d-enunciado{font-size:.92rem;color:var(--text-primary);line-height:1.65;margin-bottom:1rem;padding:.85rem 1rem;border-radius:9px;background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.15);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(129,140,248,.25);border-radius:8px;padding:.5rem 1rem;color:var(--ind-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(129,140,248,.08);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+.modelo-resposta{padding:1rem 1.1rem;border-radius:10px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);font-size:.85rem;color:var(--text-secondary);line-height:1.7;}
+.modelo-resposta strong{color:var(--ok-green);}
+
+/* ── Score ── */
+.score-box{display:none;margin-top:1rem;padding:1.25rem;border-radius:12px;text-align:center;background:var(--card-bg);border:1px solid var(--card-border);}
+.score-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;}
+.btn-score{background:rgba(129,140,248,.15);border:1px solid rgba(129,140,248,.3);color:var(--ind-400);padding:.7rem 2rem;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;transition:background .2s;}
+.btn-score:hover{background:rgba(129,140,248,.25);}
+
+/* ── Checklist interativo ── */
+.checklist-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.75rem 0;}
+.check-item{display:flex;align-items:flex-start;gap:.6rem;padding:.55rem .8rem;border-radius:8px;border:1px solid var(--card-border);background:var(--card-bg);cursor:pointer;transition:all .2s;}
+.check-item:hover{border-color:rgba(74,222,128,.3);}
+.check-item.checked{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.3);}
+.check-box{width:18px;height:18px;border-radius:4px;border:1px solid rgba(255,255,255,.2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .2s;}
+.check-item.checked .check-box{background:rgba(74,222,128,.3);border-color:var(--ok-green);color:var(--ok-green);}
+.check-label{font-size:.8rem;color:var(--text-secondary);line-height:1.45;}
+.check-item.checked .check-label{color:rgba(134,239,172,.8);}
+.progress-bar-wrap{margin:1rem 0;padding:1rem 1.25rem;border-radius:12px;background:var(--card-bg);border:1px solid var(--card-border);}
+.progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;}
+.progress-label span{font-size:.78rem;color:var(--text-secondary);}
+.progress-label strong{font-size:.82rem;color:var(--text-primary);}
+.progress-track{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--ind-700),var(--ind-400));border-radius:4px;transition:width .4s ease;}
+
+/* ── Dicas ── */
+.dica-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin:.75rem 0;}
+.dica-card{border-radius:12px;padding:1rem;border:1px solid rgba(255,255,255,.07);background:var(--card-bg);}
+.dica-num{font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:800;color:rgba(129,140,248,.18);line-height:1;margin-bottom:.4rem;}
+.dica-titulo{font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;}
+.dica-texto{font-size:.8rem;color:var(--text-secondary);line-height:1.55;}
+
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(129,140,248,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(129,140,248,.12);border-color:rgba(129,140,248,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--ind-400);}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.grid-3,.checklist-grid,.dica-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">🔴 Avaliação P1</span>
+
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Fundamentos de Banco de Dados · BD1.02 · Sexta-feira</div>
+    <div class="semana-num">06</div>
+    <h1 class="capa-titulo">Semana de <em>Avaliação P1</em></h1>
+    <p class="capa-sub">3 aulas · 150 minutos · Revisão + Simulado + Instruções para a prova · Conteúdo das Semanas 1 a 5</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-num">S1</div><span>Dado, informação, conhecimento e o profissional de BD</span></div>
+      <div class="topico"><div class="topico-num">S2</div><span>Evolução dos sistemas de armazenamento de dados</span></div>
+      <div class="topico"><div class="topico-num">S3</div><span>Arquitetura de sistemas de banco de dados (ANSI/SPARC)</span></div>
+      <div class="topico"><div class="topico-num">S4</div><span>Modelos de dados: hierárquico, rede e relacional</span></div>
+      <div class="topico"><div class="topico-num">S5</div><span>Conceitos de SGBD: esquemas, instâncias e metadados</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Como esta semana funciona</div>
+      <p>Como as 3 aulas são seguidas e não sobra tempo real de estudo em casa entre elas, dividimos assim: <strong>Aula 1</strong> é revisão guiada de tudo, <strong>Aula 2</strong> é um simulado completo (objetivas + dissertativas) com gabarito comentado, e <strong>Aula 3</strong> é dedicada a instruções da prova, dúvidas de última hora e um checklist final de autoavaliação.</p>
+    </div>
+  </div>
+
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-clipboard-list"></i>Formato da P1</div>
+      <ul class="info-lista">
+        <li>Questões objetivas (múltipla escolha) — conceito e análise de cenário</li>
+        <li>Questões dissertativas — explicação, comparação e justificativa técnica</li>
+        <li>Prova fechada — sem consulta a material</li>
+        <li>Conteúdo cobrado: Semanas 1 a 5 (não cai matéria futura)</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-star"></i>Temas mais importantes</div>
+      <ul class="info-lista">
+        <li>Os sete problemas clássicos do processamento de arquivos (Sem. 2) — cai literal</li>
+        <li>Os três níveis da arquitetura ANSI/SPARC e a diferença entre independência lógica e física (Sem. 3)</li>
+        <li>Por que o modelo hierárquico e o de rede não resolvem N:N como o relacional resolve (Sem. 4)</li>
+        <li>A diferença entre esquema, instância e metadados (Sem. 5) — pegadinha clássica</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Dica de ouro</div>
+      <ul class="info-lista">
+        <li>Toda a disciplina até aqui é teórica e conceitual — a prova cobra "explicar e comparar", não "calcular"</li>
+        <li>Sempre que a questão pedir comparação, monte mentalmente uma tabela de critérios antes de responder</li>
+        <li>Use exemplos concretos nas dissertativas — respostas específicas valem mais que respostas genéricas</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>começar a revisão</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 — REVISÃO ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">Revisão geral — as cinco semanas em síntese</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-route"></i>Como aproveitar esta revisão</div>
+      <p>Os cinco cards abaixo resumem, semana a semana, os pontos que mais aparecem em prova — não substituem o material completo de cada semana, mas servem para você checar rapidamente o que já domina e o que precisa reler com calma antes da Aula 2 (simulado). Preste atenção especial às caixas de <strong>"armadilha"</strong>: são os erros conceituais mais comuns que costumam derrubar nota em provas de fundamentos de banco de dados.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="semana-card s1">
+        <div class="s-titulo"><i class="fas fa-layer-group"></i>Semana 1 — Dado, informação e conhecimento</div>
+        <div class="s-item"><strong>Dado:</strong> registro bruto, sem interpretação (ex.: "35")</div>
+        <div class="s-item"><strong>Informação:</strong> dado com contexto e significado (ex.: "35 é a idade do cliente João")</div>
+        <div class="s-item"><strong>Conhecimento:</strong> informação combinada com experiência/padrões, que permite decisão (ex.: "clientes entre 30-40 anos compram mais aos finais de semana → ajustar campanha")</div>
+        <div class="s-item">Papel do profissional de BD: DBA, analista e cientista de dados atuam em camadas diferentes dessa pirâmide, do dado bruto até o conhecimento aplicado</div>
+        <div class="s-armadilha">Armadilha: dado ≠ informação. "Ter muitos dados" não significa automaticamente "ter muita informação" — falta contexto para virar informação.</div>
+      </div>
+
+      <div class="semana-card s2">
+        <div class="s-titulo"><i class="fas fa-clock-rotate-left"></i>Semana 2 — Evolução do armazenamento</div>
+        <div class="s-item">Linha do tempo: registros manuais (argila/papel) → cartões perfurados (Hollerith, 1890) → fitas e sistemas de arquivo (anos 1950-60) → SGBDs (IMS 1966, Codd 1970, Oracle 1979)</div>
+        <div class="s-item"><strong>7 problemas do processamento de arquivos:</strong> redundância/inconsistência, dificuldade de acesso, isolamento de dados, problemas de integridade, problemas de atomicidade, anomalias de concorrência, problemas de segurança</div>
+        <div class="s-item">Um SGBD resolve todos esses problemas de forma <strong>centralizada</strong>, em vez de deixar cada aplicação cuidar dos próprios arquivos</div>
+        <div class="s-armadilha">Armadilha: os sete problemas costumam cair de forma literal — vale a pena memorizar a lista e saber dar um exemplo de cada um.</div>
+      </div>
+
+      <div class="semana-card s3">
+        <div class="s-titulo"><i class="fas fa-sitemap"></i>Semana 3 — Arquitetura ANSI/SPARC</div>
+        <div class="s-item"><strong>Externo:</strong> visões personalizadas para cada usuário/aplicação</div>
+        <div class="s-item"><strong>Conceitual:</strong> modelo lógico completo do banco (entidades, atributos, relacionamentos, restrições) — mantido pelo DBA, geralmente um MER</div>
+        <div class="s-item"><strong>Interno:</strong> estrutura física real (arquivos, índices, alocação em disco)</div>
+        <div class="s-item"><strong>Independência lógica:</strong> mudar o nível conceitual sem quebrar aplicações que usam visões externas</div>
+        <div class="s-item"><strong>Independência física:</strong> mudar o armazenamento físico sem alterar a estrutura lógica</div>
+        <div class="s-armadilha">Armadilha: os três níveis não são "três cópias dos dados" — são três descrições diferentes do mesmo dado.</div>
+      </div>
+
+      <div class="semana-card s4">
+        <div class="s-titulo"><i class="fas fa-diagram-project"></i>Semana 4 — Modelos de dados</div>
+        <div class="s-item"><strong>Hierárquico:</strong> árvore, cada filho com um único pai; não resolve N:N nativamente (IMS, IBM 1966)</div>
+        <div class="s-item"><strong>Rede:</strong> grafo, registro pode ter múltiplos "pais" via conjuntos (sets); resolve N:N mas navegação procedural continua complexa (CODASYL/IDS, Bachman 1960)</div>
+        <div class="s-item"><strong>Relacional:</strong> tabelas ligadas por valor (chave), consulta declarativa (SQL), base em teoria dos conjuntos e lógica de predicados (Codd, 1970)</div>
+        <div class="s-item">O relacional venceu por resolver, ao mesmo tempo: dependência de ponteiros, acesso procedural e independência de dados fraca</div>
+        <div class="s-armadilha">Armadilha: "mais moderno" não é sinônimo de "sem limitações" — bancos de documentos reencarnam o hierárquico, bancos de grafos reencarnam o de rede.</div>
+      </div>
+    </div>
+
+    <div class="semana-card s5" style="margin-top:1.25rem;">
+      <div class="s-titulo"><i class="fas fa-database"></i>Semana 5 — Esquemas, instâncias e metadados</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.25rem 2rem;">
+        <div class="s-item"><strong>Esquema:</strong> a estrutura/definição do banco — como uma planta baixa, definida na criação, muda raramente</div>
+        <div class="s-item"><strong>Instância:</strong> o conteúdo real armazenado em um momento específico — muda a cada INSERT/UPDATE/DELETE</div>
+        <div class="s-item"><strong>Metadados:</strong> "dados sobre dados" — nomes de tabelas, tipos de colunas, restrições, relacionamentos</div>
+        <div class="s-item"><strong>Catálogo de dados:</strong> repositório interno do SGBD (dicionário de dados / system catalog) onde os metadados ficam armazenados</div>
+        <div class="s-item">O próprio SGBD consulta o catálogo de dados para interpretar e validar cada consulta recebida</div>
+        <div class="s-item">Um mesmo esquema pode ter infinitas instâncias diferentes ao longo do tempo</div>
+      </div>
+      <div class="s-armadilha">Armadilha: esquema ≠ instância. Esquema é a estrutura (o "molde"); instância são os dados de fato armazenados naquele momento.</div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2 · Simulado</span></div>
+
+  <!-- ── AULA 2 — SIMULADO ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Simulado — objetivas e dissertativas com gabarito comentado</div>
+      </div>
+    </div>
+
+    <div class="aviso-exam">
+      <i class="fas fa-stopwatch"></i>
+      <span>Tente responder cada questão SEM ver o gabarito primeiro. Marque sua resposta mentalmente (ou no caderno), depois clique para revelar. Ao final das objetivas, você pode conferir seu score.</span>
+    </div>
+
+    <!-- Q1 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">1</div>
+        <span class="badge badge-cyan">Semana 1</span>
+        <div class="q-texto">Um sistema de vendas registra "cliente 048, valor 350, data 12/07". Um gerente, ao analisar esse registro junto com o histórico do cliente, percebe: "esse cliente está comprando 40% mais que a média — vale oferecer um upgrade de plano". Qual conceito melhor descreve essa segunda frase do gerente?</div>
+      </div>
+      <div class="q-opcoes" id="q1-ops">
+        <div class="q-op" onclick="respQ('q1',this,'A',false)"><div class="q-letra">A</div>Dado — é um registro bruto do sistema</div>
+        <div class="q-op" onclick="respQ('q1',this,'B',false)"><div class="q-letra">B</div>Informação — apenas contextualiza o valor da compra</div>
+        <div class="q-op" onclick="respQ('q1',this,'C',true)"><div class="q-letra">C</div>Conhecimento — combina informação com padrão histórico e leva a uma decisão de ação</div>
+        <div class="q-op" onclick="respQ('q1',this,'D',false)"><div class="q-letra">D</div>Metadado — descreve a estrutura do registro de venda</div>
+      </div>
+      <div class="q-gabarito" id="q1-gab"><strong>✅ Alternativa C.</strong> A frase do gerente vai além de apenas descrever o dado com contexto (o que seria informação) — ela cruza esse dado com um padrão (a média histórica) e chega a uma recomendação de ação concreta. Essa capacidade de gerar uma decisão a partir de padrões é a marca do conhecimento.</div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">2</div>
+        <span class="badge badge-blue">Semana 2</span>
+        <div class="q-texto">Uma empresa antiga tinha um sistema de Vendas e um sistema de RH, cada um com seus próprios arquivos. Quando um funcionário mudava de endereço, o dado era corrigido no arquivo de RH mas não no arquivo de Vendas (pois a pessoa também era cliente). Qual dos sete problemas clássicos do processamento de arquivos essa situação ilustra melhor?</div>
+      </div>
+      <div class="q-opcoes" id="q2-ops">
+        <div class="q-op" onclick="respQ('q2',this,'A',false)"><div class="q-letra">A</div>Problemas de atomicidade</div>
+        <div class="q-op" onclick="respQ('q2',this,'B',true)"><div class="q-letra">B</div>Redundância e inconsistência de dados</div>
+        <div class="q-op" onclick="respQ('q2',this,'C',false)"><div class="q-letra">C</div>Problemas de segurança</div>
+        <div class="q-op" onclick="respQ('q2',this,'D',false)"><div class="q-letra">D</div>Anomalias de acesso concorrente</div>
+      </div>
+      <div class="q-gabarito" id="q2-gab"><strong>✅ Alternativa B.</strong> O mesmo dado (endereço da pessoa) está duplicado em dois arquivos independentes. Quando ele muda em um lugar e não no outro, os dois arquivos ficam contraditórios entre si — exatamente a definição de redundância e inconsistência de dados.</div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">3</div>
+        <span class="badge badge-blue">Semana 2</span>
+        <div class="q-texto">O que, na prática, um SGBD assume de forma centralizada que, no modelo de sistemas de arquivo, ficava espalhado e sob responsabilidade de cada programa isoladamente?</div>
+      </div>
+      <div class="q-opcoes" id="q3-ops">
+        <div class="q-op" onclick="respQ('q3',this,'A',false)"><div class="q-letra">A</div>Apenas a interface visual de cada aplicação</div>
+        <div class="q-op" onclick="respQ('q3',this,'B',true)"><div class="q-letra">B</div>Armazenamento, integridade, controle de concorrência, segurança e disponibilização dos dados para múltiplas aplicações</div>
+        <div class="q-op" onclick="respQ('q3',this,'C',false)"><div class="q-letra">C</div>A velocidade da rede entre os computadores da empresa</div>
+        <div class="q-op" onclick="respQ('q3',this,'D',false)"><div class="q-letra">D</div>O hardware físico onde os discos estão instalados</div>
+      </div>
+      <div class="q-gabarito" id="q3-gab"><strong>✅ Alternativa B.</strong> Um SGBD centraliza justamente as responsabilidades que, no modelo de arquivos, dependiam da disciplina individual de cada programador: controle de redundância, integridade, atomicidade, concorrência e segurança — tudo isso tratado por uma camada de software dedicada.</div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">4</div>
+        <span class="badge badge-violet">Semana 3</span>
+        <div class="q-texto">Em um sistema universitário, um professor vê uma tela simples só com "nome do aluno" e "campo de nota" para lançar notas. A que nível da arquitetura ANSI/SPARC essa tela pertence?</div>
+      </div>
+      <div class="q-opcoes" id="q4-ops">
+        <div class="q-op" onclick="respQ('q4',this,'A',true)"><div class="q-letra">A</div>Nível Externo — é uma visão específica, adaptada à necessidade de um grupo de usuários</div>
+        <div class="q-op" onclick="respQ('q4',this,'B',false)"><div class="q-letra">B</div>Nível Conceitual — porque envolve a entidade Aluno</div>
+        <div class="q-op" onclick="respQ('q4',this,'C',false)"><div class="q-letra">C</div>Nível Interno — porque os dados estão fisicamente armazenados em algum lugar</div>
+        <div class="q-op" onclick="respQ('q4',this,'D',false)"><div class="q-letra">D</div>Nenhum nível específico — essa classificação não se aplica a telas de usuário</div>
+      </div>
+      <div class="q-gabarito" id="q4-gab"><strong>✅ Alternativa A.</strong> Uma tela simplificada, mostrando apenas os campos relevantes para uma tarefa específica de um grupo de usuários (o professor lançando notas), é exatamente a definição do nível Externo — uma visão derivada do esquema conceitual completo.</div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">5</div>
+        <span class="badge badge-violet">Semana 3</span>
+        <div class="q-texto">A equipe de infraestrutura decide trocar o tipo de índice usado internamente para acelerar buscas por CPF, sem alterar nenhuma tabela, coluna ou relacionamento do modelo lógico. Isso é um exemplo de:</div>
+      </div>
+      <div class="q-opcoes" id="q5-ops">
+        <div class="q-op" onclick="respQ('q5',this,'A',false)"><div class="q-letra">A</div>Independência lógica de dados</div>
+        <div class="q-op" onclick="respQ('q5',this,'B',true)"><div class="q-letra">B</div>Independência física de dados</div>
+        <div class="q-op" onclick="respQ('q5',this,'C',false)"><div class="q-letra">C</div>Uma violação da arquitetura ANSI/SPARC</div>
+        <div class="q-op" onclick="respQ('q5',this,'D',false)"><div class="q-letra">D</div>Uma mudança no nível externo</div>
+      </div>
+      <div class="q-gabarito" id="q5-gab"><strong>✅ Alternativa B.</strong> Trocar um índice é uma mudança no nível interno (armazenamento físico) que não exige nenhuma alteração no nível conceitual nem nas aplicações — exatamente a definição de independência física de dados.</div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">6</div>
+        <span class="badge badge-pink">Semana 4</span>
+        <div class="q-texto">Por que o modelo hierárquico não consegue representar de forma nativa a situação "um Aluno pode se matricular em várias Turmas, e uma Turma tem vários Alunos"?</div>
+      </div>
+      <div class="q-opcoes" id="q6-ops">
+        <div class="q-op" onclick="respQ('q6',this,'A',false)"><div class="q-letra">A</div>Porque o modelo hierárquico não suporta mais de 2 níveis de profundidade</div>
+        <div class="q-op" onclick="respQ('q6',this,'B',true)"><div class="q-letra">B</div>Porque a regra fundamental do modelo é que todo registro filho tem exatamente um único pai, e esse é um relacionamento N:N</div>
+        <div class="q-op" onclick="respQ('q6',this,'C',false)"><div class="q-letra">C</div>Porque o modelo hierárquico não permite armazenar texto, apenas números</div>
+        <div class="q-op" onclick="respQ('q6',this,'D',false)"><div class="q-letra">D</div>Porque esse tipo de relacionamento só existe em bancos relacionais modernos</div>
+      </div>
+      <div class="q-gabarito" id="q6-gab"><strong>✅ Alternativa B.</strong> A regra central do modelo hierárquico — "todo filho tem no máximo um pai" — é justamente incompatível com relacionamentos muitos-para-muitos, em que um registro precisaria de múltiplos "pais" simultaneamente.</div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">7</div>
+        <span class="badge badge-pink">Semana 4</span>
+        <div class="q-texto">O que, tecnicamente, tornou o modelo relacional de Codd (1970) superior aos modelos hierárquico e em rede que já existiam?</div>
+      </div>
+      <div class="q-opcoes" id="q7-ops">
+        <div class="q-op" onclick="respQ('q7',this,'A',false)"><div class="q-letra">A</div>Ser lançado por uma empresa maior (IBM) que os concorrentes</div>
+        <div class="q-op" onclick="respQ('q7',this,'B',true)"><div class="q-letra">B</div>Substituir ponteiros físicos por relacionamento via valor (chave), com base em teoria dos conjuntos, permitindo consultas declarativas</div>
+        <div class="q-op" onclick="respQ('q7',this,'C',false)"><div class="q-letra">C</div>Ser o primeiro modelo a usar discos magnéticos em vez de fitas</div>
+        <div class="q-op" onclick="respQ('q7',this,'D',false)"><div class="q-letra">D</div>Não precisar de nenhuma estrutura de armazenamento física</div>
+      </div>
+      <div class="q-gabarito" id="q7-gab"><strong>✅ Alternativa B.</strong> A ruptura de Codd foi conceitual: abandonar ponteiros físicos como mecanismo de relacionamento e usar valores compartilhados (chaves), com base matemática sólida — o que tornou possível uma linguagem de consulta declarativa (SQL), ao contrário da navegação procedural exigida pelos modelos anteriores.</div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">8</div>
+        <span class="badge badge-amber">Semana 5</span>
+        <div class="q-texto">Um DBA cria a tabela Aluno com as colunas nome (texto) e idade (número). Uma semana depois, 300 linhas de alunos reais são inseridas nessa tabela. O que representa "300 linhas de alunos reais inseridas"?</div>
+      </div>
+      <div class="q-opcoes" id="q8-ops">
+        <div class="q-op" onclick="respQ('q8',this,'A',false)"><div class="q-letra">A</div>O esquema da tabela Aluno</div>
+        <div class="q-op" onclick="respQ('q8',this,'B',true)"><div class="q-letra">B</div>Uma instância da tabela Aluno</div>
+        <div class="q-op" onclick="respQ('q8',this,'C',false)"><div class="q-letra">C</div>Um metadado da tabela Aluno</div>
+        <div class="q-op" onclick="respQ('q8',this,'D',false)"><div class="q-letra">D</div>O catálogo de dados do SGBD</div>
+      </div>
+      <div class="q-gabarito" id="q8-gab"><strong>✅ Alternativa B.</strong> A definição da tabela (colunas nome e idade, seus tipos) é o esquema — muda raramente. Os dados reais que foram inseridos (as 300 linhas) representam o conteúdo real armazenado naquele momento, ou seja, uma instância do esquema.</div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">9</div>
+        <span class="badge badge-amber">Semana 5</span>
+        <div class="q-texto">Onde o SGBD armazena as informações sobre os nomes das tabelas, tipos de colunas e restrições de um banco de dados, para poder validar e interpretar as consultas recebidas?</div>
+      </div>
+      <div class="q-opcoes" id="q9-ops">
+        <div class="q-op" onclick="respQ('q9',this,'A',false)"><div class="q-letra">A</div>Em um arquivo de log separado, fora do controle do SGBD</div>
+        <div class="q-op" onclick="respQ('q9',this,'B',true)"><div class="q-letra">B</div>No catálogo de dados (dicionário de dados / system catalog), mantido internamente pelo próprio SGBD</div>
+        <div class="q-op" onclick="respQ('q9',this,'C',false)"><div class="q-letra">C</div>Diretamente dentro de cada linha de cada tabela do usuário</div>
+        <div class="q-op" onclick="respQ('q9',this,'D',false)"><div class="q-letra">D</div>Essa informação não é armazenada — é recalculada a cada consulta</div>
+      </div>
+      <div class="q-gabarito" id="q9-gab"><strong>✅ Alternativa B.</strong> O catálogo de dados é o repositório interno onde o SGBD guarda os metadados — nomes de tabelas, colunas, tipos, restrições, relacionamentos. É consultando esse catálogo que o próprio SGBD sabe como interpretar e validar cada consulta recebida.</div>
+    </div>
+
+    <!-- Score -->
+    <div class="score-box" id="score-box">
+      <div class="score-num" id="score-num">0/9</div>
+      <div style="font-size:.85rem;color:var(--text-secondary);margin-top:.25rem;" id="score-msg"></div>
+    </div>
+    <div style="text-align:center;margin-top:1rem;">
+      <button class="btn-score" onclick="calcScore()"><i class="fas fa-calculator" style="margin-right:8px;"></i>Ver meu score</button>
+    </div>
+
+    <div class="sep"><span>Dissertativas do simulado</span></div>
+
+    <div class="dissertativa">
+      <div class="d-num">Dissertativa 1 — Semana 2</div>
+      <div class="d-enunciado">Escolha três dos sete problemas clássicos do processamento de arquivos e explique, para cada um, qual característica de um SGBD resolve especificamente aquele problema.</div>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-lightbulb"></i> ver modelo de resposta</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta">
+          <strong>Redundância e inconsistência</strong> → resolvida pelo controle de redundância do SGBD: os dados existem em um único lugar centralizado, referenciado por todas as aplicações que precisam deles, em vez de duplicados em arquivos isolados.
+          <br><br>
+          <strong>Problemas de atomicidade</strong> → resolvidos pelo controle de transações: o SGBD garante que uma operação aconteça por completo ou seja totalmente desfeita, mesmo em caso de falha no meio do processo.
+          <br><br>
+          <strong>Anomalias de acesso concorrente</strong> → resolvidas pelo controle de concorrência: mecanismos internos do SGBD coordenam múltiplos acessos simultâneos aos mesmos dados, evitando inconsistências como duas vendas simultâneas do último item em estoque.
+          <br><br>
+          (Resposta aceitável com qualquer combinação de 3 dos 7 problemas, desde que a solução apontada esteja tecnicamente correta.)
+        </div>
+      </div>
+    </div>
+
+    <div class="dissertativa">
+      <div class="d-num">Dissertativa 2 — Semana 3</div>
+      <div class="d-enunciado">Usando o exemplo de um sistema de biblioteca, descreva o que pertenceria a cada um dos três níveis da arquitetura ANSI/SPARC (externo, conceitual e interno). Em seguida, explique a diferença entre independência lógica e independência física de dados.</div>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-lightbulb"></i> ver modelo de resposta</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta">
+          <strong>Externo:</strong> uma tela simples no balcão de atendimento, mostrando apenas nome do leitor, título do livro e data de devolução.
+          <br>
+          <strong>Conceitual:</strong> o modelo lógico completo — entidades Leitor, Exemplar e Empréstimo, seus atributos e a restrição de que um exemplar não pode estar emprestado a dois leitores ao mesmo tempo.
+          <br>
+          <strong>Interno:</strong> a estrutura física em disco, com um índice B-tree sobre o campo leitor_id para acelerar buscas.
+          <br><br>
+          <strong>Independência lógica:</strong> capacidade de alterar o nível conceitual (ex.: adicionar um novo atributo à entidade Leitor) sem precisar reescrever as aplicações que usam as visões externas.
+          <br>
+          <strong>Independência física:</strong> capacidade de alterar o nível interno (ex.: trocar o tipo de índice ou reorganizar arquivos) sem precisar alterar o nível conceitual nem as aplicações, porque a estrutura lógica permanece a mesma.
+        </div>
+      </div>
+    </div>
+
+    <div class="dissertativa">
+      <div class="d-num">Dissertativa 3 — Semana 4</div>
+      <div class="d-enunciado">Compare os modelos hierárquico, em rede e relacional em relação a três critérios: (a) como cada um representa relacionamentos N:N, (b) como se faz uma consulta em cada um, e (c) por que o relacional se tornou dominante.</div>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-lightbulb"></i> ver modelo de resposta</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta">
+          <strong>(a) N:N:</strong> o hierárquico não representa nativamente — exige duplicação de registros ou ponteiros artificiais. O modelo em rede resolve nativamente, combinando dois conjuntos (sets) do padrão CODASYL. O relacional resolve de forma elegante através de uma tabela associativa ligada por chaves estrangeiras.
+          <br><br>
+          <strong>(b) Consulta:</strong> tanto o hierárquico quanto o de rede exigem navegação procedural — o programador descreve o caminho exato até o dado, começando sempre por um ponto de entrada fixo. O relacional permite consultas declarativas (SQL): o usuário descreve o que quer, e o SGBD decide como buscar.
+          <br><br>
+          <strong>(c) Por que venceu:</strong> o relacional resolveu, ao mesmo tempo, os três problemas compartilhados pelos modelos anteriores — dependência de ponteiros físicos, acesso procedural e independência de dados fraca — apoiado em uma base matemática sólida (teoria dos conjuntos e lógica de predicados), o que nenhum dos dois modelos anteriores tinha.
+        </div>
+      </div>
+    </div>
+
+    <div class="dissertativa">
+      <div class="d-num">Dissertativa 4 — Semana 5</div>
+      <div class="d-enunciado">Explique a diferença entre esquema, instância e metadados, e descreva o papel do catálogo de dados dentro de um SGBD.</div>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-lightbulb"></i> ver modelo de resposta</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta">
+          <strong>Esquema:</strong> é a estrutura/definição do banco de dados — quais tabelas existem, quais colunas cada uma tem, tipos de dados e restrições. É definido na criação do banco e muda com pouca frequência, geralmente através de comandos de alteração de estrutura.
+          <br><br>
+          <strong>Instância:</strong> é o conteúdo real armazenado no banco em um momento específico no tempo — os dados de fato, que mudam constantemente a cada inserção, atualização ou remoção. Um mesmo esquema pode ter infinitas instâncias diferentes ao longo da vida do sistema.
+          <br><br>
+          <strong>Metadados:</strong> são "dados sobre os dados" — as informações que descrevem o próprio esquema: nomes de tabelas, tipos de colunas, chaves, restrições e relacionamentos.
+          <br><br>
+          <strong>Catálogo de dados:</strong> é o repositório interno do SGBD onde esses metadados ficam armazenados (também chamado de dicionário de dados ou system catalog). O próprio SGBD consulta esse catálogo internamente sempre que precisa interpretar, validar ou otimizar uma consulta recebida.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3 · Instruções</span></div>
+
+  <!-- ── AULA 3 — INSTRUÇÕES PARA A PROVA ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · ~50 minutos</div>
+        <div class="secao-titulo">Instruções para a prova — organização, tempo e checklist final</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-file-circle-check"></i>Formato oficial da P1</div>
+      <ul class="icon-list">
+        <li><i class="fas fa-check-circle"></i><span>Prova escrita, individual, sem consulta a material (livro, anotações ou celular)</span></li>
+        <li><i class="fas fa-check-circle"></i><span>Combinação de questões objetivas (múltipla escolha) e questões dissertativas</span></li>
+        <li><i class="fas fa-check-circle"></i><span>Cobre exclusivamente o conteúdo das Semanas 1 a 5 — nada de conteúdo posterior</span></li>
+        <li><i class="fas fa-check-circle"></i><span>Leve caneta (azul ou preta) e, se possível, uma reserva — não é permitido lápis nas respostas definitivas</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-stopwatch"></i>Como distribuir seu tempo durante a prova</div>
+      <p>Antes de começar a escrever, leia a prova inteira uma vez — isso evita surpresas e ajuda a planejar o tempo. Uma estratégia simples e eficaz:</p>
+      <div class="grid-3">
+        <div class="mini-card-like destaque" style="margin:0;">
+          <strong>Primeiros minutos</strong><br>Leia todas as questões, marque as que você tem certeza absoluta e resolva-as primeiro — isso garante pontos e reduz a ansiedade.
+        </div>
+        <div class="mini-card-like destaque" style="margin:0;">
+          <strong>Meio da prova</strong><br>Avance para as questões que exigem mais raciocínio (comparações, cenários). Se travar em uma, marque e siga adiante — volte depois.
+        </div>
+        <div class="mini-card-like destaque" style="margin:0;">
+          <strong>Últimos minutos</strong><br>Releia as dissertativas: você usou termos técnicos corretos? Deu exemplo concreto? Respondeu exatamente o que foi perguntado?
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-triangle-exclamation"></i>Erros mais comuns que derrubam nota</div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Erro</th><th>Como evitar</th></tr></thead>
+          <tbody>
+            <tr><td>Confundir esquema com instância</td><td>Lembre: esquema é a estrutura (molde), instância são os dados de fato armazenados</td></tr>
+            <tr><td>Tratar os três níveis ANSI/SPARC como "três bancos diferentes"</td><td>Eles descrevem o mesmo dado sob três perspectivas — nunca três cópias</td></tr>
+            <tr><td>Responder de forma genérica em dissertativas</td><td>Use termos técnicos exatos e, sempre que possível, um exemplo concreto</td></tr>
+            <tr><td>Achar que o modelo relacional "sempre existiu"</td><td>Ele foi uma ruptura proposta por Codd em 1970 — antes disso, hierárquico e rede dominavam</td></tr>
+            <tr><td>Esquecer de justificar respostas de múltipla escolha quando pedido</td><td>Releia o enunciado — algumas questões pedem justificativa mesmo sendo objetivas</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-label">
+        <span>Checklist de autoavaliação</span>
+        <strong id="progress-text">0 / 18 conceitos</strong>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%;"></div></div>
+    </div>
+
+    <div class="checklist-grid" id="checklist">
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei diferenciar dado, informação e conhecimento com exemplo próprio</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei explicar o papel do profissional de BD no contexto organizacional</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei listar os 7 problemas do processamento de arquivos</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei explicar como um SGBD resolve cada um desses 7 problemas</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei a ordem histórica: cartões perfurados → sistemas de arquivo → SGBDs</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei os três níveis da arquitetura ANSI/SPARC e o que pertence a cada um</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei diferenciar independência lógica de independência física</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei explicar a estrutura do modelo hierárquico e sua limitação central</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei explicar como o modelo em rede resolve o problema do N:N</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei por que o modelo relacional se tornou dominante (os 3 problemas resolvidos)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei citar os marcos históricos: IMS (1966), Codd (1970), Oracle (1979)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei diferenciar esquema de instância com exemplo próprio</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei o que são metadados e dar um exemplo concreto</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei o que é o catálogo de dados e qual sua função dentro do SGBD</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Consigo comparar hierárquico, rede e relacional numa tabela mental</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Consigo dar um exemplo de sistema hierárquico que ainda usamos hoje (XML, JSON)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Errei menos de 2 questões objetivas no simulado da Aula 2</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Consegui escrever as 4 dissertativas do simulado sem consultar o gabarito antes</div></div>
+    </div>
+
+    <div class="aviso-green">
+      <i class="fas fa-check-circle"></i>
+      <span><strong>Dica de estudo:</strong> para cada item não marcado, volte ao material da semana correspondente. Tente explicar o conceito em voz alta como se estivesse ensinando um colega — é a forma mais eficaz de identificar lacunas antes da prova.</span>
+    </div>
+
+    <div class="card" style="margin-top:1.5rem;">
+      <div class="card-titulo"><i class="fas fa-star"></i>Três dicas finais</div>
+      <div class="dica-grid">
+        <div class="dica-card">
+          <div class="dica-num">01</div>
+          <div class="dica-titulo">Leia o enunciado com calma</div>
+          <div class="dica-texto">Palavras-chave indicam o que está sendo cobrado: "estrutura" → esquema, "dados armazenados agora" → instância, "molde/planta baixa" → nível conceitual. Sublinhe essas pistas antes de responder.</div>
+        </div>
+        <div class="dica-card">
+          <div class="dica-num">02</div>
+          <div class="dica-titulo">Comparações pedem tabela mental</div>
+          <div class="dica-texto">Hierárquico × Rede × Relacional, Externo × Conceitual × Interno, Independência lógica × física — organize os critérios antes de escrever a resposta, mesmo que a tabela fique só na sua cabeça.</div>
+        </div>
+        <div class="dica-card">
+          <div class="dica-num">03</div>
+          <div class="dica-titulo">Dissertativa boa é específica</div>
+          <div class="dica-texto">Use os termos técnicos certos (esquema, instância, metadado, catálogo de dados, independência lógica/física) e sempre que possível cite um exemplo próprio — vale mais do que uma resposta longa e genérica.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="proxima">
+    <div>
+      <div class="proxima-label">Após a P1 · Semana 7</div>
+      <div class="proxima-titulo">Semana 7 — Modelagem conceitual: introdução ao Modelo Entidade-Relacionamento</div>
+    </div>
+    <i class="fas fa-arrow-right"></i>
+  </div>
+
+</main>
+
+<script>
+// Toggle gabarito dissertativa
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar modelo de resposta'
+    :'<i class="fas fa-lightbulb"></i> ver modelo de resposta';
+}
+
+// Quiz simulado
+const correctAnswers={q1:'C',q2:'B',q3:'B',q4:'A',q5:'B',q6:'B',q7:'B',q8:'B',q9:'B'};
+const userAnswers={};
+
+function respQ(qId,el,letra,isCorrect){
+  const ops=document.getElementById(qId+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  userAnswers[qId]=letra;
+  const correta=correctAnswers[qId];
+  ops.querySelectorAll('.q-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    const l=op.querySelector('.q-letra').textContent.trim();
+    if(l===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const gab=document.getElementById(qId+'-gab');
+  gab.style.background=isCorrect?'rgba(74,222,128,.07)':'rgba(239,68,68,.07)';
+  gab.style.border=isCorrect?'1px solid rgba(74,222,128,.2)':'1px solid rgba(239,68,68,.2)';
+  gab.style.color=isCorrect?'rgba(134,239,172,.9)':'rgba(252,165,165,.9)';
+  gab.classList.add('show');
+}
+
+function calcScore(){
+  const total=Object.keys(correctAnswers).length;
+  let correct=0;
+  for(const [q,ans] of Object.entries(userAnswers)){
+    if(ans===correctAnswers[q])correct++;
+  }
+  const unanswered=total-Object.keys(userAnswers).length;
+  const box=document.getElementById('score-box');
+  const num=document.getElementById('score-num');
+  const msg=document.getElementById('score-msg');
+  box.style.display='block';
+  num.textContent=`${correct}/${total}`;
+  const pct=Math.round(correct/total*100);
+  if(pct>=80){num.style.color='#4ade80';msg.textContent=`${pct}% — Excelente! Você está pronto para a P1.`;}
+  else if(pct>=60){num.style.color='#fbbf24';msg.textContent=`${pct}% — Bom! Revise os temas que errou antes da prova.`;}
+  else{num.style.color='#f87171';msg.textContent=`${pct}% — Atenção! Volte às semanas com mais erros e revise os pontos-chave.`;}
+  if(unanswered>0)msg.textContent+=` (${unanswered} questão(ões) não respondida(s))`;
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+// Checklist
+function toggleCheck(el){
+  el.classList.toggle('checked');
+  el.querySelector('.check-box').innerHTML=el.classList.contains('checked')?'✓':'';
+  updateProgress();
+}
+function updateProgress(){
+  const total=document.querySelectorAll('.check-item').length;
+  const checked=document.querySelectorAll('.check-item.checked').length;
+  const pct=Math.round(checked/total*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-text').textContent=`${checked} / ${total} conceitos`;
+}
+</script>
+</body>
+</html>

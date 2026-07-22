@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 17 — O Profissional de Banco de Dados: Carreira, Ferramentas e Revisão</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ind-950:#181330;--ind-900:#211a45;--ind-800:#2d2260;
+  --ind-700:#4338ca;--ind-500:#6366f1;--ind-400:#818cf8;--ind-300:#a5b4fc;
+  --white:#fff;--text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);--card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);--card-hover:rgba(129,140,248,.07);
+  --code-bg:#140f28;--code-border:rgba(129,140,248,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--ind-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:var(--ind-700);top:-220px;left:-180px;}
+.blob-2{width:550px;height:550px;background:var(--ind-800);bottom:-200px;right:-120px;}
+.blob-3{width:280px;height:280px;background:var(--ind-500);top:38%;left:42%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(129,140,248,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ind-400);border:1px solid rgba(129,140,248,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--ind-400);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(129,140,248,.12);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--ind-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--ind-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.13);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(129,140,248,.18);color:var(--ind-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(129,140,248,.05);border-left:3px solid var(--ind-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--ind-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(129,140,248,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(129,140,248,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ind-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(129,140,248,.22);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.07);border-left:3px solid var(--ind-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--ind-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-ind{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.18);font-size:.86rem;color:rgba(165,180,252,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-ind i{color:var(--ind-400);flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(129,140,248,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--ind-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(129,140,248,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(129,140,248,.03);}
+td strong{color:var(--text-primary);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--ind-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+.icon-list li i.bad{color:#f87171;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(129,140,248,.12);color:var(--ind-400);border:1px solid rgba(129,140,248,.22);}
+
+/* ── comparativo lado a lado ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:.75rem 0;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.1rem;margin:.75rem 0;}
+.mini-card{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;}
+.mini-card.bad{border-color:rgba(248,113,113,.2);background:rgba(248,113,113,.04);}
+.mini-card.good{border-color:rgba(129,140,248,.25);background:rgba(129,140,248,.05);}
+.mini-card-titulo{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:700;margin-bottom:.6rem;display:flex;align-items:center;gap:8px;}
+.mini-card.bad .mini-card-titulo{color:#f87171;}
+.mini-card.good .mini-card-titulo{color:var(--ind-400);}
+.mini-card p{font-size:.83rem;color:var(--text-secondary);line-height:1.55;margin:0;}
+
+/* ── código ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(129,140,248,.08);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+pre{padding:1.1rem 1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;color:#c7d2fe;}
+.cm{color:#6b7280;font-style:italic;}
+
+/* ── Linha do tempo ── */
+.timeline{position:relative;margin:1.5rem 0;padding-left:2rem;}
+.timeline::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:linear-gradient(to bottom,rgba(129,140,248,.5),rgba(129,140,248,.1));}
+.tl-item{position:relative;padding-bottom:1.5rem;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-dot{position:absolute;left:-2rem;top:2px;width:16px;height:16px;border-radius:50%;background:var(--ind-900);border:2px solid var(--ind-400);}
+.tl-ano{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--ind-400);font-weight:600;margin-bottom:2px;}
+.tl-titulo{font-size:.92rem;font-weight:700;color:var(--text-primary);margin-bottom:3px;}
+.tl-desc{font-size:.83rem;color:var(--text-secondary);line-height:1.55;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;background:rgba(129,140,248,.1);color:var(--ind-400);border:1px solid rgba(129,140,248,.2);}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--ind-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(129,140,248,.12);border-color:rgba(129,140,248,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--ind-400);}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(129,140,248,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .resumo-grid,.grid-2,.grid-3{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:580px){
+  .resumo-grid,.grid-2,.grid-3{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Fundamentos de Banco de Dados · BD1.02 · Sexta-feira</div>
+    <div class="semana-num">17</div>
+    <h1 class="capa-titulo">O Profissional de<br><em>Banco de Dados</em>:<br>Carreira e Revisão</h1>
+    <p class="capa-sub">3 aulas · 150 minutos · Mercado de trabalho, ferramentas do dia a dia e o mapa completo do semestre</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-briefcase"></i></div><span>Carreiras em dados: DBA, engenheiro, analista e cientista de dados</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-certificate"></i></div><span>Certificações e trilhas de especialização</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-toolbox"></i></div><span>Ferramentas reais usadas no dia a dia da profissão</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-map"></i></div><span>Revisão geral: o mapa completo do semestre, bloco por bloco</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade da semana</div>
+      <p>Painel e discussão em grupo sobre trajetórias profissionais em Banco de Dados, seguido de exercícios de revisão geral, preparando o terreno para a Semana 18 (revisão) e a Prova Final na Semana 19.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>Sem. 15 — DDL: CREATE, ALTER, DROP</li>
+        <li>Sem. 16 — DML: INSERT, SELECT, UPDATE, DELETE</li>
+        <li>▶ Sem. 17 — O profissional de BD: carreira e revisão</li>
+        <li>Sem. 18 — Revisão geral e simulado</li>
+        <li>🔴 Sem. 19 — Prova Final (Semanas 14 a 17 + revisão geral)</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que esta semana é diferente</div>
+      <ul class="info-lista">
+        <li>Hoje a disciplina dá um passo para trás e olha para o quadro geral: para onde vai quem se especializa em banco de dados, e com quais ferramentas essas pessoas trabalham na prática</li>
+        <li>A Aula 3 já começa a puxar os fios de todo o semestre — é a ponte direta para a revisão geral da Semana 18</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-link"></i>Conexão direta</div>
+      <ul class="info-lista">
+        <li>Retoma diretamente a <strong>Semana 9</strong> (usuários e funções em bancos de dados) — hoje aprofundamos cada um desses papéis como carreira real</li>
+        <li>As ferramentas de hoje são a versão "de mercado" do que você praticou nos laboratórios de DDL/DML das Semanas 15 e 16</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">Carreiras em banco de dados: além do DBA</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-arrow-rotate-left"></i>Retomando a Semana 9: de "papéis" a "carreiras"</div>
+      <p>Na Semana 9, estudamos os diferentes papéis que convivem em torno de um banco de dados — DBA, desenvolvedor, analista de dados — sob a ótica de <strong>permissões e responsabilidades dentro de um sistema</strong>. Hoje vamos revisitar exatamente essas mesmas figuras, mas sob uma ótica diferente e muito mais prática para você, que está próximo de decidir os próximos passos da sua formação: <strong>como essas funções aparecem no mercado de trabalho real</strong>, com que nome exato aparecem em vagas de emprego, o que se espera de cada uma, e como uma pessoa formada em um curso como o seu — Tecnólogo ou Bacharelado em IA — se encaixa nesse cenário.</p>
+      <p>Isso importa especialmente para você: como estudante de Inteligência Artificial, os dados não são um assunto lateral — são a matéria-prima de tudo o que envolve aprendizado de máquina. Um modelo de IA é, em essência, tão bom quanto os dados que o alimentam, e entender profundamente como esses dados são armazenados, modelados e protegidos (exatamente o que fizemos o semestre inteiro) é uma vantagem competitiva real na hora de atuar profissionalmente com IA.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-users-gear"></i>O mapa de carreiras em dados</div>
+      <p>O mercado de tecnologia amadureceu, nos últimos anos, um conjunto de carreiras razoavelmente bem definidas em torno de dados. Elas se sobrepõem em alguns pontos, mas cada uma tem um foco central diferente:</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Carreira</th><th>Foco principal</th><th>Conecta com o que vimos em</th></tr></thead>
+          <tbody>
+            <tr><td><strong>DBA (Administrador de Banco de Dados)</strong></td><td>Manter os SGBDs em produção funcionando: performance, backup, segurança, disponibilidade.</td><td>Semanas 9, 11, 12 e 14</td></tr>
+            <tr><td><strong>Desenvolvedor de Banco de Dados / Backend</strong></td><td>Projetar esquemas, escrever consultas, integrar aplicações com o banco de dados.</td><td>Semanas 7, 8, 15 e 16</td></tr>
+            <tr><td><strong>Engenheiro de Dados (Data Engineer)</strong></td><td>Construir pipelines que movem e transformam dados entre sistemas, muitas vezes em grande escala.</td><td>Semanas 4 (NoSQL) e 5 (catálogo de dados)</td></tr>
+            <tr><td><strong>Analista de Dados (Data Analyst)</strong></td><td>Consultar, interpretar e visualizar dados para embasar decisões de negócio.</td><td>Semana 16 (SELECT e consultas)</td></tr>
+            <tr><td><strong>Cientista de Dados / Engenheiro de IA</strong></td><td>Construir modelos estatísticos e de aprendizado de máquina a partir dos dados.</td><td>Todo o semestre — é quem mais depende da qualidade dos dados de origem</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="destaque">
+        <strong>Um ponto importante para quem está em IA:</strong> muitas pessoas assumem, erroneamente, que "banco de dados" é assunto exclusivo de quem quer ser DBA. Na prática, todas as cinco carreiras da tabela acima dependem, em algum grau, dos conceitos deste semestre — um cientista de dados que não entende cardinalidade e integridade referencial tem sérias dificuldades para diagnosticar por que um conjunto de dados de treinamento está com registros duplicados ou inconsistentes.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-certificate"></i>Certificações e trilhas de especialização</div>
+      <p>Para quem quer se aprofundar formalmente em alguma dessas trilhas, o mercado oferece certificações reconhecidas, que costumam aparecer como diferencial em processos seletivos:</p>
+      <ul class="icon-list">
+        <li><i class="fas fa-database"></i><span><strong>PostgreSQL Certified Professional</strong> e certificações específicas de SGBDs open source, valorizadas especialmente por empresas que não dependem de licenças pagas.</span></li>
+        <li><i class="fas fa-cloud"></i><span><strong>Certificações de nuvem</strong> (AWS Certified Data Analytics, Microsoft Azure Database Administrator Associate, Google Cloud Professional Data Engineer) — cada vez mais relevantes à medida que bancos de dados migram para infraestrutura em nuvem.</span></li>
+        <li><i class="fas fa-server"></i><span><strong>Oracle Database Certifications (OCP)</strong>, ainda muito presentes em grandes corporações e no setor público, que historicamente adotou Oracle em larga escala no Brasil.</span></li>
+      </ul>
+      <p>Vale lembrar: certificação não substitui a base conceitual sólida que este semestre construiu — ela é um <em>complemento</em> que formaliza e comprova conhecimento aplicado a uma tecnologia específica, geralmente buscado depois que os fundamentos (exatamente o que você está estudando agora) já estão consolidados.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-chart-line"></i>O mercado de dados em Teresina e no Piauí</div>
+      <p>Embora grandes polos de tecnologia como São Paulo continuem concentrando o maior volume de vagas, a demanda por profissionais de dados no Piauí vem crescendo, puxada por dois movimentos: a modernização de sistemas de gestão pública (prefeituras e secretarias estaduais migrando de planilhas e sistemas legados para bancos de dados relacionais bem estruturados) e o crescimento do trabalho remoto, que permite que profissionais baseados em Teresina atuem para empresas de qualquer lugar do Brasil, ou do mundo.</p>
+      <div class="aviso-ind">
+        <i class="fas fa-route"></i>
+        <span><strong>Conexão com o mercado local:</strong> boa parte dos sistemas discutidos como exemplo ao longo do semestre — sistemas acadêmicos, prontuários de clínica, gestão pública — refletem exatamente o tipo de demanda real que existe hoje em instituições e empresas de Teresina e do interior do Piauí, tornando os fundamentos deste curso diretamente aplicáveis ao mercado de trabalho regional.</span>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Para o painel de discussão</div>
+      <p>Antes do painel em sala, reflita e prepare uma resposta breve para compartilhar com a turma:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Das cinco carreiras apresentadas na tabela desta aula, qual mais desperta seu interesse, e por quê?<br>
+        <strong>(b)</strong> Pensando na sua formação em Inteligência Artificial, de que forma os conceitos deste semestre (modelagem, integridade, cardinalidade) podem impactar diretamente a qualidade de um projeto de IA no qual você venha a trabalhar?<br>
+        <strong>(c)</strong> Que tipo de sistema ou organização, no Piauí, você imagina que mais se beneficiaria de um trabalho sério de modelagem e governança de dados?
+      </p>
+      <span class="dif-basico">Discussão · Painel em sala</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Ferramentas do dia a dia de quem trabalha com dados</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-database"></i>Os SGBDs mais usados no mercado</div>
+      <p>Ao longo do semestre, usamos exemplos genéricos de SQL e antecipamos sintaxe que se aplica, com pequenas variações, a praticamente qualquer SGBD relacional. Vale agora nomear, especificamente, os principais SGBDs que você vai encontrar em vagas de emprego e em projetos reais:</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>SGBD</th><th>Perfil</th><th>Onde costuma aparecer</th></tr></thead>
+          <tbody>
+            <tr><td><strong>PostgreSQL</strong></td><td>Open source, robusto, extremamente respeitado tecnicamente.</td><td>Startups, empresas de tecnologia, sistemas governamentais modernos.</td></tr>
+            <tr><td><strong>MySQL / MariaDB</strong></td><td>Open source, leve, muito popular em aplicações web.</td><td>Sites, sistemas de pequeno e médio porte, hospedagens compartilhadas.</td></tr>
+            <tr><td><strong>Microsoft SQL Server</strong></td><td>Comercial, fortemente integrado ao ecossistema Microsoft.</td><td>Empresas que já usam produtos Microsoft (Windows Server, .NET, Power BI).</td></tr>
+            <tr><td><strong>Oracle Database</strong></td><td>Comercial, tradicionalmente robusto para cargas corporativas pesadas.</td><td>Grandes bancos, setor público de grande porte, sistemas legados críticos.</td></tr>
+            <tr><td><strong>MongoDB</strong></td><td>NoSQL orientado a documentos (retomando a Semana 4).</td><td>Aplicações com dados semiestruturados ou muito variáveis entre registros.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Note que essa lista é, na prática, a Semana 4 (modelos de dados) encontrando o mundo real: o modelo relacional que estudamos em profundidade domina a esmagadora maioria dessas opções, e o MongoDB representa exatamente aquele "eco" do modelo hierárquico que discutimos naquela semana.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-desktop"></i>Ferramentas de administração e consulta (SQL clients)</div>
+      <p>Ninguém trabalha digitando SQL direto em um terminal preto o tempo todo — o mercado usa <strong>clientes SQL</strong>, interfaces gráficas que facilitam explorar tabelas, escrever e testar consultas, e administrar o SGBD visualmente:</p>
+      <div class="grid-2">
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-plug"></i>Ferramentas multiplataforma</div>
+          <p><strong>DBeaver</strong> e <strong>Azure Data Studio</strong> se conectam a praticamente qualquer SGBD (PostgreSQL, MySQL, SQL Server, Oracle...), sendo escolhas populares para quem trabalha com múltiplos sistemas ao mesmo tempo.</p>
+        </div>
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-wrench"></i>Ferramentas específicas de cada SGBD</div>
+          <p><strong>pgAdmin</strong> (oficial do PostgreSQL) e <strong>MySQL Workbench</strong> (oficial do MySQL) oferecem recursos mais profundos e integrados para o SGBD específico ao qual pertencem.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-drafting-compass"></i>Ferramentas de modelagem — a Semana 7 e 8, só que com clique e arraste</div>
+      <p>Os diagramas ER que desenhamos manualmente nas Semanas 7 e 8 também podem ser produzidos com ferramentas dedicadas, que ajudam a visualizar, documentar e, em muitos casos, até gerar automaticamente o <code>CREATE TABLE</code> correspondente:</p>
+      <ul class="icon-list">
+        <li><i class="fas fa-diagram-project"></i><span><strong>dbdiagram.io</strong> e <strong>drawSQL</strong> — ferramentas web voltadas especificamente para modelagem de banco de dados, com sintaxe simples e exportação direta para SQL.</span></li>
+        <li><i class="fas fa-sitemap"></i><span><strong>MySQL Workbench (módulo EER)</strong> — permite desenhar o diagrama visualmente e gerar o script de criação das tabelas automaticamente, aplicando exatamente o algoritmo de conversão que estudamos na Semana 8.</span></li>
+        <li><i class="fas fa-pen-ruler"></i><span><strong>draw.io</strong> e <strong>Lucidchart</strong> — ferramentas de diagramação genéricas, muito usadas para desenhos ER mais informais ou para apresentações e documentação.</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-cloud"></i>Bancos de dados em nuvem e versionamento de esquema</div>
+      <p>Uma tendência consolidada do mercado atual é hospedar bancos de dados em provedores de nuvem, em vez de servidores físicos próprios — o que conecta diretamente com o assunto de backup e recuperação da Semana 14, já que provedores de nuvem costumam automatizar boa parte dessa rotina:</p>
+      <div class="grid-3">
+        <div class="mini-card">
+          <div class="mini-card-titulo"><i class="fas fa-aws"></i>Amazon RDS</div>
+          <p>Serviço da AWS que hospeda PostgreSQL, MySQL, SQL Server e outros SGBDs de forma gerenciada, com backup automático.</p>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-titulo"><i class="fas fa-cloud"></i>Google Cloud SQL</div>
+          <p>Equivalente do Google Cloud, com integração próxima a outras ferramentas de dados e IA do ecossistema Google.</p>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-titulo"><i class="fas fa-bolt"></i>Supabase / Neon</div>
+          <p>Plataformas mais recentes construídas sobre PostgreSQL, populares em projetos independentes e startups pelo plano gratuito generoso e facilidade de uso.</p>
+        </div>
+      </div>
+      <p>Outra prática cada vez mais comum é tratar mudanças de esquema (lembra da "evolução de esquema" da Semana 5?) como código versionado, usando ferramentas de <strong>migrations</strong> — scripts numerados e controlados por versão (frequentemente com Git) que aplicam alterações de <code>ALTER TABLE</code> de forma organizada e rastreável, em vez de mudanças manuais e não documentadas direto em produção.</p>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Montando seu kit de ferramentas</div>
+      <p>Considere que você foi contratado(a) para o primeiro projeto de banco de dados da sua carreira: um sistema de gestão para uma pequena empresa de Teresina, com orçamento limitado.</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Qual SGBD você escolheria, considerando custo e robustez? Justifique.<br>
+        <strong>(b)</strong> Qual ferramenta cliente (SQL client) você usaria para explorar e administrar esse banco no dia a dia?<br>
+        <strong>(c)</strong> Você desenharia o modelo ER em papel, em uma ferramenta de diagramação genérica, ou em uma ferramenta específica de modelagem de banco de dados? Justifique sua escolha.
+      </p>
+      <span class="dif-basico">Prático · Reflexão aplicada</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · ~50 minutos</div>
+        <div class="secao-titulo">Revisão geral: o mapa completo do semestre</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-map"></i>Três blocos, um só raciocínio contínuo</div>
+      <p>Antes da revisão detalhada da Semana 18 e da Prova Final na Semana 19, vale reconstruir o fio condutor que atravessou as 17 semanas até aqui. A disciplina inteira pode ser lida como uma resposta cada vez mais sofisticada para uma única pergunta: <strong>"como organizar dados de forma confiável, eficiente e duradoura?"</strong></p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">Bloco 1 · Sem. 1–5 (P1)</div>
+          <div class="tl-titulo">Fundamentos conceituais</div>
+          <div class="tl-desc">Dado, informação e conhecimento; evolução histórica dos SGBDs; arquitetura em três camadas; modelos hierárquico, rede e relacional; esquema, instância e metadado.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">Bloco 2 · Sem. 7–12 (P2)</div>
+          <div class="tl-titulo">Projeto e governança do banco de dados</div>
+          <div class="tl-desc">Modelagem ER (entidades, atributos, relacionamentos); conversão para modelo lógico (tabelas, PK, FK, cardinalidade); usuários e funções; independência de dados; integridade; consistência e segurança.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">Bloco 3 · Sem. 14–17 (P3)</div>
+          <div class="tl-titulo">Operação, linguagem e profissão</div>
+          <div class="tl-desc">Backup e recuperação após falhas; linguagens DDL e DML; o profissional de banco de dados no mercado de trabalho.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-table-list"></i>Quadro-resumo: os termos que mais aparecem em prova</div>
+      <p>Reunimos, em uma única tabela, os conceitos que foram destacados como "vale memorizar para a prova" ao longo do semestre — um bom ponto de partida para revisão ativa:</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Semana</th><th>Conceito-chave</th><th>Em uma frase</th></tr></thead>
+          <tbody>
+            <tr><td>2</td><td>Independência de dados</td><td>Separar a estrutura física de armazenamento da lógica das aplicações.</td></tr>
+            <tr><td>4</td><td>Modelo relacional (Codd)</td><td>Resolveu ponteiros físicos, acesso procedural e independência fraca de uma vez só.</td></tr>
+            <tr><td>5</td><td>Esquema × instância</td><td>Esquema é a estrutura (estável); instância é o conteúdo real (muda a cada transação).</td></tr>
+            <tr><td>7</td><td>Entidade, atributo, relacionamento</td><td>Os três blocos do Modelo Entidade-Relacionamento (Chen, 1976).</td></tr>
+            <tr><td>8</td><td>Cardinalidade e chave estrangeira</td><td>1:N → FK no lado N; N:N → tabela associativa; 1:1 → decisão de projeto.</td></tr>
+            <tr><td>11</td><td>Integridade de domínio, entidade e referencial</td><td>Três camadas de regras que impedem dados inválidos ou inconsistentes.</td></tr>
+            <tr><td>12</td><td>Autenticação × autorização</td><td>Autenticação prova quem você é; autorização define o que você pode fazer.</td></tr>
+            <tr><td>14</td><td>RPO e RTO</td><td>RPO = quanto dado se pode perder; RTO = quanto tempo até voltar ao ar.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="aviso">
+        <i class="fas fa-lightbulb"></i>
+        <span><strong>Estratégia de estudo:</strong> em vez de tentar revisar as 17 semanas na ordem em que foram dadas, tente revisar por <strong>conexões</strong> — como fizemos ao longo de todo o semestre. Pergunte-se: "como o assunto desta semana resolve ou aprofunda um problema levantado em uma semana anterior?". Essa forma de estudar tende a fixar muito mais do que a simples releitura linear do material.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-triangle-exclamation"></i>Erros conceituais comuns — o que costuma confundir na hora da prova</div>
+      <ul class="icon-list">
+        <li><i class="fas fa-xmark bad"></i><span>Confundir <strong>esquema</strong> com <strong>instância</strong> (Semana 5) — lembre-se: esquema é a "planta"; instância é o "conteúdo real" em um instante.</span></li>
+        <li><i class="fas fa-xmark bad"></i><span>Esquecer que atributos <strong>multivalorados</strong> (Semana 8) exigem uma tabela nova, e não uma coluna com vários valores separados por vírgula.</span></li>
+        <li><i class="fas fa-xmark bad"></i><span>Colocar a chave estrangeira do lado errado em um relacionamento 1:N (Semana 8) — lembre-se: <strong>sempre no lado "N"</strong>.</span></li>
+        <li><i class="fas fa-xmark bad"></i><span>Confundir <strong>autenticação</strong> com <strong>autorização</strong> (Semana 12) — são etapas diferentes e sequenciais do controle de acesso.</span></li>
+        <li><i class="fas fa-xmark bad"></i><span>Achar que "ter um backup configurado" é o mesmo que "ter um backup confiável" (Semana 14) — sem teste de restore, não há garantia real.</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-calendar-check"></i>Como aproveitar bem a Semana 18 e chegar preparado(a) na Prova Final</div>
+      <p>A Semana 19 avalia especificamente o conteúdo das Semanas 14 a 17, somado a uma revisão geral do semestre inteiro. Um plano de estudo eficiente para os próximos dias:</p>
+      <ul class="icon-list">
+        <li><i class="fas fa-1"></i><span>Revise, com atenção especial, os quadros de "vale memorizar para a prova" espalhados pelos materiais de cada semana — eles concentram o que historicamente mais cai em avaliação.</span></li>
+        <li><i class="fas fa-2"></i><span>Refaça, sem consultar o gabarito primeiro, os exercícios de fixação de cada semana — especialmente os das Semanas 8, 11 e 14, que exigem aplicação prática, não só memorização.</span></li>
+        <li><i class="fas fa-3"></i><span>Leve para a Semana 18 (revisão geral) uma lista concreta de dúvidas específicas — a aula de revisão rende muito mais quando parte de perguntas já formuladas do que de uma releitura passiva.</span></li>
+      </ul>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Autoavaliação para a Prova Final</div>
+      <p>Sem consultar o material, tente responder de cabeça — depois confira com os materiais das semanas indicadas:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Explique, em uma frase cada, a diferença entre esquema e instância, e entre RPO e RTO.<br>
+        <strong>(b)</strong> Um relacionamento N:N entre Pedido e Produto — descreva, sem escrever SQL, como isso vira tabelas no modelo lógico.<br>
+        <strong>(c)</strong> Cite as três camadas de integridade estudadas na Semana 11 e dê um exemplo de violação para cada uma.<br>
+        <strong>(d)</strong> Por que um backup nunca testado não deveria ser considerado confiável?<br>
+        <strong>(e)</strong> Escolha uma carreira em dados discutida hoje e explique, em duas frases, como ela se conecta com pelo menos três semanas diferentes do semestre.
+      </p>
+      <span class="dif-basico">Revisão · Autoavaliação pré-Prova Final</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 17</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-briefcase"></i>
+        <strong>Carreiras em dados</strong>
+        <p>DBA, desenvolvedor, engenheiro de dados, analista e cientista de dados — cada um se apoia em partes diferentes do que você estudou este semestre.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-toolbox"></i>
+        <strong>Ferramentas de mercado</strong>
+        <p>SGBDs (PostgreSQL, MySQL, SQL Server, Oracle, MongoDB), clientes SQL, ferramentas de modelagem e bancos em nuvem.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-map"></i>
+        <strong>Mapa do semestre</strong>
+        <p>Três blocos conectados: fundamentos conceituais, projeto e governança, operação e linguagem — uma resposta cada vez mais sofisticada para "como organizar dados com confiabilidade".</p>
+      </div>
+    </div>
+
+    <div class="proxima">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 18 — Revisão geral e simulado com questões objetivas e dissertativas</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

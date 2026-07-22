@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 16 — Linguagens de Banco de Dados: DML (INSERT, SELECT, UPDATE, DELETE)</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ind-950:#181330;--ind-900:#211a45;--ind-800:#2d2260;
+  --ind-700:#4338ca;--ind-500:#6366f1;--ind-400:#818cf8;--ind-300:#a5b4fc;
+  --white:#fff;--text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);--card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);--card-hover:rgba(129,140,248,.07);
+  --code-bg:#140f28;--code-border:rgba(129,140,248,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--ind-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:var(--ind-700);top:-220px;left:-180px;}
+.blob-2{width:550px;height:550px;background:var(--ind-800);bottom:-200px;right:-120px;}
+.blob-3{width:280px;height:280px;background:var(--ind-500);top:38%;left:42%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(129,140,248,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ind-400);border:1px solid rgba(129,140,248,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--ind-400);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(129,140,248,.12);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--ind-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--ind-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.13);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(129,140,248,.18);color:var(--ind-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(129,140,248,.05);border-left:3px solid var(--ind-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--ind-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(129,140,248,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(129,140,248,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ind-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(129,140,248,.22);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.07);border-left:3px solid var(--ind-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--ind-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-ind{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.18);font-size:.86rem;color:rgba(165,180,252,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-ind i{color:var(--ind-400);flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(129,140,248,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--ind-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(129,140,248,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(129,140,248,.03);}
+td strong{color:var(--text-primary);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--ind-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+.icon-list li i.bad{color:#f87171;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(129,140,248,.12);color:var(--ind-400);border:1px solid rgba(129,140,248,.22);}
+
+/* ── comparativo lado a lado ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:.75rem 0;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.1rem;margin:.75rem 0;}
+.mini-card{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;}
+.mini-card.bad{border-color:rgba(248,113,113,.2);background:rgba(248,113,113,.04);}
+.mini-card.good{border-color:rgba(129,140,248,.25);background:rgba(129,140,248,.05);}
+.mini-card-titulo{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:700;margin-bottom:.6rem;display:flex;align-items:center;gap:8px;}
+.mini-card.bad .mini-card-titulo{color:#f87171;}
+.mini-card.good .mini-card-titulo{color:var(--ind-400);}
+.mini-card p{font-size:.83rem;color:var(--text-secondary);line-height:1.55;margin:0;}
+
+/* ── código ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(129,140,248,.08);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+pre{padding:1.1rem 1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;color:#c7d2fe;}
+.cm{color:#6b7280;font-style:italic;}
+
+/* ── tabela de resultado de consulta ── */
+.result-wrap{margin:.75rem 0;border-radius:10px;overflow:hidden;border:1px solid var(--code-border);}
+.result-wrap .result-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-weight:700;padding:.5rem 1rem;background:rgba(129,140,248,.08);border-bottom:1px solid var(--code-border);}
+.result-wrap table{font-size:.8rem;}
+.result-wrap th{background:rgba(129,140,248,.06);}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;background:rgba(129,140,248,.1);color:var(--ind-400);border:1px solid rgba(129,140,248,.2);}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--ind-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(129,140,248,.12);border-color:rgba(129,140,248,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--ind-400);}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(129,140,248,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .resumo-grid,.grid-2,.grid-3{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:580px){
+  .resumo-grid,.grid-2,.grid-3{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Fundamentos de Banco de Dados · BD1.02 · Sexta-feira</div>
+    <div class="semana-num">16</div>
+    <h1 class="capa-titulo">Linguagem de Manipulação<br>de Dados: <em>DML</em> — INSERT,<br>SELECT, UPDATE e DELETE</h1>
+    <p class="capa-sub">3 aulas · 150 minutos · Finalmente colocando dados dentro das tabelas que passamos o semestre projetando</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-plus"></i></div><span>INSERT — colocando as primeiras linhas dentro das tabelas</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-magnifying-glass"></i></div><span>SELECT — filtrando, ordenando e refinando consultas</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-chart-column"></i></div><span>Funções de agregação, GROUP BY e um primeiro contato com JOIN</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-pen-to-square"></i></div><span>UPDATE — alterando dados já existentes com segurança</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-eraser"></i></div><span>DELETE — removendo linhas sem repetir os erros da Semana 15</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade da semana</div>
+      <p>Exercício prático: escrever e testar, em ambiente controlado, os primeiros comandos de manipulação de dados (INSERT, SELECT, UPDATE, DELETE) sobre um cenário de banco de dados proposto em aula.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>Sem. 14 — Recuperação de dados: backup e restore</li>
+        <li>Sem. 15 — Linguagens de banco de dados: DDL</li>
+        <li>▶ Sem. 16 — Linguagens de banco de dados: DML</li>
+        <li>Sem. 17 — O profissional de Banco de Dados; revisão</li>
+        <li>🔴 Sem. 19 — Prova Final (Semanas 14 a 17 + revisão geral)</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que esta semana importa</div>
+      <ul class="info-lista">
+        <li>Depois de 15 semanas projetando estrutura — entidades, tabelas, chaves, permissões, DDL — chegou o momento de finalmente colocar dados <strong>dentro</strong> dela. É o "verbo" que faltava para tudo o que foi construído até aqui ganhar vida</li>
+        <li>É também a última parada técnica antes da reta final: a Semana 17 fecha o conteúdo novo com o papel do profissional de banco de dados, e as Semanas 18 e 19 são dedicadas à revisão geral e à Prova Final</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-link"></i>Conexão direta</div>
+      <ul class="info-lista">
+        <li>Tabelas e chaves estrangeiras (Semana 8) → são exatamente o que torna possível o <code>JOIN</code> que veremos na Aula 2 de hoje</li>
+        <li>Restrições como <code>NOT NULL</code>, <code>CHECK</code> e <code>FOREIGN KEY</code> (Semana 15) → são verificadas automaticamente pelo SGBD toda vez que um <code>INSERT</code> ou <code>UPDATE</code> é executado</li>
+        <li><code>DROP</code> e <code>TRUNCATE</code> (Semana 15) → têm, no <code>DELETE</code> de hoje, seu "primo" mais controlado — com <code>WHERE</code> e reversibilidade dentro de transações</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">INSERT e os primeiros passos do SELECT</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-arrow-rotate-left"></i>De prateleiras vazias a dados de verdade</div>
+      <p>Na Semana 15, fechamos o estudo da DDL com uma analogia: <code>CREATE TABLE</code> constrói as "prateleiras" de um banco de dados, mas ainda sem nenhum produto nelas. Hoje colocamos os produtos nas prateleiras. A <strong>DML (Data Manipulation Language)</strong> é a subfamília do SQL responsável por tudo o que acontece com os <strong>dados</strong> depois que a estrutura já existe — inserir, consultar, alterar e remover linhas dentro das tabelas que projetamos desde a Semana 8.</p>
+      <p>Vamos trabalhar, ao longo de toda a semana, com as mesmas tabelas que já são "velhas conhecidas" nossas: <code>Curso</code>, <code>Aluno</code>, <code>Disciplina</code> e <code>Matricula</code>, construídas nas Semanas 8 e 15. A vantagem de reaproveitar esse cenário é dupla: você já entende a estrutura de cor, e consegue focar inteiramente na novidade de hoje — o que fazer com os dados dentro dela.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-plus"></i>INSERT — a porta de entrada dos dados</div>
+      <p>O comando <code>INSERT</code> adiciona uma (ou várias) novas linhas a uma tabela já existente. Sua sintaxe básica exige informar o nome da tabela, as colunas que serão preenchidas e os valores correspondentes, na mesma ordem:</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — inserindo dados nas tabelas do sistema acadêmico</span></div>
+        <pre><code><span class="cm">-- Inserindo um curso:</span>
+INSERT INTO Curso (codigo, nome_curso, carga_horaria)
+VALUES (1, 'Tecnologia em Banco de Dados', 1600);
+
+<span class="cm">-- Inserindo um aluno matriculado nesse curso:</span>
+INSERT INTO Aluno (matricula, nome, curso_codigo)
+VALUES (2026001, 'Maria Eduarda Silva', 1);
+
+<span class="cm">-- Inserindo VÁRIAS linhas em um único comando,
+-- mais eficiente do que repetir o INSERT várias vezes:</span>
+INSERT INTO Disciplina (codigo, nome, carga_horaria) VALUES
+    (101, 'Fundamentos de Banco de Dados', 60),
+    (102, 'Lógica de Programação', 80),
+    (103, 'Redes de Computadores', 60);</code></pre>
+      </div>
+      <p>Repare que, se uma coluna não for mencionada no <code>INSERT</code>, o SGBD tenta usar o valor <code>DEFAULT</code> definido para ela (Semana 15) — e, se não houver um <code>DEFAULT</code> e a coluna tiver a restrição <code>NOT NULL</code>, o comando inteiro <strong>falha</strong>, recusando a inserção. Esse é, na prática, o momento em que todas as restrições que definimos na semana passada realmente "entram em ação": o SGBD nunca aceita um <code>INSERT</code> que viole uma <code>PRIMARY KEY</code> duplicada, uma <code>FOREIGN KEY</code> inexistente ou uma condição de <code>CHECK</code> não satisfeita.</p>
+      <div class="destaque">
+        <strong>Conectando com a Semana 8:</strong> tente inserir um Aluno com <code>curso_codigo = 99</code>, sendo que nenhum curso de código 99 existe na tabela Curso. O SGBD recusa o comando imediatamente — é a integridade referencial, definida através da <code>FOREIGN KEY</code>, protegendo o banco contra o famoso "registro órfão" que discutimos na Semana 8.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-magnifying-glass"></i>SELECT — a consulta mais usada de toda a carreira em dados</div>
+      <p>Se o <code>INSERT</code> é a porta de entrada, o <code>SELECT</code> é, disparado, o comando mais usado no dia a dia de qualquer pessoa que trabalha com bancos de dados — lembra do papel do analista de dados, na Semana 9, cujo trabalho gira quase inteiramente em torno dele? Sua forma mais simples consulta todas as colunas e todas as linhas de uma tabela:</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — SELECT básico</span></div>
+        <pre><code><span class="cm">-- Todas as colunas, todas as linhas:</span>
+SELECT * FROM Aluno;
+
+<span class="cm">-- Apenas as colunas que interessam:</span>
+SELECT nome, matricula FROM Aluno;
+
+<span class="cm">-- Filtrando linhas com WHERE:</span>
+SELECT nome FROM Aluno WHERE curso_codigo = 1;</code></pre>
+      </div>
+      <p>O <code>*</code> (asterisco) é um atalho útil para explorar dados rapidamente, mas evite usá-lo em aplicações reais em produção: pedir <em>todas</em> as colunas quando só duas ou três são necessárias desperdiça processamento e tráfego de rede — um detalhe pequeno, mas que faz diferença real em sistemas com muitos usuários simultâneos.</p>
+      <p>A cláusula <code>WHERE</code> é o que transforma um <code>SELECT</code> de "me dê tudo" para "me dê exatamente o que eu preciso" — e aceita os mesmos tipos de operadores lógicos e de comparação que você já usa em qualquer linguagem de programação:</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Operador</th><th>Significado</th><th>Exemplo</th></tr></thead>
+          <tbody>
+            <tr><td><code>=</code>, <code>&lt;&gt;</code> (ou <code>!=</code>)</td><td>Igual, diferente</td><td><code>WHERE curso_codigo = 1</code></td></tr>
+            <tr><td><code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code></td><td>Maior, menor, maior/igual, menor/igual</td><td><code>WHERE carga_horaria &gt;= 60</code></td></tr>
+            <tr><td><code>AND</code>, <code>OR</code>, <code>NOT</code></td><td>Combinação de condições</td><td><code>WHERE curso_codigo = 1 AND ativo = TRUE</code></td></tr>
+            <tr><td><code>BETWEEN</code></td><td>Dentro de um intervalo (inclusive)</td><td><code>WHERE carga_horaria BETWEEN 40 AND 80</code></td></tr>
+            <tr><td><code>IN</code></td><td>Dentro de uma lista de valores</td><td><code>WHERE curso_codigo IN (1, 2, 3)</code></td></tr>
+            <tr><td><code>LIKE</code></td><td>Correspondência de padrão em texto (<code>%</code> = qualquer sequência)</td><td><code>WHERE nome LIKE 'Maria%'</code></td></tr>
+            <tr><td><code>IS NULL</code></td><td>Verifica se o valor está ausente (não pode usar <code>= NULL</code>)</td><td><code>WHERE email IS NULL</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="aviso-ind">
+      <i class="fas fa-circle-question"></i>
+      <span><strong>Pare e pense:</strong> por que você acha que <code>WHERE email = NULL</code> não funciona como esperado em nenhum SGBD, sendo necessário usar <code>WHERE email IS NULL</code>? Uma dica: pense em <code>NULL</code> não como "um valor chamado nulo", mas como "a ausência de qualquer valor" — e no que significa comparar uma ausência com algo.</span>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Primeiros INSERT e SELECT</div>
+      <p>Usando as tabelas <code>Curso</code>, <code>Aluno</code> e <code>Disciplina</code> apresentadas nesta aula:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Escreva um <code>INSERT</code> para cadastrar você mesmo(a) como aluno(a) fictício(a), matriculado(a) no curso de código 1.<br>
+        <strong>(b)</strong> Escreva uma consulta que retorne apenas o nome dos alunos matriculados no curso de código 1.<br>
+        <strong>(c)</strong> Escreva uma consulta que retorne o nome e a carga horária de todas as disciplinas com carga horária maior que 60 horas.<br>
+        <strong>(d)</strong> Escreva uma consulta que retorne todas as disciplinas cujo nome comece com a palavra "Fundamentos".
+      </p>
+      <span class="dif-basico">Prático · Escrita de comandos SQL</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Refinando o SELECT: ordenação, agregação e um primeiro JOIN</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-arrow-down-a-z"></i>ORDER BY e DISTINCT — organizando o resultado</div>
+      <p>Duas cláusulas simples, mas extremamente usadas no dia a dia, ajudam a organizar o resultado de uma consulta: <code>ORDER BY</code> define a ordem das linhas retornadas, e <code>DISTINCT</code> remove valores duplicados do resultado.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — ORDER BY e DISTINCT</span></div>
+        <pre><code><span class="cm">-- Alunos em ordem alfabética pelo nome:</span>
+SELECT nome FROM Aluno ORDER BY nome ASC;
+
+<span class="cm">-- Disciplinas da maior para a menor carga horária:</span>
+SELECT nome, carga_horaria FROM Disciplina ORDER BY carga_horaria DESC;
+
+<span class="cm">-- Lista, sem repetição, de todos os códigos de curso
+-- que já têm pelo menos um aluno matriculado:</span>
+SELECT DISTINCT curso_codigo FROM Aluno;</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-chart-column"></i>Funções de agregação: transformando linhas em respostas de negócio</div>
+      <p>Lembra do papel do analista de dados (Semana 9), cujo trabalho é responder perguntas como "quantos alunos estão matriculados no curso X?" ou "qual a carga horária média das disciplinas?" Esse tipo de pergunta não pede uma lista de linhas — pede um <strong>resumo</strong> calculado sobre várias linhas de uma vez. É exatamente para isso que existem as <strong>funções de agregação</strong>:</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Função</th><th>O que calcula</th><th>Exemplo</th></tr></thead>
+          <tbody>
+            <tr><td><code>COUNT()</code></td><td>Quantidade de linhas</td><td><code>SELECT COUNT(*) FROM Aluno;</code></td></tr>
+            <tr><td><code>SUM()</code></td><td>Soma dos valores de uma coluna numérica</td><td><code>SELECT SUM(carga_horaria) FROM Disciplina;</code></td></tr>
+            <tr><td><code>AVG()</code></td><td>Média dos valores</td><td><code>SELECT AVG(carga_horaria) FROM Disciplina;</code></td></tr>
+            <tr><td><code>MAX()</code> / <code>MIN()</code></td><td>Maior e menor valor</td><td><code>SELECT MAX(carga_horaria) FROM Disciplina;</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Sozinhas, essas funções resumem a tabela inteira em um único número. A verdadeira força delas aparece quando combinadas com <code>GROUP BY</code>, que agrupa as linhas por uma coluna em comum antes de aplicar a agregação — respondendo perguntas do tipo "quantos alunos existem <strong>em cada curso</strong>", em vez de "quantos alunos existem no total":</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — GROUP BY e HAVING</span></div>
+        <pre><code><span class="cm">-- Quantidade de alunos matriculados EM CADA curso:</span>
+SELECT curso_codigo, COUNT(*) AS total_alunos
+FROM Aluno
+GROUP BY curso_codigo;
+
+<span class="cm">-- A mesma consulta, mas mostrando só os cursos
+-- com MAIS DE 20 alunos matriculados.
+-- HAVING filtra depois do agrupamento (WHERE filtra antes):</span>
+SELECT curso_codigo, COUNT(*) AS total_alunos
+FROM Aluno
+GROUP BY curso_codigo
+HAVING COUNT(*) > 20;</code></pre>
+      </div>
+      <div class="result-wrap">
+        <div class="result-label">Resultado ilustrativo da primeira consulta</div>
+        <table>
+          <thead><tr><th>curso_codigo</th><th>total_alunos</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>34</td></tr>
+            <tr><td>2</td><td>18</td></tr>
+            <tr><td>3</td><td>27</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="destaque">
+        <strong>Diferença entre WHERE e HAVING:</strong> <code>WHERE</code> filtra linhas individuais <em>antes</em> de qualquer agrupamento acontecer; <code>HAVING</code> filtra os grupos <em>já calculados</em>, depois do <code>GROUP BY</code>. É por isso que não é possível escrever <code>WHERE COUNT(*) > 20</code> — nesse ponto da consulta, a contagem ainda nem existe.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-link"></i>Um primeiro contato com JOIN: reencontrando as chaves estrangeiras</div>
+      <p>Chegamos ao momento em que todo o trabalho de modelagem da Semana 8 realmente compensa. Até aqui, consultamos cada tabela isoladamente — mas o valor real de um banco de dados <strong>relacional</strong> está em combinar informações de tabelas diferentes, exatamente através das chaves estrangeiras que projetamos naquela semana. O comando que faz essa combinação se chama <code>JOIN</code>.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — JOIN combinando Aluno e Curso</span></div>
+        <pre><code><span class="cm">-- Sem JOIN, "curso_codigo" é só um número sem sentido.
+-- Com JOIN, trazemos o NOME do curso junto do aluno,
+-- usando exatamente a chave estrangeira da Semana 8:</span>
+SELECT Aluno.nome, Curso.nome_curso
+FROM Aluno
+JOIN Curso ON Aluno.curso_codigo = Curso.codigo;</code></pre>
+      </div>
+      <div class="result-wrap">
+        <div class="result-label">Resultado ilustrativo</div>
+        <table>
+          <thead><tr><th>nome</th><th>nome_curso</th></tr></thead>
+          <tbody>
+            <tr><td>Maria Eduarda Silva</td><td>Tecnologia em Banco de Dados</td></tr>
+            <tr><td>João Pedro Santos</td><td>Tecnologia em Banco de Dados</td></tr>
+            <tr><td>Camila Ferreira</td><td>Análise e Desenvolvimento de Sistemas</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A cláusula <code>ON</code> diz ao SGBD exatamente <em>como</em> as duas tabelas se conectam — normalmente, comparando a chave estrangeira de uma com a chave primária da outra, seguindo a mesma lógica de cardinalidade 1:N que estudamos na Semana 8. Este é apenas um primeiro contato com o assunto — <code>JOIN</code> tem variações importantes (interno, externo, entre outras) que costumam ganhar uma disciplina inteira dedicada a consultas avançadas mais adiante no curso; por hoje, o essencial é entender <strong>por que</strong> ele existe: sem ele, os dados relacionados entre tabelas diferentes ficariam permanentemente isolados uns dos outros.</p>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Agregando e combinando dados</div>
+      <p>Ainda usando as tabelas <code>Curso</code>, <code>Aluno</code> e <code>Disciplina</code>:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Escreva uma consulta que retorne o número total de alunos cadastrados no banco de dados.<br>
+        <strong>(b)</strong> Escreva uma consulta que retorne a carga horária média de todas as disciplinas.<br>
+        <strong>(c)</strong> Escreva uma consulta com <code>GROUP BY</code> que mostre quantos alunos existem em cada curso, ordenando o resultado do curso com mais alunos para o com menos.<br>
+        <strong>(d)</strong> Escreva uma consulta usando <code>JOIN</code> que mostre o nome de cada aluno junto com o nome do curso em que está matriculado, ordenado por nome de aluno.
+      </p>
+      <span class="dif-basico">Prático · Escrita de comandos SQL</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · ~50 minutos</div>
+        <div class="secao-titulo">UPDATE e DELETE — alterando e removendo dados com segurança</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-pen-to-square"></i>UPDATE — corrigindo e atualizando o que já existe</div>
+      <p>O comando <code>UPDATE</code> altera o valor de uma ou mais colunas em linhas que já existem em uma tabela. Sua sintaxe é enganosamente simples — e é exatamente essa simplicidade que exige atenção redobrada, como veremos a seguir:</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — UPDATE básico</span></div>
+        <pre><code><span class="cm">-- Corrigindo o nome de um aluno específico:</span>
+UPDATE Aluno
+SET nome = 'Maria Eduarda S. Oliveira'
+WHERE matricula = 2026001;
+
+<span class="cm">-- Atualizando mais de uma coluna ao mesmo tempo:</span>
+UPDATE Curso
+SET nome_curso = 'Tecnologia em Banco de Dados e IA', carga_horaria = 1700
+WHERE codigo = 1;</code></pre>
+      </div>
+      <div class="aviso">
+        <i class="fas fa-triangle-exclamation"></i>
+        <span><strong>O erro mais perigoso e mais comum do SQL:</strong> executar um <code>UPDATE</code> <strong>sem</strong> a cláusula <code>WHERE</code> não gera erro nenhum — ele simplesmente aplica a alteração a <em>todas</em> as linhas da tabela, de uma vez só. <code>UPDATE Aluno SET curso_codigo = 1;</code>, sem <code>WHERE</code>, transferiria instantaneamente <strong>todos</strong> os alunos do banco de dados inteiro para o curso 1 — provavelmente não é isso que você queria fazer.</span>
+      </div>
+      <p>Essa é a razão pela qual boa parte das ferramentas profissionais de SQL, e boa parte dos DBAs experientes (Semana 9), seguem uma disciplina pessoal simples e valiosa: <strong>escrever e testar o <code>SELECT</code> equivalente ao <code>WHERE</code> pretendido antes de rodar o <code>UPDATE</code> ou o <code>DELETE</code></strong> — confirmando visualmente quais linhas exatamente serão afetadas, antes de efetivamente alterá-las ou removê-las.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-eraser"></i>DELETE — removendo linhas específicas</div>
+      <p>O comando <code>DELETE</code> remove linhas inteiras de uma tabela, sempre respeitando o filtro definido em <code>WHERE</code>:</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — DELETE básico</span></div>
+        <pre><code><span class="cm">-- Removendo um único aluno, pela chave primária:</span>
+DELETE FROM Aluno WHERE matricula = 2026001;
+
+<span class="cm">-- Removendo todas as matrículas de um curso que foi encerrado:</span>
+DELETE FROM Matricula WHERE disciplina_codigo = 103;</code></pre>
+      </div>
+      <p>Voltando à comparação que fizemos na Semana 15: diferente do <code>DROP TABLE</code> (que apaga a tabela inteira, estrutura e dados) e do <code>TRUNCATE TABLE</code> (que apaga todos os dados de uma vez, mas mantém a tabela), o <code>DELETE</code> é o único dos três comandos que permite remover exatamente um subconjunto de linhas, através do <code>WHERE</code> — e, dentro de uma transação ainda não confirmada (o <code>COMMIT</code> da TCL, mencionado na Semana 15), essa remoção ainda pode ser desfeita com um <code>ROLLBACK</code>.</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Situação</th><th>Comando mais adequado</th><th>Por quê</th></tr></thead>
+          <tbody>
+            <tr><td>Remover só os alunos inativos há mais de 2 anos</td><td><code>DELETE ... WHERE</code></td><td>Precisa de um filtro preciso sobre linhas específicas</td></tr>
+            <tr><td>Zerar todos os dados de teste antes de ir para produção</td><td><code>TRUNCATE TABLE</code></td><td>Remove tudo de uma vez, de forma rápida, mantendo a estrutura</td></tr>
+            <tr><td>Um módulo do sistema foi descontinuado por completo</td><td><code>DROP TABLE</code></td><td>Nem a estrutura nem os dados fazem mais sentido</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-clipboard-check"></i>Checklist de segurança para UPDATE e DELETE (o irmão prático do checklist de DDL)</div>
+      <p>Na Semana 15, fechamos com um checklist de segurança para comandos DDL destrutivos. A boa notícia é que a mesma disciplina se aplica, quase ponto a ponto, aos comandos <code>UPDATE</code> e <code>DELETE</code> da DML:</p>
+      <ul class="icon-list">
+        <li><i class="fas fa-magnifying-glass"></i><span><strong>Testar o <code>WHERE</code> primeiro com um <code>SELECT</code></strong> — confirmar visualmente exatamente quais linhas seriam afetadas antes de alterá-las ou apagá-las de fato.</span></li>
+        <li><i class="fas fa-box-archive"></i><span><strong>Garantir que existe um backup recente</strong> (Semana 14) antes de qualquer alteração em massa em produção.</span></li>
+        <li><i class="fas fa-layer-group"></i><span><strong>Usar transações quando o SGBD permitir</strong> — iniciar com um comando de controle, rodar o <code>UPDATE</code>/<code>DELETE</code>, conferir o resultado, e só então confirmar com <code>COMMIT</code> (ou desfazer com <code>ROLLBACK</code> caso algo esteja errado).</span></li>
+        <li><i class="fas fa-user-check"></i><span><strong>Pedir revisão de uma segunda pessoa</strong> em alterações críticas de produção, aplicando a mesma separação de funções discutida na Semana 9.</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-diagram-project"></i>Exemplo guiado completo: um dia inteiro de manipulação de dados</div>
+      <p>Para fechar a semana, vamos simular, em sequência, o tipo de rotina que um sistema acadêmico real executa constantemente — juntando os quatro comandos estudados hoje:</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — INSERT, SELECT, UPDATE e DELETE em sequência</span></div>
+        <pre><code><span class="cm">-- 1. Um novo aluno se matricula (INSERT):</span>
+INSERT INTO Aluno (matricula, nome, curso_codigo)
+VALUES (2026045, 'Pedro Henrique Costa', 1);
+
+<span class="cm">-- 2. A secretaria confirma que o cadastro entrou corretamente (SELECT):</span>
+SELECT * FROM Aluno WHERE matricula = 2026045;
+
+<span class="cm">-- 3. O aluno se casa e solicita a atualização do sobrenome (UPDATE),
+--    sempre testando o WHERE antes com um SELECT equivalente:</span>
+SELECT nome FROM Aluno WHERE matricula = 2026045;
+UPDATE Aluno SET nome = 'Pedro Henrique Costa Lima' WHERE matricula = 2026045;
+
+<span class="cm">-- 4. O aluno tranca o curso e solicita o cancelamento
+--    de suas matrículas em disciplinas do semestre atual (DELETE):</span>
+SELECT * FROM Matricula WHERE aluno_matricula = 2026045;
+DELETE FROM Matricula WHERE aluno_matricula = 2026045;</code></pre>
+      </div>
+      <p>Note como cada comando de alteração ou remoção é precedido por um <code>SELECT</code> equivalente — exatamente a disciplina de segurança que discutimos há pouco, aplicada na prática, do começo ao fim de um fluxo de trabalho real.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-arrow-right"></i>O que ainda falta — e onde vamos chegar em breve</div>
+      <p>Com DDL (Semana 15) e DML (hoje), você já domina, em nível introdutório, o ciclo completo de vida de um banco de dados relacional: projetar a estrutura, popular com dados, consultar, alterar e remover — sempre apoiado pelos conceitos de integridade, segurança e recuperação que construímos ao longo de todo o semestre. Na Semana 17, damos um passo para fora do código e olhamos para o profissional por trás dele: carreira, mercado de trabalho e as ferramentas do dia a dia de quem trabalha com banco de dados — além de iniciarmos a revisão para a Prova Final.</p>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Manipulando dados de ponta a ponta (consolidação)</div>
+      <p>Retomando o cenário da biblioteca universitária do Exercício 03 da Semana 15 (tabela <code>Livro</code>, com código, título, ano de publicação, número de páginas e disponibilidade):</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Escreva comandos <code>INSERT</code> para cadastrar três livros fictícios diferentes.<br>
+        <strong>(b)</strong> Escreva uma consulta que retorne apenas os livros publicados depois do ano 2015, ordenados do mais recente para o mais antigo.<br>
+        <strong>(c)</strong> Um dos livros foi emprestado. Escreva o <code>UPDATE</code> que marca esse livro específico como indisponível, e explique por que é fundamental usar <code>WHERE</code> nesse comando.<br>
+        <strong>(d)</strong> A biblioteca decide dar baixa em um livro que foi perdido permanentemente. Escreva o <code>DELETE</code> correspondente e descreva, passo a passo, o checklist de segurança que você seguiria antes de executá-lo em um sistema real.
+      </p>
+      <span class="dif-basico">Prático · Consolidação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 16</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-plus"></i>
+        <strong>INSERT e SELECT</strong>
+        <p>Inserir dados respeitando restrições da Semana 15; consultar com WHERE, operadores de comparação e padrões de texto.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-chart-column"></i>
+        <strong>Agregação e JOIN</strong>
+        <p>COUNT, SUM, AVG, GROUP BY e HAVING para respostas de negócio; JOIN reconectando tabelas através das chaves da Semana 8.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-pen-to-square"></i>
+        <strong>UPDATE e DELETE</strong>
+        <p>Sempre com WHERE testado antes via SELECT — o mesmo cuidado do checklist de DDL, agora aplicado aos dados.</p>
+      </div>
+    </div>
+
+    <div class="proxima">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 17 — O profissional de Banco de Dados: carreira, mercado e revisão para a Prova Final</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 2 — Evolução dos Sistemas de Armazenamento de Dados</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ind-950:#181330;--ind-900:#211a45;--ind-800:#2d2260;
+  --ind-700:#4338ca;--ind-500:#6366f1;--ind-400:#818cf8;--ind-300:#a5b4fc;
+  --white:#fff;--text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);--card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);--card-hover:rgba(129,140,248,.07);
+  --code-bg:#140f28;--code-border:rgba(129,140,248,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--ind-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:var(--ind-700);top:-220px;left:-180px;}
+.blob-2{width:550px;height:550px;background:var(--ind-800);bottom:-200px;right:-120px;}
+.blob-3{width:280px;height:280px;background:var(--ind-500);top:38%;left:42%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(129,140,248,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ind-400);border:1px solid rgba(129,140,248,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--ind-400);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(129,140,248,.12);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--ind-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--ind-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.13);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}.topico:nth-child(6){animation-delay:.6s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(129,140,248,.18);color:var(--ind-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(129,140,248,.05);border-left:3px solid var(--ind-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--ind-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(129,140,248,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(129,140,248,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ind-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(129,140,248,.22);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.07);border-left:3px solid var(--ind-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--ind-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-ind{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.18);font-size:.86rem;color:rgba(165,180,252,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-ind i{color:var(--ind-400);flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(129,140,248,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--ind-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(129,140,248,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(129,140,248,.03);}
+td strong{color:var(--text-primary);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--ind-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+.icon-list li i.bad{color:#f87171;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(129,140,248,.12);color:var(--ind-400);border:1px solid rgba(129,140,248,.22);}
+
+/* ── Linha do tempo ── */
+.timeline{position:relative;margin:1.5rem 0;padding-left:2rem;}
+.timeline::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:linear-gradient(to bottom,rgba(129,140,248,.5),rgba(129,140,248,.1));}
+.tl-item{position:relative;padding-bottom:1.5rem;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-dot{position:absolute;left:-2rem;top:2px;width:16px;height:16px;border-radius:50%;background:var(--ind-900);border:2px solid var(--ind-400);}
+.tl-ano{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--ind-400);font-weight:600;margin-bottom:2px;}
+.tl-titulo{font-size:.92rem;font-weight:700;color:var(--text-primary);margin-bottom:3px;}
+.tl-desc{font-size:.83rem;color:var(--text-secondary);line-height:1.55;}
+
+/* ── comparativo lado a lado ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:.75rem 0;}
+.mini-card{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;}
+.mini-card.bad{border-color:rgba(248,113,113,.2);background:rgba(248,113,113,.04);}
+.mini-card.good{border-color:rgba(129,140,248,.25);background:rgba(129,140,248,.05);}
+.mini-card-titulo{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:700;margin-bottom:.6rem;display:flex;align-items:center;gap:8px;}
+.mini-card.bad .mini-card-titulo{color:#f87171;}
+.mini-card.good .mini-card-titulo{color:var(--ind-400);}
+
+/* ── código/pseudo-arquivo ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(129,140,248,.08);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+pre{padding:1.1rem 1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;color:#c7d2fe;}
+.cm{color:#6b7280;font-style:italic;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;background:rgba(129,140,248,.1);color:var(--ind-400);border:1px solid rgba(129,140,248,.2);}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--ind-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(129,140,248,.12);border-color:rgba(129,140,248,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--ind-400);}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(129,140,248,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .resumo-grid,.grid-2{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:580px){
+  .resumo-grid,.grid-2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Fundamentos de Banco de Dados · BD1.02 · Sexta-feira</div>
+    <div class="semana-num">02</div>
+    <h1 class="capa-titulo">Evolução dos <em>Sistemas</em><br>de Armazenamento de Dados</h1>
+    <p class="capa-sub">3 aulas · 150 minutos · Dos registros manuais aos SGBDs modernos</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-scroll"></i></div><span>Registros manuais e a mecanização do processamento de dados</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-folder-open"></i></div><span>Sistemas de arquivo: a era do "cada aplicação com seus próprios dados"</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-triangle-exclamation"></i></div><span>Os sete problemas clássicos do processamento baseado em arquivos</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-database"></i></div><span>O nascimento dos SGBDs: de Codd (1970) aos bancos relacionais comerciais</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-scale-balanced"></i></div><span>Sistema de arquivos × SGBD: o que realmente mudou</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade da semana</div>
+      <p>Construção de uma linha do tempo da evolução do armazenamento de dados, dos registros manuais aos SGBDs relacionais, destacando o marco que cada aluno considera mais decisivo.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>Sem. 1 — Dado, informação, conhecimento e o profissional de BD</li>
+        <li>▶ Sem. 2 — Evolução dos sistemas de armazenamento de dados</li>
+        <li>Sem. 3 — Arquitetura de sistemas de banco de dados</li>
+        <li>🔴 Sem. 6 — Avaliação P1</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que essa história importa</div>
+      <ul class="info-lista">
+        <li>Cada problema que motivou o surgimento dos SGBDs continua sendo resolvido, hoje, por um recurso específico que você vai estudar nesta disciplina</li>
+        <li>Entender "o que havia antes" torna óbvio por que o modelo relacional venceu — e por que ele ainda domina depois de mais de 50 anos</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-link"></i>Conexão direta</div>
+      <ul class="info-lista">
+        <li>Problema de redundância → resolvido por <strong>normalização</strong> (semanas futuras)</li>
+        <li>Problema de acesso concorrente → resolvido por <strong>controle de transações</strong></li>
+        <li>Problema de integridade → resolvido por <strong>restrições e chaves</strong></li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">Antes dos computadores — registros manuais e a mecanização do dado</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-scroll"></i>A necessidade de registrar é mais antiga que a computação</div>
+      <p>Muito antes de existir qualquer computador, organizações já precisavam guardar e recuperar dados de forma confiável. As primeiras evidências de registros estruturados datam de cerca de <strong>3000 a.C.</strong>, quando os sumérios usavam tabuletas de argila para controlar estoques de grãos, dívidas e transações comerciais — essencialmente, o primeiro "banco de dados" da história humana, ainda que físico.</p>
+      <p>Essa lógica se manteve por milênios: livros-caixa contábeis, fichários de biblioteca organizados por catálogo, arquivos em pastas suspensas nos departamentos de uma empresa. O princípio era sempre o mesmo — <strong>registrar um fato em um suporte físico e criar algum índice que permitisse encontrá-lo depois</strong>. O problema é que esse processo dependia inteiramente de pessoas: alguém tinha que escrever, catalogar, arquivar e, na hora de uma consulta, procurar manualmente.</p>
+      <div class="destaque">
+        <strong>Uma limitação estrutural:</strong> registros em papel não escalam. Uma empresa com centenas de milhares de clientes simplesmente não consegue depender de fichários físicos para operar — o tempo de busca cresce junto com o volume de dados, e o risco de erro humano (perda, extravio, duplicidade) cresce junto.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-gears"></i>A mecanização: Hollerith e os cartões perfurados</div>
+      <p>O primeiro grande salto rumo à automação do processamento de dados aconteceu em 1890, nos Estados Unidos. O Censo americano de 1880 havia levado <strong>quase 8 anos</strong> para ser totalmente apurado à mão — e as projeções indicavam que o censo de 1890, com uma população maior, levaria mais tempo ainda do que o intervalo entre um censo e outro (10 anos).</p>
+      <p>O engenheiro <strong>Herman Hollerith</strong> resolveu o problema criando uma máquina capaz de ler cartões perfurados: cada furo em uma posição específica do cartão representava uma informação (idade, sexo, estado civil, ocupação). A máquina tabuladora contava e cruzava esses dados mecanicamente. O resultado: o censo de 1890 foi apurado em cerca de <strong>1 ano</strong>, uma redução drástica.</p>
+      <div class="destaque">
+        <strong>Consequência histórica:</strong> a empresa fundada por Hollerith para comercializar sua tecnologia, a Tabulating Machine Company, passou por fusões e, em 1924, tornou-se a <strong>IBM</strong> — uma das empresas que mais tarde lideraria justamente a criação dos primeiros sistemas gerenciadores de banco de dados.
+      </div>
+      <p>Os cartões perfurados dominaram o processamento de dados corporativo até meados do século XX. Cada cartão era, na prática, um "registro" — o antecessor direto da linha de uma tabela em um banco de dados moderno. Mas a lógica de organização ainda era extremamente rígida: qualquer mudança na estrutura de um cartão exigia reprojetar fisicamente o layout de perfuração.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-timeline"></i>Linha do tempo — da argila ao computador</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">~3000 a.C.</div>
+          <div class="tl-titulo">Tabuletas de argila sumérias</div>
+          <div class="tl-desc">Primeiros registros estruturados de transações comerciais e estoques — o embrião do conceito de "registro de dados".</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">Idade Média – séc. XIX</div>
+          <div class="tl-titulo">Livros-caixa, fichários e arquivos em papel</div>
+          <div class="tl-desc">Consolidação de métodos manuais de catalogação — bibliotecas, cartórios, contabilidade comercial.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">1890</div>
+          <div class="tl-titulo">Máquinas de cartão perfurado (Hollerith)</div>
+          <div class="tl-desc">Primeira mecanização em larga escala do processamento de dados, usada no Censo dos EUA.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">1950–1960</div>
+          <div class="tl-titulo">Computadores e fitas magnéticas</div>
+          <div class="tl-desc">Surgem os primeiros sistemas de arquivo computacionais — dados gravados sequencialmente em fita, processados em lote (batch).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Refletindo sobre a era manual</div>
+      <p>Responda com suas próprias palavras:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Por que o crescimento do volume de dados é um problema estrutural para registros em papel, e não apenas uma questão de "ter mais espaço físico"?<br>
+        <strong>(b)</strong> A solução de Hollerith resolveu um problema de <em>velocidade</em> de apuração. Ela também resolveu os problemas de <em>redundância</em> e <em>inconsistência</em> de dados? Justifique.
+      </p>
+      <span class="dif-basico">Teórico · Reflexão</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Sistemas de arquivo: a era do "cada programa com seus próprios dados"</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-folder-open"></i>Como funcionava um sistema de processamento de arquivos</div>
+      <p>Entre as décadas de 1950 e 1960, com a popularização dos computadores comerciais, as empresas passaram a armazenar dados em <strong>arquivos digitais</strong> — sequências de registros gravadas em fita magnética e, depois, em disco. Mas a arquitetura típica dessa era era radicalmente diferente da que conhecemos hoje: <strong>não existia um sistema central de gerenciamento de dados</strong>. Cada aplicação (cada programa escrito, geralmente em COBOL) definia, criava e mantinha o seu próprio conjunto de arquivos, isoladamente.</p>
+      <p>Imagine uma empresa com um departamento de <strong>Vendas</strong> e um departamento de <strong>Recursos Humanos</strong>. Cada um desenvolvia seu próprio sistema, com seus próprios arquivos:</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Estrutura típica — anos 1960/70</span></div>
+        <pre><code><span class="cm">// Sistema do departamento de Vendas</span>
+arquivo: clientes.dat
+  campos: nome, endereco, telefone, cidade
+
+<span class="cm">// Sistema do departamento de RH</span>
+arquivo: funcionarios.dat
+  campos: nome, endereco, telefone, cargo, salario
+
+<span class="cm">// Cada arquivo tem seu próprio programa de leitura/escrita.
+// Não existe nenhuma ligação entre os dois sistemas.</span></code></pre>
+      </div>
+      <p>Se a mesma pessoa fosse, ao mesmo tempo, cliente e funcionária da empresa, seus dados de <strong>nome, endereço e telefone</strong> estariam duplicados em dois arquivos completamente independentes — mantidos por dois programas diferentes, sem nenhuma sincronização automática entre eles.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-triangle-exclamation"></i>Os sete problemas clássicos do processamento de arquivos</div>
+      <p>Essa abordagem funcionou por décadas, mas gerava uma série de problemas estruturais que, mais tarde, se tornariam exatamente a motivação para a criação dos SGBDs. Vale a pena conhecer cada um em detalhe, porque cada um deles reaparece, semana após semana, como o problema que uma nova técnica de banco de dados resolve.</p>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Problema</th><th>O que acontece na prática</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1</strong></td><td>Redundância e inconsistência de dados</td><td>O mesmo dado (ex.: endereço de uma pessoa) é armazenado em múltiplos arquivos. Se ele muda em um lugar e não em outro, os dados ficam contraditórios entre si.</td></tr>
+            <tr><td><strong>2</strong></td><td>Dificuldade de acesso aos dados</td><td>Qualquer nova pergunta não prevista originalmente ("quantos clientes moram em Teresina?") exige escrever um programa novo, específico, em vez de simplesmente fazer uma consulta.</td></tr>
+            <tr><td><strong>3</strong></td><td>Isolamento de dados</td><td>Os dados estão espalhados em arquivos com formatos e estruturas diferentes entre si, dificultando (ou impedindo) cruzar informações de sistemas distintos.</td></tr>
+            <tr><td><strong>4</strong></td><td>Problemas de integridade</td><td>Regras de negócio (ex.: "salário não pode ser negativo") ficam soltas dentro do código de cada programa, em vez de centralizadas — é fácil um programa esquecer de validar uma regra que outro implementa.</td></tr>
+            <tr><td><strong>5</strong></td><td>Problemas de atomicidade</td><td>Se o sistema falha no meio de uma operação (ex.: transferência bancária), não há garantia de que a operação será desfeita por completo — o arquivo pode ficar em um estado intermediário inconsistente.</td></tr>
+            <tr><td><strong>6</strong></td><td>Anomalias de acesso concorrente</td><td>Se dois programas tentam atualizar o mesmo registro ao mesmo tempo (ex.: duas vendas simultâneas do último item em estoque), não há mecanismo confiável para coordenar esse acesso.</td></tr>
+            <tr><td><strong>7</strong></td><td>Problemas de segurança</td><td>Como o controle de acesso é feito no nível do arquivo inteiro (ou nem isso), é difícil garantir que um usuário veja apenas os dados que deveria — ex.: um vendedor não deveria acessar a folha de pagamento.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="aviso">
+        <i class="fas fa-lightbulb"></i>
+        <span><strong>Vale memorizar essa lista.</strong> Ela costuma ser cobrada literalmente em provas de fundamentos de banco de dados, e cada um desses sete problemas será revisitado, com solução concreta, em módulos futuros da disciplina (integridade referencial, transações, controle de acesso, normalização).</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-clone"></i>Exemplo de redundância — um caso concreto</div>
+      <p>Considere que a pessoa <strong>Maria Silva</strong> é cliente e também trabalha na empresa. Sob um sistema de arquivos tradicional, seus dados podem existir assim:</p>
+      <div class="grid-2">
+        <div class="mini-card bad">
+          <div class="mini-card-titulo"><i class="fas fa-file"></i>clientes.dat</div>
+          <p style="font-size:.83rem;color:var(--text-secondary);">Nome: Maria Silva<br>Endereço: Rua A, 123<br>Telefone: (86) 99999-0001</p>
+        </div>
+        <div class="mini-card bad">
+          <div class="mini-card-titulo"><i class="fas fa-file"></i>funcionarios.dat</div>
+          <p style="font-size:.83rem;color:var(--text-secondary);">Nome: Maria Silva<br>Endereço: Rua A, 123<br>Telefone: (86) 98888-0002</p>
+        </div>
+      </div>
+      <p>Note que o telefone está <strong>diferente</strong> entre os dois arquivos — provavelmente Maria atualizou o telefone em um cadastro, mas ninguém replicou a mudança no outro. Qual dos dois está correto? Nenhum programa consegue responder isso sozinho, porque não existe uma "fonte única de verdade". Esse é exatamente o tipo de inconsistência que motivou a busca por uma solução centralizada.</p>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Identificando o problema</div>
+      <p>Para cada situação abaixo, identifique qual dos sete problemas clássicos do processamento de arquivos está sendo ilustrado:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Uma empresa não consegue gerar rapidamente um relatório de "clientes que compraram mais de R$ 1.000 em produtos eletrônicos", porque nenhum programa existente foi feito para responder esse tipo de pergunta.<br>
+        <strong>(b)</strong> Durante uma queda de energia, uma transferência bancária debitou o valor da conta de origem, mas não chegou a creditar na conta de destino.<br>
+        <strong>(c)</strong> Um estagiário do departamento financeiro consegue abrir o mesmo arquivo que contém os salários de todos os diretores da empresa.<br>
+        <strong>(d)</strong> Dois caixas de uma loja vendem, ao mesmo tempo, a última unidade em estoque de um produto — e o sistema registra a venda das duas transações, deixando o estoque negativo.
+      </p>
+      <span class="dif-basico">Teórico · Fixação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · ~50 minutos</div>
+        <div class="secao-titulo">O nascimento dos SGBDs — a resposta da indústria e da academia</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-timeline"></i>Linha do tempo — dos primeiros SGBDs ao modelo relacional</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">1960</div>
+          <div class="tl-titulo">IDS (Integrated Data Store)</div>
+          <div class="tl-desc">Desenvolvido por Charles Bachman na General Electric, é considerado um dos primeiros SGBDs da história, baseado no modelo de <strong>rede</strong> (registros conectados por ponteiros).</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">1966</div>
+          <div class="tl-titulo">IMS (Information Management System) — IBM</div>
+          <div class="tl-desc">Criado pela IBM para o programa espacial Apollo, gerenciar a enorme quantidade de peças da nave. Baseado no modelo <strong>hierárquico</strong> (dados organizados em árvore). Ainda é usado hoje em alguns sistemas bancários legados.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">1970</div>
+          <div class="tl-titulo">O artigo de Edgar F. Codd</div>
+          <div class="tl-desc">Pesquisador da IBM, Codd publica <em>"A Relational Model of Data for Large Shared Data Banks"</em>, propondo que os dados fossem organizados em <strong>tabelas</strong> (relações), manipuladas por operações matemáticas simples, sem depender de ponteiros físicos entre registros. É o marco fundador do modelo relacional.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">1974–1977</div>
+          <div class="tl-titulo">System R (IBM) e INGRES (Berkeley)</div>
+          <div class="tl-desc">Primeiros protótipos acadêmicos e experimentais de SGBDs relacionais. O System R deu origem à linguagem <strong>SQL</strong> (originalmente chamada SEQUEL).</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">1979</div>
+          <div class="tl-titulo">Oracle — primeiro SGBD relacional comercial</div>
+          <div class="tl-desc">A Relational Software Inc. (futura Oracle Corporation) lança o primeiro SGBD relacional disponível comercialmente, consolidando o modelo de Codd no mercado.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-ano">1980–2000</div>
+          <div class="tl-titulo">Consolidação do modelo relacional</div>
+          <div class="tl-desc">Surgem PostgreSQL, MySQL, SQL Server e outros — o modelo relacional se torna o padrão dominante da indústria, posição que mantém até hoje.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-database"></i>O que, de fato, um SGBD resolve</div>
+      <p>Um <strong>Sistema Gerenciador de Banco de Dados (SGBD)</strong> é um software que assume, de forma centralizada, a responsabilidade de armazenar, organizar, proteger e disponibilizar os dados para múltiplas aplicações — em vez de deixar cada programa cuidar dos seus próprios arquivos isoladamente.</p>
+      <ul class="icon-list">
+        <li><i class="fas fa-check-circle"></i><span><strong>Controle de redundância:</strong> os dados existem em um único lugar centralizado, referenciado por todas as aplicações que precisam deles.</span></li>
+        <li><i class="fas fa-check-circle"></i><span><strong>Independência de dados:</strong> a estrutura física de armazenamento pode mudar sem quebrar os programas que consultam os dados.</span></li>
+        <li><i class="fas fa-check-circle"></i><span><strong>Linguagem de consulta genérica (SQL):</strong> qualquer pergunta nova pode ser respondida com uma consulta, sem escrever um programa novo do zero.</span></li>
+        <li><i class="fas fa-check-circle"></i><span><strong>Integridade centralizada:</strong> regras de negócio (chaves, restrições) são impostas pelo próprio SGBD, não dependem de cada programador lembrar de validar.</span></li>
+        <li><i class="fas fa-check-circle"></i><span><strong>Controle de transações (atomicidade):</strong> o SGBD garante que uma operação aconteça por completo ou seja totalmente desfeita, mesmo em caso de falha.</span></li>
+        <li><i class="fas fa-check-circle"></i><span><strong>Controle de concorrência:</strong> múltiplos usuários podem acessar os dados simultaneamente sem gerar inconsistências.</span></li>
+        <li><i class="fas fa-check-circle"></i><span><strong>Segurança granular:</strong> é possível definir permissões específicas por usuário, tabela ou até coluna.</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-scale-balanced"></i>Sistema de arquivos × SGBD — comparação direta</div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Aspecto</th><th>Sistema de arquivos</th><th>SGBD</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Onde os dados ficam</strong></td><td>Espalhados, um conjunto de arquivos por aplicação</td><td>Centralizados, compartilhados entre aplicações</td></tr>
+            <tr><td><strong>Como se consulta</strong></td><td>Só através de programas específicos, escritos sob medida</td><td>Através de uma linguagem de consulta genérica (SQL)</td></tr>
+            <tr><td><strong>Redundância</strong></td><td>Alta — o mesmo dado se repete em vários arquivos</td><td>Controlada — o dado existe uma única vez</td></tr>
+            <tr><td><strong>Integridade</strong></td><td>Depende do código de cada programa lembrar de validar</td><td>Imposta automaticamente pelo próprio sistema</td></tr>
+            <tr><td><strong>Acesso concorrente</strong></td><td>Sem coordenação confiável</td><td>Gerenciado por mecanismos de controle de transações</td></tr>
+            <tr><td><strong>Segurança</strong></td><td>No máximo, no nível do arquivo inteiro</td><td>Granular — por usuário, tabela, linha ou coluna</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="destaque">
+        <strong>Um SGBD não elimina a complexidade — ele a organiza.</strong> Todos os problemas dos sistemas de arquivo continuam existindo como <em>possibilidades</em> técnicas; o que muda é que, agora, existe uma camada de software dedicada e testada especificamente para tratá-los, em vez de depender da disciplina individual de cada programador.
+      </div>
+    </div>
+
+    <div class="aviso-ind">
+      <i class="fas fa-route"></i>
+      <span><strong>Atividade da semana — linha do tempo:</strong> em grupo, monte uma linha do tempo própria (papel, slide ou ferramenta digital) com pelo menos 6 marcos da evolução do armazenamento de dados vistos hoje, e destaque qual marco o grupo considera o mais decisivo para a computação moderna, justificando a escolha em 2-3 frases.</span>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Consolidação da semana</div>
+      <p>Responda de forma breve e com suas próprias palavras:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Explique, em uma frase, por que o artigo de Codd em 1970 é considerado o marco fundador do modelo relacional — o que ele propunha de diferente em relação aos modelos hierárquico e de rede que já existiam?<br>
+        <strong>(b)</strong> Escolha dois dos sete problemas do processamento de arquivos (aula 2) e explique qual característica específica do SGBD (aula 3) resolve cada um deles.<br>
+        <strong>(c)</strong> Um colega afirma: "SGBD é só um sistema de arquivos com uma interface mais bonita." Você concorda? Justifique sua resposta com pelo menos um argumento técnico.
+      </p>
+      <span class="dif-basico">Teórico · Reflexão</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 2</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-scroll"></i>
+        <strong>Da argila ao cartão perfurado</strong>
+        <p>Registrar e recuperar dados é uma necessidade humana antiga — a mecanização (Hollerith, 1890) foi o primeiro grande salto de escala.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-triangle-exclamation"></i>
+        <strong>7 problemas dos sistemas de arquivo</strong>
+        <p>Redundância, dificuldade de acesso, isolamento, integridade, atomicidade, concorrência e segurança — a lista que motivou os SGBDs.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-database"></i>
+        <strong>SGBD como solução centralizada</strong>
+        <p>De Codd (1970) ao Oracle (1979), o modelo relacional venceu por resolver, de forma sistemática, cada um desses sete problemas.</p>
+      </div>
+    </div>
+
+    <div class="proxima">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 3 — Arquitetura de sistemas de banco de dados</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

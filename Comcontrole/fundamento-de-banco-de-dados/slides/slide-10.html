@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 10 — Independência de Dados: Física e Lógica</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ind-950:#181330;--ind-900:#211a45;--ind-800:#2d2260;
+  --ind-700:#4338ca;--ind-500:#6366f1;--ind-400:#818cf8;--ind-300:#a5b4fc;
+  --white:#fff;--text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);--card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);--card-hover:rgba(129,140,248,.07);
+  --code-bg:#140f28;--code-border:rgba(129,140,248,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--ind-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:var(--ind-700);top:-220px;left:-180px;}
+.blob-2{width:550px;height:550px;background:var(--ind-800);bottom:-200px;right:-120px;}
+.blob-3{width:280px;height:280px;background:var(--ind-500);top:38%;left:42%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(129,140,248,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ind-400);border:1px solid rgba(129,140,248,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--ind-400);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(129,140,248,.12);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--ind-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--ind-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.13);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(129,140,248,.18);color:var(--ind-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(129,140,248,.05);border-left:3px solid var(--ind-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--ind-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(129,140,248,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(129,140,248,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ind-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(129,140,248,.22);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.07);border-left:3px solid var(--ind-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--ind-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-ind{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.18);font-size:.86rem;color:rgba(165,180,252,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-ind i{color:var(--ind-400);flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(129,140,248,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--ind-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(129,140,248,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(129,140,248,.03);}
+td strong{color:var(--text-primary);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--ind-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+.icon-list li i.bad{color:#f87171;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(129,140,248,.12);color:var(--ind-400);border:1px solid rgba(129,140,248,.22);}
+
+/* ── Cards de conceito ── */
+.conceito-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
+.conceito-card{border-radius:12px;padding:1.1rem;border:1px solid rgba(129,140,248,.18);background:rgba(129,140,248,.03);}
+.conceito-card__titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--ind-300);margin-bottom:.5rem;display:flex;align-items:center;gap:8px;}
+.conceito-card p{font-size:.82rem;color:var(--text-secondary);line-height:1.55;margin-bottom:0;}
+
+/* ── comparativo lado a lado ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:.75rem 0;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.1rem;margin:.75rem 0;}
+.mini-card{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;}
+.mini-card.bad{border-color:rgba(248,113,113,.2);background:rgba(248,113,113,.04);}
+.mini-card.good{border-color:rgba(129,140,248,.25);background:rgba(129,140,248,.05);}
+.mini-card-titulo{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:700;margin-bottom:.6rem;display:flex;align-items:center;gap:8px;}
+.mini-card.bad .mini-card-titulo{color:#f87171;}
+.mini-card.good .mini-card-titulo{color:var(--ind-400);}
+.mini-card p{font-size:.83rem;color:var(--text-secondary);line-height:1.55;margin:0;}
+
+/* ── Arquitetura em camadas (revisão) ── */
+.camadas-mini{display:flex;flex-direction:column;gap:.5rem;margin:1rem 0;}
+.camada-mini{border-radius:10px;padding:.85rem 1.1rem;display:flex;align-items:center;gap:12px;}
+.camada-mini i{font-size:1.1rem;color:var(--ind-400);flex-shrink:0;}
+.camada-mini strong{color:var(--text-primary);font-size:.85rem;}
+.camada-mini span{font-size:.78rem;color:var(--text-secondary);}
+.cm-externa{background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.16);}
+.cm-conceitual{background:rgba(129,140,248,.12);border:1px solid rgba(129,140,248,.26);}
+.cm-interna{background:rgba(129,140,248,.2);border:1px solid rgba(129,140,248,.38);}
+
+/* ── código ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(129,140,248,.08);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+pre{padding:1.1rem 1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;color:#c7d2fe;}
+.cm{color:#6b7280;font-style:italic;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;background:rgba(129,140,248,.1);color:var(--ind-400);border:1px solid rgba(129,140,248,.2);}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--ind-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(129,140,248,.12);border-color:rgba(129,140,248,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--ind-400);}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(129,140,248,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+/* ── ficha ── */
+.perfil-card{display:flex;gap:1rem;padding:1.1rem;border-radius:12px;background:rgba(129,140,248,.04);border:1px solid rgba(129,140,248,.15);margin:.75rem 0;}
+.perfil-icone{width:48px;height:48px;border-radius:12px;background:rgba(129,140,248,.15);color:var(--ind-400);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.perfil-corpo strong{display:block;color:var(--text-primary);font-size:.92rem;margin-bottom:.3rem;}
+.perfil-corpo p{font-size:.85rem;color:var(--text-secondary);line-height:1.6;margin:0;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .resumo-grid,.conceito-grid,.grid-2,.grid-3{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:580px){
+  .resumo-grid,.conceito-grid,.grid-2,.grid-3{grid-template-columns:1fr;}
+  .perfil-card{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Fundamentos de Banco de Dados · BD1.02 · Sexta-feira</div>
+    <div class="semana-num">10</div>
+    <h1 class="capa-titulo">Independência de Dados:<br><em>Física</em> e <em>Lógica</em></h1>
+    <p class="capa-sub">3 aulas · 150 minutos · Por que mudar um banco de dados nem sempre quebra tudo que depende dele</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-shield-halved"></i></div><span>O que significa, tecnicamente, "independência de dados"</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-hard-drive"></i></div><span>Independência física: mudando o armazenamento sem quebrar nada acima</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-diagram-project"></i></div><span>Independência lógica: evoluindo o esquema sem quebrar aplicações</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-triangle-exclamation"></i></div><span>Os limites reais da independência lógica — quando ela falha</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-eye"></i></div><span>Views como ferramenta prática de independência lógica</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade da semana</div>
+      <p>Estudo de caso: analisar uma sequência de mudanças propostas em um banco de dados acadêmico e classificar cada uma como preservando ou quebrando a independência física e/ou lógica dos dados.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 6 — Avaliação P1</li>
+        <li>Sem. 7 — Modelagem conceitual: entidades, atributos, relacionamentos</li>
+        <li>Sem. 8 — Modelo lógico: de ER para tabelas</li>
+        <li>Sem. 9 — Usuários e funções em bancos de dados</li>
+        <li>▶ Sem. 10 — Independência de dados</li>
+        <li>🔴 Sem. 13 — Avaliação P2 (conteúdo das Sem. 7 a 12)</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que esta semana importa</div>
+      <ul class="info-lista">
+        <li>Na Semana 3, vimos rapidamente a arquitetura ANSI/SPARC de três níveis. Esta semana aprofundamos exatamente a propriedade que essa arquitetura foi criada para entregar: a independência de dados</li>
+        <li>É a diferença entre um time de banco de dados que consegue evoluir o sistema com confiança e um time que trata qualquer mudança de estrutura como um risco enorme</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-link"></i>Conexão direta</div>
+      <ul class="info-lista">
+        <li>Arquitetura ANSI/SPARC (Semana 3) → é a estrutura que <strong>viabiliza</strong> a independência de dados</li>
+        <li>Modelo lógico e tabelas (Semana 8) → é o nível conceitual que estudamos hoje em profundidade</li>
+        <li>Índices e otimização (Semana 14) → exemplo prático mais avançado de independência física</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">O que é, exatamente, independência de dados</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-rotate"></i>Retomando a arquitetura de três níveis</div>
+      <p>Na Semana 3 estudamos a arquitetura <strong>ANSI/SPARC</strong>, que organiza um SGBD em três camadas: o nível <strong>externo</strong> (as visões que cada usuário ou aplicação enxerga), o nível <strong>conceitual</strong> (a estrutura lógica completa do banco — entidades, atributos, relacionamentos) e o nível <strong>interno</strong> (como os dados realmente ficam gravados fisicamente em disco). Vale relembrar rapidamente essa organização antes de avançarmos:</p>
+      <div class="camadas-mini">
+        <div class="camada-mini cm-externa"><i class="fas fa-eye"></i><div><strong>Nível Externo</strong> <span>— o que cada usuário/aplicação vê</span></div></div>
+        <div class="camada-mini cm-conceitual"><i class="fas fa-diagram-project"></i><div><strong>Nível Conceitual</strong> <span>— o modelo lógico completo do banco</span></div></div>
+        <div class="camada-mini cm-interna"><i class="fas fa-hard-drive"></i><div><strong>Nível Interno</strong> <span>— como os dados ficam fisicamente armazenados</span></div></div>
+      </div>
+      <p>A pergunta que fica em aberto depois da Semana 3 é: <strong>o que, na prática, garante que uma mudança em um desses níveis não obrigue a reescrever tudo nos níveis vizinhos?</strong> A resposta é justamente o conceito que damos nome hoje: <strong>independência de dados</strong>.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-book"></i>Definindo independência de dados com precisão</div>
+      <p><strong>Independência de dados</strong> é a capacidade de alterar a definição de um esquema em um nível da arquitetura sem exigir alteração no esquema do nível imediatamente superior. É importante notar duas palavras nessa definição: <em>capacidade</em> e <em>sem exigir</em>. Independência de dados não significa que uma mudança nunca afeta nada acima — significa que o SGBD foi projetado para que, na <strong>maioria</strong> dos casos razoáveis, essa mudança fique contida no nível onde ocorreu.</p>
+      <div class="destaque">
+        <strong>Uma analogia que ajuda a fixar:</strong> pense em uma apresentação de slides que busca dados de uma planilha através de um link. Se você reorganiza as células da planilha por trás (adiciona uma nova aba, reordena linhas) mas mantém os nomes das células referenciadas, o slide continua funcionando sem que você precise tocar nele. Agora, se você deletar a célula que o slide referencia diretamente, o link quebra. A independência de dados é justamente o esforço de projetar o sistema para que o primeiro cenário (mudança "por trás" sem impacto visível) seja a regra, e o segundo (quebra direta) seja a exceção rara e evitável.
+      </div>
+      <p>Existem exatamente <strong>dois tipos</strong> de independência de dados, cada um correspondendo a uma fronteira específica entre níveis da arquitetura ANSI/SPARC — e são eles que vamos detalhar, com bastante profundidade e exemplos práticos, nas próximas duas aulas.</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Tipo</th><th>Fronteira protegida</th><th>Pergunta que ela responde</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Independência física</strong></td><td>Entre o nível interno e o nível conceitual</td><td>"Posso mudar <em>como</em> os dados são guardados sem mexer na estrutura lógica nem nas aplicações?"</td></tr>
+            <tr><td><strong>Independência lógica</strong></td><td>Entre o nível conceitual e o nível externo</td><td>"Posso mudar a estrutura lógica do banco sem quebrar as aplicações que já o utilizam?"</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-scale-unbalanced"></i>Por que uma é bem mais fácil de garantir do que a outra</div>
+      <p>Um ponto que costuma gerar confusão em prova: os dois tipos de independência <strong>não</strong> são igualmente fáceis de alcançar na prática. A independência física é, de forma geral, bem mais simples de garantir de forma quase total — porque mudanças de armazenamento raramente têm qualquer relação lógica com o significado dos dados. Já a independência lógica é estruturalmente mais delicada, porque o próprio significado dos dados pode mudar junto com a estrutura.</p>
+      <ul class="icon-list">
+        <li><i class="fas fa-check-circle"></i><span><strong>Independência física — quase sempre alcançável:</strong> trocar um índice, mudar o formato de compactação de um arquivo, migrar de um disco para outro — nada disso altera o que os dados <em>significam</em>, então as aplicações não sentem a diferença.</span></li>
+        <li><i class="fas fa-triangle-exclamation bad"></i><span><strong>Independência lógica — alcançável apenas parcialmente:</strong> adicionar uma nova coluna geralmente é seguro, mas remover uma coluna que uma aplicação já usa, por definição, precisa afetar essa aplicação — não existe mágica que resolva isso sem alguma adaptação.</span></li>
+      </ul>
+      <p>Guarde essa assimetria — ela vai aparecer de novo, com muito mais detalhe, na Aula 3 de hoje, quando discutirmos os limites reais da independência lógica.</p>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Fixando o conceito</div>
+      <p>Responda com suas próprias palavras, retomando a arquitetura ANSI/SPARC da Semana 3:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Explique, em uma frase, a diferença entre independência física e independência lógica de dados, indicando qual fronteira de nível cada uma protege.<br>
+        <strong>(b)</strong> Por que a definição de independência de dados fala em "sem <em>exigir</em> alteração" em vez de "sem <em>nunca causar</em> nenhuma alteração"? O que essa escolha de palavras sugere sobre os limites reais desse conceito?<br>
+        <strong>(c)</strong> Com base na analogia do slide conectado à planilha, dê seu próprio exemplo (fora do contexto de banco de dados) de uma mudança "por trás" que não deveria afetar quem consome a informação.
+      </p>
+      <span class="dif-basico">Teórico · Fixação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Independência física de dados, em profundidade</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-hard-drive"></i>O que pertence ao "nível físico" de um banco de dados</div>
+      <p>Antes de falar sobre a independência em si, vale reforçar o que exatamente conta como parte do <strong>nível interno (físico)</strong> de um banco de dados — o alvo das mudanças que estamos discutindo nesta aula:</p>
+      <ul class="icon-list">
+        <li><i class="fas fa-list-ol"></i><span><strong>Índices</strong> — estruturas auxiliares que aceleram a busca por determinados valores (tema que será aprofundado tecnicamente na Semana 14).</span></li>
+        <li><i class="fas fa-file-zipper"></i><span><strong>Formato de armazenamento</strong> — como os registros são fisicamente organizados em blocos de disco, incluindo compactação.</span></li>
+        <li><i class="fas fa-layer-group"></i><span><strong>Particionamento</strong> — dividir uma tabela muito grande em partes menores, fisicamente separadas, para facilitar consultas e manutenção.</span></li>
+        <li><i class="fas fa-server"></i><span><strong>Local de armazenamento físico</strong> — em qual disco, servidor ou até data center os dados residem.</span></li>
+        <li><i class="fas fa-gauge-high"></i><span><strong>Estatísticas e estruturas de otimização</strong> — informações internas que o SGBD usa para decidir a forma mais eficiente de executar uma consulta.</span></li>
+      </ul>
+      <p>Nenhum desses elementos altera <em>o que</em> os dados significam — apenas <em>como</em> eles são fisicamente organizados e acessados por trás dos panos.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-flask"></i>Exemplo guiado: adicionando um índice sem quebrar nada</div>
+      <p>Imagine que, no banco acadêmico que vimos construindo desde a Semana 7 (tabelas <code>Aluno</code>, <code>Curso</code>, <code>Matricula</code>), o DBA percebe que a consulta abaixo — usada com muita frequência pela secretaria — está demorando mais do que deveria conforme o número de alunos cresce:</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — consulta frequente da secretaria</span></div>
+        <pre><code>SELECT nome, email FROM Aluno WHERE matricula = '2024001234';</code></pre>
+      </div>
+      <p>Para resolver isso, o DBA decide criar um índice sobre a coluna <code>matricula</code> — uma mudança inteiramente contida no nível interno:</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — mudança no nível INTERNO</span></div>
+        <pre><code><span class="cm">-- Antes: buscar por matrícula percorria a tabela inteira</span>
+<span class="cm">-- Depois de criar o índice, a busca se torna muito mais rápida:</span>
+CREATE INDEX idx_aluno_matricula ON Aluno (matricula);</code></pre>
+      </div>
+      <div class="grid-2">
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-check"></i>O que NÃO muda</div>
+          <p>A consulta da secretaria continua exatamente igual — mesmo texto SQL, mesmo resultado. A estrutura lógica da tabela <code>Aluno</code> (Semana 8) permanece idêntica. Nenhuma aplicação precisa ser alterada.</p>
+        </div>
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-bolt"></i>O que muda</div>
+          <p>Apenas a forma como o SGBD localiza fisicamente os dados no disco — agora usando o índice em vez de percorrer a tabela inteira. A consulta simplesmente fica mais rápida.</p>
+        </div>
+      </div>
+      <p>Esse é o exemplo mais clássico de independência física de dados em ação: uma decisão inteiramente de engenharia de performance, invisível para quem escreve ou usa as consultas.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-boxes-stacked"></i>Mais exemplos de mudanças fisicamente independentes</div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Mudança física</th><th>Motivo comum</th><th>Impacto no nível conceitual/externo</th></tr></thead>
+          <tbody>
+            <tr><td>Particionar a tabela <code>Matricula</code> por ano letivo</td><td>Tabela cresceu demais e consultas ficaram lentas</td><td>Nenhum — <code>SELECT * FROM Matricula WHERE ano = 2025</code> continua igual</td></tr>
+            <tr><td>Migrar os arquivos do banco de um disco HDD para SSD</td><td>Ganho de performance em leitura/escrita</td><td>Nenhum — é uma decisão puramente de infraestrutura</td></tr>
+            <tr><td>Comprimir os dados armazenados fisicamente</td><td>Redução de custo de armazenamento</td><td>Nenhum — a leitura descomprime automaticamente, de forma transparente</td></tr>
+            <tr><td>Remover um índice pouco utilizado</td><td>Índices desnecessários deixam operações de escrita mais lentas</td><td>Nenhum na maioria dos casos, exceto se alguma consulta específica dependia fortemente dele para performance</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="aviso">
+        <i class="fas fa-lightbulb"></i>
+        <span><strong>Atenção ao detalhe da última linha:</strong> independência física garante que a mudança não quebra a <em>correção</em> das consultas (elas continuam retornando o resultado certo), mas não garante, sozinha, que a <em>performance</em> permaneça idêntica. Remover um índice mal planejado pode deixar uma consulta específica mais lenta — sem, no entanto, alterar seu resultado nem exigir reescrevê-la.</span>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Identificando mudanças físicas</div>
+      <p>Para cada situação abaixo, explique se ela representa uma mudança que preserva a independência física de dados, e por quê:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> O DBA decide reorganizar fisicamente os blocos de disco onde a tabela <code>Curso</code> está armazenada, para reduzir a fragmentação.<br>
+        <strong>(b)</strong> Uma consulta que buscava alunos pelo campo <code>nome</code> passa a usar um índice criado especificamente sobre esse campo.<br>
+        <strong>(c)</strong> A equipe decide dividir fisicamente a tabela <code>Matricula</code> em duas partições — uma para matrículas ativas, outra para matrículas encerradas — mantendo a mesma estrutura de colunas.<br>
+        <strong>(d)</strong> Um desenvolvedor renomeia a coluna <code>matricula</code> da tabela <code>Aluno</code> para <code>numero_matricula</code>.
+      </p>
+      <span class="dif-basico">Teórico · Aplicação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · ~50 minutos</div>
+        <div class="secao-titulo">Independência lógica de dados: alcances e limites reais</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-diagram-project"></i>O que pertence ao "nível lógico" de um banco de dados</div>
+      <p>A independência lógica protege a fronteira entre o nível <strong>conceitual</strong> (a estrutura lógica completa: quais entidades, atributos, relacionamentos e restrições existem — construída na Semana 7 e traduzida em tabelas na Semana 8) e o nível <strong>externo</strong> (as visões específicas que cada aplicação ou usuário efetivamente utiliza). Mudanças típicas neste nível incluem: adicionar ou remover uma tabela, adicionar, remover ou renomear uma coluna, mudar um relacionamento entre entidades, ou alterar uma restrição de integridade.</p>
+      <p>Diferente da independência física, aqui o próprio <strong>significado</strong> dos dados pode estar em jogo — e é exatamente por isso que essa independência é mais difícil de garantir de forma completa.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-plus"></i>O caso fácil: adicionar sem remover</div>
+      <p>A categoria de mudança lógica mais segura é a <strong>adição pura</strong> — criar uma nova tabela, ou adicionar uma nova coluna a uma tabela existente, sem alterar nada do que já existia.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — mudança lógica ADITIVA (segura)</span></div>
+        <pre><code><span class="cm">-- A faculdade decide passar a registrar o email institucional
+-- de cada aluno. Isso é uma adição pura à tabela Aluno:</span>
+ALTER TABLE Aluno ADD COLUMN email_institucional VARCHAR(100);
+
+<span class="cm">-- Todas as consultas antigas continuam funcionando perfeitamente:</span>
+SELECT nome, matricula FROM Aluno WHERE curso_id = 3;
+<span class="cm">-- ↑ Nenhuma mudança necessária aqui — a coluna nova
+--   simplesmente não é referenciada, e isso não é um erro.</span></code></pre>
+      </div>
+      <p>Note que qualquer visão externa que já existia — qualquer consulta, relatório ou tela de aplicação — continua funcionando exatamente como antes, porque nenhuma delas dependia da existência da nova coluna. É este o cenário que mais se aproxima de uma independência lógica "completa" na prática.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-triangle-exclamation"></i>O caso difícil: quando a independência lógica esbarra na realidade</div>
+      <p>Agora o contraponto importante, que costuma ser mal compreendido: existem mudanças lógicas que, por definição, <strong>não podem</strong> ser absorvidas sem algum tipo de impacto em quem consome os dados. Isso não é uma falha do SGBD — é uma consequência lógica inevitável de remover ou transformar algo que já estava sendo usado.</p>
+      <div class="grid-2">
+        <div class="mini-card bad">
+          <div class="mini-card-titulo"><i class="fas fa-xmark"></i>Remover uma coluna usada</div>
+          <p>Se uma aplicação faz <code>SELECT telefone FROM Aluno</code> e o DBA remove a coluna <code>telefone</code>, essa consulta simplesmente vai falhar. Não existe forma de "independência lógica" que preserve o funcionamento de uma consulta que depende de algo que deixou de existir.</p>
+        </div>
+        <div class="mini-card bad">
+          <div class="mini-card-titulo"><i class="fas fa-xmark"></i>Dividir uma tabela em duas</div>
+          <p>Se a tabela <code>Aluno</code> é dividida em <code>Aluno</code> e <code>Aluno_Contato</code> por motivos de normalização, qualquer consulta antiga que buscava telefone/endereço diretamente de <code>Aluno</code> precisará ser reescrita com um <code>JOIN</code>.</p>
+        </div>
+      </div>
+      <div class="destaque">
+        <strong>O papel real do SGBD nesses casos:</strong> mesmo quando a independência lógica "completa" é impossível, um bom SGBD oferece ferramentas para <strong>minimizar</strong> o impacto — e é exatamente disso que trata o próximo tópico desta aula.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-eye"></i>Views: a principal ferramenta prática de independência lógica</div>
+      <p>Uma <strong>view</strong> (visão) é uma consulta salva que se comporta como se fosse uma tabela — é, literalmente, a implementação prática do <strong>nível externo</strong> da arquitetura ANSI/SPARC que estudamos na Semana 3. Views são a ferramenta mais usada no mercado para amortecer o impacto de mudanças no nível conceitual sobre as aplicações que consomem os dados.</p>
+      <p>Vamos retomar o exemplo da divisão da tabela <code>Aluno</code> em duas, mas agora usando uma view para proteger as aplicações antigas:</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — usando uma VIEW para preservar compatibilidade</span></div>
+        <pre><code><span class="cm">-- Estrutura NOVA, já normalizada, no nível conceitual:</span>
+CREATE TABLE Aluno (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100),
+    matricula VARCHAR(20)
+);
+
+CREATE TABLE Aluno_Contato (
+    aluno_id INT REFERENCES Aluno(id),
+    telefone VARCHAR(20),
+    endereco VARCHAR(200)
+);
+
+<span class="cm">-- View que RECRIA a aparência da tabela antiga,
+-- no nível externo, para as aplicações que ainda
+-- esperam ver tudo junto:</span>
+CREATE VIEW Aluno_Legado AS
+SELECT a.id, a.nome, a.matricula, c.telefone, c.endereco
+FROM Aluno a
+JOIN Aluno_Contato c ON a.id = c.aluno_id;
+
+<span class="cm">-- A aplicação antiga muda APENAS o nome da tabela na consulta,
+-- sem precisar reescrever nenhuma lógica de negócio:</span>
+SELECT nome, telefone FROM Aluno_Legado WHERE matricula = '2024001234';</code></pre>
+      </div>
+      <p>Esse padrão — manter uma view com a "aparência antiga" enquanto o esquema conceitual evolui por trás — é extremamente comum em sistemas reais de médio e grande porte, exatamente porque reescrever todas as aplicações de uma vez, no mesmo dia de uma mudança estrutural, costuma ser inviável ou arriscado demais.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-table-columns"></i>Independência física × lógica, lado a lado</div>
+      <p>Fechando a comparação entre os dois tipos que estudamos hoje:</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Aspecto</th><th>Independência física</th><th>Independência lógica</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Fronteira protegida</strong></td><td>Interno ↔ Conceitual</td><td>Conceitual ↔ Externo</td></tr>
+            <tr><td><strong>Exemplos de mudança</strong></td><td>Índices, particionamento, compressão, migração de disco</td><td>Adicionar/remover colunas e tabelas, mudar relacionamentos</td></tr>
+            <tr><td><strong>Grau de garantia na prática</strong></td><td>Alto — quase sempre alcançável por completo</td><td>Parcial — depende do tipo específico de mudança</td></tr>
+            <tr><td><strong>Ferramenta típica de apoio</strong></td><td>Otimizador de consultas do próprio SGBD (automático)</td><td>Views, criadas manualmente pelo DBA/desenvolvedor</td></tr>
+            <tr><td><strong>Quem geralmente decide essa mudança</strong></td><td>DBA (foco em performance)</td><td>DBA em conjunto com quem modela o esquema (Semanas 7 e 8)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="aviso-ind">
+      <i class="fas fa-route"></i>
+      <span><strong>Estudo de caso da semana:</strong> em duplas, analisem a seguinte sequência de mudanças propostas para o banco acadêmico: (1) criar um índice sobre a coluna <code>curso_id</code> da tabela <code>Matricula</code>; (2) adicionar a coluna <code>data_nascimento</code> à tabela <code>Aluno</code>; (3) remover a coluna <code>telefone</code> da tabela <code>Aluno</code>, movendo-a para uma nova tabela <code>Aluno_Contato</code>; (4) migrar todo o banco de um servidor para outro mais potente. Classifiquem cada mudança como física, lógica aditiva (segura) ou lógica removedora/estruturante (que exige atenção), e proponham, para a mudança 3, uma estratégia com view que reduza o impacto sobre aplicações existentes.</span>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Consolidação da semana</div>
+      <p>Responda de forma completa, articulando os conceitos das três aulas:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Um colega afirma: "independência lógica de dados significa que eu nunca preciso me preocupar em alterar uma aplicação quando mudo a estrutura do banco." Essa afirmação está correta? Reformule-a de forma mais precisa, usando o que foi discutido na Aula 3.<br>
+        <strong>(b)</strong> Explique, com um exemplo próprio (diferente dos usados em aula), como uma <em>view</em> pode ser usada para preservar a independência lógica diante de uma mudança estrutural que remove ou reorganiza colunas.<br>
+        <strong>(c)</strong> Por que a independência física de dados costuma ser descrita como "mais fácil de garantir por completo" do que a independência lógica? Justifique com base na natureza das mudanças em cada nível.<br>
+        <strong>(d)</strong> Retomando a arquitetura ANSI/SPARC da Semana 3: desenhe (em texto, descrevendo) o caminho que uma consulta percorre — do nível externo até o nível interno — em um cenário onde existe uma view protegendo uma mudança estrutural recente.
+      </p>
+      <span class="dif-basico">Teórico · Consolidação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 10</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-shield-halved"></i>
+        <strong>Dois tipos de independência</strong>
+        <p>Física (interno ↔ conceitual) e lógica (conceitual ↔ externo) — cada uma protege uma fronteira diferente da arquitetura ANSI/SPARC.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-hard-drive"></i>
+        <strong>Física é quase sempre total</strong>
+        <p>Índices, particionamento e migrações de armazenamento não afetam o significado dos dados nem quebram consultas existentes.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-eye"></i>
+        <strong>Lógica é parcial — e views ajudam</strong>
+        <p>Adições são seguras; remoções e reestruturações exigem adaptação, frequentemente amortecida com o uso de views.</p>
+      </div>
+    </div>
+
+    <div class="proxima">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 11 — Integridade, consistência e recuperação de dados</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>
