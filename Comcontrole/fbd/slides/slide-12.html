@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 12 — Segurança de Dados: Autenticação, Criptografia e LGPD</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ind-950:#181330;--ind-900:#211a45;--ind-800:#2d2260;
+  --ind-700:#4338ca;--ind-500:#6366f1;--ind-400:#818cf8;--ind-300:#a5b4fc;
+  --white:#fff;--text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);--card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);--card-hover:rgba(129,140,248,.07);
+  --code-bg:#140f28;--code-border:rgba(129,140,248,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--ind-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:var(--ind-700);top:-220px;left:-180px;}
+.blob-2{width:550px;height:550px;background:var(--ind-800);bottom:-200px;right:-120px;}
+.blob-3{width:280px;height:280px;background:var(--ind-500);top:38%;left:42%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(129,140,248,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ind-400);border:1px solid rgba(129,140,248,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--ind-400);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(129,140,248,.12);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--ind-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--ind-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.13);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(129,140,248,.18);color:var(--ind-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(129,140,248,.05);border-left:3px solid var(--ind-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--ind-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(129,140,248,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(129,140,248,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ind-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(129,140,248,.22);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.07);border-left:3px solid var(--ind-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--ind-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-ind{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.18);font-size:.86rem;color:rgba(165,180,252,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-ind i{color:var(--ind-400);flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);font-size:.86rem;color:rgba(254,202,202,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(129,140,248,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--ind-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(129,140,248,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(129,140,248,.03);}
+td strong{color:var(--text-primary);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--ind-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+.icon-list li i.bad{color:#f87171;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(129,140,248,.12);color:var(--ind-400);border:1px solid rgba(129,140,248,.22);}
+
+/* ── comparativo lado a lado ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:.75rem 0;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.1rem;margin:.75rem 0;}
+.mini-card{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;}
+.mini-card.bad{border-color:rgba(248,113,113,.2);background:rgba(248,113,113,.04);}
+.mini-card.good{border-color:rgba(129,140,248,.25);background:rgba(129,140,248,.05);}
+.mini-card-titulo{font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:700;margin-bottom:.6rem;display:flex;align-items:center;gap:8px;}
+.mini-card.bad .mini-card-titulo{color:#f87171;}
+.mini-card.good .mini-card-titulo{color:var(--ind-400);}
+.mini-card p{font-size:.83rem;color:var(--text-secondary);line-height:1.55;margin:0;}
+
+/* ── código ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(129,140,248,.08);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+pre{padding:1.1rem 1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;color:#c7d2fe;}
+.cm{color:#6b7280;font-style:italic;}
+
+/* ── selo LGPD / princípios ── */
+.principios-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem;margin:1rem 0;}
+.principio-card{background:rgba(129,140,248,.04);border:1px solid rgba(129,140,248,.16);border-radius:10px;padding:.9rem 1.1rem;}
+.principio-card .p-num{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--ind-400);font-weight:600;margin-bottom:2px;}
+.principio-card .p-titulo{font-size:.85rem;font-weight:700;color:var(--text-primary);margin-bottom:3px;}
+.principio-card p{font-size:.78rem;color:var(--text-secondary);line-height:1.5;margin:0;}
+
+/* ── ficha ── */
+.perfil-card{display:flex;gap:1rem;padding:1.1rem;border-radius:12px;background:rgba(129,140,248,.04);border:1px solid rgba(129,140,248,.15);margin:.75rem 0;}
+.perfil-icone{width:48px;height:48px;border-radius:12px;background:rgba(129,140,248,.15);color:var(--ind-400);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.perfil-corpo strong{display:block;color:var(--text-primary);font-size:.92rem;margin-bottom:.3rem;}
+.perfil-corpo p{font-size:.85rem;color:var(--text-secondary);line-height:1.6;margin:0;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--ind-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;background:rgba(129,140,248,.1);color:var(--ind-400);border:1px solid rgba(129,140,248,.2);}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--ind-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(129,140,248,.12);border-color:rgba(129,140,248,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ind-400);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--ind-400);}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(129,140,248,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .resumo-grid,.grid-2,.grid-3,.principios-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:580px){
+  .resumo-grid,.grid-2,.grid-3,.principios-grid{grid-template-columns:1fr;}
+  .perfil-card{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Fundamentos de Banco de Dados · BD1.02 · Sexta-feira</div>
+    <div class="semana-num">12</div>
+    <h1 class="capa-titulo">Segurança de Dados:<br>Autenticação, <em>Criptografia</em><br>e LGPD</h1>
+    <p class="capa-sub">3 aulas · 150 minutos · Protegendo o banco de dados contra acessos indevidos — e a lei que exige isso</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-user-check"></i></div><span>Autenticação × autorização: duas perguntas diferentes</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-key"></i></div><span>Senhas, hashing e autenticação multifator</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-lock"></i></div><span>Criptografia em trânsito e em repouso</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-gavel"></i></div><span>LGPD: princípios, dados sensíveis e direitos do titular</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-user-secret"></i></div><span>Anonimização e pseudonimização na prática</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade da semana</div>
+      <p>Estudo de caso: para o banco acadêmico já construído nas semanas anteriores, os alunos classificam quais colunas são dados pessoais ou sensíveis sob a LGPD e propõem, para cada uma, a estratégia de proteção mais adequada (criptografia, hashing, anonimização ou controle de acesso).</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 6 — Avaliação P1</li>
+        <li>Sem. 9 — Usuários e funções em bancos de dados</li>
+        <li>Sem. 10 — Independência de dados</li>
+        <li>Sem. 11 — Integridade, consistência e recuperação</li>
+        <li>▶ Sem. 12 — Segurança de dados</li>
+        <li>🔴 Sem. 13 — Avaliação P2 (conteúdo das Sem. 7 a 12)</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que esta semana importa</div>
+      <ul class="info-lista">
+        <li>Fecha o bloco de conteúdo que vai cair na P2 — e conecta diretamente papéis/permissões (Semana 9) com um tema que toda empresa brasileira precisa levar a sério por força de lei</li>
+        <li>Um pipeline de dados para IA que ignora a LGPD pode gerar multas de até 2% do faturamento da empresa — segurança de dados não é só teoria, é risco financeiro real</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-link"></i>Conexão direta</div>
+      <ul class="info-lista">
+        <li>Papéis e permissões (Semana 9) → é a camada de <strong>autorização</strong> que complementa a autenticação vista hoje</li>
+        <li>Integridade e recuperação (Semana 11) → junto com segurança, completa o trio "integridade, consistência, segurança e recuperação" da ementa da disciplina</li>
+        <li>Governança de dados (disciplinas futuras de Big Data) → aprofunda LGPD aplicada a pipelines de dados em larga escala</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">Autenticação e autorização: duas perguntas que não podem se confundir</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-circle-question"></i>"Quem é você?" × "O que você pode fazer?"</div>
+      <p>Segurança de banco de dados começa com uma distinção que parece sutil, mas é fundamental: <strong>autenticação</strong> é o processo de verificar <em>quem</em> está tentando acessar o sistema — normalmente através de usuário e senha. <strong>Autorização</strong>, por outro lado, é decidir <em>o que</em> essa pessoa, já identificada, tem permissão de fazer. Na Semana 9 estudamos autorização em profundidade (papéis, <code>GRANT</code>, <code>REVOKE</code>, princípio do menor privilégio) — hoje completamos o quadro estudando a etapa que acontece <strong>antes</strong> dela: provar que você é realmente quem diz ser.</p>
+      <div class="grid-2">
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-id-card"></i>Autenticação</div>
+          <p>"Você é mesmo a Camila?" Verificada por algo que a pessoa sabe (senha), possui (token) ou é (biometria). Acontece uma única vez, no início da conexão.</p>
+        </div>
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-user-shield"></i>Autorização</div>
+          <p>"Camila pode fazer DELETE na tabela Aluno?" Verificada a cada operação, com base no papel e nas permissões já concedidas (Semana 9).</p>
+        </div>
+      </div>
+      <div class="destaque">
+        <strong>Por que a ordem importa:</strong> autorização sem autenticação não tem nenhum valor prático — de nada adianta ter regras cuidadosas de "quem pode fazer o quê" (Semana 9) se qualquer pessoa consegue se passar por qualquer usuário sem provar sua identidade primeiro. As duas camadas trabalham em conjunto, mas resolvem problemas diferentes.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-key"></i>Senhas: a forma de autenticação mais comum — e mais frágil</div>
+      <p>Apesar de todas as alternativas mais modernas, a combinação de usuário e senha continua sendo o mecanismo de autenticação mais usado no mundo, inclusive em SGBDs (lembre da Semana 9: <code>CREATE USER camila_analista WITH PASSWORD '...'</code>). Só que armazenar senhas de forma correta é uma tarefa mais delicada do que parece.</p>
+      <div class="aviso-red">
+        <i class="fas fa-triangle-exclamation"></i>
+        <span><strong>Nunca armazene senhas em texto puro.</strong> Se a tabela de usuários de um sistema for comprometida (por vazamento, invasão ou erro de configuração) e as senhas estiverem gravadas exatamente como o usuário digitou, o atacante tem acesso imediato a todas as contas — e, pior, muita gente reutiliza a mesma senha em vários sistemas diferentes.</span>
+      </div>
+      <p>A solução padrão da indústria é armazenar não a senha em si, mas o resultado de uma <strong>função de hash</strong> aplicada a ela — um processo que veremos com mais detalhe técnico na Aula 2 de hoje, quando comparamos hashing e criptografia lado a lado.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-shield-halved"></i>Autenticação multifator (MFA): somando camadas de prova</div>
+      <p>Mesmo uma senha forte pode ser roubada — por phishing, vazamento de dados de terceiros, ou simples adivinhação. A <strong>autenticação multifator</strong> (MFA, do inglês <em>multi-factor authentication</em>) reduz esse risco exigindo <strong>mais de um tipo de prova</strong> de identidade, combinando categorias diferentes:</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Fator</th><th>O que representa</th><th>Exemplo</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Algo que você sabe</strong></td><td>Uma informação memorizada</td><td>Senha, PIN, resposta de segurança</td></tr>
+            <tr><td><strong>Algo que você possui</strong></td><td>Um objeto físico ou dispositivo</td><td>Celular recebendo um código por SMS ou aplicativo autenticador</td></tr>
+            <tr><td><strong>Algo que você é</strong></td><td>Uma característica biométrica</td><td>Impressão digital, reconhecimento facial</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Em bancos de dados corporativos, é comum exigir MFA especificamente para contas com privilégios administrativos — lembrando o princípio do menor privilégio da Semana 9: quanto maior o poder de uma conta (um DBA, por exemplo), maior o cuidado exigido para provar que quem está logando é realmente essa pessoa.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-network-wired"></i>Segurança da conexão: como a autenticação chega até o SGBD</div>
+      <p>Vale notar que a autenticação de banco de dados normalmente acontece sobre uma <strong>conexão de rede</strong> — a aplicação (ou o próprio DBA usando uma ferramenta cliente) se conecta ao servidor onde o SGBD está rodando, muitas vezes através da internet ou de uma rede corporativa. Isso levanta uma pergunta adicional: e se alguém estiver "escutando" essa conexão?</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Exemplo — string de conexão exigindo criptografia no transporte</span></div>
+        <pre><code><span class="cm">-- Sem exigir conexão segura (arriscado em redes não confiáveis):</span>
+postgresql://joao_dev:senha123@servidor.exemplo.com:5432/academico
+
+<span class="cm">-- Exigindo que a conexão use TLS/SSL (veremos em detalhe na Aula 2):</span>
+postgresql://joao_dev:senha123@servidor.exemplo.com:5432/academico?sslmode=require</code></pre>
+      </div>
+      <p>Esse parâmetro <code>sslmode=require</code> é a ponte perfeita para o assunto da próxima aula: ele não protege apenas a senha usada na autenticação, mas <strong>todos os dados</strong> que trafegam entre a aplicação e o banco depois que a conexão é estabelecida.</p>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Autenticação ou autorização?</div>
+      <p>Para cada situação, identifique se ela está relacionada a <strong>autenticação</strong> ou <strong>autorização</strong>, retomando também os conceitos da Semana 9:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Um sistema rejeita a tentativa de login porque a senha digitada está incorreta.<br>
+        <strong>(b)</strong> Um usuário já logado tenta executar um <code>DELETE</code> em uma tabela, mas recebe erro de permissão negada.<br>
+        <strong>(c)</strong> Um DBA precisa digitar a senha e, em seguida, confirmar um código enviado ao celular antes de acessar o servidor de produção.<br>
+        <strong>(d)</strong> Um analista de dados consegue fazer login normalmente, mas só visualiza as tabelas que seu papel <code>analista_dados</code> autoriza.
+      </p>
+      <span class="dif-basico">Teórico · Fixação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Criptografia: protegendo os dados em trânsito e em repouso</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-lock"></i>Dois cenários, duas proteções diferentes</div>
+      <p>Dados em um sistema de banco de dados passam por dois estados bem diferentes, e cada um exige uma estratégia de proteção específica:</p>
+      <div class="grid-2">
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-route"></i>Criptografia em trânsito</div>
+          <p>Protege os dados enquanto <strong>viajam</strong> pela rede — entre a aplicação e o SGBD, ou entre um servidor e outro. É exatamente o que o <code>sslmode=require</code> da Aula 1 ativa, usando o protocolo TLS/SSL.</p>
+        </div>
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-hard-drive"></i>Criptografia em repouso</div>
+          <p>Protege os dados enquanto estão <strong>parados</strong>, gravados fisicamente em disco. Mesmo que alguém roube o disco físico ou um backup, os dados permanecem ilegíveis sem a chave correta.</p>
+        </div>
+      </div>
+      <div class="destaque">
+        <strong>As duas são necessárias, não substituem uma à outra:</strong> um banco com criptografia em repouso perfeita, mas conexões abertas sem TLS, ainda expõe os dados a qualquer pessoa capaz de interceptar o tráfego de rede. E um banco com conexões super seguras, mas discos não criptografados, ainda é vulnerável a alguém com acesso físico ao servidor ou a um backup mal protegido.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-key"></i>Hashing × criptografia: uma diferença que muita gente confunde</div>
+      <p>Voltando ao tema de senhas da Aula 1: por que não simplesmente <em>criptografar</em> a senha do usuário, em vez de fazer todo esse discurso sobre "hash"? A resposta está em uma diferença técnica fundamental entre os dois processos:</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Aspecto</th><th>Criptografia</th><th>Hashing</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Reversível?</strong></td><td>Sim — quem tem a chave correta consegue recuperar o dado original</td><td>Não — é um processo de mão única, projetado para nunca ser revertido</td></tr>
+            <tr><td><strong>Objetivo</strong></td><td>Esconder um dado, mas permitir recuperá-lo depois quando necessário</td><td>Verificar se dois valores são iguais, sem nunca precisar saber o valor original</td></tr>
+            <tr><td><strong>Uso típico</strong></td><td>Proteger o conteúdo de uma coluna sensível (ex.: número de cartão de crédito)</td><td>Armazenar senhas — o sistema nunca precisa "ler" sua senha, só confirmar que ela bate</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Quando você faz login em qualquer sistema, ele não descriptografa a senha salva e compara com a que você digitou — ele aplica a mesma função de hash na senha digitada e compara os dois <strong>hashes</strong>. Se baterem, a senha está correta; se não baterem, está errada. Em nenhum momento o sistema "sabe" qual é sua senha original.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Representação conceitual — verificação de senha via hash</span></div>
+        <pre><code><span class="cm">-- No cadastro, a senha digitada NUNCA é salva diretamente:</span>
+senha_digitada = "minhasenha123"
+hash_armazenado = funcao_hash(senha_digitada)
+<span class="cm">-- Banco salva algo como: "$2b$12$KixJ8y3f...9dQz" (exemplo ilustrativo)</span>
+
+<span class="cm">-- No login, o sistema repete o processo e COMPARA os hashes:</span>
+senha_tentativa = "minhasenha123"
+hash_tentativa = funcao_hash(senha_tentativa)
+
+<span class="cm">SE hash_tentativa == hash_armazenado:</span>
+    login_permitido = True
+<span class="cm">SENAO:</span>
+    login_permitido = False</code></pre>
+      </div>
+      <div class="aviso">
+        <i class="fas fa-lightbulb"></i>
+        <span><strong>Detalhe técnico importante para quem for além desta disciplina:</strong> funções de hash usadas para senhas (como bcrypt ou Argon2) são deliberadamente <em>lentas</em> — ao contrário de funções de hash genéricas, usadas por exemplo para verificar integridade de arquivos. Essa lentidão proposital dificulta ataques de força bruta, em que alguém tenta bilhões de senhas possíveis em sequência.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-database"></i>Criptografia em repouso na prática: dois níveis de aplicação</div>
+      <p>Dentro de "criptografia em repouso", existem duas abordagens bem diferentes, com implicações práticas distintas para quem projeta o banco de dados:</p>
+      <div class="grid-2">
+        <div class="mini-card">
+          <div class="mini-card-titulo"><i class="fas fa-server"></i>Criptografia de disco completo (TDE)</div>
+          <p>Todo o arquivo físico do banco é criptografado de uma vez, de forma transparente para as consultas SQL — quem já está autenticado e autorizado enxerga os dados normalmente, sem precisar descriptografar nada manualmente. Protege contra roubo físico de disco ou backup, mas não contra alguém com acesso legítimo (autenticado) ao banco.</p>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-titulo"><i class="fas fa-table-columns"></i>Criptografia em nível de coluna</div>
+          <p>Apenas colunas específicas e sensíveis (CPF, número de cartão) são criptografadas individualmente. Mais granular e trabalhosa de implementar, mas protege até mesmo contra alguém com acesso de leitura ao banco que não tenha a chave específica daquela coluna.</p>
+        </div>
+      </div>
+      <p>A escolha entre as duas abordagens depende do nível de sensibilidade dos dados e de quem, dentro da própria equipe, deveria — ou não deveria — conseguir ler determinado campo mesmo tendo acesso autorizado ao banco.</p>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Escolhendo a proteção certa</div>
+      <p>Para cada cenário, indique se a proteção mais adequada é criptografia em trânsito, criptografia em repouso, ou hashing — e justifique:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Uma aplicação web envia dados de login para o SGBD através da internet pública.<br>
+        <strong>(b)</strong> Uma coluna armazena a senha de acesso dos usuários de um sistema.<br>
+        <strong>(c)</strong> Um HD com backups do banco de dados é fisicamente retirado do data center para ser descartado.<br>
+        <strong>(d)</strong> Uma coluna armazena o número do cartão de crédito de clientes, que precisa ser recuperado (não apenas verificado) para processar cobranças futuras.
+      </p>
+      <span class="dif-basico">Teórico · Aplicação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · ~50 minutos</div>
+        <div class="secao-titulo">LGPD: a lei que transforma segurança de dados em obrigação legal</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-gavel"></i>O que é a LGPD e por que ela existe</div>
+      <p>A <strong>Lei Geral de Proteção de Dados</strong> (LGPD, Lei nº 13.709/2018) é a legislação brasileira que regula como empresas e órgãos públicos podem coletar, armazenar, usar e compartilhar dados pessoais de pessoas físicas. Ela nasceu de uma preocupação global — a mesma que originou o GDPR europeu — com o crescimento explosivo de dados pessoais coletados por sistemas digitais, muitas vezes sem controle claro do que acontece com essas informações depois.</p>
+      <p>Para uma disciplina de banco de dados, a LGPD não é "assunto de advogado" — ela impõe <strong>requisitos técnicos concretos</strong> sobre como um banco de dados deve ser projetado, protegido e operado sempre que armazena dados de pessoas.</p>
+      <div class="destaque">
+        <strong>Dado pessoal, segundo a LGPD:</strong> qualquer informação relacionada a uma pessoa natural identificada ou identificável. Isso vai muito além de CPF e nome — inclui e-mail, endereço IP, geolocalização e até um identificador de dispositivo, se puder ser associado a uma pessoa específica.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-triangle-exclamation"></i>Dados pessoais sensíveis: uma categoria com proteção reforçada</div>
+      <p>A LGPD reconhece uma subcategoria de dados que exige cuidado ainda maior: os <strong>dados pessoais sensíveis</strong>, cujo tratamento indevido pode gerar discriminação ou dano relevante à pessoa. Alguns exemplos, direto do texto da lei:</p>
+      <ul class="icon-list">
+        <li><i class="fas fa-dna"></i><span>Origem racial ou étnica</span></li>
+        <li><i class="fas fa-place-of-worship"></i><span>Convicção religiosa</span></li>
+        <li><i class="fas fa-flag"></i><span>Opinião política</span></li>
+        <li><i class="fas fa-notes-medical"></i><span>Dado referente à saúde ou à vida sexual</span></li>
+        <li><i class="fas fa-fingerprint"></i><span>Dado genético ou biométrico</span></li>
+      </ul>
+      <p>No contexto do nosso banco acadêmico, por exemplo, um campo que registrasse condições de saúde de um aluno para fins de acessibilidade seria um dado pessoal sensível, exigindo tratamento e proteção significativamente mais rigorosos do que, digamos, o campo <code>curso_id</code>.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-check"></i>Princípios da LGPD com aplicação direta ao desenho de um banco</div>
+      <p>A lei estabelece dez princípios gerais, mas alguns têm implicação técnica particularmente direta para quem modela e administra bancos de dados:</p>
+      <div class="principios-grid">
+        <div class="principio-card">
+          <div class="p-num">Princípio</div>
+          <div class="p-titulo">Necessidade</div>
+          <p>Coletar apenas os dados estritamente necessários para a finalidade declarada — na prática, cada coluna de uma tabela deveria ter uma justificativa clara de existir.</p>
+        </div>
+        <div class="principio-card">
+          <div class="p-num">Princípio</div>
+          <div class="p-titulo">Finalidade</div>
+          <p>Usar o dado apenas para o propósito que motivou sua coleta — um e-mail coletado para contato acadêmico não deveria, sem novo consentimento, virar base para campanhas de marketing.</p>
+        </div>
+        <div class="principio-card">
+          <div class="p-num">Princípio</div>
+          <div class="p-titulo">Segurança</div>
+          <p>Utilizar medidas técnicas capazes de proteger os dados de acessos não autorizados — exatamente os mecanismos de autenticação e criptografia das Aulas 1 e 2 de hoje.</p>
+        </div>
+        <div class="principio-card">
+          <div class="p-num">Princípio</div>
+          <div class="p-titulo">Transparência</div>
+          <p>Garantir informações claras sobre o tratamento dos dados — o que, em termos de banco de dados, se relaciona com manter um bom catálogo de dados e documentação (Semana 5).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-user-secret"></i>Anonimização × pseudonimização: reduzindo risco sem descartar os dados</div>
+      <p>Um dos maiores desafios práticos da LGPD para quem trabalha com dados — especialmente em projetos de IA, que dependem de grandes volumes de dados históricos para treinar modelos — é continuar extraindo valor analítico dos dados sem expor desnecessariamente a identidade das pessoas envolvidas. Duas técnicas centrais ajudam nesse equilíbrio:</p>
+      <div class="grid-2">
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-user-slash"></i>Anonimização</div>
+          <p>Remove <strong>permanentemente</strong> qualquer possibilidade de identificar a pessoa a partir do dado, mesmo cruzando com outras informações. Um dado verdadeiramente anonimizado deixa, tecnicamente, de ser considerado "dado pessoal" pela LGPD — mas alcançar anonimização completa na prática é mais difícil do que parece.</p>
+        </div>
+        <div class="mini-card good">
+          <div class="mini-card-titulo"><i class="fas fa-user-tag"></i>Pseudonimização</div>
+          <p>Substitui identificadores diretos (nome, CPF) por um código ou identificador artificial, mantendo separadamente — e protegida — a informação que permitiria reverter essa substituição. Continua sendo dado pessoal para fins legais, mas reduz drasticamente o risco em caso de vazamento.</p>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">SQL — exemplo simplificado de pseudonimização para análise</span></div>
+        <pre><code><span class="cm">-- Uma VIEW (conceito da Semana 10!) que entrega os dados
+-- para análise SEM os identificadores diretos:</span>
+CREATE VIEW Aluno_Anonimizado AS
+SELECT
+    MD5(matricula) AS id_pseudonimo,   <span class="cm">-- identificador não-reversível diretamente</span>
+    curso_id,
+    EXTRACT(YEAR FROM data_nascimento) AS ano_nascimento, <span class="cm">-- idade aproximada, não a data exata</span>
+    cidade
+FROM Aluno;
+
+<span class="cm">-- Um analista de dados (Semana 9) pode estudar padrões de
+-- desempenho por curso e faixa etária sem nunca ver nome,
+-- matrícula exata ou data de nascimento completa de ninguém.</span></code></pre>
+      </div>
+      <p>Note como esse exemplo amarra três semanas diferentes da disciplina: <strong>views</strong> (Semana 10) sendo usadas para implementar uma política de <strong>autorização</strong> (Semana 9) que atende a um <strong>princípio legal</strong> de proteção de dados (Semana 12) — um bom retrato de como os conceitos técnicos e as exigências regulatórias se encontram na prática.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-user-check"></i>Direitos do titular dos dados — e sua implicação técnica</div>
+      <p>A LGPD garante à pessoa titular dos dados uma série de direitos, mas dois deles têm consequência técnica direta sobre como um banco de dados precisa ser projetado:</p>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Direito do titular</th><th>O que exige do sistema</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Acesso</strong> aos próprios dados</td><td>O sistema precisa ser capaz de localizar e exportar tudo o que existe sobre uma pessoa específica, muitas vezes espalhado por múltiplas tabelas</td></tr>
+            <tr><td><strong>Eliminação</strong> ("direito ao esquecimento")</td><td>O sistema precisa suportar a remoção completa (ou anonimização) dos dados de uma pessoa, respeitando ao mesmo tempo a integridade referencial (Semana 11) de tabelas relacionadas</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="aviso">
+        <i class="fas fa-lightbulb"></i>
+        <span><strong>Conectando com a Semana 11:</strong> lembra das cláusulas <code>ON DELETE CASCADE</code>, <code>RESTRICT</code> e <code>SET NULL</code>? Um pedido de eliminação de dados sob a LGPD é, tecnicamente, um <code>DELETE</code> que precisa ser planejado com cuidado — apagar um <code>Aluno</code> pode exigir decidir, deliberadamente, o que fazer com suas <code>Matriculas</code> associadas, sem violar a integridade referencial do restante do sistema.</span>
+      </div>
+    </div>
+
+    <div class="aviso-ind">
+      <i class="fas fa-route"></i>
+      <span><strong>Estudo de caso da semana:</strong> em duplas, retomem as tabelas <code>Aluno</code>, <code>Curso</code> e <code>Matricula</code> construídas ao longo do semestre. Classifiquem cada coluna existente como dado pessoal comum, dado pessoal sensível, ou dado não-pessoal. Para cada dado pessoal identificado, proponham a estratégia de proteção mais adequada (autenticação reforçada, criptografia em trânsito/repouso, hashing, anonimização ou pseudonimização), justificando a escolha.</span>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Consolidação da semana</div>
+      <p>Responda de forma completa, articulando os conceitos das três aulas:</p>
+      <p style="margin-top:.5rem;">
+        <strong>(a)</strong> Explique a diferença entre anonimização e pseudonimização, e por que apenas uma delas faz um dado deixar de ser considerado "dado pessoal" pela LGPD.<br>
+        <strong>(b)</strong> Um colega afirma: "se meu banco de dados usa hashing para as senhas, ele está automaticamente em conformidade com a LGPD." Essa afirmação está correta? Justifique, retomando os princípios vistos na Aula 3.<br>
+        <strong>(c)</strong> Explique por que criptografia em trânsito e criptografia em repouso são complementares, e não substitutas uma da outra — dê um exemplo de ataque que cada uma, isoladamente, não conseguiria evitar.<br>
+        <strong>(d)</strong> Um pedido de eliminação de dados (direito ao esquecimento) chega para um aluno que já concluiu o curso, mas que ainda possui registros de matrícula referenciados por outras tabelas do sistema acadêmico. Usando os conceitos de integridade referencial da Semana 11, explique pelo menos duas estratégias possíveis para atender a esse pedido sem quebrar a consistência do restante do banco.
+      </p>
+      <span class="dif-basico">Teórico · Consolidação</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 12</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-user-check"></i>
+        <strong>Autenticação × autorização</strong>
+        <p>"Quem é você" (senha, MFA) vem antes de "o que você pode fazer" (papéis e permissões da Semana 9) — as duas camadas são complementares.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-lock"></i>
+        <strong>Criptografia em trânsito e repouso</strong>
+        <p>Protegem momentos diferentes dos dados; hashing (senhas) e criptografia (dados recuperáveis) resolvem problemas diferentes.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-gavel"></i>
+        <strong>LGPD é requisito técnico, não só jurídico</strong>
+        <p>Necessidade, finalidade e segurança se traduzem em decisões concretas de modelagem, views e políticas de acesso ao banco.</p>
+      </div>
+    </div>
+
+    <div class="proxima">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 13 — Avaliação P2 (conteúdo das Semanas 7 a 12)</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>
