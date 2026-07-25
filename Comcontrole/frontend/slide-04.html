@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Semana 04 — Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --amber-950:#1c0a00;--amber-900:#2a1200;--amber-800:#451a03;
+  --amber-700:#78350f;--amber-500:#b45309;--amber-400:#d97706;
+  --amber-300:#f59e0b;--amber-200:#fbbf24;--amber-100:#fcd34d;
+  --white:#ffffff;
+  --text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(251,191,36,.05);
+  --code-bg:#130a00;--code-border:rgba(251,191,36,.18);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--amber-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ══════════════════════════════════════ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;}
+.blob-1{width:700px;height:700px;background:var(--amber-700);top:-250px;left:-200px;}
+.blob-2{width:600px;height:600px;background:var(--amber-800);bottom:-220px;right:-150px;}
+.blob-3{width:350px;height:350px;background:var(--amber-500);top:38%;left:38%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(251,191,36,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--amber-200);border:1px solid rgba(251,191,36,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--amber-200);animation:pulsar 2s ease-in-out infinite;}
+@keyframes pulsar{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(251,191,36,.1);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--amber-200);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--amber-200);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.12);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(251,191,36,.18);color:var(--amber-200);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(251,191,36,.05);border-left:3px solid var(--amber-200);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--amber-200);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--amber-200);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;}
+.tipo-conteudo{background:rgba(251,191,36,.12);color:var(--amber-200);border:1px solid rgba(251,191,36,.28);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ══════════════════════════════════ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(251,191,36,.14);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(251,191,36,.16);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--amber-200);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(251,191,36,.2);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--amber-200);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.07);border-left:3px solid var(--amber-200);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.6;}
+.destaque strong{color:var(--amber-200);}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(251,191,36,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--amber-200);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(251,191,36,.18);}
+td{padding:.6rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(251,191,36,.03);}
+
+/* code blocks */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(251,191,36,.07);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;cursor:pointer;background:none;border:none;color:var(--text-muted);letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--amber-200);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#fde68a;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#86efac;}.cm{color:#4b5563;font-style:italic;}
+.num{color:#fca5a5;}.op{color:#c4b5fd;}.tag{color:#fdba74;}.attr{color:#a78bfa;}.val{color:#86efac;}
+.jsx{color:#fb923c;}.hook{color:#34d399;}
+
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.85);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:var(--amber-200);flex-shrink:0;margin-top:2px;}
+.aviso-info{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);font-size:.86rem;color:rgba(186,230,253,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-info i{color:#60a5fa;flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+
+/* exercícios */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--amber-200);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dificuldade{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;}
+.dif-basico{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+/* resumo */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--amber-200);margin-bottom:.5rem;display:block;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);margin-top:3rem;text-decoration:none;}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--amber-200);}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(251,191,36,.1);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+/* ── diagramas específicos ── */
+.http-flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;padding:1.5rem;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:14px;margin:.75rem 0;}
+.hf-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.75rem 1.1rem;min-width:120px;text-align:center;}
+.hf-box strong{display:block;font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;color:#f0f4ff;margin-bottom:3px;}
+.hf-box small{font-size:.72rem;color:var(--text-muted);}
+.hf-arrow{display:flex;flex-direction:column;align-items:center;padding:0 .75rem;gap:3px;}
+.hf-arrow-line{width:48px;height:2px;background:rgba(251,191,36,.3);}
+.hf-arrow-label{font-size:.68rem;color:var(--amber-200);font-weight:600;white-space:nowrap;}
+
+.estados-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem;margin:.75rem 0;}
+.estado-card{padding:.9rem 1rem;border-radius:10px;border:1px solid;}
+.estado-idle{background:rgba(107,114,128,.08);border-color:rgba(107,114,128,.25);}
+.estado-loading{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.25);}
+.estado-success{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.25);}
+.estado-error{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);}
+.estado-card .nome{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;margin-bottom:3px;}
+.estado-idle .nome{color:#94a3b8;}.estado-loading .nome{color:#fbbf24;}.estado-success .nome{color:#4ade80;}.estado-error .nome{color:#f87171;}
+.estado-card .desc{font-size:.75rem;color:var(--text-muted);}
+
+/* demo */
+.demo-api{background:#050e24;border:1px solid rgba(251,191,36,.15);border-radius:14px;overflow:hidden;margin:.75rem 0;}
+.demo-api-bar{display:flex;align-items:center;gap:.5rem;padding:.6rem .9rem;background:rgba(0,0,0,.3);border-bottom:1px solid rgba(255,255,255,.06);}
+.demo-api-dot{width:8px;height:8px;border-radius:50%;}
+.demo-api-url{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);margin-left:4px;flex:1;}
+.demo-api-status{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:6px;}
+.demo-api-body{padding:1.25rem;}
+.demo-api-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;}
+.demo-api-input{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.5rem .875rem;color:var(--text-primary);font-family:'Inter',sans-serif;font-size:.83rem;outline:none;width:100%;transition:border-color .2s;}
+.demo-api-input:focus{border-color:rgba(251,191,36,.4);}
+.demo-api-select{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.5rem .875rem;color:var(--text-primary);font-family:'Inter',sans-serif;font-size:.83rem;outline:none;width:100%;transition:border-color .2s;}
+.demo-api-btn{background:linear-gradient(135deg,var(--amber-300),var(--amber-400));border:none;border-radius:8px;padding:.5rem 1.25rem;color:#1c0a00;font-size:.83rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .2s;}
+.demo-api-btn:hover{opacity:.88;}
+.demo-api-btn:disabled{opacity:.4;cursor:not-allowed;}
+.demo-result{margin-top:.75rem;min-height:80px;padding:.875rem;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:10px;}
+.result-loading{display:flex;align-items:center;gap:8px;color:var(--amber-200);font-size:.83rem;}
+.result-loading .spinner{width:16px;height:16px;border:2px solid rgba(251,191,36,.2);border-top-color:var(--amber-200);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.result-error{color:#f87171;font-size:.83rem;}
+.result-card{display:flex;gap:.75rem;align-items:flex-start;}
+.result-card-img{width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;background:rgba(255,255,255,.05);}
+.result-card-name{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#f0f4ff;margin-bottom:2px;}
+.result-card-detail{font-size:.78rem;color:var(--text-muted);}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem;}
+.result-chip{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:.4rem .7rem;font-size:.75rem;color:rgba(230,238,248,.8);}
+
+@media(max-width:900px){.capa{grid-template-columns:1fr;}.capa-right{display:none;}.grid-2{grid-template-columns:1fr;}.resumo-grid{grid-template-columns:1fr 1fr;}.demo-api-grid{grid-template-columns:1fr;}}
+@media(max-width:540px){.resumo-grid{grid-template-columns:1fr;}.capa-titulo{font-size:1.5rem;}.http-flow{flex-direction:column;}}
+</style>
+</head>
+<body>
+<!-- ═══════════════ CAPA ═══════════════════════ -->
+<section class="capa">
+<div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+<span class="tipo-badge tipo-conteudo">📚 Conteúdo</span>
+<div class="capa-left">
+<div class="semana-badge"><span class="dot"></span>Front-end para IA · Bacharelado · 3º Período</div>
+<div class="semana-num">04</div>
+<h1 class="capa-titulo">Consumindo<br/><em>APIs REST</em></h1>
+<p class="capa-sub">4 aulas · 200 minutos · Pré-requisito: Semana 3</p>
+<div class="divider"></div>
+<div class="topicos">
+<div class="topico"><div class="topico-icon"><i class="fas fa-exchange-alt"></i></div><span>HTTP, REST e JSON — o protocolo que tudo usa</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-code"></i></div><span>fetch nativo e async/await — o padrão moderno</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-shield-alt"></i></div><span>Tratamento de erros — estados e feedback visual</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-bolt"></i></div><span>Axios — cliente HTTP com superpoderes</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-key"></i></div><span>Variáveis de ambiente (.env) — segurança de chaves</span></div>
+</div>
+<div class="atividade-box">
+<div class="label">Atividade Prática</div>
+<p>Consumir a PokéAPI (ou JSONPlaceholder) e exibir resultados dinâmicos com estados de loading, erro e sucesso.</p>
+</div>
+</div>
+<div class="capa-right">
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-link"></i>Conexão com as semanas anteriores</div>
+<ul class="info-lista">
+<li>async/await foi apresentado na Sem. 1 — agora vai usar de verdade</li>
+<li>useEffect da Sem. 3 é onde o fetch vai viver</li>
+<li>useState da Sem. 2 vai guardar: dados, loading e erro</li>
+<li>Context da Sem. 3 vai guardar a API key — seguramente</li>
+</ul>
+</div>
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-brain"></i>Por que isso é a porta de entrada para IA?</div>
+<ul class="info-lista">
+<li>Sem. 5: a API da OpenAI é uma API REST — você vai usar exatamente isso</li>
+<li>Todo modelo de IA exposto via API (HuggingFace, Gemini, Anthropic) usa o mesmo padrão</li>
+<li>Dominar fetch + tratamento de erro = dominar integração com qualquer LLM</li>
+<li>.env protege sua chave de API — sem isso ela fica exposta no GitHub</li>
+</ul>
+</div>
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-tools"></i>APIs gratuitas para praticar</div>
+<ul class="info-lista">
+<li><strong>PokéAPI</strong> — pokeapi.co · sem autenticação</li>
+<li><strong>JSONPlaceholder</strong> — jsonplaceholder.typicode.com · fake REST</li>
+<li><strong>Open Meteo</strong> — open-meteo.com · clima · sem chave</li>
+<li><strong>GitHub API</strong> — api.github.com · perfis e repos</li>
+</ul>
+</div>
+</div>
+<div class="scroll-hint"><span>role para o conteúdo</span><i class="fas fa-chevron-down"></i></div>
+</section>
+<!-- ═══════════════ CONTEÚDO ══════════════════ -->
+<main class="conteudo">
+<!-- ══════════════════════════════════
+     AULA 1 — HTTP, REST, fetch e async/await
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">01</div>
+<div>
+<div class="secao-label">Aula 1 · ~50 minutos</div>
+<div class="secao-titulo">HTTP, REST e fetch — como o front-end conversa com o mundo</div>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-project-diagram"></i>O ciclo completo de uma requisição</div>
+<p>Toda vez que seu React busca dados externos, esse ciclo acontece. Entender cada etapa é fundamental para debugar problemas de API.</p>
+<div class="http-flow">
+<div class="hf-box"><strong>React App</strong><small>seu componente</small></div>
+<div class="hf-arrow"><div class="hf-arrow-line"></div><div class="hf-arrow-label">fetch(url, options) →</div><div class="hf-arrow-line"></div></div>
+<div class="hf-box"><strong>Servidor / API</strong><small>REST endpoint</small></div>
+<div class="hf-arrow"><div class="hf-arrow-line"></div><div class="hf-arrow-label">← Response (JSON)</div><div class="hf-arrow-line"></div></div>
+<div class="hf-box"><strong>Estado React</strong><small>setDados(json)</small></div>
+<div class="hf-arrow"><div class="hf-arrow-line"></div><div class="hf-arrow-label">re-render →</div><div class="hf-arrow-line"></div></div>
+<div class="hf-box"><strong>UI atualizada</strong><small>dados na tela</small></div>
+</div>
+<div class="tabela-wrap">
+<table>
+<thead><tr><th>Método HTTP</th><th>O que faz</th><th>Quando usar</th></tr></thead>
+<tbody>
+<tr><td><strong>GET</strong></td><td>Busca dados</td><td>Listar, buscar, ler — sem alterar dados</td></tr>
+<tr><td><strong>POST</strong></td><td>Cria recurso</td><td>Enviar formulário, criar usuário, enviar prompt para IA</td></tr>
+<tr><td><strong>PUT / PATCH</strong></td><td>Atualiza recurso</td><td>Editar perfil, atualizar configuração</td></tr>
+<tr><td><strong>DELETE</strong></td><td>Remove recurso</td><td>Deletar item, apagar conversa</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-wifi"></i>fetch — a API nativa do navegador</div>
+<p><code>fetch</code> retorna uma Promise. Toda requisição de rede é assíncrona — o navegador não para enquanto espera a resposta. Por isso usamos <code>async/await</code>.</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JavaScript — fetch GET completo</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="cm">// GET simples — buscar um Pokémon</span>
+<span class="kw">async function</span> <span class="fn">buscarPokemon</span>(nome) {
+  <span class="kw">const</span> resposta = <span class="kw">await</span> <span class="fn">fetch</span>(`https://pokeapi.co/api/v2/pokemon/${nome}`);
+
+  <span class="cm">// ⚠️ fetch NÃO lança erro em status 404/500 — só lança em falha de rede</span>
+  <span class="kw">if</span> (!resposta.ok) {
+    <span class="kw">throw new</span> <span class="fn">Error</span>(`Erro ${resposta.status}: ${resposta.statusText}`);
+  }
+
+  <span class="kw">const</span> dados = <span class="kw">await</span> resposta.<span class="fn">json</span>(); <span class="cm">// converte o body para objeto JS</span>
+  <span class="kw">return</span> dados;
+}
+
+<span class="cm">// POST — enviar dados (padrão para chamar API de IA)</span>
+<span class="kw">async function</span> <span class="fn">criarPost</span>(titulo, corpo) {
+  <span class="kw">const</span> resposta = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://jsonplaceholder.typicode.com/posts'</span>, {
+    method:  <span class="str">'POST'</span>,
+    headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+    body:    <span class="fn">JSON.stringify</span>({ title: titulo, body: corpo, userId: <span class="num">1</span> }),
+  });
+
+  <span class="kw">if</span> (!resposta.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'Falha ao criar post'</span>);
+  <span class="kw">return</span> resposta.<span class="fn">json</span>();
+}
+
+<span class="cm">// POST com Authorization header — template para APIs de IA</span>
+<span class="kw">async function</span> <span class="fn">chamarIA</span>(prompt, apiKey) {
+  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://api.openai.com/v1/chat/completions'</span>, {
+    method:  <span class="str">'POST'</span>,
+    headers: {
+      <span class="str">'Content-Type'</span>:  <span class="str">'application/json'</span>,
+      <span class="str">'Authorization'</span>: <span class="str">`Bearer ${apiKey}`</span>,  <span class="cm">// ← header de autenticação</span>
+    },
+    body: <span class="fn">JSON.stringify</span>({
+      model:    <span class="str">'gpt-4o'</span>,
+      messages: [{ role: <span class="str">'user'</span>, content: prompt }],
+    }),
+  });
+  <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">`API error ${res.status}`</span>);
+  <span class="kw">return</span> res.<span class="fn">json</span>();
+}</code></pre>
+</div>
+<div class="aviso">
+<i class="fas fa-exclamation-triangle"></i>
+<span><strong>A armadilha do fetch:</strong> <code>fetch</code> só rejeita a Promise em caso de falha de rede (sem conexão). Um erro 404 ou 500 da API <em>não</em> lança exceção — você precisa checar manualmente com <code>if (!resposta.ok)</code>. Esse é o erro mais comum de quem começa a usar APIs.</span>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-plug"></i>Integrando fetch com React — o padrão completo</div>
+<p>O local certo para chamadas de API em React é dentro de um <code>useEffect</code>. O estado precisa de três campos: os dados, o loading e o erro.</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — hook useFetch reutilizável</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="kw">import</span> { <span class="hook">useState</span>, <span class="hook">useEffect</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="cm">// Hook customizado — encapsula toda lógica de fetch</span>
+<span class="kw">export function</span> <span class="fn">useFetch</span>(url) {
+  <span class="kw">const</span> [<span class="hook">dados</span>,     <span class="hook">setDados</span>]     = <span class="fn">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> [<span class="hook">carregando</span>, <span class="hook">setCarregando</span>] = <span class="fn">useState</span>(<span class="kw">false</span>);
+  <span class="kw">const</span> [<span class="hook">erro</span>,       <span class="hook">setErro</span>]       = <span class="fn">useState</span>(<span class="kw">null</span>);
+
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="kw">if</span> (!url) <span class="kw">return</span>;
+
+    <span class="kw">let</span> cancelado = <span class="kw">false</span>;
+    <span class="hook">setCarregando</span>(<span class="kw">true</span>);
+    <span class="hook">setErro</span>(<span class="kw">null</span>);
+
+    <span class="fn">fetch</span>(url)
+      .<span class="fn">then</span>(res =&gt; {
+        <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(`Erro ${res.status}`);
+        <span class="kw">return</span> res.<span class="fn">json</span>();
+      })
+      .<span class="fn">then</span>(json =&gt; { <span class="kw">if</span> (!cancelado) <span class="hook">setDados</span>(json); })
+      .<span class="fn">catch</span>(e  =&gt; { <span class="kw">if</span> (!cancelado) <span class="hook">setErro</span>(e.message); })
+      .<span class="fn">finally</span>(()=&gt; { <span class="kw">if</span> (!cancelado) <span class="hook">setCarregando</span>(<span class="kw">false</span>); });
+
+    <span class="kw">return</span> () =&gt; { cancelado = <span class="kw">true</span>; }; <span class="cm">// cleanup</span>
+  }, [url]);
+
+  <span class="kw">return</span> { <span class="hook">dados</span>, <span class="hook">carregando</span>, <span class="hook">erro</span> };
+}
+
+<span class="cm">// ── Usar o hook ───────────────────────────────────────────────────</span>
+<span class="kw">function</span> <span class="jsx">ListaPosts</span>() {
+  <span class="kw">const</span> { <span class="hook">dados</span>: posts, <span class="hook">carregando</span>, <span class="hook">erro</span> } = <span class="fn">useFetch</span>(
+    <span class="str">'https://jsonplaceholder.typicode.com/posts?_limit=5'</span>
+  );
+
+  <span class="kw">if</span> (<span class="hook">carregando</span>) <span class="kw">return</span> <span class="tag">&lt;p&gt;</span>Carregando...<span class="tag">&lt;/p&gt;</span>;
+  <span class="kw">if</span> (<span class="hook">erro</span>)       <span class="kw">return</span> <span class="tag">&lt;p</span> <span class="attr">style</span>={{color:<span class="str">'red'</span>}}<span class="tag">&gt;</span>Erro: {<span class="hook">erro</span>}<span class="tag">&lt;/p&gt;</span>;
+  <span class="kw">if</span> (!posts)    <span class="kw">return</span> <span class="kw">null</span>;
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;ul&gt;</span>
+      {posts.<span class="fn">map</span>(p =&gt; (
+        <span class="tag">&lt;li</span> <span class="attr">key</span>={p.id}<span class="tag">&gt;</span>{p.title}<span class="tag">&lt;/li&gt;</span>
+      ))}
+    <span class="tag">&lt;/ul&gt;</span>
+  );
+}</code></pre>
+</div>
+</div>
+</section>
+<div class="sep"><span>Aula 2</span></div>
+<!-- ══════════════════════════════════
+     AULA 2 — TRATAMENTO DE ERROS E ESTADOS
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">02</div>
+<div>
+<div class="secao-label">Aula 2 · ~50 minutos</div>
+<div class="secao-titulo">Tratamento de erros, estados de UI e Axios</div>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-traffic-light"></i>Os 4 estados de qualquer chamada de API</div>
+<p>Toda interface que consome API precisa lidar com exatamente esses quatro estados. Ignorar qualquer um deles resulta em UX ruim.</p>
+<div class="estados-grid">
+<div class="estado-card estado-idle">
+<div class="nome">idle</div>
+<div class="desc">Ainda não buscou nada. Tela inicial, aguardando ação do usuário.</div>
+</div>
+<div class="estado-card estado-loading">
+<div class="nome">loading</div>
+<div class="desc">Requisição em andamento. Mostrar spinner ou skeleton loader.</div>
+</div>
+<div class="estado-card estado-success">
+<div class="nome">success</div>
+<div class="desc">Dados recebidos com sucesso. Renderizar os resultados.</div>
+</div>
+<div class="estado-card estado-error">
+<div class="nome">error</div>
+<div class="desc">Algo deu errado. Mostrar mensagem clara e opção de tentar novamente.</div>
+</div>
+</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — máquina de estados com useReducer</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="kw">import</span> { useReducer, <span class="hook">useEffect</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="cm">// Estado inicial e reducer</span>
+<span class="kw">const</span> INICIAL = { status: <span class="str">'idle'</span>, dados: <span class="kw">null</span>, erro: <span class="kw">null</span> };
+
+<span class="kw">function</span> <span class="fn">reducer</span>(state, action) {
+  <span class="kw">switch</span> (action.type) {
+    <span class="kw">case</span> <span class="str">'LOADING'</span>: <span class="kw">return</span> { ...INICIAL, status: <span class="str">'loading'</span> };
+    <span class="kw">case</span> <span class="str">'SUCCESS'</span>: <span class="kw">return</span> { status: <span class="str">'success'</span>, dados: action.dados, erro: <span class="kw">null</span> };
+    <span class="kw">case</span> <span class="str">'ERROR'</span>:   <span class="kw">return</span> { status: <span class="str">'error'</span>,   dados: <span class="kw">null</span>, erro: action.erro };
+    <span class="kw">default</span>: <span class="kw">return</span> state;
+  }
+}
+
+<span class="kw">function</span> <span class="jsx">BuscaPokemon</span>({ nome }) {
+  <span class="kw">const</span> [state, dispatch] = <span class="fn">useReducer</span>(reducer, INICIAL);
+
+  <span class="fn">useEffect</span>(() =&gt; {
+    <span class="kw">if</span> (!nome) <span class="kw">return</span>;
+    <span class="fn">dispatch</span>({ type: <span class="str">'LOADING'</span> });
+
+    <span class="fn">fetch</span>(`https://pokeapi.co/api/v2/pokemon/${nome.toLowerCase()}`)
+      .<span class="fn">then</span>(r =&gt; { <span class="kw">if</span> (!r.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(`${r.status}`); <span class="kw">return</span> r.<span class="fn">json</span>(); })
+      .<span class="fn">then</span>(d  =&gt; <span class="fn">dispatch</span>({ type: <span class="str">'SUCCESS'</span>, dados: d }))
+      .<span class="fn">catch</span>(e  =&gt; <span class="fn">dispatch</span>({ type: <span class="str">'ERROR'</span>,   erro: e.message }));
+  }, [nome]);
+
+  <span class="kw">const</span> { status, dados, erro } = state;
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      {status === <span class="str">'idle'</span>    <span class="op">&amp;&amp;</span> <span class="tag">&lt;p&gt;</span>Digite um nome para buscar.<span class="tag">&lt;/p&gt;</span>}
+      {status === <span class="str">'loading'</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"spinner"</span><span class="tag">&gt;</span>Carregando...<span class="tag">&lt;/div&gt;</span>}
+      {status === <span class="str">'error'</span>   <span class="op">&amp;&amp;</span> (
+        <span class="tag">&lt;div&gt;</span>
+          <span class="tag">&lt;p&gt;</span>Erro: {erro}<span class="tag">&lt;/p&gt;</span>
+          <span class="tag">&lt;button</span> <span class="attr">onClick</span>={() =&gt; <span class="fn">dispatch</span>({ type: <span class="str">'LOADING'</span> })}<span class="tag">&gt;</span>Tentar novamente<span class="tag">&lt;/button&gt;</span>
+        <span class="tag">&lt;/div&gt;</span>
+      )}
+      {status === <span class="str">'success'</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;p&gt;</span>{dados.name} — #{dados.id}<span class="tag">&lt;/p&gt;</span>}
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-bolt"></i>Axios — quando o fetch nativo não basta</div>
+<p>Axios é um cliente HTTP que resolve as principais dores do fetch: <strong>rejeita automaticamente em erros HTTP</strong>, intercepta requisições e respostas, e tem cancelamento nativo com AbortController.</p>
+<div class="grid-2">
+<div>
+<p style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">fetch — verboso</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">fetch</span></div>
+<pre><code><span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(url, {
+  method: <span class="str">'POST'</span>,
+  headers: {
+    <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+    <span class="str">'Authorization'</span>: <span class="str">`Bearer ${key}`</span>
+  },
+  body: <span class="fn">JSON.stringify</span>(dados)
+});
+<span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(...);
+<span class="kw">const</span> json = <span class="kw">await</span> res.<span class="fn">json</span>();</code></pre>
+</div>
+</div>
+<div>
+<p style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">Axios — enxuto</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">Axios</span></div>
+<pre><code><span class="kw">const</span> { data } = <span class="kw">await</span> axios.<span class="fn">post</span>(url, dados, {
+  headers: {
+    <span class="str">'Authorization'</span>: <span class="str">`Bearer ${key}`</span>
+  }
+});
+<span class="cm">// erros HTTP já lançam exception
+// data já é o objeto JS direto</span></code></pre>
+</div>
+</div>
+</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JavaScript — Axios com instância configurada</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="kw">import</span> axios <span class="kw">from</span> <span class="str">'axios'</span>;
+
+<span class="cm">// Instância configurada — padrão para projetos reais</span>
+<span class="kw">const</span> api = axios.<span class="fn">create</span>({
+  baseURL: <span class="str">'https://api.openai.com/v1'</span>,
+  headers: {
+    <span class="str">'Authorization'</span>: `Bearer ${<span class="kw">import</span>.meta.env.VITE_OPENAI_KEY}`,
+    <span class="str">'Content-Type'</span>:  <span class="str">'application/json'</span>,
+  },
+  timeout: <span class="num">30000</span>, <span class="cm">// 30 segundos</span>
+});
+
+<span class="cm">// Interceptor — tratamento global de erros</span>
+api.interceptors.response.<span class="fn">use</span>(
+  response =&gt; response,
+  error =&gt; {
+    <span class="kw">if</span> (error.response?.status === <span class="num">401</span>) {
+      <span class="fn">alert</span>(<span class="str">'Chave de API inválida. Verifique suas configurações.'</span>);
+    }
+    <span class="kw">if</span> (error.response?.status === <span class="num">429</span>) {
+      <span class="fn">alert</span>(<span class="str">'Limite de requisições atingido. Aguarde um momento.'</span>);
+    }
+    <span class="kw">return</span> Promise.<span class="fn">reject</span>(error);
+  }
+);
+
+<span class="cm">// Chamar a API de chat</span>
+<span class="kw">async function</span> <span class="fn">chat</span>(mensagens) {
+  <span class="kw">const</span> { data } = <span class="kw">await</span> api.<span class="fn">post</span>(<span class="str">'/chat/completions'</span>, {
+    model:    <span class="str">'gpt-4o'</span>,
+    messages: mensagens,
+  });
+  <span class="kw">return</span> data.choices[<span class="num">0</span>].message.content;
+}</code></pre>
+</div>
+<div class="tabela-wrap">
+<table>
+<thead><tr><th>Critério</th><th>fetch nativo</th><th>Axios</th></tr></thead>
+<tbody>
+<tr><td>Instalação</td><td>✅ Nativo — zero dependência</td><td>npm install axios</td></tr>
+<tr><td>Erros HTTP (404, 500)</td><td>❌ Não lança — precisa checar .ok</td><td>✅ Lança automaticamente</td></tr>
+<tr><td>JSON automático</td><td>❌ .json() manual</td><td>✅ response.data já é objeto</td></tr>
+<tr><td>Interceptors</td><td>❌ Manual</td><td>✅ request e response</td></tr>
+<tr><td>Timeout</td><td>AbortController manual</td><td>✅ opção timeout</td></tr>
+<tr><td>Quando usar</td><td>Apps simples, sem auth</td><td>Apps com API key, auth, interceptors</td></tr>
+</tbody>
+</table>
+</div>
+<div class="destaque">
+<strong>Para a Semana 5 (APIs de IA):</strong> vamos usar Axios com uma instância configurada. O interceptor vai capturar automaticamente erros 401 (chave inválida) e 429 (rate limit) — os dois erros mais comuns ao trabalhar com OpenAI e Gemini.
+    </div>
+</div>
+<!-- Demo interativa -------------------------------------------------- -->
+<div class="card">
+<div class="card-titulo"><i class="fas fa-play-circle"></i>Demo — PokéAPI ao vivo</div>
+<p style="margin-bottom:.75rem;">Busca real na PokéAPI. Demonstra os estados idle → loading → success/error na prática:</p>
+<div class="demo-api">
+<div class="demo-api-bar">
+<div class="demo-api-dot" style="background:#ef4444"></div>
+<div class="demo-api-dot" style="background:#f59e0b"></div>
+<div class="demo-api-dot" style="background:#22c55e"></div>
+<span class="demo-api-url">GET pokeapi.co/api/v2/pokemon/{nome}</span>
+<span class="demo-api-status" id="api-status" style="background:rgba(107,114,128,.15);color:#94a3b8;">idle</span>
+</div>
+<div class="demo-api-body">
+<div class="demo-api-grid">
+<input autocomplete="off" class="demo-api-input" id="poke-input" placeholder="Ex: pikachu, charizard, mewtwo"/>
+<button class="demo-api-btn" id="poke-btn" onclick="buscarPoke()">🔍 Buscar</button>
+</div>
+<div class="demo-result" id="poke-result">
+<span style="color:var(--text-muted);font-size:.82rem;font-style:italic;">Digite um nome e clique em Buscar para ver o fetch em ação.</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="sep"><span>Aula 3 &amp; 4</span></div>
+<!-- ══════════════════════════════════
+     AULA 3 — .ENV E SEGURANÇA
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">03 &amp; 04</div>
+<div>
+<div class="secao-label">Aula 3 &amp; 4· ~50 minutos</div>
+<div class="secao-titulo">Variáveis de ambiente — nunca exponha sua chave de API</div>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-exclamation-triangle"></i>O problema — chave de API no código</div>
+<p>Esse é o erro mais perigoso que você pode cometer ao trabalhar com APIs de IA. Uma chave da OpenAI exposta no GitHub pode gerar centenas de dólares de cobrança em minutos.</p>
+<div class="grid-2">
+<div>
+<p style="font-size:.75rem;color:#f87171;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">❌ NUNCA faça isso</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — PERIGOSO</span></div>
+<pre><code><span class="cm">// app.jsx — JAMAIS faça isso!</span>
+<span class="kw">const</span> API_KEY = <span class="str">"sk-proj-abc123xyz..."</span>;
+<span class="cm">// ↑ vai para o git, vai para o GitHub,
+//   vai ser varrido por bots em minutos</span>
+
+<span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(url, {
+  headers: {
+    <span class="str">'Authorization'</span>: <span class="str">`Bearer ${API_KEY}`</span>
+  }
+});</code></pre>
+</div>
+</div>
+<div>
+<p style="font-size:.75rem;color:#4ade80;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">✅ Faça assim</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — seguro com .env</span></div>
+<pre><code><span class="cm">// app.jsx — correto</span>
+<span class="kw">const</span> API_KEY = <span class="kw">import</span>.meta.env.VITE_OPENAI_KEY;
+<span class="cm">// ↑ lê do .env — nunca vai para o git</span>
+
+<span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(url, {
+  headers: {
+    <span class="str">'Authorization'</span>: <span class="str">`Bearer ${API_KEY}`</span>
+  }
+});</code></pre>
+</div>
+</div>
+</div>
+<div class="aviso-red">
+<i class="fas fa-skull-crossbones"></i>
+<span><strong>Bots do GitHub escaneiam commits em tempo real</strong> procurando por chaves de API. Uma chave da OpenAI exposta por menos de 1 minuto já foi suficiente para gerar cobranças de $500+. Não existe "só por um momento" — use .env desde o primeiro commit.</span>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-file-code"></i>Como usar .env no Vite — passo a passo</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">Shell — estrutura de arquivos</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code>meu-app/
+├── .env                   <span class="cm"># suas chaves reais — NUNCA commitar</span>
+├── .env.example           <span class="cm"># template sem valores — commitar</span>
+├── .gitignore             <span class="cm"># precisa ter .env aqui</span>
+├── src/
+│   └── App.jsx
+└── vite.config.js</code></pre>
+</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">.env — variáveis de ambiente</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="cm"># .env — nunca commite este arquivo</span>
+<span class="cm"># Vite: todo nome DEVE começar com VITE_</span>
+VITE_OPENAI_KEY=sk-proj-sua-chave-aqui
+VITE_GEMINI_KEY=AIzaSy-sua-chave-aqui
+VITE_API_BASE_URL=https://api.exemplo.com</code></pre>
+</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">.env.example — template para o time</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="cm"># .env.example — commite este arquivo</span>
+<span class="cm"># Copie para .env e preencha com suas chaves</span>
+VITE_OPENAI_KEY=
+VITE_GEMINI_KEY=
+VITE_API_BASE_URL=</code></pre>
+</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">.gitignore — proteger o .env</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="cm"># .gitignore — garanta que .env nunca vai para o git</span>
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local</code></pre>
+</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — acessar no código</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="cm">// Vite — import.meta.env</span>
+<span class="kw">const</span> openaiKey  = <span class="kw">import</span>.meta.env.VITE_OPENAI_KEY;
+<span class="kw">const</span> apiBaseUrl = <span class="kw">import</span>.meta.env.VITE_API_BASE_URL;
+<span class="kw">const</span> isDev      = <span class="kw">import</span>.meta.env.DEV;   <span class="cm">// true em dev</span>
+<span class="kw">const</span> isProd     = <span class="kw">import</span>.meta.env.PROD;  <span class="cm">// true em build</span>
+
+<span class="cm">// Validar no startup — boa prática</span>
+<span class="kw">if</span> (!openaiKey) {
+  <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'VITE_OPENAI_KEY não definida. Verifique seu .env'</span>);
+}
+
+<span class="cm">// Create React App usava process.env.REACT_APP_*</span>
+<span class="cm">// Next.js usa NEXT_PUBLIC_* para variáveis públicas</span>
+<span class="cm">// Vite usa VITE_* — prefixo obrigatório</span></code></pre>
+</div>
+<div class="aviso-info">
+<i class="fas fa-info-circle"></i>
+<span><strong>Variáveis de ambiente no front-end são públicas</strong> — qualquer pessoa pode ver no DevTools. Elas apenas impedem que você cometa a chave no código. Para produção real, a chamada à API deve passar por um servidor backend que guarda a chave em segredo. Na Semana 15, isso vai ser uma API Route do Next.js.</span>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-layer-group"></i>Juntando tudo — hook useIA pronto para a Semana 5</div>
+<p>Este é o hook que você vai usar na próxima semana com a API real. Já está estruturado com .env, Axios, estados e tratamento de erros.</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — hooks/useIA.js — template Semana 5</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="kw">import</span> { <span class="hook">useState</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> axios <span class="kw">from</span> <span class="str">'axios'</span>;
+
+<span class="cm">// Instância Axios — chave vem do .env</span>
+<span class="kw">const</span> apiClient = axios.<span class="fn">create</span>({
+  baseURL: <span class="str">'https://api.openai.com/v1'</span>,
+  headers: {
+    <span class="str">'Authorization'</span>: `Bearer ${<span class="kw">import</span>.meta.env.VITE_OPENAI_KEY}`,
+    <span class="str">'Content-Type'</span>:  <span class="str">'application/json'</span>,
+  },
+});
+
+<span class="kw">export function</span> <span class="fn">useIA</span>() {
+  <span class="kw">const</span> [<span class="hook">resposta</span>,    <span class="hook">setResposta</span>]    = <span class="fn">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> [<span class="hook">carregando</span>,  <span class="hook">setCarregando</span>]  = <span class="fn">useState</span>(<span class="kw">false</span>);
+  <span class="kw">const</span> [<span class="hook">erro</span>,        <span class="hook">setErro</span>]        = <span class="fn">useState</span>(<span class="kw">null</span>);
+
+  <span class="kw">const</span> <span class="fn">perguntar</span> = <span class="kw">async</span> (prompt, historico = []) =&gt; {
+    <span class="hook">setCarregando</span>(<span class="kw">true</span>);
+    <span class="hook">setErro</span>(<span class="kw">null</span>);
+    <span class="hook">setResposta</span>(<span class="str">''</span>);
+
+    <span class="kw">try</span> {
+      <span class="kw">const</span> { data } = <span class="kw">await</span> apiClient.<span class="fn">post</span>(<span class="str">'/chat/completions'</span>, {
+        model:    <span class="str">'gpt-4o'</span>,
+        messages: [
+          ...historico,
+          { role: <span class="str">'user'</span>, content: prompt }
+        ],
+      });
+      <span class="kw">const</span> texto = data.choices[<span class="num">0</span>].message.content;
+      <span class="hook">setResposta</span>(texto);
+      <span class="kw">return</span> texto;
+
+    } <span class="kw">catch</span> (e) {
+      <span class="kw">const</span> msg = e.response?.data?.error?.message || e.message;
+      <span class="hook">setErro</span>(msg);
+      <span class="kw">throw</span> e;
+    } <span class="kw">finally</span> {
+      <span class="hook">setCarregando</span>(<span class="kw">false</span>);
+    }
+  };
+
+  <span class="kw">return</span> { <span class="hook">resposta</span>, <span class="hook">carregando</span>, <span class="hook">erro</span>, perguntar };
+}
+
+<span class="cm">// Semana 5: substitua apiClient pelo modelo real e pronto!</span></code></pre>
+</div>
+<div class="aviso-green">
+<i class="fas fa-rocket"></i>
+<span><strong>Semana 5 começa aqui.</strong> O hook <code>useIA</code> acima é a base do que você vai construir na próxima aula. Só falta colocar a chave real no <code>.env</code> e o chatbot da Sem. 2 vai começar a responder de verdade.</span>
+</div>
+</div>
+</section>
+<div class="sep"><span>Atividade Prática</span></div>
+<!-- ══════════════════════════════════
+     EXERCÍCIOS
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">→</div>
+<div>
+<div class="secao-label">Atividade · APIs públicas</div>
+<div class="secao-titulo">6 Exercícios — fetch, estados, Axios e .env</div>
+</div>
+</div>
+<div class="aviso-info">
+<i class="fas fa-info-circle"></i>
+<span>APIs gratuitas sem autenticação: <strong>PokéAPI</strong> (pokeapi.co) · <strong>JSONPlaceholder</strong> (jsonplaceholder.typicode.com) · <strong>GitHub API</strong> (api.github.com/users/USERNAME). Resolva os exercícios com base no conteúdo apresentado nas aulas.</span>
+</div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 01</div>
+<p>Crie o hook customizado <code>useFetch(url)</code> conforme o modelo da Aula 1: retorna <code>{ dados, carregando, erro }</code> com cleanup correto para evitar atualizar estado após desmontar. Use-o para buscar e listar 10 posts do JSONPlaceholder.</p>
+<span class="dificuldade dif-basico">Básico — hook useFetch</span><br/>
+
+
+</div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 02</div>
+<p>Crie um componente <code>BuscadorGitHub</code> com um input de texto e botão. Ao clicar, busca o perfil do usuário em <code>api.github.com/users/USERNAME</code> e exibe: avatar, nome, bio, número de repositórios públicos e link para o perfil. Mostre loading e erro adequados.</p>
+<span class="dificuldade dif-basico">Básico — fetch sob demanda (não no mount)</span><br/>
+
+
+</div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 03</div>
+<p>Configure um arquivo <code>.env</code> com a variável <code>VITE_API_BASE_URL=https://jsonplaceholder.typicode.com</code> e crie uma instância Axios que usa essa URL como baseURL. Adicione um interceptor que loga no console toda requisição feita (método + URL) e todo erro com status code.</p>
+<span class="dificuldade dif-basico">Básico — Axios + .env + interceptors</span><br/>
+
+
+</div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 04</div>
+<p>Crie um componente <code>BuscadorPokemon</code> com input de busca, que busca na PokéAPI ao submeter. Exiba os 4 estados claramente: idle (instrução inicial), loading (spinner animado), error (mensagem + botão "Tentar novamente"), success (imagem, nome, tipos e stats principais do Pokémon).</p>
+<span class="dificuldade dif-medio">Médio — 4 estados visuais completos</span><br/>
+
+
+</div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 05</div>
+<p>Implemente <strong>debounce na busca</strong>: o fetch só deve disparar 500ms após o usuário parar de digitar, sem precisar clicar em um botão. Use <code>useEffect</code> com <code>setTimeout</code> e <code>clearTimeout</code> no cleanup. Aplique no BuscadorPokemon ou no BuscadorGitHub.</p>
+<span class="dificuldade dif-medio">Médio — debounce com useEffect</span><br/>
+
+
+</div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 06 — Desafio</div>
+<p>Monte um <strong>dashboard de buscador</strong> completo integrando tudo: (a) input com debounce; (b) busca na PokéAPI ou GitHub com os 4 estados visuais; (c) histórico dos últimos 5 resultados salvos no <code>HistoricoContext</code> da Semana 3; (d) instância Axios configurada com baseURL do <code>.env</code>; (e) interceptor que exibe toast de erro para status 404 e 500.</p>
+<span class="dificuldade dif-desafio">Desafio — fetch + Axios + .env + Context + debounce integrados</span><br/>
+
+
+</div>
+</section>
+<div class="sep"><span>Resumo</span></div>
+<!-- ══════════════════════════════════
+     RESUMO
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">✓</div>
+<div>
+<div class="secao-label">Fechamento</div>
+<div class="secao-titulo">O que vimos na Semana 4</div>
+</div>
+</div>
+<div class="resumo-grid">
+<div class="resumo-item">
+<i class="fas fa-wifi"></i>
+<strong>fetch + async/await</strong>
+<p>GET, POST com headers. <code>!response.ok</code> para checar erros HTTP. Hook useFetch reutilizável com cleanup.</p>
+</div>
+<div class="resumo-item">
+<i class="fas fa-traffic-light"></i>
+<strong>4 estados de UI</strong>
+<p>idle → loading → success/error. useReducer para máquina de estados limpa. Feedback visual em cada etapa.</p>
+</div>
+<div class="resumo-item">
+<i class="fas fa-key"></i>
+<strong>Axios + .env</strong>
+<p>Instância com baseURL, interceptors de log e erro. VITE_* no .env — nunca comite a chave. .gitignore protege o arquivo.</p>
+</div>
+</div>
+<div class="proxima">
+<div>
+<div class="proxima-label">Próxima semana</div>
+<div class="proxima-titulo">Semana 5 — APIs de IA: OpenAI, HuggingFace e Gemini — o chatbot vira real</div>
+</div>
+<i class="fas fa-arrow-right"></i>
+</div>
+</section>
+</main>
+<script>
+
+function copiar(btn) {
+  const code = btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(() => {
+    btn.textContent = 'copiado!';
+    setTimeout(() => btn.textContent = 'copiar', 2000);
+  });
+}
+
+/* ── Demo PokéAPI ── */
+async function buscarPoke() {
+  const input  = document.getElementById('poke-input');
+  const result = document.getElementById('poke-result');
+  const status = document.getElementById('api-status');
+  const btn    = document.getElementById('poke-btn');
+  const nome   = input.value.trim().toLowerCase();
+  if (!nome) return;
+
+  // loading
+  btn.disabled = true;
+  status.textContent = 'loading';
+  status.style.background = 'rgba(251,191,36,.15)';
+  status.style.color = '#fbbf24';
+  result.innerHTML = '<div class="result-loading"><div class="spinner"></div><span>Buscando ' + nome + '...</span></div>';
+
+  try {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${nome}`);
+    if (!res.ok) throw new Error(res.status === 404 ? 'Pokémon não encontrado' : `Erro ${res.status}`);
+    const d = await res.json();
+
+    status.textContent = '200 OK';
+    status.style.background = 'rgba(74,222,128,.15)';
+    status.style.color = '#4ade80';
+
+    const tipos = d.types.map(t => `<span class="result-chip">${t.type.name}</span>`).join('');
+    const stats = d.stats.slice(0,3).map(s =>
+      `<div class="result-chip">${s.stat.name}: <strong>${s.base_stat}</strong></div>`
+    ).join('');
+
+    result.innerHTML = `
+      <div class="result-card">
+        <img class="result-card-img" src="${d.sprites.front_default}" alt="${d.name}"/>
+        <div>
+          <div class="result-card-name">${d.name} <span style="color:var(--text-muted)">#${d.id}</span></div>
+          <div class="result-grid" style="margin-top:.5rem;">${tipos}</div>
+          <div class="result-grid" style="margin-top:.4rem;">${stats}</div>
+        </div>
+      </div>`;
+  } catch (e) {
+    status.textContent = 'error';
+    status.style.background = 'rgba(239,68,68,.15)';
+    status.style.color = '#f87171';
+    result.innerHTML = `<div class="result-error">❌ ${e.message} — tente: pikachu, charizard, mewtwo</div>`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('poke-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') buscarPoke();
+});
+</script>
+</body>
+</html>
