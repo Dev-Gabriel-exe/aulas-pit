@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Semana 06 — Revisão P1 · Computação Embarcada e IoT · Aluno</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --teal-950:#012a25;--teal-900:#0d3330;--teal-800:#134e4a;
+  --teal-700:#0f766e;--teal-500:#14b8a6;--teal-400:#2dd4bf;--teal-300:#5eead4;
+  --red-400:#f87171;--red-500:#ef4444;
+  --white:#fff;--text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);--card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);--code-bg:#011a17;--code-border:rgba(45,212,191,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--teal-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:#7f1d1d;top:-220px;left:-180px;}
+.blob-2{width:550px;height:550px;background:var(--teal-800);bottom:-200px;right:-120px;}
+.blob-3{width:300px;height:300px;background:#991b1b;top:40%;left:40%;opacity:.15;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(239,68,68,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--red-400);border:1px solid rgba(239,68,68,.25);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--red-400);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(239,68,68,.1);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--red-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--red-500);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.12);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(239,68,68,.18);color:var(--red-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(239,68,68,.05);border-left:3px solid var(--red-500);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--red-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--red-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--red-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(239,68,68,.15);color:var(--red-400);border:1px solid rgba(239,68,68,.3);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(239,68,68,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(239,68,68,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--red-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.03);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--red-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(45,212,191,.07);border-left:3px solid var(--teal-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--teal-400);}
+.destaque-red{padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.07);border-left:3px solid var(--red-500);font-size:.88rem;color:rgba(252,165,165,.85);margin:.75rem 0;line-height:1.65;}
+.destaque-red strong{color:var(--red-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-info{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(45,212,191,.06);border:1px solid rgba(45,212,191,.18);font-size:.86rem;color:rgba(94,234,212,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-info i{color:var(--teal-400);flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(239,68,68,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--red-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(239,68,68,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(239,68,68,.03);}
+td strong{color:var(--text-primary);}
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(45,212,191,.07);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;cursor:pointer;background:none;border:none;color:var(--text-muted);letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--teal-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#a7f3d0;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#4b5563;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+.icon-list li i.ok{color:#4ade80;}.icon-list li i.warn{color:#fbbf24;}.icon-list li i.no{color:#f87171;}
+.badge-inline{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(239,68,68,.12);color:var(--red-400);border:1px solid rgba(239,68,68,.25);}
+
+/* ── Revisão cards ── */
+.rev-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin:.75rem 0;}
+.rev-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;transition:border-color .2s;}
+.rev-card:hover{border-color:rgba(239,68,68,.2);}
+.rev-semana{font-size:.62rem;color:var(--red-400);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.35rem;}
+.rev-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--text-primary);margin-bottom:.6rem;}
+.rev-lista{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
+.rev-lista li{font-size:.78rem;color:var(--text-secondary);display:flex;align-items:flex-start;gap:7px;line-height:1.5;}
+.rev-lista li::before{content:'→';color:rgba(239,68,68,.5);flex-shrink:0;font-size:.7rem;margin-top:2px;}
+
+/* ── Checklist ── */
+.checklist{display:flex;flex-direction:column;gap:.5rem;margin:.75rem 0;}
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:.65rem 1rem;border-radius:9px;background:var(--card-bg);border:1px solid var(--card-border);cursor:pointer;transition:.15s;user-select:none;}
+.check-item:hover{border-color:rgba(45,212,191,.2);background:rgba(45,212,191,.04);}
+.check-item.done{border-color:rgba(45,212,191,.3);background:rgba(45,212,191,.05);}
+.check-box{width:20px;height:20px;border-radius:5px;border:1.5px solid rgba(255,255,255,.2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:.15s;}
+.check-item.done .check-box{background:rgba(45,212,191,.25);border-color:rgba(45,212,191,.5);color:var(--teal-400);}
+.check-text{font-size:.85rem;color:var(--text-secondary);line-height:1.5;}
+.check-item.done .check-text{color:var(--text-muted);text-decoration:line-through;}
+.score-wrap{display:flex;align-items:center;gap:1.5rem;padding:1.25rem 1.5rem;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:14px;margin-top:1.5rem;}
+.score-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:var(--red-400);line-height:1;}
+.score-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;}
+.score-bar-wrap{flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px;}
+.score-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--red-500),var(--red-400));transition:width .5s ease;}
+
+/* ── Simulado ── */
+.sim-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.sim-header{display:flex;align-items:center;gap:10px;margin-bottom:.75rem;}
+.sim-num{width:30px;height:30px;border-radius:8px;background:rgba(239,68,68,.15);color:var(--red-400);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:800;flex-shrink:0;}
+.sim-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.sim-tipo{font-size:.65rem;padding:2px 8px;border-radius:5px;font-weight:600;letter-spacing:.05em;}
+.sim-conceito{background:rgba(96,165,250,.1);color:#60a5fa;border:1px solid rgba(96,165,250,.2);}
+.sim-codigo{background:rgba(45,212,191,.1);color:var(--teal-400);border:1px solid rgba(45,212,191,.2);}
+.sim-pratica{background:rgba(52,211,153,.1);color:#34d399;border:1px solid rgba(52,211,153,.2);}
+.sim-analise{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.sim-pts{font-size:.65rem;color:var(--text-muted);}
+.sim-item p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.sim-item p code{font-family:'JetBrains Mono',monospace;font-size:.82rem;background:rgba(255,255,255,.08);padding:1px 6px;border-radius:4px;color:#a7f3d0;}
+
+/* ── Próxima ── */
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(45,212,191,.07);border:1px solid rgba(45,212,191,.2);margin-top:3rem;text-decoration:none;transition:background .2s,border-color .2s;cursor:pointer;}
+.proxima:hover{background:rgba(45,212,191,.12);border-color:rgba(45,212,191,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal-400);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--teal-400);}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(239,68,68,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.rev-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<!-- ══ CAPA ══ -->
+<section class="capa">
+<div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+<span class="tipo-badge">📚 Versão do Aluno</span>
+<div class="capa-left">
+<div class="semana-badge"><span class="dot"></span>Computação Embarcada e IoT · Tecnólogo · 3° Período</div>
+<div class="semana-num">06</div>
+<h1 class="capa-titulo">Revisão <br/><em>P1</em></h1>
+<p class="capa-sub">Semanas 1 a 5 · Revisão + simulado sem gabarito</p>
+<div class="divider"></div>
+<div class="topicos">
+<div class="topico"><div class="topico-icon"><i class="fas fa-microchip"></i></div><span>Computação embarcada, IoT e Edge AI</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-th"></i></div><span>Microcontroladores: Arduino, ESP32, Pico — diferenças e pinout</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-code"></i></div><span>Programação: tipos de dados, digital, analógico e PWM</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-thermometer-half"></i></div><span>Sensores: DHT22 e HC-SR04 — leitura e calibração</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-wind"></i></div><span>Atuadores: servo, motor DC, relé e histerese</span></div>
+</div>
+<div class="atividade-box">
+<div class="label">Material de estudo</div>
+<p>Use a revisão, o checklist e o simulado para identificar o que ainda precisa ser reforçado antes da P1.</p>
+</div>
+</div>
+<div class="capa-right">
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-book-open"></i> Como usar este material</div>
+<ul class="info-lista"><li><strong>Parte 1:</strong> revise os conceitos das semanas 1 a 5</li><li><strong>Parte 2:</strong> marque no checklist apenas o que consegue explicar sozinho</li><li><strong>Parte 3:</strong> resolva as 7 questões do simulado sem consultar respostas</li></ul>
+</div>
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-bullseye"></i> Focos de revisão</div>
+<ul class="info-lista">
+<li>MCUs, pinout e tipos de dados — 20%</li>
+<li>Programação: PWM, botão, debounce — 25%</li>
+<li>Sensores DHT22 e HC-SR04 — 25%</li>
+<li>Atuadores e ciclo sensor→lógica→atuador — 30%</li>
+</ul>
+</div>
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-lightbulb"></i> Pontos que vale revisar</div>
+<ul class="info-lista">
+<li>Em código: lógica e conceito valem mais que sintaxe perfeita</li>
+<li>DHT22: lembre do <code style="font-size:.78rem;">isnan()</code> e do pull-up de 10kΩ</li>
+<li>HC-SR04: distância = duração × 0.034 ÷ 2 (ida e volta)</li>
+<li>Relé ativo-baixo: HIGH = desligado — sempre inicie desligado</li>
+<li>Histerese evita oscilação no limiar — explique o porquê</li>
+</ul>
+</div>
+</div>
+<div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+<span>role para a revisão</span><i class="fas fa-chevron-down"></i>
+</div>
+</section>
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+<!-- ── AULA 1: Revisão Express ── -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">01</div>
+<div class="secao-info">
+<div class="secao-label">Aula 1 · ~50 minutos</div>
+<div class="secao-titulo">Revisão Express — Semanas 1 a 5</div>
+</div>
+</div>
+<div class="aviso">
+<i class="fas fa-clock"></i>
+<span>Passe por cada semana e tente explicar os conceitos com suas próprias palavras. Se precisar reler para explicar, marque esse ponto para revisar novamente.</span>
+</div>
+<div class="rev-grid">
+<div class="rev-card">
+<div class="rev-semana">Semana 1</div>
+<div class="rev-titulo">Computação Embarcada, IoT e Edge AI</div>
+<ul class="rev-lista">
+<li>Sistema embarcado = computador dedicado a uma função específica</li>
+<li>Palavra-chave: dedicado — não executa qualquer software</li>
+<li>MCU tem CPU + RAM + Flash + periféricos no mesmo chip</li>
+<li>MPU tem apenas a CPU — depende de chips externos para RAM e armazenamento</li>
+<li>Arquitetura IoT: Sensor → MCU → Gateway → Nuvem → Dashboard</li>
+<li>Edge AI: inferência no dispositivo — sem internet, sem latência, sem exposição de dados</li>
+<li>TinyML: modelos de ML rodando em &lt;1 MB de RAM</li>
+</ul>
+</div>
+<div class="rev-card">
+<div class="rev-semana">Semana 2</div>
+<div class="rev-titulo">Microcontroladores: Arduino, ESP32 e Pico</div>
+<ul class="rev-lista">
+<li>Arduino Uno: ATmega328P, 16MHz, 2KB RAM, 32KB Flash — sem Wi-Fi</li>
+<li>ESP32: dual-core 240MHz, 520KB RAM, Wi-Fi + BLE — tensão lógica 3.3V</li>
+<li>Raspberry Pi Pico: RP2040, 133MHz, 264KB RAM — C/C++ ou MicroPython</li>
+<li>ATENÇÃO: ESP32 = 3.3V. Arduino = 5V. Misturar sem divisor de tensão = queima</li>
+<li>Pinout: cada pino tem número, nome e função (pode ser digital, PWM, analógico, I2C)</li>
+<li>Datasheet: Absolute Maximum Ratings = limites que nunca podem ser ultrapassados</li>
+<li>setup() roda uma vez · loop() roda para sempre · LED_BUILTIN = pino 13 no Uno</li>
+</ul>
+</div>
+<div class="rev-card">
+<div class="rev-semana">Semana 3</div>
+<div class="rev-titulo">Programação: Tipos, Digital, Analógico, PWM</div>
+<ul class="rev-lista">
+<li>unsigned long para millis() — int estouraria em 32 segundos</li>
+<li>byte para valores 0–255 (PWM) · float para temperaturas com decimal</li>
+<li>INPUT_PULLUP: lógica invertida — HIGH = solto, LOW = pressionado</li>
+<li>Pino flutuante sem pull-up oscila aleatoriamente — use INPUT_PULLUP ou resistor externo</li>
+<li>analogRead(A0) → 0 a 1023 (10-bit ADC, 0–5V) · resolução: ~4.9mV por passo</li>
+<li>analogWrite(pino, 0–255): apenas pinos com ~ · 255 = 100% duty cycle</li>
+<li>Debounce por software com millis(): aguarda 50ms de estabilidade antes de processar</li>
+<li>delay() é bloqueante — use millis() para multitarefa sem travamento</li>
+</ul>
+</div>
+<div class="rev-card">
+<div class="rev-semana">Semana 4</div>
+<div class="rev-titulo">Sensores: DHT22 e HC-SR04</div>
+<ul class="rev-lista">
+<li>DHT22: protocolo 1-Wire, precisão ±0.5°C, resolução 0.1°C — melhor que DHT11</li>
+<li>Pull-up 10kΩ entre DATA e VCC — obrigatório, sem ele retorna NaN</li>
+<li>Sempre verificar isnan() antes de usar a leitura do DHT22</li>
+<li>Mínimo 2 segundos entre leituras — respeite o tempo de conversão</li>
+<li>HC-SR04: TRIG = pulso 10µs · ECHO = tempo de retorno em µs</li>
+<li>Distância (cm) = pulseIn(ECHO, HIGH) × 0.034 ÷ 2</li>
+<li>Divide por 2 porque o som percorre ida E volta</li>
+<li>Calibração: offset = referência − sensor · média de 10 amostras reduz ruído</li>
+</ul>
+</div>
+<div class="rev-card" style="grid-column:span 2;">
+<div class="rev-semana">Semana 5</div>
+<div class="rev-titulo">Atuadores: Servo, Motor DC, Relé e o Ciclo Completo</div>
+<ul class="rev-lista" style="columns:2;gap:2rem;">
+<li>Servo: biblioteca Servo.h · write(0–180) · PWM 50Hz interno · não use analogWrite()</li>
+<li>Servo SG90: pico de corrente até 700mA — fonte externa para servos maiores</li>
+<li>Motor DC: precisa de driver L298N (ponte H) — GPIO não fornece corrente suficiente</li>
+<li>L298N: IN1/IN2 = direção · ENA com PWM = velocidade · IN1=IN2=HIGH = freio elétrico</li>
+<li>Back-EMF: tensão reversa ao desligar motor — módulos L298N prontos têm diodos de proteção</li>
+<li>Relé ativo-baixo: HIGH = desligado · LOW = ligado · inicialize com HIGH no setup()</li>
+<li>Relé: COM + NO para ligar algo quando Arduino ativa · NC para o inverso</li>
+<li>Histerese: zona morta em torno do limiar evita liga/desliga rápido (ex: ±0.5°C)</li>
+<li>Ciclo completo: Sensor → Lógica (if/else) → Atuador → feedback contínuo</li>
+<li>millis() para todas as tarefas simultâneas — ventilação + leitura + Serial sem travar</li>
+</ul>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-check-square"></i>Checklist de revisão — marque o que já sabe</div>
+<div class="checklist" id="checklist">
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Explicar a diferença entre MCU e MPU com um exemplo de produto para cada</span></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Dizer por que conectar um pino de 5V do Arduino diretamente no GPIO do ESP32 é perigoso</span></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Explicar o que acontece com um pino configurado como INPUT sem pull-up e nada conectado</span></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Calcular o valor de analogWrite() para 60% de brilho num LED</span></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Dizer por que unsigned long é obrigatório ao trabalhar com millis()</span></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Explicar por que o DHT22 sem resistor pull-up retorna NaN e o que o pull-up faz eletricamente</span></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Calcular a distância a partir de uma duração do HC-SR04</span></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Escrever o comando correto para posicionar um servo a 45° usando a biblioteca Servo.h</span></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Explicar a lógica ativo-baixo do relé e por que o setup() deve escrever HIGH no pino do relé</span></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span class="check-text">Descrever o ciclo completo do sistema de ventilação: o que cada componente faz e por que a histerese existe</span></div>
+</div>
+<div class="score-wrap">
+<div><div class="score-num" id="scoreNum">0</div><div class="score-label">/ 10 itens</div></div>
+<div style="flex:1;">
+<div id="scoreMsg" style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.4rem;">Marque os itens que você já domina</div>
+<div class="score-bar-wrap"><div class="score-bar" id="scoreBar" style="width:0%"></div></div>
+</div>
+</div>
+</div>
+</section>
+<div class="sep"><span>Aula 2 · Simulado</span></div>
+<!-- ── AULA 2: Simulado ── -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">02</div>
+<div class="secao-info">
+<div class="secao-label">Treino individual · sem gabarito</div>
+<div class="secao-titulo">Simulado — 7 Questões para Treino</div>
+</div>
+</div>
+<div class="aviso-info">
+<i class="fas fa-info-circle"></i>
+<span>Resolva as questões sem consultar a revisão durante a primeira tentativa. Depois, volte ao conteúdo para conferir os conceitos que ficaram difíceis.</span>
+</div><div class="aviso"><i class="fas fa-lock"></i><span>Esta versão do aluno não contém respostas nem gabarito. Use o simulado como diagnóstico do que ainda precisa estudar.</span></div>
+<!-- Q1 -->
+<div class="sim-item">
+<div class="sim-header">
+<div class="sim-num">Q1</div>
+<div class="sim-meta"><span class="sim-tipo sim-conceito">Conceito</span><span class="sim-pts">1,5 pts</span></div>
+</div>
+<p>Explique a diferença entre um <strong>microcontrolador</strong> e um <strong>microprocessador</strong>. Cite um exemplo de produto que usa cada um e justifique por que o componente escolhido é o mais adequado para aquele produto.</p>
+
+
+</div>
+<!-- Q2 -->
+<div class="sim-item">
+<div class="sim-header">
+<div class="sim-num">Q2</div>
+<div class="sim-meta"><span class="sim-tipo sim-codigo">Análise de Código</span><span class="sim-pts">2,0 pts</span></div>
+</div>
+<p>O código abaixo tem <strong>três problemas</strong> que causarão comportamento incorreto. Identifique cada um, explique o impacto e escreva a correção.</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">Arduino C — com bugs</span></div>
+<pre><code><span class="pp">#define</span> BTN  <span class="num">2</span>
+<span class="pp">#define</span> LED  <span class="num">9</span>
+
+<span class="kw">int</span> ultimoToggle = <span class="num">0</span>;
+<span class="kw">bool</span> estadoLED = <span class="kw">false</span>;
+
+<span class="kw">void</span> <span class="fn">setup</span>() {
+  <span class="fn">pinMode</span>(BTN, INPUT);
+  <span class="fn">pinMode</span>(LED, OUTPUT);
+}
+
+<span class="kw">void</span> <span class="fn">loop</span>() {
+  <span class="kw">if</span> (<span class="fn">digitalRead</span>(BTN) == HIGH) {
+    <span class="kw">if</span> (<span class="fn">millis</span>() - ultimoToggle &gt; <span class="num">50</span>) {
+      ultimoToggle = <span class="fn">millis</span>();
+      estadoLED = !estadoLED;
+      <span class="fn">analogWrite</span>(LED, estadoLED ? <span class="num">255</span> : <span class="num">0</span>);
+    }
+  }
+}</code></pre>
+</div>
+
+
+</div>
+<!-- Q3 -->
+<div class="sim-item">
+<div class="sim-header">
+<div class="sim-num">Q3</div>
+<div class="sim-meta"><span class="sim-tipo sim-conceito">Sensores</span><span class="sim-pts">1,5 pts</span></div>
+</div>
+<p>O HC-SR04 retornou <code>duracao = 4118</code> µs. <strong>a)</strong> Calcule a distância em centímetros. <strong>b)</strong> Um colega argumenta que dividir por 2 na fórmula não é necessário porque "o sensor já considera isso". Corrija o argumento com uma explicação técnica precisa.</p>
+
+
+</div>
+<!-- Q4 -->
+<div class="sim-item">
+<div class="sim-header">
+<div class="sim-num">Q4</div>
+<div class="sim-meta"><span class="sim-tipo sim-codigo">Análise de Código — DHT22</span><span class="sim-pts">2,0 pts</span></div>
+</div>
+<p>O código abaixo deveria ler temperatura com DHT22 e acender um LED quando a temperatura passar de 28°C, mas apresenta comportamento errático. Identifique os dois problemas e corrija.</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">Arduino C — com bugs</span></div>
+<pre><code><span class="pp">#include</span> <span class="str">&lt;DHT.h&gt;</span>
+DHT <span class="fn">dht</span>(<span class="num">2</span>, DHT22);
+
+<span class="kw">void</span> <span class="fn">setup</span>() {
+  <span class="fn">Serial</span>.<span class="fn">begin</span>(<span class="num">9600</span>);
+  <span class="fn">dht</span>.<span class="fn">begin</span>();
+  <span class="fn">pinMode</span>(<span class="num">13</span>, OUTPUT);
+}
+
+<span class="kw">void</span> <span class="fn">loop</span>() {
+  <span class="kw">float</span> temp = <span class="fn">dht</span>.<span class="fn">readTemperature</span>();
+
+  <span class="kw">if</span> (temp &gt; <span class="num">28.0</span>) {
+    <span class="fn">digitalWrite</span>(<span class="num">13</span>, HIGH);
+  } <span class="kw">else</span> {
+    <span class="fn">digitalWrite</span>(<span class="num">13</span>, LOW);
+  }
+
+  <span class="fn">Serial</span>.<span class="fn">println</span>(temp);
+  <span class="fn">delay</span>(<span class="num">500</span>);
+}</code></pre>
+</div>
+
+
+</div>
+<!-- Q5 -->
+<div class="sim-item">
+<div class="sim-header">
+<div class="sim-num">Q5</div>
+<div class="sim-meta"><span class="sim-tipo sim-analise">Análise</span><span class="sim-pts">1,5 pts</span></div>
+</div>
+<p>Um sistema de irrigação automática usa um relé para ligar uma bomba d'água quando a umidade do solo cai abaixo de 30%. Sem histerese, a bomba liga e desliga centenas de vezes por minuto quando a umidade está exatamente em 30%. <strong>a)</strong> Explique tecnicamente por que isso acontece. <strong>b)</strong> Descreva como implementar histerese para resolver o problema, com valores concretos.</p>
+
+
+</div>
+<!-- Q6 -->
+<div class="sim-item">
+<div class="sim-header">
+<div class="sim-num">Q6</div>
+<div class="sim-meta"><span class="sim-tipo sim-codigo">Código Completo</span><span class="sim-pts">2,0 pts</span></div>
+</div>
+<p>Escreva o código Arduino completo que: (1) lê a distância com HC-SR04 (TRIG=9, ECHO=10) a cada 300ms usando millis(); (2) controla a velocidade de um motor DC via L298N (ENA=6, IN1=4, IN2=5) proporcionalmente à distância — quanto mais perto o objeto, mais devagar o motor; (3) para o motor completamente quando o objeto está a menos de 10 cm; (4) imprime distância e velocidade no Serial Monitor.</p>
+
+
+</div>
+<!-- Q7 -->
+<div class="sim-item">
+<div class="sim-header">
+<div class="sim-num">Q7</div>
+<div class="sim-meta"><span class="sim-tipo sim-pratica">Prática LAB</span><span class="sim-pts">3,5 pts</span></div>
+</div>
+<p>Descreva em detalhes como montar e programar um sistema de ventilação automática usando DHT22 e relé. Inclua: (a) esquema de ligação com todos os pinos e componentes necessários; (b) a lógica de controle com três estados e histerese; (c) por que usar millis() em vez de delay(); (d) o que aconteceria se o resistor pull-up do DHT22 fosse esquecido.</p>
+
+
+</div>
+</section>
+<div class="sep"><span>Parte 3 · Roteiro final de estudo</span></div>
+<!-- ── AULA 3: Orientações ── -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">03</div>
+<div class="secao-info">
+<div class="secao-label">Preparação para a P1</div>
+<div class="secao-titulo">Roteiro Final de Estudo</div>
+</div>
+</div>
+
+
+
+
+<div class="grid-2">
+<div class="card">
+<div class="card-titulo"><i class="fas fa-brain"></i> Antes de considerar um tópico dominado</div>
+<ul class="icon-list">
+<li><i class="fas fa-check-circle ok"></i><span>Consigo explicar o conceito sem ler o material.</span></li>
+<li><i class="fas fa-check-circle ok"></i><span>Consigo dar um exemplo diferente dos apresentados na revisão.</span></li>
+<li><i class="fas fa-check-circle ok"></i><span>Consigo identificar um erro em código e justificar tecnicamente a correção.</span></li>
+<li><i class="fas fa-check-circle ok"></i><span>Consigo fazer os cálculos de PWM e distância mostrando o raciocínio.</span></li>
+</ul>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-pencil-alt"></i> Como treinar as respostas</div>
+<ul class="icon-list">
+<li><i class="fas fa-circle warn"></i><span>Questões conceituais: responda com definição + justificativa + exemplo.</span></li>
+<li><i class="fas fa-circle warn"></i><span>Análise de código: aponte o problema, o efeito causado e a correção.</span></li>
+<li><i class="fas fa-circle warn"></i><span>Cálculos: escreva a fórmula, substitua os valores e só depois apresente o resultado.</span></li>
+<li><i class="fas fa-circle warn"></i><span>Questões práticas: descreva ligação, lógica do programa e comportamento esperado.</span></li>
+</ul>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-route"></i> Sequência recomendada</div>
+<ol style="padding-left:1.25rem;color:var(--text-secondary);font-size:.88rem;line-height:1.8;">
+<li>Leia a revisão das semanas 1 a 5 uma vez.</li>
+<li>Feche a revisão e tente marcar o checklist de memória.</li>
+<li>Resolva as 7 questões do simulado sem consultar o conteúdo.</li>
+<li>Volte apenas aos tópicos em que travou ou ficou inseguro.</li>
+<li>Refaça as questões difíceis em outra folha, explicando o raciocínio completo.</li>
+</ol>
+</div>
+<div class="proxima">
+<div>
+<div class="proxima-label">Próxima semana</div>
+<div class="proxima-titulo">Semana 7 — Comunicação serial: I2C, SPI e UART · Display OLED via I2C</div>
+</div>
+<i class="fas fa-arrow-right"></i>
+</div></section>
+</main>
+<script>
+
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{
+    btn.textContent='copiado!';
+    setTimeout(()=>btn.textContent='copiar',2000);
+  });
+}
+function toggleCheck(item){
+  item.classList.toggle('done');
+  const box=item.querySelector('.check-box');
+  box.innerHTML=item.classList.contains('done')?'<i class="fas fa-check"></i>':'';
+  const total=document.querySelectorAll('.check-item').length;
+  const done=document.querySelectorAll('.check-item.done').length;
+  document.getElementById('scoreNum').textContent=done;
+  document.getElementById('scoreBar').style.width=(done/total*100)+'%';
+  const msgs=[
+    'Marque os itens que você já domina',
+    'Bom começo — continue revisando!',
+    'Metade do caminho — foco nos itens restantes!',
+    'Quase lá — revise os últimos pontos',
+    'Você está pronto para a P1! 🚀'
+  ];
+  const idx=Math.min(Math.floor(done/(total/4)),4);
+  document.getElementById('scoreMsg').textContent=msgs[idx];
+}
+</script>
+</body>
+</html>

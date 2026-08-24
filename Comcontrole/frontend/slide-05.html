@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Semana 05 — Front-end para IA — Versão do Aluno</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --amber-950:#1c0a00;--amber-900:#2a1200;--amber-800:#451a03;
+  --amber-700:#78350f;--amber-500:#b45309;--amber-400:#d97706;
+  --amber-300:#f59e0b;--amber-200:#fbbf24;--amber-100:#fcd34d;
+  --white:#ffffff;
+  --text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(251,191,36,.05);
+  --code-bg:#130a00;--code-border:rgba(251,191,36,.18);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--amber-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ══════════════════════════════════════ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;}
+.blob-1{width:700px;height:700px;background:var(--amber-700);top:-250px;left:-200px;}
+.blob-2{width:600px;height:600px;background:var(--amber-800);bottom:-220px;right:-150px;}
+.blob-3{width:350px;height:350px;background:var(--amber-500);top:38%;left:38%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(251,191,36,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--amber-200);border:1px solid rgba(251,191,36,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--amber-200);animation:pulsar 2s ease-in-out infinite;}
+@keyframes pulsar{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(251,191,36,.1);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--amber-200);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--amber-200);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.12);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(251,191,36,.18);color:var(--amber-200);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(251,191,36,.05);border-left:3px solid var(--amber-200);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--amber-200);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--amber-200);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;}
+.tipo-conteudo{background:rgba(251,191,36,.12);color:var(--amber-200);border:1px solid rgba(251,191,36,.28);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ══════════════════════════════════ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(251,191,36,.14);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(251,191,36,.16);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--amber-200);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(251,191,36,.2);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--amber-200);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.07);border-left:3px solid var(--amber-200);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.6;}
+.destaque strong{color:var(--amber-200);}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(251,191,36,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--amber-200);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(251,191,36,.18);}
+td{padding:.6rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(251,191,36,.03);}
+
+/* code */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(251,191,36,.07);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;cursor:pointer;background:none;border:none;color:var(--text-muted);letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--amber-200);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#fde68a;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#86efac;}.cm{color:#4b5563;font-style:italic;}
+.num{color:#fca5a5;}.op{color:#c4b5fd;}.tag{color:#fdba74;}.attr{color:#a78bfa;}.val{color:#86efac;}
+.jsx{color:#fb923c;}.hook{color:#34d399;}
+
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.85);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:var(--amber-200);flex-shrink:0;margin-top:2px;}
+.aviso-info{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);font-size:.86rem;color:rgba(186,230,253,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-info i{color:#60a5fa;flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+
+/* exercícios */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--amber-200);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dificuldade{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;}
+.dif-basico{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+
+/* resumo */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--amber-200);margin-bottom:.5rem;display:block;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);margin-top:3rem;text-decoration:none;}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--amber-200);}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(251,191,36,.1);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+/* ── específicos desta aula ── */
+.providers-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin:.75rem 0;}
+.provider-card{padding:1rem;border-radius:12px;border:1px solid;transition:transform .2s;}
+.provider-card:hover{transform:translateY(-3px);}
+.provider-card .name{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:800;margin-bottom:4px;}
+.provider-card .model{font-family:'JetBrains Mono',monospace;font-size:.72rem;margin-bottom:6px;}
+.provider-card .detail{font-size:.78rem;color:var(--text-muted);line-height:1.5;}
+.provider-card .price{font-size:.72rem;font-weight:700;margin-top:6px;padding:2px 8px;border-radius:6px;display:inline-block;}
+
+.openai{background:rgba(16,163,127,.06);border-color:rgba(16,163,127,.25);}
+.openai .name{color:#10a37f;}
+.openai .price{background:rgba(16,163,127,.12);color:#10a37f;}
+
+.google{background:rgba(66,133,244,.06);border-color:rgba(66,133,244,.25);}
+.google .name{color:#4285f4;}
+.google .price{background:rgba(66,133,244,.12);color:#4285f4;}
+
+.hugging{background:rgba(255,115,0,.06);border-color:rgba(255,115,0,.25);}
+.hugging .name{color:#ff7300;}
+.hugging .price{background:rgba(255,115,0,.12);color:#ff7300;}
+
+.anthropic{background:rgba(206,90,63,.06);border-color:rgba(206,90,63,.25);}
+.anthropic .name{color:#ce5a3f;}
+.anthropic .price{background:rgba(206,90,63,.12);color:#ce5a3f;}
+
+/* chat demo */
+.chat-demo{background:#050e24;border:1px solid rgba(251,191,36,.15);border-radius:14px;overflow:hidden;margin:.75rem 0;}
+.chat-demo-header{display:flex;align-items:center;gap:8px;padding:.65rem 1rem;background:rgba(0,0,0,.3);border-bottom:1px solid rgba(255,255,255,.06);}
+.chat-demo-dot{width:8px;height:8px;border-radius:50%;}
+.chat-demo-title{font-size:.8rem;font-weight:700;color:var(--amber-200);}
+.chat-demo-model{font-size:.7rem;color:var(--text-muted);margin-left:auto;font-family:'JetBrains Mono',monospace;}
+.chat-demo-msgs{height:260px;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem;}
+.chat-msg{max-width:80%;padding:.65rem .95rem;border-radius:12px;font-size:.83rem;line-height:1.55;}
+.chat-msg-user{align-self:flex-end;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.25);color:var(--amber-100);border-radius:12px 12px 2px 12px;}
+.chat-msg-bot{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--text-primary);border-radius:12px 12px 12px 2px;}
+.chat-msg-typing{align-self:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);color:var(--text-muted);font-style:italic;border-radius:12px 12px 12px 2px;padding:.65rem .95rem;font-size:.83rem;}
+.chat-demo-input{display:flex;gap:.5rem;padding:.75rem 1rem;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.15);}
+.chat-demo-input input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.5rem .875rem;color:var(--text-primary);font-size:.83rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+.chat-demo-input input:focus{border-color:rgba(251,191,36,.4);}
+.chat-demo-input input::placeholder{color:var(--text-muted);}
+.chat-demo-send{background:linear-gradient(135deg,var(--amber-300),var(--amber-400));border:none;border-radius:8px;padding:.5rem .875rem;color:#1c0a00;font-size:.82rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .2s;}
+.chat-demo-send:hover{opacity:.88;}
+.chat-demo-send:disabled{opacity:.35;cursor:not-allowed;}
+.chat-demo-footer{display:flex;align-items:center;gap:8px;padding:.45rem 1rem;background:rgba(0,0,0,.2);border-top:1px solid rgba(255,255,255,.04);font-size:.7rem;color:var(--text-muted);}
+.chat-demo-tokens{margin-left:auto;font-family:'JetBrains Mono',monospace;}
+
+/* rate limit viz */
+.rate-meter{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:1rem 1.25rem;margin:.75rem 0;}
+.rate-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:.6rem;}
+.rate-bar-label{font-size:.75rem;color:var(--text-muted);width:90px;flex-shrink:0;}
+.rate-bar-track{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;}
+.rate-bar-fill{height:100%;border-radius:999px;transition:width .4s;}
+.rate-bar-val{font-size:.72rem;font-family:'JetBrains Mono',monospace;color:var(--text-muted);width:50px;text-align:right;}
+
+/* custo calc */
+.cost-calc{background:rgba(0,0,0,.2);border:1px solid rgba(251,191,36,.12);border-radius:12px;padding:1.25rem;margin:.75rem 0;}
+.cost-row{display:flex;align-items:center;justify-content:space-between;padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.83rem;}
+.cost-row:last-child{border-bottom:none;font-weight:700;color:var(--amber-200);}
+.cost-label{color:var(--text-secondary);}
+.cost-val{font-family:'JetBrains Mono',monospace;color:var(--text-primary);}
+
+@media(max-width:900px){.capa{grid-template-columns:1fr;}.capa-right{display:none;}.grid-2{grid-template-columns:1fr;}.resumo-grid{grid-template-columns:1fr 1fr;}.providers-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:540px){.resumo-grid{grid-template-columns:1fr;}.capa-titulo{font-size:1.5rem;}.providers-grid{grid-template-columns:1fr;}}
+
+
+/* versão do aluno */
+.orientacao-aluno{border-color:rgba(96,165,250,.22);background:rgba(96,165,250,.04);}
+.checklist-estudo,.criterios-aluno ul{list-style:none;margin:.7rem 0 0;padding:0;display:flex;flex-direction:column;gap:.45rem;}
+.checklist-estudo li,.criterios-aluno li{font-size:.84rem;color:var(--text-secondary);line-height:1.55;padding-left:1.35rem;position:relative;}
+.checklist-estudo li::before{content:'→';position:absolute;left:0;color:#60a5fa;font-weight:700;}
+.criterios-aluno{margin-top:1rem;padding:.9rem 1rem;border-radius:10px;background:rgba(74,222,128,.045);border:1px solid rgba(74,222,128,.14);}
+.criterios-titulo{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:#4ade80;font-weight:700;margin-bottom:.35rem;}
+.criterios-aluno li::before{content:'□';position:absolute;left:0;color:#4ade80;font-weight:700;}
+</style>
+</head>
+<body>
+<!-- ═══════════════ CAPA ═══════════════════════ -->
+<section class="capa">
+<div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+<span class="tipo-badge tipo-conteudo">🎓 Versão do Aluno</span>
+<div class="capa-left">
+<div class="semana-badge"><span class="dot"></span>Front-end para IA · Bacharelado · 3º Período</div>
+<div class="semana-num">05</div>
+<h1 class="capa-titulo">APIs de IA:<br/><em>OpenAI, Gemini</em><br/>e HuggingFace</h1>
+<p class="capa-sub">4 aulas · 200 minutos · Pré-requisito: Semana 4</p>
+<div class="divider"></div>
+<div class="topicos">
+<div class="topico"><div class="topico-icon">🗺️</div><span>Panorama dos provedores: OpenAI, Gemini, Claude, HuggingFace</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-comment-dots"></i></div><span>API de Chat da OpenAI — mensagens, roles e system prompt</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-tachometer-alt"></i></div><span>Rate limits, tokens e gestão de custos</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-shield-alt"></i></div><span>Segurança: chaves, CORS e backend proxy</span></div>
+<div class="topico"><div class="topico-icon"><i class="fas fa-robot"></i></div><span>Projeto: chatbot real com histórico e system prompt</span></div>
+</div>
+<div class="atividade-box">
+<div class="label">Atividade Prática</div>
+<p>Ao final, você deverá montar uma interface de chat capaz de trabalhar com histórico, system prompt configurável e uma API de LLM real ou uma alternativa de prática indicada no material.</p>
+</div>
+</div>
+<div class="capa-right">
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-link"></i>Tudo converge aqui</div>
+<ul class="info-lista">
+<li>fetch + async/await da Sem. 4 → chama a API de IA</li>
+<li>useState + useEffect da Sem. 2/3 → gerencia histórico e loading</li>
+<li>.env da Sem. 4 → protege a API key</li>
+<li>Context da Sem. 3 → compartilha o modelo escolhido</li>
+<li>React Router da Sem. 3 → rota /chat protegida por chave</li>
+</ul>
+</div>
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-road"></i>O que vem depois</div>
+<ul class="info-lista">
+<li>Sem. 6 — P1: avaliação sobre todo o conteúdo das Sems. 1–5</li>
+<li>Sem. 7 — streaming token a token (Server-Sent Events)</li>
+<li>Sem. 8 — renderizar Markdown e highlight de código</li>
+<li>Sem. 9 — dashboards com Recharts e resultados de modelos</li>
+</ul>
+</div>
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-dollar-sign"></i>Opção sem custo para praticar</div>
+<ul class="info-lista">
+<li>Gemini: $0 na camada gratuita (15 req/min, 1M tokens/dia)</li>
+<li>HuggingFace Inference API: gratuito para modelos públicos</li>
+<li>OpenAI: $5 de crédito grátis ao criar conta</li>
+<li>Se não tiver chave: use mock local — o código é idêntico</li>
+</ul>
+</div>
+</div>
+<div class="scroll-hint"><span>role para o conteúdo</span><i class="fas fa-chevron-down"></i></div>
+</section>
+<!-- ═══════════════ CONTEÚDO ══════════════════ -->
+<main class="conteudo">
+<!-- ══════════════════════════════════
+     AULA 1 — PANORAMA E OPENAI
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">01</div>
+<div>
+<div class="secao-label">Aula 1 · ~50 minutos</div>
+<div class="secao-titulo">Panorama dos provedores e a API de Chat da OpenAI</div>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-globe"></i>Os quatro grandes provedores de API de IA</div>
+<p>Todos expõem uma API REST. A estrutura da requisição é parecida — o que muda é a URL, o header de autenticação e o formato do corpo.</p>
+<div class="providers-grid">
+<div class="provider-card openai">
+<div class="name">OpenAI</div>
+<div class="model">gpt-4o · gpt-4o-mini</div>
+<div class="detail">O padrão da indústria. Melhor qualidade geral. API mais documentada.</div>
+<span class="price">$0.15–$5 / 1M tokens</span>
+</div>
+<div class="provider-card google">
+<div class="name">Google Gemini</div>
+<div class="model">gemini-1.5-flash · pro</div>
+<div class="detail">Camada gratuita generosa. Bom para protótipos. SDK JavaScript oficial.</div>
+<span class="price">Gratuito + pago</span>
+</div>
+<div class="provider-card anthropic">
+<div class="name">Anthropic Claude</div>
+<div class="model">claude-3-5-sonnet</div>
+<div class="detail">Excelente em seguir instruções. Context window enorme (200k tokens).</div>
+<span class="price">$3–$15 / 1M tokens</span>
+</div>
+<div class="provider-card hugging">
+<div class="name">HuggingFace</div>
+<div class="model">mistral · llama · etc.</div>
+<div class="detail">Modelos open-source via Inference API. Gratuito para modelos públicos.</div>
+<span class="price">Gratuito (limites)</span>
+</div>
+</div>
+<div class="destaque">
+<strong>O padrão que todos seguem:</strong> mensagens são um array de objetos <code>{"{"}role, content{"}"}</code>. Role pode ser <code>system</code> (instrução para o modelo), <code>user</code> (mensagem do usuário) ou <code>assistant</code> (resposta do modelo). A OpenAI popularizou esse formato — Gemini e outros o adotaram.
+    </div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-comments"></i>A API de Chat da OpenAI — anatomia completa</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JavaScript — requisição completa</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="cm">// POST https://api.openai.com/v1/chat/completions</span>
+
+<span class="kw">const</span> corpo = {
+  model:       <span class="str">"gpt-4o-mini"</span>,     <span class="cm">// modelo mais barato para testes</span>
+  max_tokens:  <span class="num">1000</span>,              <span class="cm">// limite de tokens na resposta</span>
+  temperature: <span class="num">0.7</span>,              <span class="cm">// 0=determinístico, 2=criativo</span>
+  messages: [
+    {
+      role:    <span class="str">"system"</span>,          <span class="cm">// instrução permanente para o modelo</span>
+      content: <span class="str">"Você é um assistente especialista em React e front-end para IA. Responda sempre em português, de forma didática."</span>
+    },
+    {
+      role:    <span class="str">"user"</span>,            <span class="cm">// mensagem do usuário</span>
+      content: <span class="str">"O que é useState?"</span>
+    },
+    {
+      role:    <span class="str">"assistant"</span>,       <span class="cm">// resposta anterior do modelo (histórico)</span>
+      content: <span class="str">"useState é um hook que..."</span>
+    },
+    {
+      role:    <span class="str">"user"</span>,            <span class="cm">// nova mensagem</span>
+      content: <span class="str">"E useEffect?"</span>
+    }
+  ]
+};
+
+<span class="cm">// A resposta da API</span>
+<span class="cm">// {</span>
+<span class="cm">//   id: "chatcmpl-abc123",</span>
+<span class="cm">//   choices: [{</span>
+<span class="cm">//     message: { role: "assistant", content: "useEffect é usado para..." },</span>
+<span class="cm">//     finish_reason: "stop"</span>
+<span class="cm">//   }],</span>
+<span class="cm">//   usage: { prompt_tokens: 120, completion_tokens: 80, total_tokens: 200 }</span>
+<span class="cm">// }</span>
+
+<span class="cm">// Extrair a resposta</span>
+<span class="kw">const</span> texto = data.choices[<span class="num">0</span>].message.content;
+<span class="kw">const</span> tokensUsados = data.usage.total_tokens;</code></pre>
+</div>
+<div class="aviso-info">
+<i class="fas fa-info-circle"></i>
+<span><strong>O histórico é responsabilidade sua.</strong> A API de chat não tem memória entre chamadas. Para manter contexto, você manda o histórico completo a cada requisição — é por isso que o array de mensagens cresce com cada turno da conversa.</span>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-code"></i>Hook useChat — o coração do chatbot real</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — hooks/useChat.js</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="kw">import</span> { <span class="hook">useState</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">const</span> SYSTEM_PROMPT_PADRAO =
+  <span class="str">'Você é um assistente de front-end para IA. Responda em português, de forma didática e objetiva.'</span>;
+
+<span class="kw">export function</span> <span class="fn">useChat</span>({
+  modelo       = <span class="str">'gpt-4o-mini'</span>,
+  systemPrompt = SYSTEM_PROMPT_PADRAO,
+  maxTokens    = <span class="num">1000</span>,
+} = {}) {
+  <span class="kw">const</span> [<span class="hook">historico</span>,   <span class="hook">setHistorico</span>]   = <span class="fn">useState</span>([]); <span class="cm">// {role, content}[]</span>
+  <span class="kw">const</span> [<span class="hook">carregando</span>,  <span class="hook">setCarregando</span>]  = <span class="fn">useState</span>(<span class="kw">false</span>);
+  <span class="kw">const</span> [<span class="hook">erro</span>,        <span class="hook">setErro</span>]        = <span class="fn">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> [<span class="hook">totalTokens</span>, <span class="hook">setTotalTokens</span>] = <span class="fn">useState</span>(<span class="num">0</span>);
+
+  <span class="kw">const</span> <span class="fn">enviar</span> = <span class="kw">async</span> (textoUsuario) =&gt; {
+    <span class="kw">if</span> (!textoUsuario.trim() || <span class="hook">carregando</span>) <span class="kw">return</span>;
+
+    <span class="cm">// 1. Adiciona mensagem do usuário ao histórico</span>
+    <span class="kw">const</span> msgUsuario = { role: <span class="str">'user'</span>, content: textoUsuario };
+    <span class="kw">const</span> historicoAtualizado = [...<span class="hook">historico</span>, msgUsuario];
+    <span class="hook">setHistorico</span>(historicoAtualizado);
+    <span class="hook">setCarregando</span>(<span class="kw">true</span>);
+    <span class="hook">setErro</span>(<span class="kw">null</span>);
+
+    <span class="kw">try</span> {
+      <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://api.openai.com/v1/chat/completions'</span>, {
+        method:  <span class="str">'POST'</span>,
+        headers: {
+          <span class="str">'Content-Type'</span>:  <span class="str">'application/json'</span>,
+          <span class="str">'Authorization'</span>: `Bearer ${<span class="kw">import</span>.meta.env.VITE_OPENAI_KEY}`,
+        },
+        body: <span class="fn">JSON.stringify</span>({
+          model:      <span class="hook">modelo</span>,
+          max_tokens: maxTokens,
+          messages: [
+            { role: <span class="str">'system'</span>, content: systemPrompt }, <span class="cm">// system sempre primeiro</span>
+            ...historicoAtualizado,                         <span class="cm">// histórico completo</span>
+          ],
+        }),
+      });
+
+      <span class="kw">if</span> (!res.ok) {
+        <span class="kw">const</span> errJson = <span class="kw">await</span> res.<span class="fn">json</span>().<span class="fn">catch</span>(() =&gt; ({}));
+        <span class="kw">throw new</span> <span class="fn">Error</span>(errJson.error?.message || `Erro ${res.status}`);
+      }
+
+      <span class="kw">const</span> data = <span class="kw">await</span> res.<span class="fn">json</span>();
+      <span class="kw">const</span> msgIA = data.choices[<span class="num">0</span>].message; <span class="cm">// { role:'assistant', content:'...' }</span>
+
+      <span class="cm">// 2. Adiciona resposta da IA ao histórico</span>
+      <span class="hook">setHistorico</span>(h =&gt; [...h, msgIA]);
+      <span class="hook">setTotalTokens</span>(t =&gt; t + (data.usage?.total_tokens || <span class="num">0</span>));
+
+    } <span class="kw">catch</span> (e) {
+      <span class="hook">setErro</span>(e.message);
+    } <span class="kw">finally</span> {
+      <span class="hook">setCarregando</span>(<span class="kw">false</span>);
+    }
+  };
+
+  <span class="kw">const</span> <span class="fn">limpar</span> = () =&gt; { <span class="hook">setHistorico</span>([]); <span class="hook">setErro</span>(<span class="kw">null</span>); <span class="hook">setTotalTokens</span>(<span class="num">0</span>); };
+
+  <span class="kw">return</span> { <span class="hook">historico</span>, <span class="hook">carregando</span>, <span class="hook">erro</span>, <span class="hook">totalTokens</span>, enviar, limpar };
+}</code></pre>
+</div>
+</div>
+</section>
+<div class="sep"><span>Aula 2</span></div>
+<!-- ══════════════════════════════════
+     AULA 2 — TOKENS, RATE LIMITS, GEMINI E HUGGINGFACE
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">02</div>
+<div>
+<div class="secao-label">Aula 2 · ~50 minutos</div>
+<div class="secao-titulo">Tokens, rate limits, Gemini e HuggingFace</div>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-coins"></i>Tokens — a moeda das APIs de IA</div>
+<p>Modelos de linguagem não processam palavras — processam <strong>tokens</strong>. Um token é, em média, 4 caracteres ou ¾ de uma palavra em inglês. Em português, textos tendem a usar mais tokens que em inglês.</p>
+<div class="tabela-wrap">
+<table>
+<thead><tr><th>Exemplo</th><th>Tokens aprox.</th><th>Observação</th></tr></thead>
+<tbody>
+<tr><td>"Olá, tudo bem?"</td><td>~6</td><td>Frases curtas = poucos tokens</td></tr>
+<tr><td>Uma página de texto</td><td>~500</td><td>Regra: 750 palavras ≈ 1000 tokens</td></tr>
+<tr><td>Um system prompt detalhado</td><td>~200–500</td><td>Vai em cada requisição — cuidado com custo</td></tr>
+<tr><td>Histórico de 20 turnos</td><td>~3000–8000</td><td>Cresce a cada mensagem — gerenciar contexto</td></tr>
+<tr><td>Context window GPT-4o</td><td>128.000</td><td>Limite máximo por requisição</td></tr>
+</tbody>
+</table>
+</div>
+<div class="cost-calc">
+<div class="cost-row"><span class="cost-label">Modelo</span><span class="cost-val">gpt-4o-mini</span></div>
+<div class="cost-row"><span class="cost-label">Input (prompt + histórico)</span><span class="cost-val">$0.15 / 1M tokens</span></div>
+<div class="cost-row"><span class="cost-label">Output (resposta)</span><span class="cost-val">$0.60 / 1M tokens</span></div>
+<div class="cost-row"><span class="cost-label">1000 conversas de ~2k tokens</span><span class="cost-val">≈ $0.30</span></div>
+<div class="cost-row"><span class="cost-label">Estimativa mensal (app pequeno)</span><span class="cost-val">$1 – $10</span></div>
+</div>
+<div class="aviso">
+<i class="fas fa-lightbulb"></i>
+<span><strong>Gestão de contexto:</strong> quando o histórico fica longo, é comum truncar as mensagens mais antigas, manter só as últimas N, ou resumir a conversa anterior com uma chamada extra à API. Isso evita estourar o context window e reduz custos.</span>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-tachometer-alt"></i>Rate limits — o que fazer quando a API rejeita</div>
+<p>Todo provedor limita quantas requisições você pode fazer por minuto/dia. Erros <strong>429 Too Many Requests</strong> são normais — a estratégia é tratá-los com elegância.</p>
+<div class="rate-meter">
+<div class="rate-bar-row">
+<span class="rate-bar-label">Requisições/min</span>
+<div class="rate-bar-track"><div class="rate-bar-fill" style="width:60%;background:#fbbf24;"></div></div>
+<span class="rate-bar-val">3/5 rpm</span>
+</div>
+<div class="rate-bar-row">
+<span class="rate-bar-label">Tokens/min</span>
+<div class="rate-bar-track"><div class="rate-bar-fill" style="width:35%;background:#4ade80;"></div></div>
+<span class="rate-bar-val">70k/200k</span>
+</div>
+<div class="rate-bar-row">
+<span class="rate-bar-label">Tokens/dia</span>
+<div class="rate-bar-track"><div class="rate-bar-fill" style="width:8%;background:#4ade80;"></div></div>
+<span class="rate-bar-val">800k/10M</span>
+</div>
+</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JavaScript — retry com backoff exponencial</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="cm">// Tenta novamente em caso de 429, com espera crescente</span>
+<span class="kw">async function</span> <span class="fn">fetchComRetry</span>(url, opcoes, tentativas = <span class="num">3</span>) {
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; tentativas; i++) {
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(url, opcoes);
+
+    <span class="kw">if</span> (res.status === <span class="num">429</span>) {
+      <span class="kw">const</span> espera = Math.<span class="fn">pow</span>(<span class="num">2</span>, i) * <span class="num">1000</span>; <span class="cm">// 1s, 2s, 4s</span>
+      <span class="fn">console.warn</span>(`Rate limit. Tentativa ${i+<span class="num">1</span>}. Aguardando ${espera}ms...`);
+      <span class="kw">await new</span> <span class="fn">Promise</span>(r =&gt; <span class="fn">setTimeout</span>(r, espera));
+      <span class="kw">continue</span>;
+    }
+
+    <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(`Erro ${res.status}`);
+    <span class="kw">return</span> res.<span class="fn">json</span>();
+  }
+  <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'Limite de tentativas atingido. Tente novamente em alguns segundos.'</span>);
+}
+
+<span class="cm">// No componente React — tratar 429 com mensagem amigável</span>
+<span class="kw">catch</span> (e) {
+  <span class="kw">if</span> (e.message.includes(<span class="str">'429'</span>)) {
+    <span class="hook">setErro</span>(<span class="str">'Muitas requisições. Aguarde alguns segundos e tente novamente.'</span>);
+  } <span class="kw">else if</span> (e.message.includes(<span class="str">'401'</span>)) {
+    <span class="hook">setErro</span>(<span class="str">'Chave de API inválida. Verifique suas configurações.'</span>);
+  } <span class="kw">else</span> {
+    <span class="hook">setErro</span>(`Erro: ${e.message}`);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-exchange-alt"></i>Gemini e HuggingFace — alternativas gratuitas</div>
+<div class="grid-2">
+<div>
+<p style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">Google Gemini — camada gratuita</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JavaScript — Gemini API</span></div>
+<pre><code><span class="cm">// npm install @google/generative-ai</span>
+<span class="kw">import</span> { GoogleGenerativeAI }
+  <span class="kw">from</span> <span class="str">'@google/generative-ai'</span>;
+
+<span class="kw">const</span> genAI = <span class="kw">new</span> <span class="fn">GoogleGenerativeAI</span>(
+  <span class="kw">import</span>.meta.env.VITE_GEMINI_KEY
+);
+
+<span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
+  model: <span class="str">'gemini-1.5-flash'</span>
+});
+
+<span class="kw">const</span> result = <span class="kw">await</span> model.<span class="fn">generateContent</span>(prompt);
+<span class="kw">const</span> texto  = result.response.<span class="fn">text</span>();</code></pre>
+</div>
+</div>
+<div>
+<p style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">HuggingFace Inference API</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JavaScript — HuggingFace</span></div>
+<pre><code><span class="cm">// API REST — sem SDK necessário</span>
+<span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(
+  <span class="str">'https://api-inference.huggingface.co'</span>
+  + <span class="str">'/models/mistralai/Mistral-7B-Instruct-v0.1'</span>,
+  {
+    method: <span class="str">'POST'</span>,
+    headers: {
+      <span class="str">'Authorization'</span>:
+        `Bearer ${<span class="kw">import</span>.meta.env.VITE_HF_KEY}`,
+    },
+    body: <span class="fn">JSON.stringify</span>({
+      inputs: prompt,
+      parameters: { max_new_tokens: <span class="num">500</span> }
+    }),
+  }
+);
+<span class="kw">const</span> [{ generated_text }] = <span class="kw">await</span> res.<span class="fn">json</span>();</code></pre>
+</div>
+</div>
+</div>
+<div class="tabela-wrap">
+<table>
+<thead><tr><th>Provedor</th><th>Grátis?</th><th>Complexidade</th><th>Melhor para</th></tr></thead>
+<tbody>
+<tr><td>OpenAI</td><td>$5 crédito inicial</td><td>Baixa — API clara</td><td>Qualidade máxima, produção</td></tr>
+<tr><td>Gemini</td><td>✅ 15 req/min grátis</td><td>Baixa — SDK oficial</td><td>Protótipos, projetos de aula</td></tr>
+<tr><td>HuggingFace</td><td>✅ modelos públicos</td><td>Média — modelos variados</td><td>Modelos específicos, open-source</td></tr>
+<tr><td>Claude (Anthropic)</td><td>❌ Pago</td><td>Baixa — similar à OpenAI</td><td>Textos longos, seguir instruções</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<div class="sep"><span>Aula 3</span></div>
+<!-- ══════════════════════════════════
+     AULA 3 — SEGURANÇA E CHATBOT COMPLETO
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">03 &amp; 04</div>
+<div>
+<div class="secao-label">Aula 3 &amp; 4 · ~100 minutos</div>
+<div class="secao-titulo">Segurança, CORS e o chatbot completo</div>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-shield-alt"></i>Segurança — o que o .env não resolve</div>
+<p>Na Semana 4 aprendemos que <code>.env</code> protege a chave do git. Mas o <strong>.env não protege do usuário final</strong> — qualquer pessoa pode abrir o DevTools e ver a chave no cabeçalho da requisição.</p>
+<div class="grid-2">
+<div>
+<p style="font-size:.75rem;color:#f87171;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">❌ Arquitetura insegura</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">Fluxo</span></div>
+<pre><code>Browser (React)
+    ↓ chama diretamente
+api.openai.com/v1/...
+    com Authorization: Bearer sk-...
+    
+⚠️ Chave visível no DevTools
+   Network → Request Headers</code></pre>
+</div>
+</div>
+<div>
+<p style="font-size:.75rem;color:#4ade80;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">✅ Arquitetura segura (produção)</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">Fluxo</span></div>
+<pre><code>Browser (React)
+    ↓ chama seu backend
+/api/chat  ← SEM chave
+    ↓ backend adiciona a chave
+api.openai.com/v1/...
+    Authorization: Bearer sk-...
+
+✅ Chave nunca sai do servidor</code></pre>
+</div>
+</div>
+</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — API Route Next.js (Semana 15)</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="cm">// app/api/chat/route.js — roda no servidor, nunca no browser</span>
+<span class="kw">export async function</span> <span class="fn">POST</span>(req) {
+  <span class="kw">const</span> { messages } = <span class="kw">await</span> req.<span class="fn">json</span>();
+
+  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://api.openai.com/v1/chat/completions'</span>, {
+    method:  <span class="str">'POST'</span>,
+    headers: {
+      <span class="str">'Content-Type'</span>:  <span class="str">'application/json'</span>,
+      <span class="str">'Authorization'</span>: `Bearer ${process.env.OPENAI_KEY}`, <span class="cm">// ← sem VITE_</span>
+    },
+    body: <span class="fn">JSON.stringify</span>({ model: <span class="str">'gpt-4o-mini'</span>, messages }),
+  });
+
+  <span class="kw">const</span> data = <span class="kw">await</span> res.<span class="fn">json</span>();
+  <span class="kw">return</span> <span class="fn">Response.json</span>(data);
+}
+
+<span class="cm">// No React, você chama /api/chat — nunca a OpenAI diretamente</span>
+<span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/chat'</span>, { <span class="cm">/* sem chave */</span> });</code></pre>
+</div>
+<div class="aviso-info">
+<i class="fas fa-info-circle"></i>
+<span><strong>Para esta semana:</strong> chamar a API diretamente do front-end com <code>.env</code> é aceitável para projetos de aula. Para produção real, use Next.js API Routes (Semana 15) ou um backend Node/FastAPI que guarda a chave no servidor.</span>
+</div>
+</div>
+<!-- Chatbot demo completo ------------------------------------------- -->
+<div class="card">
+<div class="card-titulo"><i class="fas fa-robot"></i>Demo — Chatbot com system prompt configurável</div>
+<p style="margin-bottom:.75rem;">Interface completa com histórico, system prompt editável e contador de tokens. O código abaixo é o componente que você vai construir:</p>
+<div class="chat-demo">
+<div class="chat-demo-header">
+<div class="chat-demo-dot" style="background:#22c55e;box-shadow:0 0 6px #22c55e;"></div>
+<span class="chat-demo-title">IA Assistant</span>
+<span class="chat-demo-model">gpt-4o-mini · simulado</span>
+</div>
+<div class="chat-demo-msgs" id="demo-msgs">
+<div class="chat-msg chat-msg-bot">Olá! Sou a demo da Semana 5. Nesta versão estou simulando respostas — na sua implementação real, conecte ao hook useChat com sua chave de API. 🚀</div>
+</div>
+<div class="chat-demo-input">
+<input autocomplete="off" id="demo-input" placeholder="Digite uma mensagem..."/>
+<button class="chat-demo-send" id="demo-btn" onclick="enviarDemo()">Enviar</button>
+</div>
+<div class="chat-demo-footer">
+<span>System prompt ativo</span>
+<span class="chat-demo-tokens" id="demo-tokens">0 tokens</span>
+</div>
+</div>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — ChatbotIA.jsx — componente completo</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="kw">import</span> { <span class="hook">useState</span>, useRef, <span class="hook">useEffect</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> { <span class="fn">useChat</span> } <span class="kw">from</span> <span class="str">'../hooks/useChat'</span>;
+
+<span class="kw">const</span> SYSTEM_PROMPTS = {
+  assistente: <span class="str">'Você é um assistente didático de front-end para IA. Responda em português, de forma clara e com exemplos de código quando relevante.'</span>,
+  revisor:    <span class="str">'Você é um revisor de código React experiente. Ao receber código, aponte melhorias, bugs potenciais e melhores práticas.'</span>,
+  tutor:      <span class="str">'Você é um tutor socrático. Em vez de dar respostas diretas, faça perguntas que levem o aluno a descobrir a resposta.'</span>,
+};
+
+<span class="kw">export default function</span> <span class="jsx">ChatbotIA</span>() {
+  <span class="kw">const</span> [<span class="hook">modoSP</span>, <span class="hook">setModoSP</span>] = <span class="fn">useState</span>(<span class="str">'assistente'</span>);
+  <span class="kw">const</span> [<span class="hook">input</span>,  <span class="hook">setInput</span>]  = <span class="fn">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> fimRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+
+  <span class="kw">const</span> { <span class="hook">historico</span>, <span class="hook">carregando</span>, <span class="hook">erro</span>, <span class="hook">totalTokens</span>, enviar, limpar } = <span class="fn">useChat</span>({
+    modelo:       <span class="str">'gpt-4o-mini'</span>,
+    systemPrompt: SYSTEM_PROMPTS[<span class="hook">modoSP</span>],
+  });
+
+  <span class="fn">useEffect</span>(() =&gt; {
+    fimRef.current?.<span class="fn">scrollIntoView</span>({ behavior: <span class="str">'smooth'</span> });
+  }, [<span class="hook">historico</span>]);
+
+  <span class="kw">const</span> <span class="fn">handleEnviar</span> = () =&gt; {
+    <span class="fn">enviar</span>(<span class="hook">input</span>);
+    <span class="hook">setInput</span>(<span class="str">''</span>);
+  };
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"chatbot"</span><span class="tag">&gt;</span>
+
+      {<span class="cm">/* Header com seletor de modo */</span>}
+      <span class="tag">&lt;header&gt;</span>
+        <span class="tag">&lt;span&gt;</span>IA Assistant<span class="tag">&lt;/span&gt;</span>
+        <span class="tag">&lt;select</span> <span class="attr">value</span>={<span class="hook">modoSP</span>} <span class="attr">onChange</span>={e =&gt; { <span class="hook">setModoSP</span>(e.target.value); <span class="fn">limpar</span>(); }}<span class="tag">&gt;</span>
+          <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="val">"assistente"</span><span class="tag">&gt;</span>🤖 Assistente<span class="tag">&lt;/option&gt;</span>
+          <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="val">"revisor"</span><span class="tag">&gt;</span>🔍 Revisor de Código<span class="tag">&lt;/option&gt;</span>
+          <span class="tag">&lt;option</span> <span class="attr">value</span>=<span class="val">"tutor"</span><span class="tag">&gt;</span>📚 Tutor Socrático<span class="tag">&lt;/option&gt;</span>
+        <span class="tag">&lt;/select&gt;</span>
+        <span class="tag">&lt;button</span> <span class="attr">onClick</span>={<span class="fn">limpar</span>}<span class="tag">&gt;</span>Nova conversa<span class="tag">&lt;/button&gt;</span>
+      <span class="tag">&lt;/header&gt;</span>
+
+      {<span class="cm">/* Lista de mensagens */</span>}
+      <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"mensagens"</span><span class="tag">&gt;</span>
+        {<span class="hook">historico</span>.length === <span class="num">0</span> <span class="op">&amp;&amp;</span> (
+          <span class="tag">&lt;p</span> <span class="attr">className</span>=<span class="val">"vazio"</span><span class="tag">&gt;</span>
+            Modo: <strong>{SYSTEM_PROMPTS[<span class="hook">modoSP</span>].<span class="fn">slice</span>(<span class="num">0</span>, <span class="num">60</span>)}...</strong>
+          <span class="tag">&lt;/p&gt;</span>
+        )}
+        {<span class="hook">historico</span>.<span class="fn">map</span>((msg, i) =&gt; (
+          <span class="tag">&lt;div</span>
+            <span class="attr">key</span>={i}
+            <span class="attr">className</span>={`msg msg--${msg.role === <span class="str">'user'</span> ? <span class="str">'user'</span> : <span class="str">'bot'</span>}`}
+          <span class="tag">&gt;</span>
+            {msg.content}
+          <span class="tag">&lt;/div&gt;</span>
+        ))}
+        {<span class="hook">carregando</span> <span class="op">&amp;&amp;</span> <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"msg msg--typing"</span><span class="tag">&gt;</span>● ● ●<span class="tag">&lt;/div&gt;</span>}
+        {<span class="hook">erro</span>       <span class="op">&amp;&amp;</span> <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"msg msg--error"</span><span class="tag">&gt;</span>❌ {<span class="hook">erro</span>}<span class="tag">&lt;/div&gt;</span>}
+        <span class="tag">&lt;div</span> <span class="attr">ref</span>={fimRef} <span class="tag">/&gt;</span>
+      <span class="tag">&lt;/div&gt;</span>
+
+      {<span class="cm">/* Input + footer com tokens */</span>}
+      <span class="tag">&lt;div</span> <span class="attr">className</span>=<span class="val">"input-area"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;input</span>
+          <span class="attr">value</span>={<span class="hook">input</span>}
+          <span class="attr">onChange</span>={e =&gt; <span class="hook">setInput</span>(e.target.value)}
+          <span class="attr">onKeyDown</span>={e =&gt; e.key === <span class="str">'Enter'</span> <span class="op">&amp;&amp;</span> <span class="fn">handleEnviar</span>()}
+          <span class="attr">disabled</span>={<span class="hook">carregando</span>}
+          <span class="attr">placeholder</span>=<span class="val">"Mensagem..."</span>
+        <span class="tag">/&gt;</span>
+        <span class="tag">&lt;button</span> <span class="attr">onClick</span>={<span class="fn">handleEnviar</span>} <span class="attr">disabled</span>={<span class="hook">carregando</span>}<span class="tag">&gt;</span>Enviar<span class="tag">&lt;/button&gt;</span>
+      <span class="tag">&lt;/div&gt;</span>
+      <span class="tag">&lt;footer&gt;</span>{<span class="hook">totalTokens</span>} tokens usados nesta sessão<span class="tag">&lt;/footer&gt;</span>
+
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+</div>
+<div class="aviso-green">
+<i class="fas fa-fire"></i>
+<span><strong>É só plugar a chave.</strong> O <code>useChat</code> da Aula 1 + o <code>ChatbotIA</code> acima formam o projeto completo. Coloque <code>VITE_OPENAI_KEY=sua-chave</code> no <code>.env</code>, rode <code>npm run dev</code> e o chatbot funciona de verdade.</span>
+</div>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-sync-alt"></i>Trocar de provedor sem mudar o componente</div>
+<p>O <code>ChatbotIA</code> não sabe qual API está sendo chamada — ele só usa o hook <code>useChat</code>. Para trocar de provedor, basta criar uma nova versão do hook:</p>
+<div class="code-block">
+<div class="code-header"><span class="code-lang">JSX — useChat adaptado para Gemini</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+<pre><code><span class="kw">import</span> { GoogleGenerativeAI } <span class="kw">from</span> <span class="str">'@google/generative-ai'</span>;
+
+<span class="kw">const</span> genAI = <span class="kw">new</span> <span class="fn">GoogleGenerativeAI</span>(<span class="kw">import</span>.meta.env.VITE_GEMINI_KEY);
+
+<span class="kw">export function</span> <span class="fn">useChatGemini</span>({ systemPrompt } = {}) {
+  <span class="kw">const</span> [<span class="hook">historico</span>,  <span class="hook">setHistorico</span>]  = <span class="fn">useState</span>([]);
+  <span class="kw">const</span> [<span class="hook">carregando</span>, <span class="hook">setCarregando</span>] = <span class="fn">useState</span>(<span class="kw">false</span>);
+  <span class="kw">const</span> [<span class="hook">erro</span>,       <span class="hook">setErro</span>]       = <span class="fn">useState</span>(<span class="kw">null</span>);
+
+  <span class="kw">const</span> <span class="fn">enviar</span> = <span class="kw">async</span> (texto) =&gt; {
+    <span class="hook">setCarregando</span>(<span class="kw">true</span>);
+    <span class="kw">const</span> novoHistorico = [...<span class="hook">historico</span>, { role: <span class="str">'user'</span>, content: texto }];
+    <span class="hook">setHistorico</span>(novoHistorico);
+
+    <span class="kw">try</span> {
+      <span class="kw">const</span> model = genAI.<span class="fn">getGenerativeModel</span>({
+        model: <span class="str">'gemini-1.5-flash'</span>,
+        systemInstruction: systemPrompt,
+      });
+
+      <span class="cm">// Gemini usa formato diferente para o histórico</span>
+      <span class="kw">const</span> chat = model.<span class="fn">startChat</span>({
+        history: novoHistorico.<span class="fn">slice</span>(<span class="num">0</span>, -<span class="num">1</span>).<span class="fn">map</span>(m =&gt; ({
+          role:  m.role === <span class="str">'assistant'</span> ? <span class="str">'model'</span> : m.role,
+          parts: [{ text: m.content }],
+        })),
+      });
+
+      <span class="kw">const</span> result = <span class="kw">await</span> chat.<span class="fn">sendMessage</span>(texto);
+      <span class="kw">const</span> resposta = result.response.<span class="fn">text</span>();
+
+      <span class="hook">setHistorico</span>(h =&gt; [...h, { role: <span class="str">'assistant'</span>, content: resposta }]);
+    } <span class="kw">catch</span> (e) {
+      <span class="hook">setErro</span>(e.message);
+    } <span class="kw">finally</span> {
+      <span class="hook">setCarregando</span>(<span class="kw">false</span>);
+    }
+  };
+
+  <span class="kw">return</span> { <span class="hook">historico</span>, <span class="hook">carregando</span>, <span class="hook">erro</span>, enviar, limpar: () =&gt; <span class="hook">setHistorico</span>([]) };
+}
+
+<span class="cm">// ChatbotIA não muda — só troca qual hook importa:</span>
+<span class="cm">// import { useChatGemini as useChat } from '../hooks/useChatGemini';</span></code></pre>
+</div>
+</div>
+</section>
+<div class="sep"><span>Atividade Prática</span></div>
+<!-- ══════════════════════════════════
+     EXERCÍCIOS
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">→</div>
+<div>
+<div class="secao-label">Atividade · Chatbot real</div>
+<div class="secao-titulo">6 Exercícios — APIs de IA, hooks e chatbot completo</div>
+</div>
+</div>
+<div class="aviso-info">
+<i class="fas fa-info-circle"></i>
+<span>Se não tiver chave de API, use a alternativa indicada para prática no material ou um <strong>mock local</strong>. O objetivo é exercitar a estrutura do hook, o histórico, os estados e a interface sem depender de gasto com API.</span>
+</div><div class="card orientacao-aluno"><div class="card-titulo"><i class="fas fa-graduation-cap"></i>Como trabalhar esta atividade</div><p>Tente cada exercício antes de voltar aos exemplos das aulas. Use os blocos de código do conteúdo como referência conceitual, mas monte sua própria solução por etapas e teste a cada mudança.</p><ul class="checklist-estudo"><li>Leia o enunciado e identifique quais estados, funções, componentes ou chamadas de API serão necessários.</li><li>Implemente uma parte por vez e valide no navegador antes de continuar.</li><li>Use o console e a aba Network do DevTools para investigar erros.</li><li>Não publique chaves de API em repositórios ou arquivos compartilhados.</li><li>Ao terminar, confira os critérios de conclusão de cada exercício.</li></ul></div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 01</div>
+<p>Implemente o hook <code>useChat</code> usando a Aula 1 como referência. Depois, crie um componente de teste mínimo com campo de texto, botão de envio e área de resposta. Faça pelo menos duas perguntas seguidas para verificar se o histórico está sendo preservado entre os turnos.</p>
+<span class="dificuldade dif-basico">Básico — hook useChat</span><br/>
+
+
+<div class="criterios-aluno"><div class="criterios-titulo">✓ Critérios para considerar concluído</div><ul><li>Uma mensagem do usuário é adicionada ao histórico antes da chamada da API.</li><li>A resposta recebida aparece como mensagem do assistant.</li><li>Duas ou mais interações consecutivas permanecem visíveis no histórico.</li><li>O estado de carregamento impede envios duplicados enquanto a resposta não chega.</li></ul></div></div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 02</div>
+<p>Adicione ao hook <code>useChat</code> um parâmetro <strong>maxHistorico</strong> (padrão: 20 mensagens). Quando o histórico ultrapassar esse limite, remova as mensagens mais antigas — mantendo sempre o sistema de roles correto (sem remover o system prompt). Exiba no footer quantas mensagens foram truncadas.</p>
+<span class="dificuldade dif-basico">Básico — gestão de contexto</span><br/>
+
+
+<div class="criterios-aluno"><div class="criterios-titulo">✓ Critérios para considerar concluído</div><ul><li>O limite padrão funciona com 20 mensagens e pode ser alterado por parâmetro.</li><li>Ao ultrapassar o limite, as mensagens mais antigas deixam de compor o histórico enviado.</li><li>O system prompt continua sendo enviado corretamente.</li><li>A interface informa quantas mensagens já foram descartadas/truncadas.</li></ul></div></div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 03</div>
+<p>Crie um componente <code>SeletorSystemPrompt</code> que permite ao usuário <strong>escolher</strong> entre 3 modos pré-definidos (Assistente, Revisor de Código, Tutor) <strong>e</strong> escrever um system prompt personalizado em um textarea. Ao trocar de modo, limpe o histórico automaticamente.</p>
+<span class="dificuldade dif-basico">Básico — system prompt configurável</span><br/>
+
+
+<div class="criterios-aluno"><div class="criterios-titulo">✓ Critérios para considerar concluído</div><ul><li>Existem os modos Assistente, Revisor de Código e Tutor.</li><li>Há uma opção de prompt personalizado com textarea editável.</li><li>Trocar de modo atualiza o system prompt usado pelo chat.</li><li>Ao mudar o modo, a conversa anterior é limpa para evitar mistura de contextos.</li></ul></div></div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 04</div>
+<p>Implemente tratamento de erros visual completo no chatbot: erro <strong>401</strong> → "Chave inválida — verifique o .env"; erro <strong>429</strong> → "Limite atingido — aguarde X segundos" com countdown animado; erro de rede → "Sem conexão — verifique sua internet". Cada mensagem de erro deve ter um botão "Tentar novamente".</p>
+<span class="dificuldade dif-medio">Médio — tratamento de erros por tipo</span><br/>
+
+
+<div class="criterios-aluno"><div class="criterios-titulo">✓ Critérios para considerar concluído</div><ul><li>Erros 401, 429 e falha de rede apresentam mensagens diferentes.</li><li>No 429, o usuário visualiza uma contagem regressiva antes de tentar novamente.</li><li>Existe uma ação de “Tentar novamente” quando ela fizer sentido.</li><li>O componente não deixa timers ou estados inconsistentes ao sair da tela.</li></ul></div></div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 05</div>
+<p>Integre o chatbot ao projeto multi-página da Semana 3: a página <code>/chat</code> deve estar protegida por React Router (requer API key no localStorage), o histórico deve ser salvo no <code>HistoricoContext</code> ao iniciar cada nova conversa, e a página <code>/config</code> deve permitir escolher o modelo (gpt-4o-mini ou gemini-1.5-flash).</p>
+<span class="dificuldade dif-medio">Médio — integração Router + Context + API</span><br/>
+
+
+<div class="criterios-aluno"><div class="criterios-titulo">✓ Critérios para considerar concluído</div><ul><li>A rota /chat não é acessada quando a condição de proteção não é atendida.</li><li>A página /config altera o modelo usado pelo chat.</li><li>Uma nova conversa é registrada no HistoricoContext.</li><li>A integração continua funcionando após navegar entre as páginas do projeto.</li></ul></div></div>
+<div class="exercicio">
+<div class="exercicio-num">Exercício 06 — Desafio</div>
+<p>Monte o <strong>projeto final da P1</strong>: aplicação completa com (a) React Router com 3 páginas e rota protegida; (b) TemaContext (claro/escuro) e HistoricoContext persistido; (c) useChat conectado à API real ou Gemini gratuito; (d) system prompt configurável com 3 modos; (e) tratamento visual de todos os erros; (f) contador de tokens no footer; (g) botão "Nova conversa" que salva no histórico e limpa o chat.</p>
+<span class="dificuldade dif-desafio">Desafio — Projeto completo P1</span><br/>
+
+
+<div class="criterios-aluno"><div class="criterios-titulo">✓ Critérios para considerar concluído</div><ul><li>React Router com 3 páginas e rota protegida.</li><li>TemaContext e HistoricoContext funcionando e persistindo o que foi solicitado.</li><li>Chat conectado a uma API real ou à alternativa de prática prevista no material.</li><li>System prompt configurável com 3 modos.</li><li>Tratamento visual dos principais erros.</li><li>Contador de tokens no footer.</li><li>Botão “Nova conversa” salva a conversa e limpa o chat atual.</li></ul></div></div>
+</section>
+<div class="sep"><span>Resumo</span></div>
+<!-- ══════════════════════════════════
+     RESUMO
+══════════════════════════════════ -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">✓</div>
+<div>
+<div class="secao-label">Fechamento · Bloco 1 concluído</div>
+<div class="secao-titulo">O que vimos na Semana 5 — e no bloco completo</div>
+</div>
+</div>
+<div class="resumo-grid">
+<div class="resumo-item">
+<i class="fas fa-robot"></i>
+<strong>APIs de IA</strong>
+<p>OpenAI, Gemini, HuggingFace. Formato messages/roles. Hook useChat com histórico e system prompt.</p>
+</div>
+<div class="resumo-item">
+<i class="fas fa-coins"></i>
+<strong>Tokens e Rate Limits</strong>
+<p>Tokens = moeda das APIs. Gestão de contexto (truncar histórico). Retry com backoff para 429.</p>
+</div>
+<div class="resumo-item">
+<i class="fas fa-shield-alt"></i>
+<strong>Segurança</strong>
+<p>.env protege do git, não do usuário. Backend proxy é o caminho correto em produção (Next.js Sem. 15).</p>
+</div>
+</div>
+<div style="margin-top:1.5rem;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);">
+<div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-200);margin-bottom:8px;">Bloco 1 — Semanas 1 a 5 — Concluído</div>
+<div style="font-family:'Montserrat',sans-serif;font-size:.95rem;font-weight:700;color:#f0f4ff;margin-bottom:.5rem;">HTML/CSS/JS → React → Hooks avançados → APIs REST → APIs de IA</div>
+<div style="font-size:.83rem;color:var(--text-secondary);">Você saiu de uma página HTML estática e chegou a um chatbot conectado a um LLM real. A Semana 6 é a P1 — avaliação de todo esse conteúdo.</div>
+</div>
+<div class="proxima">
+<div>
+<div class="proxima-label">Próxima etapa</div>
+<div class="proxima-titulo">Semana 6 — P1: Avaliação das Semanas 1 a 5</div>
+</div>
+<i class="fas fa-arrow-right"></i>
+</div>
+</section>
+</main>
+<script>
+
+function copiar(btn) {
+  const code = btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(() => {
+    btn.textContent = 'copiado!';
+    setTimeout(() => btn.textContent = 'copiar', 2000);
+  });
+}
+
+/* ── Demo chatbot simulado ── */
+let demoTokens = 0;
+const RESPOSTAS_DEMO = [
+  'Na implementação real com useChat, eu estaria buscando dados da API da OpenAI neste momento. Por ora, sou apenas uma simulação! 🤖',
+  'O hook useChat envia o histórico completo a cada requisição — é assim que o modelo mantém o contexto da conversa.',
+  'Para usar a API real, coloque VITE_OPENAI_KEY=sua-chave no arquivo .env e conecte o hook useChat ao ChatbotIA.',
+  'Rate limits: GPT-4o-mini tem 500 req/min no tier 1. Para evitar 429, implemente retry com backoff exponencial.',
+  'O system prompt é enviado como primeira mensagem com role:"system" a cada requisição. Ele define a personalidade e restrições do modelo.',
+];
+
+function enviarDemo() {
+  const input = document.getElementById('demo-input');
+  const msgs  = document.getElementById('demo-msgs');
+  const btn   = document.getElementById('demo-btn');
+  const tok   = document.getElementById('demo-tokens');
+  const texto = input.value.trim();
+  if (!texto) return;
+
+  // msg user
+  const mu = document.createElement('div');
+  mu.className = 'chat-msg chat-msg-user';
+  mu.textContent = texto;
+  msgs.appendChild(mu);
+  input.value = '';
+  btn.disabled = true;
+
+  // typing
+  const ty = document.createElement('div');
+  ty.className = 'chat-msg chat-msg-typing';
+  ty.textContent = '● ● ●';
+  msgs.appendChild(ty);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  setTimeout(() => {
+    msgs.removeChild(ty);
+    const mb = document.createElement('div');
+    mb.className = 'chat-msg chat-msg-bot';
+    mb.textContent = RESPOSTAS_DEMO[Math.floor(Math.random() * RESPOSTAS_DEMO.length)];
+    msgs.appendChild(mb);
+    msgs.scrollTop = msgs.scrollHeight;
+
+    demoTokens += Math.floor(Math.random() * 80 + 40);
+    tok.textContent = demoTokens + ' tokens';
+    btn.disabled = false;
+  }, 1000);
+}
+
+document.getElementById('demo-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') enviarDemo();
+});
+</script>
+</body>
+</html>

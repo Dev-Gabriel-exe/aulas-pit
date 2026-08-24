@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Semana 06 — P1 · Front-end para IA — Versão do Aluno</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#011a2e;
+  --accent-400:#38bdf8;
+  --accent-300:#7dd3fc;
+  --accent-500:#0ea5e9;
+  --white:#ffffff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(56,189,248,.05);
+  --code-bg:#010f1f;
+  --code-border:rgba(56,189,248,.2);
+  --exam-blue:#0284c7;
+  --exam-blue-acc:#38bdf8;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═════════════════════════════ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:#0c3a60;top:-220px;left:-180px;}
+.blob-2{width:500px;height:500px;background:#0a2540;bottom:-200px;right:-100px;}
+.blob-3{width:260px;height:260px;background:#0284c7;top:38%;left:42%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(56,189,248,.2);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--exam-blue-acc);border:1px solid rgba(56,189,248,.35);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--exam-blue-acc);animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(56,189,248,.1);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2.2rem;font-weight:800;color:var(--white);line-height:1.1;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--exam-blue-acc);}
+.capa-sub{font-size:.9rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--exam-blue-acc);border-radius:2px;margin-bottom:2rem;}
+.cobertura{display:flex;flex-direction:column;gap:.65rem;}
+.cob-item{display:flex;align-items:center;gap:12px;padding:.65rem 1rem;border-radius:10px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.15);font-size:.83rem;animation:slideIn .5s ease both;}
+.cob-item:nth-child(1){animation-delay:.1s;}.cob-item:nth-child(2){animation-delay:.2s;}.cob-item:nth-child(3){animation-delay:.3s;}.cob-item:nth-child(4){animation-delay:.4s;}.cob-item:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.cob-num{width:28px;height:28px;border-radius:8px;flex-shrink:0;background:rgba(56,189,248,.15);color:var(--exam-blue-acc);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:800;}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--exam-blue-acc);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--exam-blue-acc);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(56,189,248,.15);color:var(--exam-blue-acc);border:1px solid rgba(56,189,248,.35);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══════════════════════════ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(56,189,248,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(56,189,248,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--exam-blue-acc);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(56,189,248,.2);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--exam-blue-acc);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(56,189,248,.07);border-left:3px solid var(--accent-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--accent-400);}
+.aviso-exam{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.2);font-size:.86rem;color:rgba(125,211,252,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-exam i{color:var(--exam-blue-acc);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-orange{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,146,60,.06);border:1px solid rgba(251,146,60,.2);font-size:.86rem;color:rgba(253,186,116,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-orange i{color:#fb923c;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(56,189,248,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--exam-blue-acc);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(56,189,248,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(56,189,248,.03);}
+td strong{color:var(--text-primary);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--accent-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(56,189,248,.12);color:var(--accent-400);border:1px solid rgba(56,189,248,.22);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-purple{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.22);}
+.badge-orange{background:rgba(251,146,60,.12);color:#fb923c;border:1px solid rgba(251,146,60,.22);}
+.badge-yellow{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.22);}
+
+/* ── Semana cards ── */
+.semana-card{border-radius:14px;padding:1.25rem;border:1px solid;margin-bottom:0;}
+.s1{background:rgba(56,189,248,.04);border-color:rgba(56,189,248,.2);}
+.s2{background:rgba(74,222,128,.04);border-color:rgba(74,222,128,.18);}
+.s3{background:rgba(167,139,250,.04);border-color:rgba(167,139,250,.18);}
+.s4{background:rgba(251,146,60,.04);border-color:rgba(251,146,60,.18);}
+.s5{background:rgba(251,191,36,.04);border-color:rgba(251,191,36,.18);}
+.s-titulo{font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.7rem;display:flex;align-items:center;gap:8px;}
+.s1 .s-titulo{color:var(--accent-400);}
+.s2 .s-titulo{color:#4ade80;}
+.s3 .s-titulo{color:#a78bfa;}
+.s4 .s-titulo{color:#fb923c;}
+.s5 .s-titulo{color:#fbbf24;}
+.s-item{font-size:.8rem;color:var(--text-secondary);margin-bottom:.35rem;padding-left:.7rem;position:relative;line-height:1.5;}
+.s-item::before{content:'▸';position:absolute;left:0;font-size:.6rem;color:var(--text-muted);margin-top:2px;}
+.s-armadilha{font-size:.75rem;margin-top:.6rem;padding:.5rem .75rem;border-radius:7px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.18);color:rgba(253,230,138,.8);}
+.s-armadilha::before{content:'⚠ ';font-weight:700;}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(56,189,248,.07);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--exam-blue-acc);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--exam-blue-acc);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#bae6fd;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#4b5563;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}
+
+/* ── Simulado ── */
+.questao{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s;}
+.questao:hover{border-color:rgba(56,189,248,.2);}
+.q-header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;}
+.q-num{width:32px;height:32px;border-radius:9px;background:rgba(56,189,248,.12);color:var(--exam-blue-acc);font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.q-semana{font-size:.65rem;padding:2px 7px;border-radius:4px;font-weight:600;margin-top:6px;flex-shrink:0;}
+.q-texto{font-size:.92rem;color:var(--text-primary);line-height:1.6;font-weight:500;}
+.q-opcoes{display:flex;flex-direction:column;gap:.45rem;}
+.q-op{display:flex;align-items:flex-start;gap:.65rem;padding:.6rem .85rem;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);transition:all .2s;font-size:.85rem;color:var(--text-secondary);}
+.q-op:hover{background:rgba(56,189,248,.06);border-color:rgba(56,189,248,.2);}
+.q-letra{width:22px;height:22px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;margin-top:1px;}
+/* ── Dissertativas ── */
+.dissertativa{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;}
+.d-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--exam-blue-acc);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}
+.d-enunciado{font-size:.92rem;color:var(--text-primary);line-height:1.65;margin-bottom:1rem;padding:.85rem 1rem;border-radius:9px;background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.12);}
+/* ── Checklist interativo ── */
+.checklist-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.75rem 0;}
+.check-item{display:flex;align-items:flex-start;gap:.6rem;padding:.55rem .8rem;border-radius:8px;border:1px solid var(--card-border);background:var(--card-bg);cursor:pointer;transition:all .2s;}
+.check-item:hover{border-color:rgba(74,222,128,.3);}
+.check-item.checked{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.3);}
+.check-box{width:18px;height:18px;border-radius:4px;border:1px solid rgba(255,255,255,.2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .2s;}
+.check-item.checked .check-box{background:rgba(74,222,128,.3);border-color:#4ade80;color:#4ade80;}
+.check-label{font-size:.8rem;color:var(--text-secondary);line-height:1.45;}
+.check-item.checked .check-label{color:rgba(134,239,172,.8);}
+.progress-bar-wrap{margin:1rem 0;padding:1rem 1.25rem;border-radius:12px;background:var(--card-bg);border:1px solid var(--card-border);}
+.progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;}
+.progress-label span{font-size:.78rem;color:var(--text-secondary);}
+.progress-label strong{font-size:.82rem;color:var(--text-primary);}
+.progress-track{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border-radius:4px;transition:width .4s ease;}
+
+/* ── Instrução de prova ── */
+.prova-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
+.prova-etapa{border-radius:12px;padding:1.1rem;border:1px solid rgba(255,255,255,.07);background:var(--card-bg);}
+.prova-num{font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:800;color:rgba(56,189,248,.15);line-height:1;margin-bottom:.4rem;}
+.prova-titulo{font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:700;color:var(--exam-blue-acc);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;}
+.prova-texto{font-size:.8rem;color:var(--text-secondary);line-height:1.55;}
+
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(56,189,248,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.checklist-grid,.prova-grid{grid-template-columns:1fr;}
+}
+
+/* ── Versão do aluno ── */
+.q-op.selecionada{
+  background:rgba(56,189,248,.12);
+  border-color:rgba(56,189,248,.48);
+  color:var(--text-primary);
+  box-shadow:0 0 0 1px rgba(56,189,248,.08) inset;
+}
+.q-op.selecionada .q-letra{
+  outline:2px solid rgba(125,211,252,.45);
+  outline-offset:2px;
+}
+.respostas-progress{
+  margin-top:1rem;
+  padding:1rem 1.2rem;
+  border-radius:12px;
+  border:1px solid rgba(56,189,248,.18);
+  background:rgba(56,189,248,.05);
+  display:flex;
+  gap:1rem;
+  align-items:center;
+  justify-content:space-between;
+}
+.respostas-progress strong{
+  display:block;
+  color:var(--accent-300);
+  font-family:'Montserrat',sans-serif;
+  font-size:.9rem;
+  margin-bottom:3px;
+}
+.respostas-progress span{
+  display:block;
+  color:var(--text-secondary);
+  font-size:.78rem;
+}
+.btn-limpar{
+  flex-shrink:0;
+  background:none;
+  border:1px solid rgba(56,189,248,.25);
+  color:var(--accent-300);
+  padding:.55rem .9rem;
+  border-radius:8px;
+  cursor:pointer;
+  font-family:'Inter',sans-serif;
+  font-size:.76rem;
+}
+.btn-limpar:hover{background:rgba(56,189,248,.08);}
+.resposta-aluno{
+  margin-top:1rem;
+  padding:1rem;
+  border-radius:10px;
+  border:1px solid rgba(56,189,248,.16);
+  background:rgba(56,189,248,.035);
+}
+.resposta-label{
+  color:var(--accent-300);
+  font-family:'Montserrat',sans-serif;
+  font-size:.75rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  margin-bottom:.65rem;
+}
+.resposta-label i{margin-right:6px;}
+.resposta-aluno textarea{
+  width:100%;
+  resize:vertical;
+  min-height:150px;
+  background:rgba(0,0,0,.18);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:9px;
+  color:var(--text-primary);
+  padding:.85rem;
+  font-family:'Inter',sans-serif;
+  font-size:.86rem;
+  line-height:1.6;
+  outline:none;
+}
+.resposta-aluno textarea:focus{border-color:rgba(56,189,248,.45);}
+.resposta-aluno textarea::placeholder{color:var(--text-muted);}
+.autoavaliacao{
+  margin-top:.75rem;
+  font-size:.79rem;
+  color:var(--text-secondary);
+  line-height:1.55;
+}
+.autoavaliacao strong{color:var(--text-primary);}
+.autoavaliacao ul{margin:.4rem 0 0 1.1rem;}
+.autoavaliacao li{margin:.2rem 0;}
+@media(max-width:650px){
+  .respostas-progress{align-items:flex-start;flex-direction:column;}
+}
+</style>
+</head>
+<body>
+<!-- ═══ CAPA ════════════════════════════════════════════════════════════ -->
+<section class="capa" id="topo">
+<div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+<span class="tipo-badge">🔵 P1 · Versão do Aluno</span>
+<div class="capa-left">
+<div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+<div class="semana-num">06</div>
+<h1 class="capa-titulo"><em>Avaliação P1</em></h1>
+<p class="capa-sub">Semana de prova · Conteúdo das semanas 1 a 5</p>
+<div class="divider"></div>
+<p style="font-size:.85rem;color:var(--text-secondary);margin-bottom:1.25rem;">Esta página é o seu guia de preparação para a P1. Use a revisão, responda ao simulado sem consultar respostas prontas e utilize o checklist interativo para identificar os pontos que ainda precisam de estudo.</p>
+<div class="cobertura">
+<div class="cob-item"><div class="cob-num">S1</div><span>HTML5 semântico, CSS3 (flexbox, grid, variáveis) e JS ES6+</span></div>
+<div class="cob-item"><div class="cob-num">S2</div><span>React — componentes, props, estado com useState, listas</span></div>
+<div class="cob-item"><div class="cob-num">S3</div><span>React avançado — useEffect, Context API, React Router</span></div>
+<div class="cob-item"><div class="cob-num">S4</div><span>Consumindo APIs REST — fetch, async/await, Axios, .env</span></div>
+<div class="cob-item"><div class="cob-num">S5</div><span>APIs de IA — OpenAI, HuggingFace, autenticação, rate limits</span></div>
+</div>
+</div>
+<div class="capa-right">
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-clipboard-list"></i>Formato da P1</div>
+<ul class="info-lista">
+<li>Questões de múltipla escolha — conceito e análise de código</li>
+<li>Questões dissertativas — explicar decisões de arquitetura</li>
+<li>Componente prático — escrever ou completar código React com chamada de API</li>
+<li>Consulta: sem consulta (prova fechada)</li>
+</ul>
+</div>
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-star"></i>Temas mais importantes</div>
+<ul class="info-lista">
+<li>Diferença entre props e estado — quando usar cada um</li>
+<li>useEffect — dependências, cleanup e chamadas de API</li>
+<li>async/await com fetch — tratamento de erro correto</li>
+<li>Variáveis de ambiente — por que a chave da API não vai no código</li>
+<li>Rate limits e autenticação em APIs de IA — o que pode dar errado</li>
+</ul>
+</div>
+<div class="info-card">
+<div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Dica de ouro</div>
+<ul class="info-lista">
+<li>Leia o código antes de responder — erros de prop drilling, fetch sem async/await e chave de API exposta no front são armadilhas clássicas de prova</li>
+<li>Para cenários, pergunte: os dados são estáticos ou dinâmicos? Preciso compartilhar estado? É uma chamada que dispara uma vez ou fica observando algo?</li>
+<li>Saiba o fluxo completo: componente renderiza → useEffect dispara → fetch → setState → re-render</li>
+</ul>
+</div>
+</div>
+<div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+<span>começar a revisão</span><i class="fas fa-chevron-down"></i>
+</div>
+</section>
+<!-- ═══ CONTEÚDO ════════════════════════════════════════════════════════ -->
+<main class="conteudo" id="conteudo">
+<!-- ── REVISÃO RÁPIDA ────────────────────────────────────────────── -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">①</div>
+<div class="secao-info">
+<div class="secao-label">Revisão rápida</div>
+<div class="secao-titulo">Os 5 temas — pontos-chave e armadilhas comuns</div>
+</div>
+</div>
+<div class="grid-2">
+<div class="semana-card s1">
+<div class="s-titulo"><i class="fas fa-code"></i>Semana 1 — HTML/CSS/JS ES6+</div>
+<div class="s-item"><strong>HTML semântico:</strong> &lt;header&gt;, &lt;main&gt;, &lt;section&gt;, &lt;article&gt; — acessibilidade e SEO dependem disso</div>
+<div class="s-item"><strong>Flexbox:</strong> display:flex, justify-content, align-items, flex-wrap, gap</div>
+<div class="s-item"><strong>CSS Grid:</strong> grid-template-columns, fr, repeat(), auto-fill vs auto-fit</div>
+<div class="s-item"><strong>Variáveis CSS:</strong> --nome: valor; | var(--nome) — reutilização e temas</div>
+<div class="s-item"><strong>Arrow fn:</strong> const fn = (x) =&gt; x * 2 — this léxico (não cria próprio this)</div>
+<div class="s-item"><strong>Destructuring:</strong> const {nome, idade} = obj | const [a, b] = arr</div>
+<div class="s-item"><strong>Modules:</strong> import/export — organização e tree-shaking</div>
+<div class="s-armadilha">Armadilha: var tem escopo de função, let e const têm escopo de bloco. const não é imutável — impede reatribuição, mas o objeto pode mudar.</div>
+</div>
+<div class="semana-card s2">
+<div class="s-titulo"><i class="fab fa-react"></i>Semana 2 — React Básico</div>
+<div class="s-item"><strong>Componente funcional:</strong> função JS que retorna JSX — começa com letra maiúscula</div>
+<div class="s-item"><strong>JSX:</strong> HTML dentro de JS. className em vez de class, htmlFor em vez de for</div>
+<div class="s-item"><strong>Props:</strong> dados que o pai passa para o filho — somente leitura no filho</div>
+<div class="s-item"><strong>useState:</strong> const [valor, setValor] = useState(inicial) — re-render ao mudar</div>
+<div class="s-item"><strong>Listas:</strong> array.map(item =&gt; &lt;Li key={item.id}&gt;) — key obrigatória e única</div>
+<div class="s-item"><strong>Condicional:</strong> condição &amp;&amp; &lt;Comp&gt; | condição ? &lt;A&gt; : &lt;B&gt;</div>
+<div class="s-item"><strong>Eventos:</strong> onClick={fn} — não chame com () nas props (passa referência, não chama)</div>
+<div class="s-armadilha">Armadilha: onClick={fn()} executa na renderização e passa o resultado como handler. Correto: onClick={fn} ou onClick={() =&gt; fn(args)}.</div>
+</div>
+<div class="semana-card s3">
+<div class="s-titulo"><i class="fas fa-layer-group"></i>Semana 3 — React Avançado</div>
+<div class="s-item"><strong>useEffect:</strong> efeitos colaterais — chamadas de API, timers, listeners</div>
+<div class="s-item"><strong>Deps []:</strong> [] = roda uma vez | [valor] = roda quando valor muda | sem deps = todo render</div>
+<div class="s-item"><strong>Cleanup:</strong> return () =&gt; clearInterval(id) — evita memory leak em componentes desmontados</div>
+<div class="s-item"><strong>Lifting state:</strong> estado no pai, passado por props — fonte única de verdade</div>
+<div class="s-item"><strong>Context API:</strong> createContext → Provider → useContext — evita prop drilling</div>
+<div class="s-item"><strong>React Router:</strong> &lt;BrowserRouter&gt; → &lt;Routes&gt; → &lt;Route path="/x" element={&lt;X/&gt;}&gt;</div>
+<div class="s-item"><strong>useNavigate:</strong> navegar programaticamente; useParams: pegar :id da URL</div>
+<div class="s-armadilha">Armadilha: fetch dentro de useEffect sem array de dependências cria loop infinito se o resultado atualizar um estado que é dependência.</div>
+</div>
+<div class="semana-card s4">
+<div class="s-titulo"><i class="fas fa-plug"></i>Semana 4 — APIs REST</div>
+<div class="s-item"><strong>fetch básico:</strong> const res = await fetch(url); const data = await res.json();</div>
+<div class="s-item"><strong>POST com corpo:</strong> fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)})</div>
+<div class="s-item"><strong>Tratamento de erro:</strong> if (!res.ok) throw new Error(res.status) — res.ok cobre 2xx</div>
+<div class="s-item"><strong>async/await vs then:</strong> await é açúcar sintático sobre Promise — mais legível</div>
+<div class="s-item"><strong>Axios:</strong> axios.get(url).then() — serializa body automaticamente, lança erro em 4xx/5xx</div>
+<div class="s-item"><strong>.env:</strong> REACT_APP_KEY=... no .env | process.env.REACT_APP_KEY no código — nunca commitar</div>
+<div class="s-item"><strong>States de loading:</strong> isLoading, error, data — os 3 estados de qualquer fetch</div>
+<div class="s-armadilha">Armadilha: fetch não lança erro em 4xx/5xx — só em falha de rede. Cheque res.ok antes de chamar res.json().</div>
+</div>
+</div>
+<div class="semana-card s5">
+<div class="s-titulo"><i class="fas fa-robot"></i>Semana 5 — APIs de IA</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:.25rem 2rem;">
+<div class="s-item"><strong>OpenAI:</strong> POST /v1/chat/completions com model, messages (role + content)</div>
+<div class="s-item"><strong>HuggingFace:</strong> Inference API — POST com inputs no body, Authorization: Bearer TOKEN</div>
+<div class="s-item"><strong>Bearer token:</strong> Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`</div>
+<div class="s-item"><strong>Rate limit (429):</strong> muitas requisições — exponential backoff ou fila local</div>
+<div class="s-item"><strong>Chave no front:</strong> NUNCA hardcodar — .env e, em prod, proxy no servidor</div>
+<div class="s-item"><strong>Contexto de mensagens:</strong> array de {role, content} para memória de conversa</div>
+<div class="s-item"><strong>temperature:</strong> 0 = determinístico, 1 = criativo — controla aleatoriedade</div>
+<div class="s-item"><strong>max_tokens:</strong> limite de tokens na resposta — cuidado com custo e truncamento</div>
+</div>
+<div class="s-armadilha">Armadilha: expor a chave da OpenAI no código front-end a torna visível no DevTools para qualquer usuário. Em produção, a chamada à API de IA deve passar por um servidor/proxy que injeta a chave. Na P1, citar isso é diferencial.</div>
+</div>
+</section>
+<div class="sep"><span>Simulado — 12 questões</span></div>
+<!-- ── SIMULADO — VERSÃO DO ALUNO ─────────────────────────────── -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">②</div>
+<div class="secao-info">
+<div class="secao-label">Simulado</div>
+<div class="secao-titulo">12 questões de múltipla escolha — marque sua alternativa</div>
+</div>
+</div>
+<div class="aviso-exam">
+<i class="fas fa-stopwatch"></i>
+<span>Para simular a prova, responda às 12 questões sem consultar outros materiais. Você poderá alterar suas escolhas; esta versão não informa acertos nem revela respostas.</span>
+</div>
+<!-- Q1 -->
+<div class="questao">
+<div class="q-header">
+<div class="q-num">1</div>
+<span class="q-semana badge">Semana 1</span>
+<div class="q-texto">Qual a diferença entre <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">justify-content</code> e <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">align-items</code> no Flexbox?</div>
+</div>
+<div class="q-opcoes" id="q1-ops">
+<div class="q-op" onclick="selecionarResposta('q1', this, 'A')"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>justify-content alinha na vertical; align-items alinha na horizontal</div>
+<div class="q-op" onclick="selecionarResposta('q1', this, 'B')"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>justify-content distribui ao longo do eixo principal; align-items alinha no eixo cruzado</div>
+<div class="q-op" onclick="selecionarResposta('q1', this, 'C')"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>São sinônimos — ambos controlam o alinhamento horizontal dos filhos</div>
+<div class="q-op" onclick="selecionarResposta('q1', this, 'D')"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>justify-content só funciona com flex-direction: column; align-items só com row</div>
+</div>
+
+</div>
+<!-- Q2 -->
+<div class="questao">
+<div class="q-header">
+<div class="q-num">2</div>
+<span class="q-semana badge">Semana 1</span>
+<div class="q-texto">Um desenvolvedor usa <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">const usuario = {nome: 'Ana'}; usuario.nome = 'Carlos';</code>. Isso gera erro?</div>
+</div>
+<div class="q-opcoes" id="q2-ops">
+<div class="q-op" onclick="selecionarResposta('q2', this, 'A')"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Sim — const impede qualquer modificação no objeto</div>
+<div class="q-op" onclick="selecionarResposta('q2', this, 'B')"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Não — const impede reatribuição da variável, mas o conteúdo do objeto pode ser modificado</div>
+<div class="q-op" onclick="selecionarResposta('q2', this, 'C')"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Depende — só gera erro em modo strict</div>
+<div class="q-op" onclick="selecionarResposta('q2', this, 'D')"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Sim — seria necessário usar let para objetos mutáveis</div>
+</div>
+
+</div>
+<!-- Q3 -->
+<div class="questao">
+<div class="q-header">
+<div class="q-num">3</div>
+<span class="q-semana badge-green">Semana 2</span>
+<div class="q-texto">Analise o código: <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">&lt;button onClick={enviarMensagem()}&gt;Enviar&lt;/button&gt;</code>. O que acontece de errado?</div>
+</div>
+<div class="q-opcoes" id="q3-ops">
+<div class="q-op" onclick="selecionarResposta('q3', this, 'A')"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Nada — a sintaxe está correta e a função é chamada ao clicar</div>
+<div class="q-op" onclick="selecionarResposta('q3', this, 'B')"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>enviarMensagem() é chamada durante a renderização do componente, não no clique</div>
+<div class="q-op" onclick="selecionarResposta('q3', this, 'C')"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>O React não aceita funções com () — precisa de arrow function obrigatoriamente</div>
+<div class="q-op" onclick="selecionarResposta('q3', this, 'D')"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>onClick só aceita strings, não funções</div>
+</div>
+
+</div>
+<!-- Q4 -->
+<div class="questao">
+<div class="q-header">
+<div class="q-num">4</div>
+<span class="q-semana badge-green">Semana 2</span>
+<div class="q-texto">Um componente renderiza uma lista de produtos. Qual das opções abaixo causaria um aviso do React no console?</div>
+</div>
+<div class="q-opcoes" id="q4-ops">
+<div class="q-op" onclick="selecionarResposta('q4', this, 'A')"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>produtos.map(p =&gt; &lt;li key={p.id}&gt;{p.nome}&lt;/li&gt;)</div>
+<div class="q-op" onclick="selecionarResposta('q4', this, 'B')"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>produtos.map((p, i) =&gt; &lt;li key={i}&gt;{p.nome}&lt;/li&gt;) — quando a lista nunca muda de ordem</div>
+<div class="q-op" onclick="selecionarResposta('q4', this, 'C')"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>produtos.map(p =&gt; &lt;li&gt;{p.nome}&lt;/li&gt;) — sem a prop key</div>
+<div class="q-op" onclick="selecionarResposta('q4', this, 'D')"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>produtos.map(p =&gt; &lt;li key={`produto-${p.id}`}&gt;{p.nome}&lt;/li&gt;)</div>
+</div>
+
+</div>
+<!-- Q5 -->
+<div class="questao">
+<div class="q-header">
+<div class="q-num">5</div>
+<span class="q-semana badge-purple">Semana 3</span>
+<div class="q-texto">Qual useEffect roda apenas uma vez, logo após o componente ser montado?</div>
+</div>
+<div class="q-opcoes" id="q5-ops">
+<div class="q-op" onclick="selecionarResposta('q5', this, 'A')"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>useEffect(() =&gt; { buscarDados(); });</div>
+<div class="q-op" onclick="selecionarResposta('q5', this, 'B')"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>useEffect(() =&gt; { buscarDados(); }, []);</div>
+<div class="q-op" onclick="selecionarResposta('q5', this, 'C')"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>useEffect(() =&gt; { buscarDados(); }, [buscarDados]);</div>
+<div class="q-op" onclick="selecionarResposta('q5', this, 'D')"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>useEffect(buscarDados, null);</div>
+</div>
+
+</div>
+<!-- Q6 -->
+<div class="questao">
+<div class="q-header">
+<div class="q-num">6</div>
+<span class="q-semana badge-purple">Semana 3</span>
+<div class="q-texto">Um componente A precisa compartilhar um estado com um componente B que está 4 níveis abaixo na árvore. Qual é a melhor abordagem?</div>
+</div>
+<div class="q-opcoes" id="q6-ops">
+<div class="q-op" onclick="selecionarResposta('q6', this, 'A')"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Passar o estado por props em cada um dos 4 níveis intermediários</div>
+<div class="q-op" onclick="selecionarResposta('q6', this, 'B')"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Usar Context API — criar um contexto no componente A e consumir com useContext no componente B</div>
+<div class="q-op" onclick="selecionarResposta('q6', this, 'C')"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Armazenar o estado em localStorage e ler em B com useEffect</div>
+<div class="q-op" onclick="selecionarResposta('q6', this, 'D')"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>O React não suporta compartilhamento de estado entre componentes distantes</div>
+</div>
+
+</div>
+<!-- Q7 -->
+<div class="questao">
+<div class="q-header">
+<div class="q-num">7</div>
+<span class="q-semana badge-orange">Semana 4</span>
+<div class="q-texto">Um fetch retorna status 404. O código abaixo trata isso corretamente?<br/><code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.06);padding:4px 8px;border-radius:6px;font-size:.8rem;display:block;margin-top:.5rem;">const res = await fetch(url);<br/>const data = await res.json();<br/>console.log(data);</code></div>
+</div>
+<div class="q-opcoes" id="q7-ops">
+<div class="q-op" onclick="selecionarResposta('q7', this, 'A')"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Sim — fetch lança uma exceção automática em status 4xx</div>
+<div class="q-op" onclick="selecionarResposta('q7', this, 'B')"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Não — fetch só lança erro em falha de rede. Status 404 precisa ser verificado com res.ok ou res.status</div>
+<div class="q-op" onclick="selecionarResposta('q7', this, 'C')"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Sim — res.json() lança erro se a resposta não for JSON válido com status 200</div>
+<div class="q-op" onclick="selecionarResposta('q7', this, 'D')"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Sim — o console.log vai exibir undefined, o que conta como tratamento de erro</div>
+</div>
+
+</div>
+<!-- Q8 -->
+<div class="questao">
+<div class="q-header">
+<div class="q-num">8</div>
+<span class="q-semana badge-orange">Semana 4</span>
+<div class="q-texto">Por que variáveis de ambiente como a chave de API ficam em um arquivo <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">.env</code> e esse arquivo não deve ser commitado no Git?</div>
+</div>
+<div class="q-opcoes" id="q8-ops">
+<div class="q-op" onclick="selecionarResposta('q8', this, 'A')"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Por razões de performance — variáveis de ambiente são carregadas mais rápido do que constantes no código</div>
+<div class="q-op" onclick="selecionarResposta('q8', this, 'B')"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>O React só consegue ler variáveis que estão em arquivos .env — não é possível hardcodar</div>
+<div class="q-op" onclick="selecionarResposta('q8', this, 'C')"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Segurança — chaves hardcodadas no repositório ficam expostas em histórico de commits público, comprometendo credenciais</div>
+<div class="q-op" onclick="selecionarResposta('q8', this, 'D')"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>É apenas uma convenção — não há risco real em commitar chaves de APIs gratuitas</div>
+</div>
+
+</div>
+<!-- Q9 -->
+<div class="questao">
+<div class="q-header">
+<div class="q-num">9</div>
+<span class="q-semana badge-yellow">Semana 5</span>
+<div class="q-texto">Ao chamar a API da OpenAI, o array de mensagens enviado no body tem a seguinte estrutura: <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">[{role, content}]</code>. Por que é necessário incluir as mensagens anteriores em cada nova requisição?</div>
+</div>
+<div class="q-opcoes" id="q9-ops">
+<div class="q-op" onclick="selecionarResposta('q9', this, 'A')"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Para reduzir o custo — enviar contexto diminui o número de tokens cobrados</div>
+<div class="q-op" onclick="selecionarResposta('q9', this, 'B')"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>A API é stateless — cada requisição é independente e o modelo não lembra conversas anteriores</div>
+<div class="q-op" onclick="selecionarResposta('q9', this, 'C')"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>É um requisito técnico do protocolo HTTP — sem o histórico a requisição retorna 400</div>
+<div class="q-op" onclick="selecionarResposta('q9', this, 'D')"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Para que o modelo possa treinar com as novas mensagens em tempo real</div>
+</div>
+
+</div>
+<!-- Q10 -->
+<div class="questao">
+<div class="q-header">
+<div class="q-num">10</div>
+<span class="q-semana badge-yellow">Semana 5</span>
+<div class="q-texto">A API de IA retorna status 429. O que significa e qual a melhor resposta do front-end?</div>
+</div>
+<div class="q-opcoes" id="q10-ops">
+<div class="q-op" onclick="selecionarResposta('q10', this, 'A')"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Erro de autenticação — a chave de API está incorreta ou expirou</div>
+<div class="q-op" onclick="selecionarResposta('q10', this, 'B')"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Erro de servidor — a API de IA está fora do ar</div>
+<div class="q-op" onclick="selecionarResposta('q10', this, 'C')"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Rate limit atingido — muitas requisições em pouco tempo. O front-end deve aguardar e tentar novamente (backoff) e informar o usuário</div>
+<div class="q-op" onclick="selecionarResposta('q10', this, 'D')"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Payload grande demais — o corpo da requisição excedeu o limite</div>
+</div>
+
+</div>
+<!-- Q11 -->
+<div class="questao">
+<div class="q-header">
+<div class="q-num">11</div>
+<span class="q-semana badge-purple">Semana 3</span>
+<div class="q-texto">Um componente de timer usa setInterval dentro de um useEffect mas não retorna uma função de cleanup. Qual é o problema?</div>
+</div>
+<div class="q-opcoes" id="q11-ops">
+<div class="q-op" onclick="selecionarResposta('q11', this, 'A')"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Nenhum — setInterval para automaticamente quando o componente desmonta</div>
+<div class="q-op" onclick="selecionarResposta('q11', this, 'B')"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Memory leak — o interval continua rodando mesmo após o componente desmontar, podendo atualizar estados de componentes que não existem mais</div>
+<div class="q-op" onclick="selecionarResposta('q11', this, 'C')"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>O componente não renderizará — useEffect com setInterval sem cleanup lança erro em tempo de execução</div>
+<div class="q-op" onclick="selecionarResposta('q11', this, 'D')"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>O timer roda apenas uma vez, ignorando o intervalo configurado</div>
+</div>
+
+</div>
+<!-- Q12 -->
+<div class="questao">
+<div class="q-header">
+<div class="q-num">12</div>
+<span class="q-semana badge-yellow">Semana 5</span>
+<div class="q-texto">Um aluno coloca a chave da API OpenAI diretamente no código React: <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;">const KEY = 'sk-...'</code>. Em produção, onde essa chave fica visível para qualquer pessoa?</div>
+</div>
+<div class="q-opcoes" id="q12-ops">
+<div class="q-op" onclick="selecionarResposta('q12', this, 'A')"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Em nenhum lugar — o código React é compilado e ofuscado no build</div>
+<div class="q-op" onclick="selecionarResposta('q12', this, 'B')"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>No bundle JavaScript gerado pelo build, visível nas ferramentas de desenvolvedor do navegador (DevTools → Sources)</div>
+<div class="q-op" onclick="selecionarResposta('q12', this, 'C')"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Apenas no servidor — o cliente nunca recebe o código-fonte</div>
+<div class="q-op" onclick="selecionarResposta('q12', this, 'D')"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Só é visível com acesso ao repositório Git do projeto</div>
+</div>
+
+</div>
+<!-- Score -->
+
+<div style="text-align:center;margin-top:1rem;">
+<button onclick="calcScore()" onmouseout="this.style.background='rgba(56,189,248,.15)'" onmouseover="this.style.background='rgba(56,189,248,.25)'" style="background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.3);color:var(--exam-blue-acc);padding:.7rem 2rem;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;transition:background .2s;">
+<i class="fas fa-calculator" style="margin-right:8px;"></i>Ver meu score
+      </button>
+</div>
+</section>
+<div class="sep"><span>Questões Dissertativas</span></div>
+<!-- ── DISSERTATIVAS — VERSÃO DO ALUNO ─────────────────────────── -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">③</div>
+<div class="secao-info">
+<div class="secao-label">Questões dissertativas</div>
+<div class="secao-titulo">4 questões abertas — desenvolva sua própria resposta</div>
+</div>
+</div>
+<div class="dissertativa">
+<div class="d-num">Questão Dissertativa 1 — Semanas 2 e 3</div>
+<div class="d-enunciado">Explique a diferença entre props e estado (state) no React. Quando você escolheria usar um e quando escolheria usar o outro? Dê um exemplo concreto de cada situação.</div>
+
+
+
+<div class="resposta-aluno">
+<div class="resposta-label"><i class="fas fa-pen"></i> Sua resposta</div>
+<textarea placeholder="Escreva aqui sua resposta antes de comparar com anotações ou materiais de estudo." rows="8"></textarea>
+<div class="autoavaliacao">
+<strong>Antes de concluir, confira:</strong>
+<ul><li>Defina os dois conceitos com suas próprias palavras.</li><li>Explique quando cada um é adequado.</li><li>Inclua pelo menos um exemplo concreto de cada caso.</li></ul>
+</div>
+</div>
+</div>
+<div class="dissertativa">
+<div class="d-num">Questão Dissertativa 2 — Semanas 3 e 4</div>
+<div class="d-enunciado">Escreva um componente React chamado BuscaUsuario que, ao montar, busca os dados de um usuário em https://api.exemplo.com/usuarios/1, exibe um indicador de carregamento enquanto aguarda, mostra os dados ao receber a resposta e exibe uma mensagem de erro caso a requisição falhe. Explique cada decisão técnica.</div>
+
+
+
+<div class="resposta-aluno">
+<div class="resposta-label"><i class="fas fa-pen"></i> Sua resposta</div>
+<textarea placeholder="Escreva aqui sua resposta antes de comparar com anotações ou materiais de estudo." rows="8"></textarea>
+<div class="autoavaliacao">
+<strong>Antes de concluir, confira:</strong>
+<ul><li>Apresente a estrutura do componente.</li><li>Considere carregamento, sucesso e falha da requisição.</li><li>Explique por que cada recurso do React foi utilizado.</li></ul>
+</div>
+</div>
+</div>
+<div class="dissertativa">
+<div class="d-num">Questão Dissertativa 3 — Semana 5</div>
+<div class="d-enunciado">Você está construindo um chatbot no front-end com a API da OpenAI. Descreva: (a) como estruturar as mensagens para manter o contexto da conversa, (b) por que a chave de API não deve ficar no código React, e (c) o que acontece quando a API retorna status 429 e como tratar.</div>
+
+
+
+<div class="resposta-aluno">
+<div class="resposta-label"><i class="fas fa-pen"></i> Sua resposta</div>
+<textarea placeholder="Escreva aqui sua resposta antes de comparar com anotações ou materiais de estudo." rows="8"></textarea>
+<div class="autoavaliacao">
+<strong>Antes de concluir, confira:</strong>
+<ul><li>Responda separadamente aos itens (a), (b) e (c).</li><li>Explique o fluxo da conversa e da requisição.</li><li>Inclua os cuidados de segurança e tratamento de falhas.</li></ul>
+</div>
+</div>
+</div>
+<div class="dissertativa">
+<div class="d-num">Questão Dissertativa 4 — Semanas 1, 2 e 4</div>
+<div class="d-enunciado">Projete um componente React chamado ListaPosts que busca posts de uma API pública (ex: JSONPlaceholder), permite filtrar por título digitado em um input e exibe os resultados em cards responsivos com CSS Grid. Descreva as decisões de estado, o ciclo de vida da busca e a estrutura CSS.</div>
+
+
+
+<div class="resposta-aluno">
+<div class="resposta-label"><i class="fas fa-pen"></i> Sua resposta</div>
+<textarea placeholder="Escreva aqui sua resposta antes de comparar com anotações ou materiais de estudo." rows="8"></textarea>
+<div class="autoavaliacao">
+<strong>Antes de concluir, confira:</strong>
+<ul><li>Organize a solução antes de escrever o código.</li><li>Justifique as escolhas de HTML/CSS/React/API.</li><li>Verifique se sua proposta atende a todos os requisitos do enunciado.</li></ul>
+</div>
+</div>
+</div>
+</section>
+<div class="sep"><span>Instrução para a Prova</span></div>
+<!-- ── INSTRUÇÃO PROVA ──────────────────────────────────────────────── -->
+<section class="secao">
+<div class="secao-header">
+<div class="secao-num">④</div>
+<div class="secao-info">
+<div class="secao-label">Aula 3 · Instrução</div>
+<div class="secao-titulo">Como a P1 funciona — formato, critérios e estratégia</div>
+</div>
+</div>
+<div class="aviso-orange">
+<i class="fas fa-exclamation-triangle"></i>
+<span><strong>Atenção:</strong> a P1 é prova fechada — sem consulta a código, anotações ou dispositivos. O que vale é o que você internalizou. Use esse guia para identificar e fechar as lacunas antes da prova.</span>
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-tasks"></i>Formato e critérios de correção</div>
+<div class="tabela-wrap">
+<table>
+<thead><tr><th>Parte</th><th>Tipo</th><th>O que é avaliado</th></tr></thead>
+<tbody>
+<tr><td><strong>Parte 1</strong></td><td>Múltipla escolha</td><td>Reconhecimento de conceitos, leitura de código, identificação de erros</td></tr>
+<tr><td><strong>Parte 2</strong></td><td>Dissertativa</td><td>Capacidade de explicar, comparar e justificar escolhas técnicas com termos corretos</td></tr>
+<tr><td><strong>Parte 3</strong></td><td>Prática de código</td><td>Escrever ou completar um componente React funcional com chamada de API</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="card">
+<div class="card-titulo"><i class="fas fa-route"></i>Estratégia para a parte prática</div>
+<div class="prova-grid">
+<div class="prova-etapa">
+<div class="prova-num">01</div>
+<div class="prova-titulo">Leia o enunciado completo</div>
+<div class="prova-texto">Antes de escrever uma linha, entenda o que o componente precisa fazer. Identifique: quais dados ele exibe, o que dispara a busca, se há interação do usuário, quais estados são necessários.</div>
+</div>
+<div class="prova-etapa">
+<div class="prova-num">02</div>
+<div class="prova-titulo">Declare os estados primeiro</div>
+<div class="prova-texto">Antes de escrever o JSX, liste os useState necessários. Dado dinâmico de API → estado. Input do usuário → estado. Loading e erro → sempre. Dados derivados de estados → calcule na hora, não crie novo estado.</div>
+</div>
+<div class="prova-etapa">
+<div class="prova-num">03</div>
+<div class="prova-titulo">useEffect antes do return</div>
+<div class="prova-texto">Se o componente busca dados ao montar, escreva o useEffect com função async interna, try/catch/finally e array de deps [] após os estados. Não esqueça de verificar res.ok antes de chamar res.json().</div>
+</div>
+<div class="prova-etapa">
+<div class="prova-num">04</div>
+<div class="prova-titulo">JSX limpo e legível</div>
+<div class="prova-texto">Condicionais primeiro: if (carregando) return ... | if (erro) return ... — evita lógica dentro do JSX principal. Use componentes pequenos se o enunciado pedir. key={item.id} em toda lista.</div>
+</div>
+</div>
+</div>
+<div class="sep"><span>Checklist de Preparação</span></div>
+<!-- ── CHECKLIST ── -->
+<div class="secao-header" style="margin-top:2rem;">
+<div class="secao-num">⑤</div>
+<div class="secao-info">
+<div class="secao-label">Checklist interativo</div>
+<div class="secao-titulo">Marque o que você já domina — clique para marcar</div>
+</div>
+</div>
+<div class="progress-bar-wrap">
+<div class="progress-label">
+<span>Progresso de revisão</span>
+<strong id="progress-text">0 / 20 conceitos</strong>
+</div>
+<div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%;"></div></div>
+</div>
+<div class="checklist-grid" id="checklist">
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei a diferença entre elementos semânticos e genéricos (div/span)</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Consigo usar Flexbox e CSS Grid sem consultar documentação</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei a diferença entre var, let e const (escopo e reatribuição)</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Uso destructuring e arrow functions com naturalidade</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei criar um componente React funcional que retorna JSX</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Entendo a diferença entre props (leitura) e estado (mutável)</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei o comportamento de onClick={fn} vs onClick={fn()} — a armadilha clássica</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei renderizar uma lista com map e a obrigatoriedade do key</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Entendo as deps do useEffect: [], [valor] e sem deps</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei fazer cleanup no useEffect (clearInterval, removeEventListener)</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei quando usar Context API vs lifting state</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Consigo configurar rotas com React Router (Route, useNavigate, useParams)</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Faço fetch com async/await e verifico res.ok antes de res.json()</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Modelo os 3 estados de uma chamada: carregando, sucesso, erro</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei a diferença de comportamento entre fetch e Axios em erros HTTP</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei usar .env e process.env.REACT_APP_* para variáveis de ambiente</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Entendo a estrutura {role, content} das mensagens para APIs de LLM</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei por que a API de IA precisa de histórico completo a cada requisição</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei o que é rate limit (429) e como o front-end deve reagir</div></div>
+<div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei explicar por que a chave de API não pode ficar no bundle React</div></div>
+</div>
+<div class="aviso-green" style="margin-top:1.25rem;">
+<i class="fas fa-check-circle"></i>
+<span><strong>Dica de estudo:</strong> para cada item não marcado, abra o VS Code e escreva um mini-componente que demonstra exatamente aquele conceito. Digitar código — mesmo que simples — ativa uma memória diferente da leitura. 10 minutos de prática valem mais que 1 hora relendo o slide.</span>
+</div>
+<div class="card" style="margin-top:1.5rem;">
+<div class="card-titulo"><i class="fas fa-star"></i>Dicas para a prova prática</div>
+<div class="grid-3" style="margin-top:.75rem;">
+<div style="border-radius:12px;padding:1rem;border:1px solid rgba(255,255,255,.07);background:var(--card-bg);">
+<div style="font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:800;color:rgba(56,189,248,.15);line-height:1;margin-bottom:.4rem;">01</div>
+<div style="font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:700;color:var(--exam-blue-acc);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;">Pseudocódigo primeiro</div>
+<div style="font-size:.8rem;color:var(--text-secondary);line-height:1.55;">Antes de escrever JSX, escreva em comentários o que cada trecho faz. Ajuda a estruturar antes de se perder em sintaxe.</div>
+</div>
+<div style="border-radius:12px;padding:1rem;border:1px solid rgba(255,255,255,.07);background:var(--card-bg);">
+<div style="font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:800;color:rgba(56,189,248,.15);line-height:1;margin-bottom:.4rem;">02</div>
+<div style="font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:700;color:var(--exam-blue-acc);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;">Palavras-chave da questão</div>
+<div style="font-size:.8rem;color:var(--text-secondary);line-height:1.55;">"Ao montar" → useEffect + []. "Estado compartilhado" → Context. "Ao clicar" → onClick. "Lista" → map + key. Sublinhe antes de começar.</div>
+</div>
+<div style="border-radius:12px;padding:1rem;border:1px solid rgba(255,255,255,.07);background:var(--card-bg);">
+<div style="font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:800;color:rgba(56,189,248,.15);line-height:1;margin-bottom:.4rem;">03</div>
+<div style="font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:700;color:var(--exam-blue-acc);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;">Código incompleto pontua</div>
+<div style="font-size:.8rem;color:var(--text-secondary);line-height:1.55;">Se travar no JSX, escreva o useEffect e os estados com comentários explicando o que faria. Demonstrar raciocínio vale pontos mesmo sem código compilável.</div>
+</div>
+</div>
+</div>
+</section>
+<div class="proxima" onclick="window.location.href='semana-07-frontend.html'">
+<div>
+<div class="proxima-label">Após a P1 · Semana 7</div>
+<div class="proxima-titulo">Semana 7 — Streaming de respostas de IA: Server-Sent Events, WebSocket e efeito de digitação token a token</div>
+</div>
+<i class="fas fa-arrow-right"></i>
+</div>
+</main>
+<script>
+const respostasAluno = {};
+
+function selecionarResposta(qId, el, letra){
+  const ops = document.getElementById(qId + '-ops');
+  if(!ops) return;
+
+  ops.querySelectorAll('.q-op').forEach(op => op.classList.remove('selecionada'));
+  el.classList.add('selecionada');
+  respostasAluno[qId] = letra;
+  atualizarRespostasMarcadas();
+}
+
+function atualizarRespostasMarcadas(){
+  const total = document.querySelectorAll('.questao').length;
+  const marcadas = Object.keys(respostasAluno).length;
+  const el = document.getElementById('respostas-marcadas');
+  if(el) el.textContent = `${marcadas} / ${total} respondidas`;
+}
+
+function limparRespostas(){
+  Object.keys(respostasAluno).forEach(k => delete respostasAluno[k]);
+  document.querySelectorAll('.q-op.selecionada').forEach(op => op.classList.remove('selecionada'));
+  atualizarRespostasMarcadas();
+}
+
+function toggleCheck(el){
+  el.classList.toggle('checked');
+  if(el.classList.contains('checked')) el.querySelector('.check-box').innerHTML='✓';
+  else el.querySelector('.check-box').innerHTML='';
+  updateProgress();
+}
+
+function updateProgress(){
+  const total=document.querySelectorAll('.check-item').length;
+  const checked=document.querySelectorAll('.check-item.checked').length;
+  const pct=total ? Math.round(checked/total*100) : 0;
+  const fill=document.getElementById('progress-fill');
+  const text=document.getElementById('progress-text');
+  if(fill) fill.style.width=pct+'%';
+  if(text) text.textContent=`${checked} / ${total} conceitos`;
+}
+</script>
+</body>
+</html>
