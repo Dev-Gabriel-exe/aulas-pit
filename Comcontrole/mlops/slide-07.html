@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 07 — MLOps · Tecnólogo</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --purple-950:#1a0a2e;--purple-900:#2e1065;--purple-800:#4c1d95;
+  --purple-700:#6d28d9;--purple-500:#8b5cf6;--purple-400:#a78bfa;--purple-300:#c4b5fd;
+  --white:#ffffff;
+  --text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.6);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(167,139,250,.06);
+  --code-bg:#0d0520;--code-border:rgba(167,139,250,.22);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--purple-950);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ── CAPA ─────────────────────────────────────────────────────── */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:var(--purple-800);top:-220px;left:-180px;}
+.blob-2{width:550px;height:550px;background:var(--purple-900);bottom:-200px;right:-120px;}
+.blob-3{width:300px;height:300px;background:var(--purple-700);top:40%;left:40%;opacity:.15;}
+
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(167,139,250,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--purple-400);border:1px solid rgba(167,139,250,.25);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--purple-400);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(167,139,250,.1);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--purple-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--purple-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.12);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(167,139,250,.18);color:var(--purple-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(167,139,250,.05);border-left:3px solid var(--purple-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--purple-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--purple-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--purple-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.25);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ── CONTEÚDO ────────────────────────────────────────────────── */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(167,139,250,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(167,139,250,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--purple-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(167,139,250,.2);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--purple-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(167,139,250,.07);border-left:3px solid var(--purple-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.6;}
+.destaque strong{color:var(--purple-400);}
+
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(167,139,250,.12);}
+th{padding:.6rem 1rem;text-align:left;color:var(--purple-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(167,139,250,.2);}
+td{padding:.6rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(167,139,250,.04);}
+
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(167,139,250,.08);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--purple-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;cursor:pointer;background:none;border:none;color:var(--text-muted);letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--purple-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#ddd6fe;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#4b5563;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.var{color:#6ee7b7;}.flag{color:#fdba74;}.dec{color:#fdba74;}
+
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--purple-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(167,139,250,.12);color:var(--purple-400);border:1px solid rgba(167,139,250,.2);}
+
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.2);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+
+/* pipeline diagram */
+.pipeline{display:flex;align-items:stretch;gap:0;margin:1rem 0;border:1px solid rgba(167,139,250,.15);border-radius:12px;overflow:hidden;}
+.pipeline-step{flex:1;padding:1rem;border-right:1px solid rgba(167,139,250,.1);}
+.pipeline-step:last-child{border-right:none;}
+.pipeline-step h4{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--purple-400);margin-bottom:.4rem;display:flex;align-items:center;gap:6px;}
+.pipeline-step p{font-size:.76rem;color:var(--text-muted);line-height:1.45;}
+.pipeline-step .files{margin-top:.5rem;display:flex;flex-direction:column;gap:.2rem;}
+.pipeline-step .files span{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);background:rgba(255,255,255,.05);padding:1px 6px;border-radius:4px;display:inline-block;}
+
+/* comp table metaflow vs mlflow */
+.comp-row td:first-child{color:var(--text-primary);font-weight:500;}
+
+/* exercícios */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--purple-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.exercicio .dificuldade{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;}
+.dif-basico{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(167,139,250,.2);border-radius:8px;padding:.5rem 1rem;color:var(--purple-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(167,139,250,.08);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--purple-400);margin-bottom:.5rem;display:block;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.2);margin-top:3rem;text-decoration:none;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.35);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--purple-400);margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:var(--purple-400);}
+
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(167,139,250,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+.nav-anterior{display:inline-flex;align-items:center;gap:8px;font-size:.75rem;color:var(--text-muted);text-decoration:none;padding:.4rem .9rem;border-radius:8px;border:1px solid rgba(255,255,255,.07);margin-bottom:2rem;transition:color .2s,border-color .2s;}
+.nav-anterior:hover{color:var(--purple-400);border-color:rgba(167,139,250,.2);}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2{grid-template-columns:1fr;}
+  .resumo-grid{grid-template-columns:1fr 1fr;}
+  .pipeline{flex-direction:column;}
+  .pipeline-step{border-right:none;border-bottom:1px solid rgba(167,139,250,.1);}
+  .pipeline-step:last-child{border-bottom:none;}
+}
+</style>
+</head>
+<body>
+
+<section class="capa">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">📚 Conteúdo</span>
+
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>MLOps · Tecnólogo · 3° Período</div>
+    <div class="semana-num">07</div>
+    <h1 class="capa-titulo">Pipelines de ML<br><em>Automatizados</em></h1>
+    <p class="capa-sub">3 aulas · 150 minutos · Do script isolado ao pipeline reproduzível</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-question-circle"></i></div><span>O problema dos scripts isolados — por que pipelines importam</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-project-diagram"></i></div><span>Anatomia de um pipeline de ML — etapas e dependências</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-layer-group"></i></div><span>MLflow Pipelines — estrutura de projeto e execução</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-water"></i></div><span>Metaflow — steps, flows e rastreamento nativo</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-terminal"></i></div><span>Prática: construir pipeline end-to-end para dataset tabular</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade Prática</div>
+      <p>Construir um pipeline MLflow end-to-end: pré-processamento → treino → avaliação → registro no Model Registry.</p>
+    </div>
+  </div>
+
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-exclamation-triangle"></i>O problema que pipelines resolvem</div>
+      <ul class="info-lista">
+        <li>Scripts soltos não têm ordem garantida de execução</li>
+        <li>Sem pipeline, qualquer etapa pode ser pulada por acidente</li>
+        <li>Impossível saber qual versão de cada script gerou qual resultado</li>
+        <li>Re-executar o experimento inteiro exige documentação manual</li>
+        <li>Pipeline = ordem + dependências + rastreamento automático</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-balance-scale"></i>MLflow Pipelines vs Metaflow</div>
+      <ul class="info-lista">
+        <li><strong>MLflow Pipelines:</strong> integrado ao ecossistema MLflow, template-based, simples</li>
+        <li><strong>Metaflow:</strong> criado pelo Netflix, mais flexível, escala para cloud nativa</li>
+        <li>Esta semana: MLflow Pipelines em profundidade + intro ao Metaflow</li>
+        <li>Semana 12: Airflow para orquestração de DAGs em produção</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>Setup desta semana</div>
+      <ul class="info-lista">
+        <li><code style="font-size:.8rem;">pip install mlflow[pipelines]</code></li>
+        <li><code style="font-size:.8rem;">pip install metaflow</code></li>
+        <li>Projeto das semanas anteriores em mãos</li>
+        <li>MLflow server rodando localmente</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="scroll-hint"><span>role para o conteúdo</span><i class="fas fa-chevron-down"></i></div>
+</section>
+
+<main class="conteudo">
+
+  <a class="nav-anterior" href="semana-06-mlops.html"><i class="fas fa-arrow-left"></i> Semana 6 — Revisão P1</a>
+
+  <!-- ── AULA 1: Por que pipelines + anatomia ──────────────────────── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">Por que Pipelines — e a Anatomia de um Pipeline de ML</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-bomb"></i>O problema dos scripts isolados</div>
+      <p>Você já trabalhou com um projeto que tinha essa estrutura?</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Estrutura caótica sem pipeline</span></div>
+        <pre><code>projeto/
+├── 01_limpar_dados.py         <span class="cm"># mas precisa rodar o 00 antes?</span>
+├── 02_features.py             <span class="cm"># usa qual versão dos dados limpos?</span>
+├── treinar_FINAL.py           <span class="cm"># não numerado — quando rodar?</span>
+├── treinar_v2_usar_esse.py    <span class="cm"># qual é o atual mesmo?</span>
+├── avaliar.py                 <span class="cm"># avalia qual modelo?</span>
+└── notebook_exploratorio.ipynb <span class="cm"># tem código de prod aqui também</span></code></pre>
+      </div>
+      <p>Esse padrão é comum e perigoso. Os problemas reais que ele causa:</p>
+      <ul class="icon-list">
+        <li><i class="fas fa-exclamation-triangle"></i><span><strong>Ordem implícita:</strong> a sequência correta de execução está na cabeça de quem escreveu — não no código. Novo membro do time descobre na hora errada.</span></li>
+        <li><i class="fas fa-exclamation-triangle"></i><span><strong>Dependências invisíveis:</strong> <code style="font-size:.83rem;">treinar.py</code> depende do output de <code style="font-size:.83rem;">features.py</code>, mas nada no código expressa isso. Se features.py for atualizado e treinar.py não for re-executado, o modelo usa features antigas.</span></li>
+        <li><i class="fas fa-exclamation-triangle"></i><span><strong>Sem cache:</strong> toda re-execução começa do zero — incluindo etapas que não mudaram. Limpeza de 2GB de dados sendo refeita porque alguém mudou um hiperparâmetro de treino.</span></li>
+        <li><i class="fas fa-exclamation-triangle"></i><span><strong>Sem rastreamento de etapas:</strong> você sabe a acurácia final, mas não sabe quanto tempo cada etapa levou, se houve erro silencioso na limpeza, ou qual versão do feature engineering foi usada.</span></li>
+      </ul>
+      <div class="destaque">
+        <strong>Um pipeline resolve tudo isso:</strong> define ordem explicitamente, rastreia dependências, usa cache inteligente, registra métricas de cada etapa e garante que o mesmo processo pode ser re-executado por qualquer pessoa em qualquer máquina.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-project-diagram"></i>Anatomia de um pipeline de ML</div>
+      <p>Todo pipeline de ML em produção tem as mesmas etapas fundamentais, mesmo que implementadas com ferramentas diferentes:</p>
+
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <h4><i class="fas fa-database"></i> 1. Ingestão</h4>
+          <p>Carregar dados brutos da fonte (BD, S3, API)</p>
+          <div class="files">
+            <span>data/raw/</span>
+            <span>src/ingest.py</span>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <h4><i class="fas fa-broom"></i> 2. Limpeza</h4>
+          <p>Tratar nulos, outliers, tipos incorretos</p>
+          <div class="files">
+            <span>data/processed/</span>
+            <span>src/clean.py</span>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <h4><i class="fas fa-wrench"></i> 3. Features</h4>
+          <p>Encoding, normalização, feature engineering</p>
+          <div class="files">
+            <span>data/features/</span>
+            <span>src/features.py</span>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <h4><i class="fas fa-brain"></i> 4. Treino</h4>
+          <p>Treinar, ajustar, logar métricas no MLflow</p>
+          <div class="files">
+            <span>models/</span>
+            <span>src/train.py</span>
+          </div>
+        </div>
+        <div class="pipeline-step">
+          <h4><i class="fas fa-chart-bar"></i> 5. Avaliação</h4>
+          <p>Validar, comparar com baseline, decidir promoção</p>
+          <div class="files">
+            <span>metrics/</span>
+            <span>src/evaluate.py</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="destaque">
+        <strong>Princípio fundamental:</strong> cada etapa deve ter inputs e outputs explícitos e imutáveis. A etapa de treino não deve modificar os dados de features — ela apenas lê. A etapa de avaliação não deve retreinar — ela apenas avalia. Esse isolamento é o que permite cache, paralelização e rastreamento confiável.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-balance-scale"></i>Ferramentas para pipelines de ML — panorama</div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Ferramenta</th><th>Abordagem</th><th>Melhor para</th><th>Integração</th></tr></thead>
+          <tbody>
+            <tr><td><strong>DVC Pipelines</strong></td><td>dvc.yaml declarativo</td><td>Pipelines simples, já usa DVC</td><td>Git + qualquer storage</td></tr>
+            <tr><td><strong>MLflow Pipelines</strong></td><td>Templates Python estruturados</td><td>Times que já usam MLflow</td><td>MLflow Tracking nativo</td></tr>
+            <tr><td><strong>Metaflow</strong></td><td>Decoradores Python (@step)</td><td>Pipelines com escala em cloud</td><td>AWS/GCP/Azure nativo</td></tr>
+            <tr><td><strong>Airflow</strong></td><td>DAGs Python agendados</td><td>Orquestração de produção</td><td>Qualquer sistema</td></tr>
+            <tr><td><strong>Prefect / Kedro</strong></td><td>Decorator ou config</td><td>Modernos, observabilidade</td><td>Cloud-agnostic</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Esta semana focamos em <strong>MLflow Pipelines</strong> (integração direta com o que já aprendemos) e fazemos a introdução ao <strong>Metaflow</strong> (padrão Netflix, muito usado na indústria).</p>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2: MLflow Pipelines ──────────────────────────────────── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">MLflow Pipelines — Estrutura, Configuração e Execução</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-folder-open"></i>Estrutura de um projeto MLflow Pipelines</div>
+      <p>O MLflow Pipelines usa uma estrutura de projeto padronizada. Isso força boas práticas: cada etapa é um arquivo separado, as configurações ficam em YAML e o pipeline inteiro pode ser executado com um comando.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Estrutura do projeto</span></div>
+        <pre><code>meu-pipeline/
+│
+├── <span class="var">pipeline.yaml</span>         <span class="cm"># define as etapas e a ordem</span>
+├── <span class="var">profiles/</span>
+│   └── local.yaml        <span class="cm"># configurações de ambiente (dev/prod)</span>
+│
+├── <span class="var">steps/</span>
+│   ├── ingest.py         <span class="cm"># etapa 1: carregar dados</span>
+│   ├── split.py          <span class="cm"># etapa 2: dividir treino/teste</span>
+│   ├── transform.py      <span class="cm"># etapa 3: feature engineering</span>
+│   ├── train.py          <span class="cm"># etapa 4: treinar modelo</span>
+│   ├── evaluate.py       <span class="cm"># etapa 5: avaliar e decidir promoção</span>
+│   └── register.py       <span class="cm"># etapa 6: registrar no Model Registry</span>
+│
+├── <span class="var">data/</span>
+│   └── dataset.csv
+└── <span class="var">requirements.txt</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-file-code"></i>pipeline.yaml — o coração do pipeline</div>
+      <p>O arquivo <code>pipeline.yaml</code> define as etapas, suas dependências e os critérios de promoção. É a "receita" do pipeline — declarativa, versionável no Git, legível por qualquer pessoa do time.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">pipeline.yaml</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code>template: <span class="str">"regression/v1"</span>  <span class="cm"># ou "classification/v1"</span>
+
+target_col: <span class="str">"churn"</span>
+positive_class: <span class="num">1</span>
+
+steps:
+  ingest:
+    using: <span class="str">"custom"</span>
+    loader_method: <span class="str">"steps/ingest.py:load_file_as_dataframe"</span>
+
+  split:
+    split_ratios: [<span class="num">0.75</span>, <span class="num">0.125</span>, <span class="num">0.125</span>]  <span class="cm"># treino / val / teste</span>
+
+  transform:
+    transformer_method: <span class="str">"steps/transform.py:transformer_fn"</span>
+
+  train:
+    estimator_method: <span class="str">"steps/train.py:estimator_fn"</span>
+
+  evaluate:
+    validation_criteria:
+      - metric: <span class="str">"f1_score"</span>
+        threshold: <span class="num">0.85</span>          <span class="cm"># não promove se F1 < 0.85</span>
+      - metric: <span class="str">"false_positive_rate"</span>
+        threshold: <span class="num">0.10</span>
+
+  register:
+    model_name: <span class="str">"classificador-churn"</span>
+    allow_non_validated_model: <span class="kw">false</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-code"></i>Implementando cada etapa</div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Python — steps/ingest.py</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="kw">def</span> <span class="fn">load_file_as_dataframe</span>():
+    <span class="cm">"""Carrega o dataset bruto e retorna um DataFrame limpo."""</span>
+    df = pd.read_csv(<span class="str">"data/dataset.csv"</span>)
+    <span class="cm"># Limpeza básica na ingestão</span>
+    df = df.dropna(subset=[<span class="str">"churn"</span>])
+    df[<span class="str">"churn"</span>] = df[<span class="str">"churn"</span>].astype(<span class="fn">int</span>)
+    <span class="fn">print</span>(<span class="fn">f</span><span class="str">"Dataset carregado: {len(df)} linhas"</span>)
+    <span class="kw">return</span> df</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Python — steps/transform.py</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.impute <span class="kw">import</span> SimpleImputer
+
+<span class="kw">def</span> <span class="fn">transformer_fn</span>():
+    <span class="cm">"""Retorna um sklearn Pipeline de pré-processamento."""</span>
+    <span class="kw">return</span> Pipeline(steps=[
+        (<span class="str">"imputer"</span>, SimpleImputer(strategy=<span class="str">"median"</span>)),
+        (<span class="str">"scaler"</span>,  StandardScaler()),
+    ])</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Python — steps/train.py</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> GradientBoostingClassifier
+
+<span class="kw">def</span> <span class="fn">estimator_fn</span>(estimator_params=<span class="kw">None</span>):
+    <span class="cm">"""Retorna o estimador. Parâmetros vêm do profile YAML."""</span>
+    params = estimator_params <span class="kw">or</span> {}
+    <span class="kw">return</span> GradientBoostingClassifier(
+        n_estimators=params.get(<span class="str">"n_estimators"</span>, <span class="num">100</span>),
+        max_depth=params.get(<span class="str">"max_depth"</span>, <span class="num">4</span>),
+        learning_rate=params.get(<span class="str">"learning_rate"</span>, <span class="num">0.1</span>),
+        random_state=<span class="num">42</span>,
+    )</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-play-circle"></i>Executando o pipeline</div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Python — executar e inspecionar</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="kw">import</span> mlflow.pipelines
+
+<span class="cm"># Carregar o pipeline do diretório atual</span>
+p = mlflow.pipelines.Pipeline(profile=<span class="str">"local"</span>)
+
+<span class="cm"># Executar pipeline completo</span>
+p.run()
+
+<span class="cm"># Executar apenas uma etapa específica (e as dependências)</span>
+p.run(<span class="str">"train"</span>)
+
+<span class="cm"># Inspecionar resultados de cada etapa</span>
+p.inspect(<span class="str">"train"</span>)     <span class="cm"># abre card de métricas no Jupyter</span>
+p.inspect(<span class="str">"evaluate"</span>)  <span class="cm"># mostra se passou nos critérios</span>
+
+<span class="cm"># Limpar cache (forçar re-execução completa)</span>
+p.clean()</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Bash — ou via CLI</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm"># Executar pipeline completo</span>
+mlflow pipelines run <span class="flag">--profile</span> local
+
+<span class="cm"># Executar etapa específica</span>
+mlflow pipelines run <span class="flag">--profile</span> local <span class="flag">--step</span> train
+
+<span class="cm"># Ver status de cada etapa</span>
+mlflow pipelines get-artifact <span class="flag">--profile</span> local <span class="flag">--step</span> evaluate <span class="flag">--artifact</span> metrics</code></pre>
+      </div>
+
+      <div class="destaque">
+        <strong>Cache inteligente:</strong> o MLflow Pipelines detecta automaticamente quais etapas tiveram inputs modificados e re-executa apenas o necessário — exatamente como o <code>dvc repro</code> que vimos na Semana 3. Se você mudar apenas o estimador em <code>train.py</code>, as etapas de ingestão, split e transform são puladas.
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3 · Metaflow + Prática</span></div>
+
+  <!-- ── AULA 3: Metaflow + Exercícios ─────────────────────────────── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · ~50 minutos</div>
+        <div class="secao-titulo">Metaflow — Steps, Flows e Paralelismo</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-water"></i>O que é Metaflow e por que o Netflix criou</div>
+      <p>O Metaflow foi criado pelo Netflix em 2018 para resolver um problema específico: seus cientistas de dados sabiam Python, mas não sabiam infraestrutura de cloud. O Metaflow abstrai toda a complexidade de execução distribuída — o cientista escreve Python normal com decoradores, e o Metaflow cuida de parallelismo, persistência de estado e escala em AWS/GCP.</p>
+      <p>A grande diferença em relação ao MLflow Pipelines é a <strong>filosofia de execução</strong>: no Metaflow, o pipeline é um arquivo Python executável — você roda <code>python meu_flow.py run</code> e ele orquestra tudo, com rastreamento automático de cada step.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-code"></i>Anatomia de um Flow Metaflow</div>
+      <p>Um Flow é uma classe Python que herda de <code>FlowSpec</code>. Cada método decorado com <code>@step</code> é uma etapa do pipeline. O Metaflow garante a ordem, persiste os outputs de cada step e permite inspecionar o histórico de execuções.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Python — pipeline_churn.py</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="kw">from</span> metaflow <span class="kw">import</span> FlowSpec, step, Parameter
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> accuracy_score, f1_score
+
+<span class="kw">class</span> <span class="fn">ChurnPipeline</span>(FlowSpec):
+
+    <span class="cm"># Parâmetros passados na linha de comando</span>
+    n_estimators = Parameter(<span class="str">"n_estimators"</span>, default=<span class="num">100</span>, type=<span class="fn">int</span>)
+    max_depth     = Parameter(<span class="str">"max_depth"</span>,     default=<span class="num">10</span>,  type=<span class="fn">int</span>)
+
+    <span class="dec">@step</span>
+    <span class="kw">def</span> <span class="fn">start</span>(self):
+        <span class="cm">"""Carrega e divide os dados."""</span>
+        df = pd.read_csv(<span class="str">"data/dataset.csv"</span>)
+        X  = df.drop(<span class="str">"target"</span>, axis=<span class="num">1</span>)
+        y  = df[<span class="str">"target"</span>]
+        self.X_train, self.X_test, self.y_train, self.y_test = \
+            train_test_split(X, y, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+        <span class="fn">print</span>(<span class="fn">f</span><span class="str">"Dados carregados: {len(df)} linhas"</span>)
+        self.next(self.treinar)
+
+    <span class="dec">@step</span>
+    <span class="kw">def</span> <span class="fn">treinar</span>(self):
+        <span class="cm">"""Treina o modelo com os parâmetros recebidos."""</span>
+        self.model = RandomForestClassifier(
+            n_estimators=self.n_estimators,
+            max_depth=self.max_depth,
+            random_state=<span class="num">42</span>
+        )
+        self.model.fit(self.X_train, self.y_train)
+        <span class="fn">print</span>(<span class="str">"Treino concluído"</span>)
+        self.next(self.avaliar)
+
+    <span class="dec">@step</span>
+    <span class="kw">def</span> <span class="fn">avaliar</span>(self):
+        <span class="cm">"""Avalia e persiste as métricas."""</span>
+        y_pred       = self.model.predict(self.X_test)
+        self.accuracy = accuracy_score(self.y_test, y_pred)
+        self.f1       = f1_score(self.y_test, y_pred)
+        <span class="fn">print</span>(<span class="fn">f</span><span class="str">"accuracy={self.accuracy:.4f} | f1={self.f1:.4f}"</span>)
+        self.next(self.end)
+
+    <span class="dec">@step</span>
+    <span class="kw">def</span> <span class="fn">end</span>(self):
+        <span class="cm">"""Encerra o flow e reporta o resultado."""</span>
+        <span class="fn">print</span>(<span class="fn">f</span><span class="str">"Pipeline concluído. Melhor accuracy: {self.accuracy:.4f}"</span>)
+
+
+<span class="kw">if</span> __name__ <span class="op">==</span> <span class="str">"__main__"</span>:
+    ChurnPipeline()</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Bash — executar e inspecionar</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm"># Executar o flow com parâmetros</span>
+python pipeline_churn.py run \
+  <span class="flag">--n_estimators</span> <span class="num">200</span> \
+  <span class="flag">--max_depth</span> <span class="num">15</span>
+
+<span class="cm"># Ver histórico de execuções</span>
+python pipeline_churn.py runs
+
+<span class="cm"># Inspecionar um run específico pelo ID</span>
+python pipeline_churn.py run <span class="flag">--run-id</span> <span class="num">3</span>
+
+<span class="cm"># Resumir a última execução</span>
+python pipeline_churn.py show</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-code-branch"></i>Paralelismo com foreach — o superpoder do Metaflow</div>
+      <p>Uma das maiores vantagens do Metaflow é executar múltiplos experimentos <strong>em paralelo</strong> com poucas linhas de código. O decorator <code>@step</code> com <code>foreach</code> divide o trabalho e o step <code>join</code> consolida os resultados.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Python — parallelismo com foreach</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="kw">from</span> metaflow <span class="kw">import</span> FlowSpec, step
+
+<span class="kw">class</span> <span class="fn">HPSearchFlow</span>(FlowSpec):
+
+    <span class="dec">@step</span>
+    <span class="kw">def</span> <span class="fn">start</span>(self):
+        <span class="cm"># Lista de configs para testar em paralelo</span>
+        self.configs = [
+            {<span class="str">"n_estimators"</span>: <span class="num">100</span>, <span class="str">"max_depth"</span>: <span class="num">5</span>},
+            {<span class="str">"n_estimators"</span>: <span class="num">200</span>, <span class="str">"max_depth"</span>: <span class="num">10</span>},
+            {<span class="str">"n_estimators"</span>: <span class="num">300</span>, <span class="str">"max_depth"</span>: <span class="num">15</span>},
+        ]
+        <span class="cm"># foreach executa o próximo step uma vez para cada item</span>
+        self.next(self.treinar, foreach=<span class="str">"configs"</span>)
+
+    <span class="dec">@step</span>
+    <span class="kw">def</span> <span class="fn">treinar</span>(self):
+        <span class="cm"># self.input = um item da lista configs</span>
+        cfg = self.input
+        model = RandomForestClassifier(**cfg, random_state=<span class="num">42</span>)
+        model.fit(X_train, y_train)
+        self.acc = accuracy_score(y_test, model.predict(X_test))
+        self.cfg = cfg
+        <span class="fn">print</span>(<span class="fn">f</span><span class="str">"Config {cfg} → acc={self.acc:.4f}"</span>)
+        self.next(self.join)
+
+    <span class="dec">@step</span>
+    <span class="kw">def</span> <span class="fn">join</span>(self, inputs):
+        <span class="cm"># inputs = lista com resultados de cada branch paralelo</span>
+        melhor = <span class="fn">max</span>(inputs, key=<span class="kw">lambda</span> x: x.acc)
+        self.melhor_acc = melhor.acc
+        self.melhor_cfg = melhor.cfg
+        <span class="fn">print</span>(<span class="fn">f</span><span class="str">"Melhor: {self.melhor_cfg} → acc={self.melhor_acc:.4f}"</span>)
+        self.next(self.end)
+
+    <span class="dec">@step</span>
+    <span class="kw">def</span> <span class="fn">end</span>(self): <span class="kw">pass</span>
+
+<span class="kw">if</span> __name__ <span class="op">==</span> <span class="str">"__main__"</span>:
+    HPSearchFlow()</code></pre>
+      </div>
+
+      <div class="destaque">
+        <strong>Por que isso é poderoso:</strong> os três branches de treino rodam simultaneamente — se cada um leva 10 minutos, o total é 10 min (não 30). Em cloud, o Metaflow pode executar cada branch em uma instância EC2 separada automaticamente, sem nenhuma mudança no código.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-table"></i>MLflow Pipelines vs Metaflow — quando usar cada um</div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Critério</th><th>MLflow Pipelines</th><th>Metaflow</th></tr></thead>
+          <tbody class="comp-row">
+            <tr><td>Curva de aprendizado</td><td>Baixa — template guia a estrutura</td><td>Média — requer entender FlowSpec</td></tr>
+            <tr><td>Integração com MLflow</td><td>Nativa — Tracking automático</td><td>Manual — chamar mlflow.log_*</td></tr>
+            <tr><td>Paralelismo</td><td>Limitado</td><td>Nativo com foreach + join</td></tr>
+            <tr><td>Escala em cloud</td><td>Não nativo</td><td>AWS Batch, GCP, Kubernetes</td></tr>
+            <tr><td>Rastreamento de execuções</td><td>Via MLflow UI</td><td>Nativo (metaflow.runs)</td></tr>
+            <tr><td>Melhor para</td><td>Times iniciando com pipelines, projetos menores</td><td>Times maduros, grandes volumes, cloud</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Atividade Prática</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">→</div>
+      <div class="secao-info">
+        <div class="secao-label">Atividade · Pipeline End-to-End</div>
+        <div class="secao-titulo">Do dataset ao Model Registry em um único pipeline</div>
+      </div>
+    </div>
+
+    <div class="aviso">
+      <i class="fas fa-info-circle"></i>
+      <span>Continue no projeto das semanas anteriores. O objetivo é transformar os scripts soltos que você já tem em um pipeline estruturado — primeiro com MLflow Pipelines, depois (desafio) com Metaflow.</span>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Passo 01 — Estruturar o projeto em steps</div>
+      <p>Crie a estrutura de pastas <code>steps/</code> e separe o código existente em quatro arquivos: <code>ingest.py</code> (carrega o CSV), <code>transform.py</code> (retorna Pipeline sklearn com imputer + scaler), <code>train.py</code> (retorna estimador) e <code>evaluate.py</code> (calcula métricas e decide promoção). Cada arquivo deve ter uma função pública com a assinatura esperada pelo MLflow Pipelines.</p>
+      <span class="dificuldade dif-basico">Básico</span>
+      <br>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Python — steps/ingest.py</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="kw">def</span> <span class="fn">load_file_as_dataframe</span>():
+    df = pd.read_csv(<span class="str">"data/raw/dataset.csv"</span>)
+    df = df.dropna()
+    <span class="fn">print</span>(<span class="fn">f</span><span class="str">"Carregado: {len(df)} linhas × {df.shape[1]} colunas"</span>)
+    <span class="kw">return</span> df</code></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Python — steps/transform.py</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.impute <span class="kw">import</span> SimpleImputer
+
+<span class="kw">def</span> <span class="fn">transformer_fn</span>():
+    <span class="kw">return</span> Pipeline([
+        (<span class="str">"imputer"</span>, SimpleImputer(strategy=<span class="str">"median"</span>)),
+        (<span class="str">"scaler"</span>,  StandardScaler()),
+    ])</code></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Python — steps/train.py</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+
+<span class="kw">def</span> <span class="fn">estimator_fn</span>(estimator_params=<span class="kw">None</span>):
+    p = estimator_params <span class="kw">or</span> {}
+    <span class="kw">return</span> RandomForestClassifier(
+        n_estimators=p.get(<span class="str">"n_estimators"</span>, <span class="num">100</span>),
+        max_depth=p.get(<span class="str">"max_depth"</span>, <span class="kw">None</span>),
+        random_state=<span class="num">42</span>
+    )</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Passo 02 — Criar pipeline.yaml e executar</div>
+      <p>Escreva o <code>pipeline.yaml</code> com as 5 etapas (ingest, split, transform, train, evaluate) apontando para as funções criadas. Configure o critério de promoção: accuracy mínimo de 0.80. Execute com <code>mlflow pipelines run --profile local</code> e verifique os resultados na UI do MLflow.</p>
+      <span class="dificuldade dif-basico">Básico</span>
+      <br>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">pipeline.yaml</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code>template: <span class="str">"classification/v1"</span>
+target_col: <span class="str">"target"</span>
+positive_class: <span class="num">1</span>
+
+steps:
+  ingest:
+    using: <span class="str">"custom"</span>
+    loader_method: <span class="str">"steps/ingest.py:load_file_as_dataframe"</span>
+
+  split:
+    split_ratios: [<span class="num">0.75</span>, <span class="num">0.125</span>, <span class="num">0.125</span>]
+
+  transform:
+    transformer_method: <span class="str">"steps/transform.py:transformer_fn"</span>
+
+  train:
+    estimator_method: <span class="str">"steps/train.py:estimator_fn"</span>
+
+  evaluate:
+    validation_criteria:
+      - metric: <span class="str">"accuracy_score"</span>
+        threshold: <span class="num">0.80</span>
+
+  register:
+    model_name: <span class="str">"modelo-semana7"</span>
+    allow_non_validated_model: <span class="kw">false</span></code></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Bash</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code>mlflow pipelines run <span class="flag">--profile</span> local
+<span class="cm"># Abra http://localhost:5000 para ver os resultados</span></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Passo 03 — Alterar apenas o estimador e re-executar</div>
+      <p>Modifique <code>steps/train.py</code> para usar <code>GradientBoostingClassifier</code> com <code>n_estimators=150</code>. Re-execute o pipeline com <code>mlflow pipelines run --profile local --step train</code>. Observe na saída quais etapas foram puladas (cache) e quais foram re-executadas. Compare os dois runs na UI.</p>
+      <span class="dificuldade dif-medio">Médio</span>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Passo 04 — Primeiro Flow Metaflow</div>
+      <p>Crie o arquivo <code>pipeline_metaflow.py</code> com um <code>FlowSpec</code> que replique as etapas: start (carrega dados) → treinar → avaliar → end. Execute com <code>python pipeline_metaflow.py run</code>. Execute uma segunda vez com <code>--n_estimators 200</code> e use <code>python pipeline_metaflow.py runs</code> para ver o histórico das duas execuções.</p>
+      <span class="dificuldade dif-medio">Médio</span>
+      <br>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Python — pipeline_metaflow.py</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">from</span> metaflow <span class="kw">import</span> FlowSpec, step, Parameter
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> accuracy_score
+
+<span class="kw">class</span> <span class="fn">PipelineSemana7</span>(FlowSpec):
+
+    n_estimators = Parameter(<span class="str">"n_estimators"</span>, default=<span class="num">100</span>, type=<span class="fn">int</span>)
+
+    <span class="dec">@step</span>
+    <span class="kw">def</span> <span class="fn">start</span>(self):
+        df = pd.read_csv(<span class="str">"data/raw/dataset.csv"</span>)
+        X  = df.drop(<span class="str">"target"</span>, axis=<span class="num">1</span>)
+        y  = df[<span class="str">"target"</span>]
+        self.X_train, self.X_test, self.y_train, self.y_test = \
+            train_test_split(X, y, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+        self.next(self.treinar)
+
+    <span class="dec">@step</span>
+    <span class="kw">def</span> <span class="fn">treinar</span>(self):
+        self.model = RandomForestClassifier(
+            n_estimators=self.n_estimators, random_state=<span class="num">42</span>
+        )
+        self.model.fit(self.X_train, self.y_train)
+        self.next(self.avaliar)
+
+    <span class="dec">@step</span>
+    <span class="kw">def</span> <span class="fn">avaliar</span>(self):
+        self.accuracy = accuracy_score(
+            self.y_test, self.model.predict(self.X_test)
+        )
+        <span class="fn">print</span>(<span class="fn">f</span><span class="str">"accuracy={self.accuracy:.4f}"</span>)
+        self.next(self.end)
+
+    <span class="dec">@step</span>
+    <span class="kw">def</span> <span class="fn">end</span>(self):
+        <span class="fn">print</span>(<span class="fn">f</span><span class="str">"Concluído. accuracy={self.accuracy:.4f}"</span>)
+
+<span class="kw">if</span> __name__ <span class="op">==</span> <span class="str">"__main__"</span>:
+    PipelineSemana7()</code></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Bash</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code>python pipeline_metaflow.py run
+python pipeline_metaflow.py run <span class="flag">--n_estimators</span> <span class="num">200</span>
+python pipeline_metaflow.py runs  <span class="cm"># lista histórico</span></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Passo 05 — Desafio: busca paralela de hiperparâmetros</div>
+      <p>Implemente o <code>HPSearchFlow</code> mostrado na aula com <code>foreach</code>: teste pelo menos 4 configurações de hiperparâmetros em paralelo, faça o <code>join</code> selecionando a melhor, e no step <code>end</code> chame <code>mlflow.register_model()</code> para registrar o melhor modelo no Registry com o nome <code>"modelo-hp-search"</code>. Você terá que combinar Metaflow e MLflow na mesma execução.</p>
+      <span class="dificuldade dif-desafio">Desafio</span>
+    </div>
+
+    <div class="aviso-green">
+      <i class="fas fa-check-circle"></i>
+      <span><strong>Critério de conclusão:</strong> ao rodar <code>mlflow pipelines run --profile local</code>, o pipeline deve executar do início ao fim sem erros, o modelo deve aparecer no Registry da UI com estágio "None", e ao rodar apenas <code>--step train</code> após mudar o estimador, as etapas anteriores devem aparecer como "Cached" na saída.</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento</div>
+        <div class="secao-titulo">O que vimos na Semana 7</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-project-diagram"></i>
+        <strong>Anatomia de Pipeline</strong>
+        <p>5 etapas padrão: ingestão, limpeza, features, treino, avaliação. Cada etapa tem inputs e outputs isolados e imutáveis</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-layer-group"></i>
+        <strong>MLflow Pipelines</strong>
+        <p>pipeline.yaml declara estrutura e critérios de promoção. Cache inteligente re-executa só o que mudou. Integração nativa com Tracking e Registry</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-water"></i>
+        <strong>Metaflow</strong>
+        <p>FlowSpec + @step = pipeline Python puro. foreach + join = paralelismo nativo. Rastreamento automático de cada execução com histórico consultável</p>
+      </div>
+    </div>
+
+    <a class="proxima" href="semana-08-mlops.html">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 8 — Empacotamento de Modelos com Docker para ML e Inferência</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </a>
+  </section>
+
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;
+  c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    :'<i class="fas fa-eye"></i> ver gabarito';
+}
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{
+    btn.textContent='copiado!';
+    setTimeout(()=>btn.textContent='copiar',2000);
+  });
+}
+</script>
+</body>
+</html>
