@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 08 — Exibindo Resultados de IA · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#0a1a0a;
+  --green-900:#0d2010;
+  --green-700:#166534;
+  --green-500:#22c55e;
+  --green-400:#4ade80;
+  --green-300:#86efac;
+  --white:#fff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(74,222,128,.05);
+  --code-bg:#060f06;
+  --code-border:rgba(74,222,128,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.25;pointer-events:none;}
+.blob-1{width:680px;height:680px;background:#14532d;top:-240px;left:-200px;}
+.blob-2{width:540px;height:540px;background:#052e16;bottom:-210px;right:-120px;}
+.blob-3{width:290px;height:290px;background:#22c55e;top:36%;left:44%;opacity:.08;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(74,222,128,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--green-300);border:1px solid rgba(74,222,128,.3);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green-300);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(74,222,128,.08);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--green-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--green-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.12);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}.topico:nth-child(6){animation-delay:.6s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(74,222,128,.15);color:var(--green-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(74,222,128,.05);border-left:3px solid var(--green-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--green-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--green-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--green-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(74,222,128,.12);color:var(--green-400);border:1px solid rgba(74,222,128,.28);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(74,222,128,.12);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(74,222,128,.15);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--green-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(74,222,128,.18);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--green-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border-left:3px solid var(--green-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--green-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:var(--green-400);flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+.aviso-blue{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.18);font-size:.86rem;color:rgba(125,211,252,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-blue i{color:#38bdf8;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(74,222,128,.08);}
+th{padding:.6rem 1rem;text-align:left;color:var(--green-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(74,222,128,.18);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(74,222,128,.03);}
+td strong{color:var(--text-primary);}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(74,222,128,.06);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--green-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--green-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#bbf7d0;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#374151;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(74,222,128,.12);color:var(--green-400);border:1px solid rgba(74,222,128,.22);}
+.badge-blue{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.22);}
+.badge-purple{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.22);}
+.badge-orange{background:rgba(251,146,60,.12);color:#fb923c;border:1px solid rgba(251,146,60,.22);}
+.badge-yellow{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.22);}
+.badge-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.22);}
+
+/* ── Markdown preview mockup ── */
+.md-mock{background:#060f06;border:1px solid rgba(74,222,128,.18);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.md-mock__bar{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(74,222,128,.05);border-bottom:1px solid rgba(74,222,128,.12);}
+.md-mock__label{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--green-400);font-weight:700;}
+.md-mock__badge{font-size:.6rem;padding:2px 7px;border-radius:4px;background:rgba(74,222,128,.1);color:var(--green-300);border:1px solid rgba(74,222,128,.18);}
+.md-mock__body{padding:1.25rem 1.5rem;font-size:.88rem;color:var(--text-secondary);line-height:1.7;}
+.md-h1{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:800;color:var(--white);margin-bottom:.5rem;padding-bottom:.4rem;border-bottom:1px solid rgba(74,222,128,.15);}
+.md-h2{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);margin:.8rem 0 .4rem;}
+.md-p{margin-bottom:.65rem;}
+.md-strong{color:var(--text-primary);font-weight:600;}
+.md-code-inline{font-family:'JetBrains Mono',monospace;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.18);padding:1px 6px;border-radius:4px;font-size:.82rem;color:#86efac;}
+.md-ul{padding-left:1.25rem;margin:.4rem 0 .65rem;}
+.md-ul li{margin-bottom:.25rem;}
+.md-blockquote{border-left:3px solid rgba(74,222,128,.4);padding:.5rem .85rem;background:rgba(74,222,128,.04);border-radius:0 8px 8px 0;margin:.5rem 0;color:rgba(134,239,172,.8);font-style:italic;}
+.md-table-wrap{overflow-x:auto;margin:.5rem 0;}
+.md-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+.md-table th{padding:.4rem .7rem;background:rgba(74,222,128,.1);color:var(--green-400);font-weight:600;border:1px solid rgba(74,222,128,.15);}
+.md-table td{padding:.4rem .7rem;border:1px solid rgba(255,255,255,.06);color:var(--text-secondary);}
+.md-pre{background:rgba(0,0,0,.4);border:1px solid rgba(74,222,128,.15);border-radius:8px;padding:.85rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#bbf7d0;overflow-x:auto;margin:.5rem 0;position:relative;}
+.md-pre__lang{position:absolute;top:.4rem;right:.6rem;font-size:.58rem;color:rgba(74,222,128,.5);text-transform:uppercase;letter-spacing:.08em;}
+
+/* ── Diff raw vs rendered ── */
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
+.diff-panel{border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.07);}
+.diff-panel__header{padding:.5rem 1rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;display:flex;align-items:center;gap:6px;}
+.diff-panel__header.raw{background:rgba(239,68,68,.08);color:#f87171;border-bottom:1px solid rgba(239,68,68,.15);}
+.diff-panel__header.rendered{background:rgba(74,222,128,.08);color:var(--green-400);border-bottom:1px solid rgba(74,222,128,.15);}
+.diff-panel__body{padding:1rem;font-size:.83rem;background:var(--card-bg);}
+.diff-panel__body.raw-body{font-family:'JetBrains Mono',monospace;color:var(--text-secondary);line-height:1.7;}
+.diff-panel__body.rendered-body{color:var(--text-secondary);line-height:1.7;}
+
+/* ── Highlight theme chips ── */
+.theme-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0;}
+.theme-chip{padding:.35rem .85rem;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;border:1px solid;transition:all .2s;font-family:'JetBrains Mono',monospace;}
+
+/* ── Lab steps ── */
+.lab-steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.lab-steps::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--green-400),rgba(74,222,128,.1));border-radius:1px;}
+.lab-step{display:flex;gap:1rem;padding:.75rem 0;}
+.lab-step__num{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;position:relative;z-index:2;background:rgba(74,222,128,.1);color:var(--green-400);border:2px solid rgba(74,222,128,.28);}
+.lab-step__body{flex:1;padding-top:8px;}
+.lab-step__title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#f8fafc;margin-bottom:.3rem;}
+.lab-step__desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--green-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(74,222,128,.1);color:var(--green-400);border:1px solid rgba(74,222,128,.2);}
+.dif-medio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(74,222,128,.18);border-radius:8px;padding:.5rem 1rem;color:var(--green-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(74,222,128,.07);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+/* ── Quiz ── */
+.quiz-box{background:rgba(74,222,128,.03);border:1px solid rgba(74,222,128,.13);border-radius:12px;padding:1.25rem;margin:1rem 0;}
+.quiz-pergunta{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700;color:var(--white);margin-bottom:1rem;}
+.quiz-ops{display:flex;flex-direction:column;gap:.5rem;}
+.quiz-op{display:flex;align-items:center;gap:10px;padding:.6rem .9rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:9px;cursor:pointer;transition:all .2s;}
+.quiz-op:hover{background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.2);}
+.quiz-op.correto{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);}
+.quiz-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);}
+.quiz-letra{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;}
+.quiz-texto{font-size:.85rem;color:var(--text-secondary);}
+.quiz-feedback{display:none;padding:.75rem 1rem;border-radius:8px;font-size:.83rem;line-height:1.55;margin-top:.75rem;}
+.quiz-feedback.show{display:block;}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--green-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(74,222,128,.1);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--green-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.diff-grid,.resumo-grid{grid-template-columns:1fr;}
+}
+@media(max-width:520px){.resumo-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">🟢 LAB + Conteúdo</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">08</div>
+    <h1 class="capa-titulo">Exibindo<br><em>Resultados de IA</em><br>com Beleza e Precisão</h1>
+    <p class="capa-sub">4 aulas · 200 minutos · Transformando texto bruto em interface profissional</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-file-alt"></i></div><span>O problema do texto bruto — por que o markdown precisa ser renderizado</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fab fa-markdown"></i></div><span>react-markdown — renderizar markdown com segurança no React</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-paint-brush"></i></div><span>react-syntax-highlighter — highlight de código com temas</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-table"></i></div><span>Tabelas dinâmicas — renderizar tabelas markdown com estilo</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-shield-alt"></i></div><span>XSS e segurança — por que não usar dangerouslySetInnerHTML</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-flask"></i></div><span>LAB: chatbot completo com markdown, código colorido e cópia de trechos</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade LAB</div>
+      <p>Integrar react-markdown e react-syntax-highlighter no chatbot da Semana 7: respostas formatadas com títulos, listas, tabelas, código colorido e botão de copiar em cada bloco de código.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>O que você vai usar hoje</div>
+      <ul class="info-lista">
+        <li>react-markdown — renderizador de markdown para React</li>
+        <li>remark-gfm — suporte a tabelas, checklists e strikethrough</li>
+        <li>react-syntax-highlighter — highlight com 200+ temas e linguagens</li>
+        <li>Chatbot da Semana 7 como base do LAB</li>
+        <li>Clipboard API — copiar código com um clique</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 1–5 — HTML, React, APIs REST, APIs de IA</li>
+        <li>✅ Sem. 6 — P1</li>
+        <li>✅ Sem. 7 — Streaming: SSE, ReadableStream, efeito de digitação</li>
+        <li>▶ Sem. 8 — Exibindo resultados: markdown, código, tabelas</li>
+        <li>Sem. 9 — Visualização de dados com Chart.js e Recharts</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que isso importa</div>
+      <ul class="info-lista">
+        <li>LLMs respondem em markdown — sem renderização, o usuário vê asteriscos e hashes brutos</li>
+        <li>Código sem highlight é ilegível — um bloco Python colorido é 3x mais fácil de ler</li>
+        <li>dangerouslySetInnerHTML com conteúdo de IA é uma vulnerabilidade XSS real</li>
+        <li>Depois dessa semana, seu chatbot vai parecer profissional</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">O problema do texto bruto — e por que dangerouslySetInnerHTML é errado</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-exclamation-triangle"></i>O que a IA retorna — e o que o usuário vê</div>
+      <p>Quando você pede ao ChatGPT ou Claude para "explicar bubble sort com código", a resposta chega como <strong>markdown puro</strong> — texto com <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">#</code>, <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">**</code>, <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">```python</code> e <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">|</code> para tabelas. Se você apenas exibe isso com <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">&lt;p&gt;{resposta}&lt;/p&gt;</code>, o usuário vê o markdown bruto — asteriscos, hashes e tudo mais.</p>
+
+      <div class="diff-grid">
+        <div class="diff-panel">
+          <div class="diff-panel__header raw"><i class="fas fa-times-circle"></i> Sem renderização — texto bruto</div>
+          <div class="diff-panel__body raw-body">## Bubble Sort
+
+O algoritmo **mais simples** de ordenação.
+
+```python
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+```
+
+| Caso | Complexidade |
+|------|-------------|
+| Melhor | O(n) |
+| Pior | O(n²) |</div>
+        </div>
+        <div class="diff-panel">
+          <div class="diff-panel__header rendered"><i class="fas fa-check-circle"></i> Com react-markdown — renderizado</div>
+          <div class="diff-panel__body rendered-body">
+            <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:800;color:white;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(74,222,128,.2);">Bubble Sort</div>
+            <p style="margin-bottom:.5rem;">O algoritmo <strong style="color:white;">mais simples</strong> de ordenação.</p>
+            <div style="background:rgba(0,0,0,.5);border:1px solid rgba(74,222,128,.15);border-radius:8px;padding:.75rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#bbf7d0;margin-bottom:.5rem;">
+              <span style="color:#f9a8d4;">def</span> <span style="color:#93c5fd;">bubble_sort</span>(arr):<br>
+              &nbsp;&nbsp;<span style="color:#f9a8d4;">for</span> i <span style="color:#f9a8d4;">in</span> <span style="color:#93c5fd;">range</span>(n):<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;...
+            </div>
+            <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
+              <thead><tr><th style="padding:.3rem .6rem;background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.15);">Caso</th><th style="padding:.3rem .6rem;background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.15);">Complexidade</th></tr></thead>
+              <tbody>
+                <tr><td style="padding:.3rem .6rem;border:1px solid rgba(255,255,255,.06);">Melhor</td><td style="padding:.3rem .6rem;border:1px solid rgba(255,255,255,.06);">O(n)</td></tr>
+                <tr><td style="padding:.3rem .6rem;border:1px solid rgba(255,255,255,.06);">Pior</td><td style="padding:.3rem .6rem;border:1px solid rgba(255,255,255,.06);">O(n²)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-skull-crossbones"></i>Por que dangerouslySetInnerHTML com IA é perigoso</div>
+      <p>A solução ingênua é converter o markdown para HTML com uma lib como <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">marked</code> e injetar com <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">dangerouslySetInnerHTML</code>. O problema: <strong>você está injetando HTML gerado por um modelo de linguagem externo diretamente no DOM.</strong></p>
+      <p>Um LLM pode gerar — intencionalmente (jailbreak) ou acidentalmente — HTML com scripts embutidos. Se o conteúdo não for sanitizado, você tem uma <strong>vulnerabilidade XSS (Cross-Site Scripting)</strong> real que pode vazar dados do usuário, roubar cookies ou executar código arbitrário no browser de qualquer pessoa que use seu chatbot.</p>
+
+      <div class="aviso-red">
+        <i class="fas fa-ban"></i>
+        <span><strong>Nunca faça isso:</strong><br>
+        <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">const html = marked(respostaIA);<br>&lt;div dangerouslySetInnerHTML={{ __html: html }} /&gt;</code><br><br>
+        Se o modelo retornar <code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;">&lt;script&gt;document.cookie&lt;/script&gt;</code> como parte da resposta, ele será executado no browser do usuário.</span>
+      </div>
+
+      <div class="destaque">
+        <strong>A solução correta:</strong> react-markdown renderiza o markdown em componentes React — nunca em HTML cru. Por padrão, ele remove tags HTML perigosas do conteúdo. Você mantém total controle sobre quais elementos são renderizados e com qual CSS.
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Por que react-markdown é mais seguro do que converter markdown para HTML e usar dangerouslySetInnerHTML?</div>
+      <div class="quiz-ops" id="quiz1-ops">
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">react-markdown é mais rápido e consome menos memória do que soluções baseadas em HTML</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">react-markdown converte markdown em componentes React, não em HTML cru — scripts e tags perigosas no conteúdo da IA nunca chegam ao DOM como HTML executável</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">dangerouslySetInnerHTML foi depreciado no React 18 e não funciona mais</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">A diferença é apenas estética — ambas as abordagens têm o mesmo nível de segurança</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz1-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">react-markdown, remark-gfm e react-syntax-highlighter</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fab fa-markdown"></i>react-markdown — instalação e uso básico</div>
+      <p>A biblioteca <strong>react-markdown</strong> converte uma string markdown em componentes React. A prop <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">components</code> permite sobrescrever como cada elemento markdown é renderizado — é aqui que você aplica seu próprio CSS e insere o highlight de código.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Terminal — instalação</span></div>
+        <pre><code>npm install react-markdown remark-gfm react-syntax-highlighter</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — uso básico do react-markdown</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> ReactMarkdown <span class="pp">from</span> <span class="str">'react-markdown'</span>;
+<span class="pp">import</span> remarkGfm <span class="pp">from</span> <span class="str">'remark-gfm'</span>;
+
+<span class="kw">function</span> <span class="fn">MensagemIA</span>({ conteudo }) {
+  <span class="kw">return</span> (
+    &lt;<span class="tag">ReactMarkdown</span>
+      <span class="attr">remarkPlugins</span>={[remarkGfm]}   <span class="cm">// habilita tabelas, checklists, strikethrough</span>
+      <span class="attr">className</span>=<span class="str">"markdown"</span>           <span class="cm">// classe CSS para estilizar globalmente</span>
+    &gt;
+      {conteudo}
+    &lt;/<span class="tag">ReactMarkdown</span>&gt;
+  );
+}</code></pre>
+      </div>
+
+      <div class="destaque">
+        <strong>O que remark-gfm adiciona:</strong> GFM = GitHub Flavored Markdown. Sem ele, tabelas (<code style="font-family:'JetBrains Mono',monospace;">| col |</code>), listas de tarefa (<code style="font-family:'JetBrains Mono',monospace;">- [x]</code>), strikethrough (<code style="font-family:'JetBrains Mono',monospace;">~~texto~~</code>) e links automáticos não são renderizados. Como LLMs usam GFM com frequência, esse plugin é praticamente obrigatório.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-paint-brush"></i>react-syntax-highlighter — código colorido por linguagem</div>
+      <p>O react-markdown sozinho renderiza blocos de código como <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">&lt;pre&gt;&lt;code&gt;</code> sem colorização. Para adicionar highlight, sobrescrevemos o componente <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">code</code> via a prop <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">components</code> e usamos o <strong>react-syntax-highlighter</strong> no lugar.</p>
+      <p>A lib detecta a linguagem a partir do marcador do bloco de código: <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">```python</code> → <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">language="python"</code> na prop. Se não tiver marcador, cai para código inline simples.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — componente MarkdownRenderer completo</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> ReactMarkdown <span class="pp">from</span> <span class="str">'react-markdown'</span>;
+<span class="pp">import</span> remarkGfm <span class="pp">from</span> <span class="str">'remark-gfm'</span>;
+<span class="pp">import</span> { Prism <span class="pp">as</span> SyntaxHighlighter } <span class="pp">from</span> <span class="str">'react-syntax-highlighter'</span>;
+<span class="pp">import</span> { oneDark } <span class="pp">from</span> <span class="str">'react-syntax-highlighter/dist/esm/styles/prism'</span>;
+<span class="pp">import</span> { <span class="fn">useState</span> } <span class="pp">from</span> <span class="str">'react'</span>;
+<span class="pp">import</span> <span class="str">'./MarkdownRenderer.css'</span>;
+
+<span class="cm">// Botão de copiar para blocos de código</span>
+<span class="kw">function</span> <span class="fn">BotaoCopiar</span>({ codigo }) {
+  <span class="kw">const</span> [copiado, setCopiado] = <span class="fn">useState</span>(<span class="kw">false</span>);
+  <span class="kw">async function</span> <span class="fn">copiar</span>() {
+    <span class="kw">await</span> navigator.clipboard.<span class="fn">writeText</span>(codigo);
+    <span class="fn">setCopiado</span>(<span class="kw">true</span>);
+    <span class="fn">setTimeout</span>(() => <span class="fn">setCopiado</span>(<span class="kw">false</span>), <span class="num">2000</span>);
+  }
+  <span class="kw">return</span> (
+    &lt;<span class="tag">button</span> <span class="attr">className</span>=<span class="str">"btn-copiar"</span> <span class="attr">onClick</span>={copiar}&gt;
+      {copiado ? <span class="str">'✓ Copiado'</span> : <span class="str">'Copiar'</span>}
+    &lt;/<span class="tag">button</span>&gt;
+  );
+}
+
+<span class="cm">// Componente personalizado para blocos de código</span>
+<span class="kw">function</span> <span class="fn">BlocoCode</span>({ node, inline, className, children, ...props }) {
+  <span class="kw">const</span> match = /language-(\w+)/.<span class="fn">exec</span>(className || <span class="str">''</span>);
+  <span class="kw">const</span> linguagem = match ? match[<span class="num">1</span>] : <span class="str">'text'</span>;
+  <span class="kw">const</span> codigo = <span class="fn">String</span>(children).<span class="fn">replace</span>(/\n$/, <span class="str">''</span>);
+
+  <span class="kw">if</span> (inline) {
+    <span class="cm">// código inline: `variavel` → estilizado mas sem highlight completo</span>
+    <span class="kw">return</span> &lt;<span class="tag">code</span> <span class="attr">className</span>=<span class="str">"code-inline"</span> {...props}&gt;{children}&lt;/<span class="tag">code</span>&gt;;
+  }
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"bloco-codigo"</span>&gt;
+      &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"bloco-codigo__header"</span>&gt;
+        &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"bloco-codigo__lang"</span>&gt;{linguagem}&lt;/<span class="tag">span</span>&gt;
+        &lt;<span class="tag">BotaoCopiar</span> <span class="attr">codigo</span>={codigo} /&gt;
+      &lt;/<span class="tag">div</span>&gt;
+      &lt;<span class="tag">SyntaxHighlighter</span>
+        <span class="attr">style</span>={oneDark}
+        <span class="attr">language</span>={linguagem}
+        <span class="attr">PreTag</span>=<span class="str">"div"</span>
+        <span class="attr">customStyle</span>={{ margin: <span class="num">0</span>, borderRadius: <span class="str">'0 0 8px 8px'</span>, fontSize: <span class="str">'.82rem'</span> }}
+        {...props}
+      &gt;
+        {codigo}
+      &lt;/<span class="tag">SyntaxHighlighter</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}
+
+<span class="cm">// Componente principal</span>
+<span class="kw">export default function</span> <span class="fn">MarkdownRenderer</span>({ conteudo }) {
+  <span class="kw">return</span> (
+    &lt;<span class="tag">ReactMarkdown</span>
+      <span class="attr">remarkPlugins</span>={[remarkGfm]}
+      <span class="attr">className</span>=<span class="str">"markdown"</span>
+      <span class="attr">components</span>={{ code: BlocoCode }}
+    &gt;
+      {conteudo}
+    &lt;/<span class="tag">ReactMarkdown</span>&gt;
+  );
+}</code></pre>
+      </div>
+
+      <div class="aviso-blue">
+        <i class="fas fa-info-circle"></i>
+        <span><strong>Prism vs Highlight.js:</strong> react-syntax-highlighter oferece dois engines. Prism (importado como <code style="font-family:'JetBrains Mono',monospace;">{ Prism as SyntaxHighlighter }</code>) tem melhor suporte para linguagens modernas como JSX, TypeScript e GraphQL. Highlight.js é mais leve. Para projetos com IA gerando código de múltiplas linguagens, prefira Prism.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-table"></i>Estilizando tabelas e outros elementos markdown</div>
+      <p>O react-markdown renderiza os elementos HTML semânticos corretos (<code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">table</code>, <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">blockquote</code>, <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">ul</code>, <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">h1</code>–<code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">h6</code>) dentro da div com a classe <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">.markdown</code>. O CSS abaixo cobre os casos mais comuns gerados por LLMs.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS — MarkdownRenderer.css</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">/* Escopo: todos os elementos dentro de .markdown */</span>
+
+.markdown { color: rgba(255,255,255,.82); line-height: 1.75; font-size: .92rem; }
+
+<span class="cm">/* Títulos */</span>
+.markdown h1 { font-size: 1.35rem; font-weight: 800; color: white;
+  border-bottom: 1px solid rgba(74,222,128,.2); padding-bottom: .4rem;
+  margin: 1.25rem 0 .65rem; }
+.markdown h2 { font-size: 1.1rem; font-weight: 700; color: white; margin: 1rem 0 .5rem; }
+.markdown h3 { font-size: .95rem; font-weight: 700; color: #e2e8f0; margin: .85rem 0 .4rem; }
+
+<span class="cm">/* Parágrafos e listas */</span>
+.markdown p  { margin-bottom: .75rem; }
+.markdown ul, .markdown ol { padding-left: 1.4rem; margin-bottom: .75rem; }
+.markdown li { margin-bottom: .25rem; }
+.markdown li input[type="checkbox"] { margin-right: .4rem; }  <span class="cm">/* checklists GFM */</span>
+
+<span class="cm">/* Inline code */</span>
+.code-inline {
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(74,222,128,.1);
+  border: 1px solid rgba(74,222,128,.2);
+  padding: 1px 5px; border-radius: 4px;
+  font-size: .84em; color: #86efac;
+}
+
+<span class="cm">/* Bloco de código com header */</span>
+.bloco-codigo { border-radius: 8px; overflow: hidden;
+  border: 1px solid rgba(74,222,128,.15); margin: .75rem 0; }
+.bloco-codigo__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .35rem .85rem;
+  background: rgba(0,0,0,.4); border-bottom: 1px solid rgba(74,222,128,.12);
+}
+.bloco-codigo__lang { font-family: 'JetBrains Mono', monospace;
+  font-size: .65rem; text-transform: uppercase; letter-spacing: .1em;
+  color: rgba(74,222,128,.6); }
+.btn-copiar {
+  font-size: .68rem; padding: 2px 8px; border-radius: 5px; cursor: pointer;
+  background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.2);
+  color: #86efac; font-family: 'Inter', sans-serif; transition: background .2s;
+}
+.btn-copiar:hover { background: rgba(74,222,128,.2); }
+
+<span class="cm">/* Tabelas */</span>
+.markdown table { width: 100%; border-collapse: collapse;
+  margin: .75rem 0; font-size: .85rem; overflow-x: auto; display: block; }
+.markdown th {
+  padding: .45rem .85rem; text-align: left;
+  background: rgba(74,222,128,.08); color: #4ade80;
+  border: 1px solid rgba(74,222,128,.15); font-weight: 600; }
+.markdown td {
+  padding: .45rem .85rem; color: rgba(255,255,255,.65);
+  border: 1px solid rgba(255,255,255,.06); }
+.markdown tr:hover td { background: rgba(74,222,128,.03); }
+
+<span class="cm">/* Blockquote */</span>
+.markdown blockquote {
+  border-left: 3px solid rgba(74,222,128,.4);
+  padding: .5rem 1rem; margin: .65rem 0;
+  background: rgba(74,222,128,.04); border-radius: 0 8px 8px 0;
+  color: rgba(134,239,172,.8); font-style: italic;
+}
+
+<span class="cm">/* Linha horizontal */</span>
+.markdown hr { border: none; border-top: 1px solid rgba(255,255,255,.08); margin: 1rem 0; }
+
+<span class="cm">/* Links */</span>
+.markdown a { color: #86efac; text-decoration: underline;
+  text-underline-offset: 2px; }
+.markdown a:hover { color: #4ade80; }
+
+<span class="cm">/* Negrito e itálico */</span>
+.markdown strong { color: white; font-weight: 600; }
+.markdown em { color: rgba(255,255,255,.75); }</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-stream"></i>Streaming + markdown — o desafio do markdown parcial</div>
+      <p>Combinar streaming (Semana 7) com markdown cria um desafio: durante a geração, o markdown está incompleto. Um bloco de código que ainda não fechou o <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">```</code> pode fazer o parser "engolir" o texto seguinte como código.</p>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Estratégia</th><th>Como funciona</th><th>Trade-off</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Renderizar direto</strong></td><td>Passa respostaAtual para ReactMarkdown a cada token</td><td>Simples. Pode ter artefatos visuais durante blocos de código incompletos</td></tr>
+            <tr><td><strong>Renderizar só ao terminar</strong></td><td>Exibe texto puro durante geração, ReactMarkdown só após [DONE]</td><td>Elimina artefatos. Perde a sensação visual durante a escrita</td></tr>
+            <tr><td><strong>Detectar blocos abertos</strong></td><td>Conta ocorrências de ``` — se ímpar, não renderiza como markdown ainda</td><td>Mais complexo. Boa UX para respostas longas com código</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="aviso-green">
+        <i class="fas fa-check-circle"></i>
+        <span><strong>Recomendação para o LAB:</strong> use a estratégia do meio — renderize texto puro durante o stream com uma fonte monospace para dar a sensação de digitação, e aplique o ReactMarkdown assim que <code style="font-family:'JetBrains Mono',monospace;">gerando</code> voltar para <code style="font-family:'JetBrains Mono',monospace;">false</code>. É o comportamento mais próximo do Claude e do ChatGPT.</span>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Um LLM responde com <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">```javascript\nconst x = 1;\n```</code>. O que a prop <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">className</code> do elemento <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">code</code> recebe quando react-markdown processa esse bloco?</div>
+      <div class="quiz-ops" id="quiz2-ops">
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">"javascript" — só o nome da linguagem</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">"language-javascript" — o react-markdown adiciona o prefixo "language-"</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">null — className não é passada para blocos de código</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">"code-block javascript" — segue a convenção de BEM CSS</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz2-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3 · LAB</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · LAB · ~50 minutos</div>
+        <div class="secao-titulo">LAB — Integrando markdown e highlight no chatbot da Semana 7</div>
+      </div>
+    </div>
+
+    <div class="aviso-green">
+      <i class="fas fa-flask"></i>
+      <span>Objetivo: evoluir o chatbot da Semana 7 para renderizar as respostas da IA com markdown completo — títulos, listas, tabelas, código colorido com label de linguagem e botão de copiar por bloco.</span>
+    </div>
+
+    <!-- Preview -->
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-eye"></i>Preview — chatbot antes e depois</div>
+      <div class="diff-grid">
+        <div class="diff-panel">
+          <div class="diff-panel__header raw"><i class="fas fa-times-circle"></i> Semana 7 — texto puro</div>
+          <div class="diff-panel__body raw-body" style="font-size:.8rem;">## Como criar uma função em Python
+
+Use a palavra-chave **def**:
+
+```python
+def saudacao(nome):
+    return f"Olá, {nome}!"
+```
+
+Chame com: `saudacao("Ana")`</div>
+        </div>
+        <div class="diff-panel">
+          <div class="diff-panel__header rendered"><i class="fas fa-check-circle"></i> Semana 8 — renderizado</div>
+          <div class="diff-panel__body rendered-body" style="font-size:.83rem;">
+            <div style="font-family:'Montserrat',sans-serif;font-size:.95rem;font-weight:800;color:white;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(74,222,128,.18);">Como criar uma função em Python</div>
+            <p style="margin-bottom:.45rem;">Use a palavra-chave <strong style="color:white;">def</strong>:</p>
+            <div style="border-radius:8px;overflow:hidden;border:1px solid rgba(74,222,128,.15);margin-bottom:.5rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:.3rem .75rem;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(74,222,128,.12);">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(74,222,128,.55);">python</span>
+                <span style="font-size:.68rem;padding:2px 7px;border-radius:5px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);color:#86efac;">Copiar</span>
+              </div>
+              <div style="background:#282c34;padding:.75rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.6;">
+                <span style="color:#c678dd;">def</span> <span style="color:#61afef;">saudacao</span>(<span style="color:#e06c75;">nome</span>):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c678dd;">return</span> <span style="color:#98c379;">f"Olá, {nome}!"</span>
+              </div>
+            </div>
+            <p style="margin:0;">Chame com: <code style="font-family:'JetBrains Mono',monospace;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.18);padding:1px 5px;border-radius:4px;font-size:.82em;color:#86efac;">saudacao("Ana")</code></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>Passo a passo do LAB</div>
+      <div class="lab-steps">
+        <div class="lab-step">
+          <div class="lab-step__num">1</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Instalar as dependências</div>
+            <div class="lab-step__desc">No projeto da Semana 7: <code style="font-family:'JetBrains Mono',monospace;">npm install react-markdown remark-gfm react-syntax-highlighter</code>. Se você não tem o projeto da S7, crie um novo React app e adicione o fakeStream do exercício 04 daquela semana para testar sem API key.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">2</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Criar o componente MarkdownRenderer</div>
+            <div class="lab-step__desc">Copie o código da Aula 2 para um arquivo <code style="font-family:'JetBrains Mono',monospace;">MarkdownRenderer.jsx</code> e seu CSS para <code style="font-family:'JetBrains Mono',monospace;">MarkdownRenderer.css</code>. Teste isolado primeiro: <code style="font-family:'JetBrains Mono',monospace;">&lt;MarkdownRenderer conteudo="# Teste\n\n`code`" /&gt;</code>.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">3</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Atualizar o ChatbotStream</div>
+            <div class="lab-step__desc">No historico renderizado, substitua <code style="font-family:'JetBrains Mono',monospace;">{m.content}</code> por <code style="font-family:'JetBrains Mono',monospace;">&lt;MarkdownRenderer conteudo={m.content} /&gt;</code> apenas para mensagens do assistente (<code style="font-family:'JetBrains Mono',monospace;">m.role === 'assistant'</code>). Mensagens do usuário continuam como texto puro.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">4</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Tratar o texto durante o streaming</div>
+            <div class="lab-step__desc">Enquanto <code style="font-family:'JetBrains Mono',monospace;">gerando === true</code>, exiba <code style="font-family:'JetBrains Mono',monospace;">respostaAtual</code> como texto puro (com <code style="font-family:'JetBrains Mono',monospace;">white-space: pre-wrap</code> e fonte monospace). Quando o stream terminar e a mensagem for adicionada ao histórico, ela passa a ser renderizada pelo MarkdownRenderer com formatação completa.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">5</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Testar com um prompt de código</div>
+            <div class="lab-step__desc">Envie: <em>"Mostre um exemplo de componente React com useState e useEffect em TypeScript, com uma tabela comparando useState vs useRef"</em>. A resposta deve aparecer com código TypeScript colorido, tabela formatada e botões de copiar funcionando.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — trecho atualizado do ChatbotStream.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> MarkdownRenderer <span class="pp">from</span> <span class="str">'./MarkdownRenderer'</span>;
+
+<span class="cm">// Dentro do return, substitua o bloco de mensagens por:</span>
+{historico.<span class="fn">map</span>((m, i) => (
+  &lt;<span class="tag">div</span> <span class="attr">key</span>={i} <span class="attr">className</span>={<span class="str">`bubble bubble--${m.role}`</span>}&gt;
+    &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"bubble__label"</span>&gt;{m.role === <span class="str">'user'</span> ? <span class="str">'Você'</span> : <span class="str">'IA'</span>}&lt;/<span class="tag">span</span>&gt;
+
+    {m.role === <span class="str">'assistant'</span>
+      ? &lt;<span class="tag">MarkdownRenderer</span> <span class="attr">conteudo</span>={m.content} /&gt;  <span class="cm">// ← markdown renderizado</span>
+      : m.content                                      <span class="cm">// ← texto puro para o usuário</span>
+    }
+  &lt;/<span class="tag">div</span>&gt;
+))}
+
+{<span class="cm">/* Durante o stream — texto puro com sensação de digitação */</span>}
+{gerando &amp;&amp; respostaAtual &amp;&amp; (
+  &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"bubble bubble--assistant"</span>&gt;
+    &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"bubble__label"</span>&gt;IA · gerando...&lt;/<span class="tag">span</span>&gt;
+    &lt;<span class="tag">span</span> <span class="attr">style</span>={{ whiteSpace: <span class="str">'pre-wrap'</span>, fontFamily: <span class="str">'monospace'</span>, fontSize: <span class="str">'.85rem'</span> }}&gt;
+      {respostaAtual}
+    &lt;/<span class="tag">span</span>&gt;
+    &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"cursor"</span> /&gt;
+  &lt;/<span class="tag">div</span>&gt;
+)}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Exercícios</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">→</div>
+      <div class="secao-info">
+        <div class="secao-label">Exercícios · Conceito + LAB</div>
+        <div class="secao-titulo">4 exercícios — do básico ao markdown avançado</div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Trocando o tema do highlight</div>
+      <p>O react-syntax-highlighter vem com dezenas de temas. Importe e aplique três temas diferentes: <code style="font-family:'JetBrains Mono',monospace;">dracula</code>, <code style="font-family:'JetBrains Mono',monospace;">githubDark</code> e <code style="font-family:'JetBrains Mono',monospace;">nord</code> (todos disponíveis em <code style="font-family:'JetBrains Mono',monospace;">react-syntax-highlighter/dist/esm/styles/prism</code>). Adicione um seletor de tema na interface para o usuário escolher em tempo real. Qual estado você precisa para isso?</p>
+      <span class="dif-basico">LAB · exploração</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Trecho — seletor de tema no App.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="pp">import</span> { oneDark } <span class="pp">from</span> <span class="str">'react-syntax-highlighter/dist/esm/styles/prism'</span>;
+<span class="pp">import</span> { dracula } <span class="pp">from</span> <span class="str">'react-syntax-highlighter/dist/esm/styles/prism'</span>;
+<span class="pp">import</span> { nord } <span class="pp">from</span> <span class="str">'react-syntax-highlighter/dist/esm/styles/prism'</span>;
+
+<span class="kw">const</span> temas = { oneDark, dracula, nord };
+
+<span class="cm">// No componente pai:</span>
+<span class="kw">const</span> [tema, setTema] = <span class="fn">useState</span>(<span class="str">'oneDark'</span>);
+
+<span class="cm">// Passa para o MarkdownRenderer como prop:</span>
+&lt;<span class="tag">MarkdownRenderer</span> <span class="attr">conteudo</span>={m.content} <span class="attr">tema</span>={temas[tema]} /&gt;
+
+<span class="cm">// No MarkdownRenderer, recebe tema como prop e passa ao SyntaxHighlighter:</span>
+&lt;<span class="tag">SyntaxHighlighter</span> <span class="attr">style</span>={tema} <span class="attr">language</span>={linguagem} .../&gt;
+
+<span class="cm">// Seletor de tema:</span>
+&lt;<span class="tag">select</span> <span class="attr">value</span>={tema} <span class="attr">onChange</span>={e => <span class="fn">setTema</span>(e.target.value)}&gt;
+  {Object.<span class="fn">keys</span>(temas).<span class="fn">map</span>(t => &lt;<span class="tag">option</span> <span class="attr">key</span>={t}&gt;{t}&lt;/<span class="tag">option</span>&gt;)}
+&lt;/<span class="tag">select</span>&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Componentes customizados para tabela</div>
+      <p>Por padrão, o react-markdown renderiza a tag <code style="font-family:'JetBrains Mono',monospace;">&lt;table&gt;</code> nativa. Isso não permite scroll horizontal em mobile. Adicione via <code style="font-family:'JetBrains Mono',monospace;">components</code> um componente customizado para <code style="font-family:'JetBrains Mono',monospace;">table</code> que envolve a tabela em um <code style="font-family:'JetBrains Mono',monospace;">&lt;div style={{ overflowX: 'auto' }}&gt;</code>. Teste com uma tabela de 5+ colunas em viewport estreita.</p>
+      <span class="dif-basico">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Trecho — components no ReactMarkdown</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">const</span> componentes = {
+  code: BlocoCode,
+  <span class="cm">// tabela com scroll horizontal</span>
+  table: ({ children }) => (
+    &lt;<span class="tag">div</span> <span class="attr">style</span>={{ overflowX: <span class="str">'auto'</span>, margin: <span class="str">'.75rem 0'</span> }}&gt;
+      &lt;<span class="tag">table</span>&gt;{children}&lt;/<span class="tag">table</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  ),
+  <span class="cm">// links abrem em nova aba com segurança</span>
+  a: ({ href, children }) => (
+    &lt;<span class="tag">a</span> <span class="attr">href</span>={href} <span class="attr">target</span>=<span class="str">"_blank"</span> <span class="attr">rel</span>=<span class="str">"noopener noreferrer"</span>&gt;
+      {children}
+    &lt;/<span class="tag">a</span>&gt;
+  ),
+};
+
+<span class="cm">// No ReactMarkdown:</span>
+&lt;<span class="tag">ReactMarkdown</span> <span class="attr">components</span>={componentes} <span class="attr">remarkPlugins</span>={[remarkGfm]}&gt;
+  {conteudo}
+&lt;/<span class="tag">ReactMarkdown</span>&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Contador de palavras e tempo de leitura</div>
+      <p>Adicione abaixo de cada resposta da IA (após o markdown renderizado) um rodapé discreto mostrando: número de palavras na resposta e tempo de leitura estimado (palavras ÷ 200 ≈ minutos). Exiba "1 min de leitura" para respostas curtas. Use um componente separado <code style="font-family:'JetBrains Mono',monospace;">RodapeResposta</code> que recebe o texto bruto como prop e calcula os valores.</p>
+      <span class="dif-medio">Integração</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — RodapeResposta.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">function</span> <span class="fn">RodapeResposta</span>({ texto }) {
+  <span class="kw">const</span> palavras = texto.<span class="fn">trim</span>().<span class="fn">split</span>(/\s+/).<span class="fn">filter</span>(Boolean).length;
+  <span class="kw">const</span> minutos = <span class="fn">Math.max</span>(<span class="num">1</span>, <span class="fn">Math.round</span>(palavras / <span class="num">200</span>));
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">style</span>={{
+      marginTop: <span class="str">'.65rem'</span>,
+      paddingTop: <span class="str">'.5rem'</span>,
+      borderTop: <span class="str">'1px solid rgba(255,255,255,.06)'</span>,
+      fontSize: <span class="str">'.72rem'</span>,
+      color: <span class="str">'rgba(255,255,255,.3)'</span>,
+      display: <span class="str">'flex'</span>,
+      gap: <span class="str">'1rem'</span>,
+    }}&gt;
+      &lt;<span class="tag">span</span>&gt;{palavras} palavras&lt;/<span class="tag">span</span>&gt;
+      &lt;<span class="tag">span</span>&gt;{minutos} min de leitura&lt;/<span class="tag">span</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}
+
+<span class="cm">// Uso no historico:</span>
+{m.role === <span class="str">'assistant'</span> &amp;&amp; (
+  &lt;&gt;
+    &lt;<span class="tag">MarkdownRenderer</span> <span class="attr">conteudo</span>={m.content} /&gt;
+    &lt;<span class="tag">RodapeResposta</span> <span class="attr">texto</span>={m.content} /&gt;
+  &lt;/&gt;
+)}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 04 — Desafio: exportar conversa como Markdown</div>
+      <p>Adicione um botão "Exportar .md" que gera um arquivo Markdown com toda a conversa e faz o download automático no browser. Formato esperado:<br><code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;"># Conversa exportada\n\n## Você\n{mensagem}\n\n## IA\n{resposta}\n\n...</code><br>Use a API <code style="font-family:'JetBrains Mono',monospace;">Blob</code> e <code style="font-family:'JetBrains Mono',monospace;">URL.createObjectURL</code> para o download sem servidor.</p>
+      <span class="dif-desafio">Desafio</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JavaScript — função exportarMarkdown</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">function</span> <span class="fn">exportarMarkdown</span>(historico) {
+  <span class="kw">const</span> data = <span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">toLocaleDateString</span>(<span class="str">'pt-BR'</span>);
+  <span class="kw">let</span> md = <span class="str">`# Conversa exportada — ${data}\n\n`</span>;
+
+  historico.<span class="fn">forEach</span>(m => {
+    <span class="kw">const</span> autor = m.role === <span class="str">'user'</span> ? <span class="str">'## Você'</span> : <span class="str">'## IA'</span>;
+    md += <span class="str">`${autor}\n\n${m.content}\n\n---\n\n`</span>;
+  });
+
+  <span class="cm">// cria o blob e dispara o download</span>
+  <span class="kw">const</span> blob = <span class="kw">new</span> <span class="fn">Blob</span>([md], { type: <span class="str">'text/markdown;charset=utf-8'</span> });
+  <span class="kw">const</span> url = <span class="fn">URL</span>.<span class="fn">createObjectURL</span>(blob);
+  <span class="kw">const</span> a = document.<span class="fn">createElement</span>(<span class="str">'a'</span>);
+  a.href = url;
+  a.download = <span class="str">`conversa-${Date.now()}.md`</span>;
+  a.<span class="fn">click</span>();
+  <span class="fn">URL</span>.<span class="fn">revokeObjectURL</span>(url);   <span class="cm">// libera memória</span>
+}
+
+<span class="cm">// No JSX:</span>
+&lt;<span class="tag">button</span> <span class="attr">onClick</span>={() => <span class="fn">exportarMarkdown</span>(historico)} <span class="attr">disabled</span>={historico.length === <span class="num">0</span>}&gt;
+  ⬇ Exportar .md
+&lt;/<span class="tag">button</span>&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 8</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fab fa-markdown"></i>
+        <strong>react-markdown + remark-gfm</strong>
+        <p>Renderiza markdown em componentes React com segurança. remark-gfm habilita tabelas, checklists e strikethrough. Nunca usar dangerouslySetInnerHTML com conteúdo de IA.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-paint-brush"></i>
+        <strong>react-syntax-highlighter</strong>
+        <p>Highlight por linguagem via prop className="language-X". Prism para JSX/TS. BotaoCopiar com Clipboard API. Temas intercambiáveis como oneDark e dracula.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-stream"></i>
+        <strong>Streaming + markdown</strong>
+        <p>Durante o stream: texto puro com white-space: pre-wrap. Após [DONE]: MarkdownRenderer com formatação completa. Evita artefatos de markdown incompleto.</p>
+      </div>
+    </div>
+    <div class="aviso-green" style="margin-top:1.5rem;">
+      <i class="fas fa-question-circle"></i>
+      <span><strong>Checklist:</strong> blocos de código aparecem coloridos com label da linguagem? O botão de copiar funciona? Tabelas renderizam com borda e scroll horizontal? Links abrem em nova aba? Se sim — pronto para a Semana 9: visualização de dados com Chart.js e Recharts para dashboards de IA.</span>
+    </div>
+    <div class="proxima" onclick="window.location.href='semana-09-frontend.html'">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 9 — Visualização de dados: Chart.js e Recharts com dados de modelos de IA</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    :'<i class="fas fa-eye"></i> ver gabarito';
+}
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{btn.textContent='copiado!';setTimeout(()=>btn.textContent='copiar',2000);});
+}
+
+const quizData={
+  quiz1:{correct:'B',msg:'✅ Correto! react-markdown analisa o markdown e o transforma em componentes React — nunca em HTML cru. Isso significa que mesmo que um LLM gere <script>alert("XSS")</script> como parte da resposta, esse conteúdo não é injetado no DOM como HTML executável. O React serializa tudo como texto. dangerouslySetInnerHTML, por outro lado, injeta HTML diretamente — se esse HTML vier de uma fonte externa não confiável como um LLM, qualquer script embutido será executado.'},
+  quiz2:{correct:'B',msg:'✅ Correto! O react-markdown segue a convenção do highlight.js/Prism: quando você escreve ```javascript no markdown, o elemento <code> gerado recebe className="language-javascript". No componente customizado, extraímos a linguagem com /language-(\\w+)/.exec(className || ""). Esse padrão "language-" é uma convenção amplamente adotada e documentada.'}
+};
+
+function responder(id,el,ok,letra){
+  const ops=document.getElementById(id+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  const correta=quizData[id].correct;
+  ops.querySelectorAll('.quiz-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    if(op.querySelector('.quiz-letra').textContent.trim()===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const fb=document.getElementById(id+'-feedback');
+  fb.textContent=quizData[id].msg;
+  fb.style.background=ok?'rgba(74,222,128,.08)':'rgba(239,68,68,.08)';
+  fb.style.border=ok?'1px solid rgba(74,222,128,.22)':'1px solid rgba(239,68,68,.25)';
+  fb.style.color=ok?'rgba(134,239,172,.9)':'#fca5a5';
+  fb.style.padding='.75rem 1rem';fb.style.borderRadius='8px';
+  fb.classList.add('show');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 12 — UX para IA · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#0c0f14;
+  --slate-900:#0f172a;
+  --slate-700:#334155;
+  --slate-500:#64748b;
+  --indigo-500:#6366f1;
+  --indigo-400:#818cf8;
+  --indigo-300:#a5b4fc;
+  --white:#fff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(129,140,248,.05);
+  --code-bg:#070a10;
+  --code-border:rgba(129,140,248,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.22;pointer-events:none;}
+.blob-1{width:680px;height:680px;background:#312e81;top:-240px;left:-200px;}
+.blob-2{width:540px;height:540px;background:#1e1b4b;bottom:-210px;right:-120px;}
+.blob-3{width:290px;height:290px;background:#6366f1;top:36%;left:44%;opacity:.07;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(129,140,248,.14);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--indigo-300);border:1px solid rgba(129,140,248,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--indigo-300);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(129,140,248,.07);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--indigo-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--indigo-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.11);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}.topico:nth-child(6){animation-delay:.6s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(129,140,248,.14);color:var(--indigo-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(129,140,248,.05);border-left:3px solid var(--indigo-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--indigo-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--indigo-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--indigo-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(129,140,248,.11);color:var(--indigo-400);border:1px solid rgba(129,140,248,.26);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(129,140,248,.11);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(129,140,248,.13);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--indigo-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(129,140,248,.17);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--indigo-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.06);border-left:3px solid var(--indigo-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--indigo-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-indigo{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(129,140,248,.06);border:1px solid rgba(129,140,248,.18);font-size:.86rem;color:rgba(165,180,252,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-indigo i{color:var(--indigo-400);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(129,140,248,.08);}
+th{padding:.6rem 1rem;text-align:left;color:var(--indigo-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(129,140,248,.16);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(129,140,248,.03);}
+td strong{color:var(--text-primary);}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(129,140,248,.05);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--indigo-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--indigo-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#c7d2fe;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#374151;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(129,140,248,.11);color:var(--indigo-400);border:1px solid rgba(129,140,248,.22);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.22);}
+.badge-yellow{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.22);}
+.badge-blue{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.22);}
+
+/* ── Skeleton mockups ── */
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 75%);background-size:800px 100%;animation:shimmer 1.4s infinite linear;border-radius:6px;}
+.skel-line{height:14px;margin-bottom:8px;}
+.skel-line.w-full{width:100%;}
+.skel-line.w-3q{width:75%;}
+.skel-line.w-half{width:50%;}
+.skel-line.w-1q{width:25%;}
+.skel-avatar{width:40px;height:40px;border-radius:50%;}
+.skel-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:1.1rem;margin-bottom:.65rem;}
+.skel-row{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.65rem;}
+
+/* ── Estado de erro ── */
+.erro-mock{border-radius:12px;padding:1rem 1.25rem;display:flex;gap:12px;align-items:flex-start;}
+.erro-icon{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+.erro-corpo{}
+.erro-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;margin-bottom:.2rem;}
+.erro-msg{font-size:.82rem;line-height:1.55;margin-bottom:.55rem;}
+.erro-actions{display:flex;gap:.5rem;}
+.erro-btn{font-size:.75rem;padding:.3rem .75rem;border-radius:7px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;border:1px solid;transition:background .2s;}
+
+/* ── Confiança mockup ── */
+.conf-mock{background:var(--code-bg);border:1px solid rgba(129,140,248,.16);border-radius:12px;padding:1.25rem;margin:.75rem 0;}
+.conf-mock__title{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--indigo-400);font-weight:700;margin-bottom:.85rem;}
+.conf-item{display:flex;align-items:center;gap:.85rem;margin-bottom:.75rem;padding:.65rem .85rem;border-radius:9px;border:1px solid;}
+.conf-item__icon{font-size:1.1rem;flex-shrink:0;}
+.conf-item__body{flex:1;}
+.conf-item__label{font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.15rem;}
+.conf-item__desc{font-size:.78rem;color:var(--text-secondary);line-height:1.45;}
+.conf-item__badge{font-size:.68rem;padding:2px 7px;border-radius:5px;font-weight:700;flex-shrink:0;}
+
+/* ── Before/After grid ── */
+.before-after{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
+.ba-panel{border-radius:12px;overflow:hidden;border:1px solid;}
+.ba-header{padding:.5rem 1rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;display:flex;align-items:center;gap:6px;}
+.ba-body{padding:1rem;}
+.ba-body p{font-size:.82rem;color:var(--text-secondary);line-height:1.6;margin-bottom:.5rem;}
+.ba-body p:last-child{margin-bottom:0;}
+
+/* ── Lab steps ── */
+.lab-steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.lab-steps::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--indigo-400),rgba(129,140,248,.1));border-radius:1px;}
+.lab-step{display:flex;gap:1rem;padding:.75rem 0;}
+.lab-step__num{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;position:relative;z-index:2;background:rgba(129,140,248,.1);color:var(--indigo-400);border:2px solid rgba(129,140,248,.27);}
+.lab-step__body{flex:1;padding-top:8px;}
+.lab-step__title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#f8fafc;margin-bottom:.3rem;}
+.lab-step__desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--indigo-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(129,140,248,.17);border-radius:8px;padding:.5rem 1rem;color:var(--indigo-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(129,140,248,.07);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+/* ── Quiz ── */
+.quiz-box{background:rgba(129,140,248,.03);border:1px solid rgba(129,140,248,.12);border-radius:12px;padding:1.25rem;margin:1rem 0;}
+.quiz-pergunta{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700;color:var(--white);margin-bottom:1rem;}
+.quiz-ops{display:flex;flex-direction:column;gap:.5rem;}
+.quiz-op{display:flex;align-items:center;gap:10px;padding:.6rem .9rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:9px;cursor:pointer;transition:all .2s;}
+.quiz-op:hover{background:rgba(129,140,248,.06);border-color:rgba(129,140,248,.2);}
+.quiz-op.correto{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);}
+.quiz-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);}
+.quiz-letra{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;}
+.quiz-texto{font-size:.85rem;color:var(--text-secondary);}
+.quiz-feedback{display:none;padding:.75rem 1rem;border-radius:8px;font-size:.83rem;line-height:1.55;margin-top:.75rem;}
+.quiz-feedback.show{display:block;}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--indigo-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(129,140,248,.09);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--indigo-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.before-after,.resumo-grid{grid-template-columns:1fr;}
+}
+@media(max-width:520px){.resumo-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">🎨 LAB + Conteúdo</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">12</div>
+    <h1 class="capa-titulo">UX para<br><em>Interfaces de IA</em><br>que Inspiram Confiança</h1>
+    <p class="capa-sub">4 aulas · 200 minutos · Da tela em branco à experiência que o usuário confia</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-hourglass-half"></i></div><span>Os 3 estados de toda operação de IA — loading, sucesso e erro</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-ghost"></i></div><span>Skeleton loaders — por que são melhores que spinners</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-exclamation-triangle"></i></div><span>Tratamento de erros — mensagens úteis, retry e fallback</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-shield-alt"></i></div><span>Transparência e confiança — quando mostrar o que a IA não sabe</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-thumbs-up"></i></div><span>Feedback do usuário — thumbs up/down, edição e confirmação</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-flask"></i></div><span>LAB: redesenhar o chatbot da S7 com UX de produção completa</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade LAB</div>
+      <p>Aplicar todos os padrões de UX no chatbot das semanas anteriores: skeleton durante carregamento do modelo, estados de erro com retry, indicador de confiança nas respostas, thumbs up/down com persistência local.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>Habilidades que você vai aplicar</div>
+      <ul class="info-lista">
+        <li>CSS animations para skeleton e shimmer</li>
+        <li>Máquina de estados com useReducer — loading/success/error</li>
+        <li>Error boundaries em React para erros inesperados</li>
+        <li>localStorage para persistir feedback do usuário</li>
+        <li>aria-live e aria-label para acessibilidade em UX dinâmica</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 7 — Chatbot com streaming</li>
+        <li>✅ Sem. 8 — Markdown e highlight</li>
+        <li>✅ Sem. 10–11 — TensorFlow.js e Transformers.js</li>
+        <li>▶ Sem. 12 — UX completa para IA</li>
+        <li>Sem. 13 — Avaliação P2 (Semanas 7 a 12)</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que isso importa</div>
+      <ul class="info-lista">
+        <li>UX ruim destrói a confiança no modelo — mesmo que ele acerte tudo</li>
+        <li>Um erro sem tratamento parece um bug; com bom UX parece feature</li>
+        <li>Transparência sobre incerteza faz o usuário usar IA com mais critério</li>
+        <li>Feedback de thumbs up/down é dado de treino — produto e ML juntos</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">Estados de UI, skeleton loaders e máquina de estados</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-sitemap"></i>Toda operação de IA tem exatamente 3 estados — modele todos</div>
+      <p>O erro mais comum em interfaces de IA: modelar apenas o estado de sucesso. Quando a API demora 5 segundos ou retorna um erro, a interface fica em branco ou quebrada. <strong>Toda operação assíncrona deve modelar explicitamente: idle, loading, success e error.</strong></p>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Estado</th><th>O que o usuário vê</th><th>Componente React</th><th>Armadilha comum</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Idle</strong></td><td>Estado inicial — nenhuma operação em curso</td><td>Placeholder, input habilitado</td><td>Mostrar mensagem de "sem dados" quando na verdade ainda não carregou</td></tr>
+            <tr><td><strong>Loading</strong></td><td>Skeleton loader ou spinner — algo está acontecendo</td><td>Skeleton, disabled inputs</td><td>Usar spinner genérico em vez de skeleton do shape do conteúdo</td></tr>
+            <tr><td><strong>Success</strong></td><td>Conteúdo real renderizado</td><td>Componente de conteúdo</td><td>Não limpar o estado de loading antes de renderizar o conteúdo</td></tr>
+            <tr><td><strong>Error</strong></td><td>Mensagem clara + ação de retry</td><td>ErrorState com botão</td><td>Mostrar erros técnicos ("TypeError: Cannot read...") para o usuário</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="destaque">
+        <strong>useReducer para máquinas de estado complexas:</strong> quando um componente tem múltiplas transições de estado relacionadas (loading→error, loading→success, error→loading via retry), <code style="font-family:'JetBrains Mono',monospace;">useReducer</code> é mais legível e seguro do que múltiplos <code style="font-family:'JetBrains Mono',monospace;">useState</code>. Garante que estados impossíveis (loading=true AND error=true) nunca existam.
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — máquina de estados com useReducer</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">// Estado tipado — impossível ter loading + error ao mesmo tempo</span>
+<span class="kw">const</span> estadoInicial = { status: <span class="str">'idle'</span>, dados: <span class="kw">null</span>, erro: <span class="kw">null</span> };
+
+<span class="kw">function</span> <span class="fn">reducer</span>(estado, acao) {
+  <span class="kw">switch</span> (acao.tipo) {
+    <span class="kw">case</span> <span class="str">'CARREGAR'</span>:
+      <span class="kw">return</span> { status: <span class="str">'loading'</span>, dados: <span class="kw">null</span>,       erro: <span class="kw">null</span> };
+    <span class="kw">case</span> <span class="str">'SUCESSO'</span>:
+      <span class="kw">return</span> { status: <span class="str">'success'</span>, dados: acao.dados,  erro: <span class="kw">null</span> };
+    <span class="kw">case</span> <span class="str">'ERRO'</span>:
+      <span class="kw">return</span> { status: <span class="str">'error'</span>,   dados: <span class="kw">null</span>,       erro: acao.erro };
+    <span class="kw">default</span>:
+      <span class="kw">return</span> estado;
+  }
+}
+
+<span class="kw">function</span> <span class="fn">PainelIA</span>() {
+  <span class="kw">const</span> [estado, dispatch] = <span class="fn">useReducer</span>(reducer, estadoInicial);
+
+  <span class="kw">async function</span> <span class="fn">buscarResposta</span>(pergunta) {
+    <span class="fn">dispatch</span>({ tipo: <span class="str">'CARREGAR'</span> });
+    <span class="kw">try</span> {
+      <span class="kw">const</span> dados = <span class="kw">await</span> <span class="fn">chamarAPI</span>(pergunta);
+      <span class="fn">dispatch</span>({ tipo: <span class="str">'SUCESSO'</span>, dados });
+    } <span class="kw">catch</span> (e) {
+      <span class="fn">dispatch</span>({ tipo: <span class="str">'ERRO'</span>, erro: <span class="fn">traduzirErro</span>(e) }); <span class="cm">// nunca expõe e.message bruto</span>
+    }
+  }
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span>&gt;
+      {estado.status === <span class="str">'idle'</span>    &amp;&amp; &lt;<span class="tag">Placeholder</span> /&gt;}
+      {estado.status === <span class="str">'loading'</span> &amp;&amp; &lt;<span class="tag">SkeletonResposta</span> /&gt;}
+      {estado.status === <span class="str">'success'</span> &amp;&amp; &lt;<span class="tag">Resposta</span> <span class="attr">dados</span>={estado.dados} /&gt;}
+      {estado.status === <span class="str">'error'</span>   &amp;&amp; &lt;<span class="tag">EstadoErro</span> <span class="attr">erro</span>={estado.erro} <span class="attr">onRetry</span>={() => <span class="fn">buscarResposta</span>(ultimaPergunta)} /&gt;}
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-ghost"></i>Skeleton loaders — por que são superiores a spinners</div>
+      <p>Um spinner diz "aguarde". Um skeleton diz "aqui vem uma resposta com esse tamanho e formato". O skeleton reduz a percepção de espera porque o usuário pode <strong>antecipar onde o conteúdo vai aparecer</strong> — os olhos já se posicionam. Em interfaces de IA onde as respostas têm forma previsível (bubble de chat, card de resultado), sempre prefira skeleton.</p>
+
+      <div class="grid-2">
+        <div>
+          <p style="font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--indigo-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;">❌ Spinner genérico</p>
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1.25rem;display:flex;justify-content:center;align-items:center;min-height:100px;">
+            <div style="width:28px;height:28px;border:3px solid rgba(129,140,248,.2);border-top-color:var(--indigo-400);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+          </div>
+          <p style="font-size:.75rem;color:var(--text-muted);margin-top:.4rem;">Não informa nada sobre o que está carregando nem quanto tempo vai demorar.</p>
+        </div>
+        <div>
+          <p style="font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--indigo-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;">✅ Skeleton da bubble de chat</p>
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1.25rem;">
+            <div class="skel-card">
+              <div class="skel-row">
+                <div class="skel-avatar skeleton"></div>
+                <div style="flex:1;">
+                  <div class="skel-line w-1q skeleton" style="margin-bottom:10px;height:10px;"></div>
+                  <div class="skel-line w-full skeleton"></div>
+                  <div class="skel-line w-3q skeleton"></div>
+                  <div class="skel-line w-full skeleton"></div>
+                  <div class="skel-line w-half skeleton"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:.75rem;color:var(--text-muted);margin-top:.4rem;">O usuário sabe que virá uma resposta em texto com esse tamanho aproximado.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React + CSS — SkeletonBubble.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">/* CSS — adicionar ao seu arquivo de estilos */</span>
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,.04) 25%,
+    rgba(255,255,255,.09) 50%,
+    rgba(255,255,255,.04) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 6px;
+}
+
+<span class="cm">/* React — componente de skeleton para bubble de chat */</span>
+<span class="kw">export function</span> <span class="fn">SkeletonBubble</span>() {
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span>
+      <span class="attr">className</span>=<span class="str">"bubble bubble--assistant"</span>
+      <span class="attr">role</span>=<span class="str">"status"</span>
+      <span class="attr">aria-label</span>=<span class="str">"Carregando resposta..."</span>   <span class="cm">// acessibilidade</span>
+    &gt;
+      &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"bubble__label"</span>&gt;IA · pensando...&lt;/<span class="tag">span</span>&gt;
+      &lt;<span class="tag">div</span> <span class="attr">style</span>={{ display: <span class="str">'flex'</span>, flexDirection: <span class="str">'column'</span>, gap: <span class="str">'8px'</span> }}&gt;
+        &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"skeleton"</span> <span class="attr">style</span>={{ height: <span class="str">'14px'</span>, width: <span class="str">'100%'</span> }} /&gt;
+        &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"skeleton"</span> <span class="attr">style</span>={{ height: <span class="str">'14px'</span>, width: <span class="str">'85%'</span>  }} /&gt;
+        &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"skeleton"</span> <span class="attr">style</span>={{ height: <span class="str">'14px'</span>, width: <span class="str">'92%'</span>  }} /&gt;
+        &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"skeleton"</span> <span class="attr">style</span>={{ height: <span class="str">'14px'</span>, width: <span class="str">'60%'</span>  }} /&gt;
+      &lt;/<span class="tag">div</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Por que usar <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">useReducer</code> em vez de vários <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">useState</code> para modelar os estados de uma requisição de IA?</div>
+      <div class="quiz-ops" id="quiz1-ops">
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">useReducer é mais rápido — o React re-renderiza menos vezes ao atualizar um único objeto de estado</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">useReducer centraliza as transições e impede estados impossíveis — é impossível ter loading=true e error=true ao mesmo tempo quando o estado é um único objeto</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">useState não suporta objetos — apenas primitivos como strings e números</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">É apenas uma convenção de código — os dois produzem exatamente o mesmo resultado</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz1-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Erros úteis, transparência e feedback do usuário</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-exclamation-triangle"></i>Mensagens de erro que ajudam vs mensagens que assustam</div>
+      <p>Erros em interfaces de IA são frequentes: timeout, rate limit, modelo indisponível, contexto muito longo, resposta filtrada por conteúdo. A diferença entre uma boa e má UX está em <strong>traduzir o erro técnico em uma ação clara para o usuário</strong>.</p>
+
+      <div class="before-after">
+        <div class="ba-panel" style="border-color:rgba(239,68,68,.2);">
+          <div class="ba-header" style="background:rgba(239,68,68,.08);color:#f87171;border-bottom:1px solid rgba(239,68,68,.15);">
+            <i class="fas fa-times-circle"></i> Antes — erro técnico exposto
+          </div>
+          <div class="ba-body">
+            <div class="erro-mock" style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);">
+              <div class="erro-icon" style="background:rgba(239,68,68,.12);color:#f87171;"><i class="fas fa-bug"></i></div>
+              <div class="erro-corpo">
+                <div class="erro-titulo" style="color:#f87171;">TypeError: Failed to fetch</div>
+                <div class="erro-msg" style="color:rgba(252,165,165,.8);">Error: Request failed with status code 429. RateLimitError: You exceeded your current quota, please check your plan and billing details.</div>
+              </div>
+            </div>
+            <p style="font-size:.78rem;color:var(--text-muted);margin-top:.5rem;">O usuário não sabe o que é "quota", "status 429" nem como resolver. Parece que o app quebrou.</p>
+          </div>
+        </div>
+        <div class="ba-panel" style="border-color:rgba(129,140,248,.2);">
+          <div class="ba-header" style="background:rgba(129,140,248,.08);color:var(--indigo-400);border-bottom:1px solid rgba(129,140,248,.15);">
+            <i class="fas fa-check-circle"></i> Depois — erro traduzido e acionável
+          </div>
+          <div class="ba-body">
+            <div class="erro-mock" style="background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.18);">
+              <div class="erro-icon" style="background:rgba(251,191,36,.12);color:#fbbf24;"><i class="fas fa-clock"></i></div>
+              <div class="erro-corpo">
+                <div class="erro-titulo" style="color:#fcd34d;">Muitas mensagens em pouco tempo</div>
+                <div class="erro-msg" style="color:rgba(253,230,138,.8);">O serviço de IA está ocupado agora. Aguarde alguns segundos e tente novamente.</div>
+                <div class="erro-actions">
+                  <button class="erro-btn" style="background:rgba(251,191,36,.1);color:#fbbf24;border-color:rgba(251,191,36,.25);">Tentar novamente</button>
+                  <button class="erro-btn" style="background:transparent;color:var(--text-muted);border-color:rgba(255,255,255,.1);">Ignorar</button>
+                </div>
+              </div>
+            </div>
+            <p style="font-size:.78rem;color:var(--text-muted);margin-top:.5rem;">O usuário entende o problema e tem uma ação clara. A interface não parece quebrada.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — traduzirErro.js</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">/**
+ * Converte erros técnicos em mensagens amigáveis com ação sugerida
+ * Nunca expõe stack traces ou mensagens de erro internas ao usuário
+ */</span>
+<span class="kw">export function</span> <span class="fn">traduzirErro</span>(erro) {
+  <span class="cm">// Erros HTTP da OpenAI/HuggingFace</span>
+  <span class="kw">if</span> (erro.status === <span class="num">429</span> || erro.message?.includes(<span class="str">'rate limit'</span>)) {
+    <span class="kw">return</span> {
+      icone: <span class="str">'clock'</span>, cor: <span class="str">'yellow'</span>,
+      titulo: <span class="str">'Muitas mensagens em pouco tempo'</span>,
+      descricao: <span class="str">'O serviço de IA está ocupado agora. Aguarde alguns segundos.'</span>,
+      acao: <span class="str">'retry'</span>, tempoEspera: <span class="num">5000</span>,
+    };
+  }
+  <span class="kw">if</span> (erro.status === <span class="num">401</span> || erro.message?.includes(<span class="str">'API key'</span>)) {
+    <span class="kw">return</span> {
+      icone: <span class="str">'key'</span>, cor: <span class="str">'red'</span>,
+      titulo: <span class="str">'Problema de autenticação'</span>,
+      descricao: <span class="str">'Houve um problema com as credenciais. Entre em contato com o suporte.'</span>,
+      acao: <span class="str">'none'</span>,
+    };
+  }
+  <span class="kw">if</span> (erro.status === <span class="num">400</span> || erro.message?.includes(<span class="str">'context length'</span>)) {
+    <span class="kw">return</span> {
+      icone: <span class="str">'scissors'</span>, cor: <span class="str">'orange'</span>,
+      titulo: <span class="str">'Conversa muito longa'</span>,
+      descricao: <span class="str">'A conversa ficou longa demais. Inicie uma nova conversa para continuar.'</span>,
+      acao: <span class="str">'new-chat'</span>,
+    };
+  }
+  <span class="kw">if</span> (erro.name === <span class="str">'AbortError'</span>) {
+    <span class="kw">return null</span>; <span class="cm">// cancelamento intencional — sem erro para o usuário</span>
+  }
+  <span class="cm">// Erro de rede (offline, timeout)</span>
+  <span class="kw">if</span> (!navigator.onLine || erro.message?.includes(<span class="str">'fetch'</span>)) {
+    <span class="kw">return</span> {
+      icone: <span class="str">'wifi-slash'</span>, cor: <span class="str">'red'</span>,
+      titulo: <span class="str">'Sem conexão com a internet'</span>,
+      descricao: <span class="str">'Verifique sua conexão e tente novamente.'</span>,
+      acao: <span class="str">'retry'</span>,
+    };
+  }
+  <span class="cm">// Fallback genérico — nunca expõe o erro bruto</span>
+  <span class="kw">return</span> {
+    icone: <span class="str">'exclamation-triangle'</span>, cor: <span class="str">'red'</span>,
+    titulo: <span class="str">'Algo deu errado'</span>,
+    descricao: <span class="str">'Não foi possível gerar uma resposta agora. Tente novamente em instantes.'</span>,
+    acao: <span class="str">'retry'</span>,
+  };
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-shield-alt"></i>Transparência e confiança — o que mostrar sobre a IA</div>
+      <p>Interfaces de IA que fingem ser perfeitas constroem desconfiança quando erram. Interfaces que comunicam limitações proativamente fazem o usuário usar o produto com mais inteligência — e confiar mais quando ele acerta.</p>
+
+      <div class="conf-mock">
+        <div class="conf-mock__title">Padrões de transparência — aplicar no chatbot</div>
+
+        <div class="conf-item" style="background:rgba(74,222,128,.04);border-color:rgba(74,222,128,.15);">
+          <span class="conf-item__icon">📅</span>
+          <div class="conf-item__body">
+            <div class="conf-item__label" style="color:#4ade80;">Data de corte do conhecimento</div>
+            <div class="conf-item__desc">"Meu conhecimento vai até [data]. Para eventos mais recentes, verifique outras fontes." — Exiba quando detectar perguntas sobre eventos atuais (palavras-chave: "hoje", "agora", "recentemente", ano atual).</div>
+          </div>
+          <span class="conf-item__badge" style="background:rgba(74,222,128,.12);color:#4ade80;">Fácil</span>
+        </div>
+
+        <div class="conf-item" style="background:rgba(251,191,36,.04);border-color:rgba(251,191,36,.15);">
+          <span class="conf-item__icon">⚠️</span>
+          <div class="conf-item__body">
+            <div class="conf-item__label" style="color:#fbbf24;">Aviso para tópicos críticos</div>
+            <div class="conf-item__desc">"Para decisões médicas, jurídicas ou financeiras, consulte um profissional habilitado." — Detecte keywords (ex: "medicamento", "contrato", "investir") e adicione o disclaimer automaticamente.</div>
+          </div>
+          <span class="conf-item__badge" style="background:rgba(251,191,36,.12);color:#fbbf24;">Médio</span>
+        </div>
+
+        <div class="conf-item" style="background:rgba(129,140,248,.04);border-color:rgba(129,140,248,.15);">
+          <span class="conf-item__icon">🎯</span>
+          <div class="conf-item__body">
+            <div class="conf-item__label" style="color:var(--indigo-400);">Indicador de confiança do modelo</div>
+            <div class="conf-item__desc">Para modelos de classificação (sentimento, NER), exiba o score de confiança junto ao resultado: "Sentimento: Positivo (92% confiança)". Scores abaixo de 70% merecem um aviso explícito: "Resultado incerto — leia com atenção."</div>
+          </div>
+          <span class="conf-item__badge" style="background:rgba(129,140,248,.12);color:var(--indigo-400);">Médio</span>
+        </div>
+
+        <div class="conf-item" style="background:rgba(239,68,68,.04);border-color:rgba(239,68,68,.15);">
+          <span class="conf-item__icon">✏️</span>
+          <div class="conf-item__body">
+            <div class="conf-item__label" style="color:#f87171;">Permitir edição e confirmação</div>
+            <div class="conf-item__desc">Para ações consequentes (enviar e-mail, deletar arquivo, fazer compra), sempre mostre um preview editável antes de executar. "A IA vai enviar: [preview]. Confirmar?" — Nunca execute ações irreversíveis sem confirmação humana explícita.</div>
+          </div>
+          <span class="conf-item__badge" style="background:rgba(239,68,68,.12);color:#f87171;">Crítico</span>
+        </div>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-pergunta">🙋 Um chatbot de IA é perguntado sobre a eleição presidencial mais recente do Brasil. Qual é a melhor resposta de UX?</div>
+        <div class="quiz-ops" id="quiz2-ops">
+          <div class="quiz-op" onclick="responder('quiz2',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">Responder com confiança com a informação mais recente disponível no modelo, sem mencionar limitações</span></div>
+          <div class="quiz-op" onclick="responder('quiz2',this,false,'B')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">B</div><span class="quiz-texto">Recusar responder tópicos políticos por segurança</span></div>
+          <div class="quiz-op" onclick="responder('quiz2',this,true,'C')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">C</div><span class="quiz-texto">Responder com a informação disponível E exibir um aviso contextual de que os dados podem estar desatualizados, com sugestão de verificar em fontes atuais</span></div>
+          <div class="quiz-op" onclick="responder('quiz2',this,false,'D')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">D</div><span class="quiz-texto">Mostrar uma mensagem de erro dizendo que o chatbot não tem acesso à internet</span></div>
+        </div>
+        <div class="quiz-feedback" id="quiz2-feedback"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3 · LAB</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · LAB · ~50 minutos</div>
+        <div class="secao-titulo">LAB — Redesenhar o chatbot com UX de produção completa</div>
+      </div>
+    </div>
+
+    <div class="aviso-indigo">
+      <i class="fas fa-flask"></i>
+      <span>Objetivo: evoluir o chatbot das semanas 7–8 com: (1) skeleton durante geração, (2) erros traduzidos com retry automático, (3) feedback thumbs up/down por mensagem, (4) disclaimer automático para tópicos críticos, (5) contador de tokens e aviso de contexto longo.</span>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>Passo a passo do LAB</div>
+      <div class="lab-steps">
+        <div class="lab-step">
+          <div class="lab-step__num">1</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Migrar useState para useReducer</div>
+            <div class="lab-step__desc">Substitua os múltiplos estados de loading/erro do chatbot por um único <code style="font-family:'JetBrains Mono',monospace;">useReducer</code> com ações CARREGAR, SUCESSO, ERRO e TOKEN (para streaming). Garanta que é impossível ter estados contraditórios.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">2</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Substituir "gerando..." por SkeletonBubble</div>
+            <div class="lab-step__desc">Quando o stream ainda não iniciou (requisição em voo mas nenhum token chegou), exiba o <code style="font-family:'JetBrains Mono',monospace;">SkeletonBubble</code>. Quando o primeiro token chegar, troque automaticamente para a bubble de texto crescente com cursor piscante.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">3</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Adicionar tratamento de erro com retry</div>
+            <div class="lab-step__desc">Envolva o stream em try/catch e use <code style="font-family:'JetBrains Mono',monospace;">traduzirErro()</code>. No estado de erro, exiba o componente <code style="font-family:'JetBrains Mono',monospace;">EstadoErro</code> com o botão "Tentar novamente" que reenvia a última mensagem do usuário automaticamente.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">4</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Implementar thumbs up/down</div>
+            <div class="lab-step__desc">Cada mensagem do assistente tem um par de botões 👍/👎. O feedback é salvo em <code style="font-family:'JetBrains Mono',monospace;">localStorage</code> com o id da mensagem. Persiste ao recarregar a página. Em produção, esse dado seria enviado a um endpoint de analytics para fine-tuning.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">5</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Disclaimer automático e aviso de contexto longo</div>
+            <div class="lab-step__desc">Detecte palavras-chave na resposta (médico, lei, contrato, investimento) e adicione o disclaimer abaixo da mensagem. Conte os tokens aproximados do histórico (palavras × 1.3) e exiba um banner quando ultrapassar 80% do limite do modelo (ex: 3.200 de 4.096 tokens).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — componentes de feedback e disclaimer</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { <span class="fn">useState</span>, <span class="fn">useEffect</span> } <span class="pp">from</span> <span class="str">'react'</span>;
+
+<span class="cm">/* ── Thumbs up/down por mensagem ── */</span>
+<span class="kw">function</span> <span class="fn">FeedbackBotoes</span>({ msgId }) {
+  <span class="kw">const</span> [voto, setVoto] = <span class="fn">useState</span>(
+    () => localStorage.<span class="fn">getItem</span>(<span class="str">`feedback:${msgId}`</span>) || <span class="kw">null</span>
+  );
+
+  <span class="kw">function</span> <span class="fn">votar</span>(valor) {
+    <span class="kw">const</span> novo = voto === valor ? <span class="kw">null</span> : valor; <span class="cm">// toggle</span>
+    <span class="fn">setVoto</span>(novo);
+    <span class="kw">if</span> (novo) localStorage.<span class="fn">setItem</span>(<span class="str">`feedback:${msgId}`</span>, novo);
+    <span class="kw">else</span>       localStorage.<span class="fn">removeItem</span>(<span class="str">`feedback:${msgId}`</span>);
+    <span class="cm">// Em produção: await fetch('/api/feedback', { method:'POST', body: JSON.stringify({ msgId, voto: novo }) });</span>
+  }
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"feedback-botoes"</span> <span class="attr">aria-label</span>=<span class="str">"Avaliar resposta"</span>&gt;
+      &lt;<span class="tag">button</span>
+        <span class="attr">className</span>={<span class="str">`btn-thumb ${voto === 'up' ? 'ativo' : ''}`</span>}
+        <span class="attr">onClick</span>={() => <span class="fn">votar</span>(<span class="str">'up'</span>)}
+        <span class="attr">aria-label</span>=<span class="str">"Resposta útil"</span>
+        <span class="attr">title</span>=<span class="str">"Resposta útil"</span>
+      &gt;
+        {voto === <span class="str">'up'</span> ? <span class="str">'👍'</span> : <span class="str">'👍'</span>}
+      &lt;/<span class="tag">button</span>&gt;
+      &lt;<span class="tag">button</span>
+        <span class="attr">className</span>={<span class="str">`btn-thumb ${voto === 'down' ? 'ativo' : ''}`</span>}
+        <span class="attr">onClick</span>={() => <span class="fn">votar</span>(<span class="str">'down'</span>)}
+        <span class="attr">aria-label</span>=<span class="str">"Resposta não útil"</span>
+        <span class="attr">title</span>=<span class="str">"Resposta não útil"</span>
+      &gt;
+        {voto === <span class="str">'down'</span> ? <span class="str">'👎'</span> : <span class="str">'👎'</span>}
+      &lt;/<span class="tag">button</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}
+
+<span class="cm">/* ── Disclaimer para tópicos críticos ── */</span>
+<span class="kw">const</span> PALAVRAS_CRITICAS = [
+  <span class="str">'médico'</span>, <span class="str">'doença'</span>, <span class="str">'remédio'</span>, <span class="str">'diagnóstico'</span>, <span class="str">'tratamento'</span>,
+  <span class="str">'advogado'</span>, <span class="str">'contrato'</span>, <span class="str">'lei'</span>, <span class="str">'processo'</span>,
+  <span class="str">'investir'</span>, <span class="str">'ação'</span>, <span class="str">'financeiro'</span>, <span class="str">'imposto'</span>,
+];
+
+<span class="kw">function</span> <span class="fn">precisaDisclaimer</span>(texto) {
+  <span class="kw">const</span> lower = texto.<span class="fn">toLowerCase</span>();
+  <span class="kw">return</span> PALAVRAS_CRITICAS.<span class="fn">some</span>(p => lower.<span class="fn">includes</span>(p));
+}
+
+<span class="kw">function</span> <span class="fn">Disclaimer</span>() {
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"disclaimer"</span> <span class="attr">role</span>=<span class="str">"note"</span>&gt;
+      &lt;<span class="tag">i</span> <span class="attr">className</span>=<span class="str">"fas fa-info-circle"</span> /&gt;
+      &lt;<span class="tag">span</span>&gt;
+        Esta resposta é informativa. Para decisões médicas, jurídicas ou financeiras,
+        consulte um profissional habilitado.
+      &lt;/<span class="tag">span</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}
+
+<span class="cm">/* ── Aviso de contexto longo ── */</span>
+<span class="kw">function</span> <span class="fn">estimarTokens</span>(historico) {
+  <span class="kw">return</span> historico
+    .<span class="fn">reduce</span>((acc, m) => acc + m.content.<span class="fn">split</span>(/\s+/).length, <span class="num">0</span>) * <span class="num">1.3</span>;
+}
+
+<span class="kw">function</span> <span class="fn">AvisoContextoLongo</span>({ historico, limite = <span class="num">4096</span> }) {
+  <span class="kw">const</span> estimativa = <span class="fn">estimarTokens</span>(historico);
+  <span class="kw">const</span> pct = (estimativa / limite) * <span class="num">100</span>;
+  <span class="kw">if</span> (pct < <span class="num">80</span>) <span class="kw">return null</span>;
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"aviso-contexto"</span> <span class="attr">role</span>=<span class="str">"alert"</span>&gt;
+      &lt;<span class="tag">i</span> <span class="attr">className</span>=<span class="str">"fas fa-memory"</span> /&gt;
+      &lt;<span class="tag">span</span>&gt;
+        Conversa usando ~{pct.<span class="fn">toFixed</span>(<span class="num">0</span>)}% do contexto disponível.
+        {pct >= <span class="num">95</span> ? <span class="str">' Inicie uma nova conversa para continuar com qualidade.'</span> : <span class="str">' Considere iniciar uma nova conversa em breve.'</span>}
+      &lt;/<span class="tag">span</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}
+
+<span class="cm">/* ── Usando tudo junto no historico do chat ── */</span>
+{historico.<span class="fn">map</span>((m, i) => (
+  &lt;<span class="tag">div</span> <span class="attr">key</span>={m.id || i}&gt;
+    &lt;<span class="tag">div</span> <span class="attr">className</span>={<span class="str">`bubble bubble--${m.role}`</span>}&gt;
+      &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"bubble__label"</span>&gt;{m.role === <span class="str">'user'</span> ? <span class="str">'Você'</span> : <span class="str">'IA'</span>}&lt;/<span class="tag">span</span>&gt;
+      &lt;<span class="tag">MarkdownRenderer</span> <span class="attr">conteudo</span>={m.content} /&gt;
+    &lt;/<span class="tag">div</span>&gt;
+    {m.role === <span class="str">'assistant'</span> &amp;&amp; (
+      &lt;&gt;
+        {<span class="fn">precisaDisclaimer</span>(m.content) &amp;&amp; &lt;<span class="tag">Disclaimer</span> /&gt;}
+        &lt;<span class="tag">FeedbackBotoes</span> <span class="attr">msgId</span>={m.id || i} /&gt;
+      &lt;/&gt;
+    )}
+  &lt;/<span class="tag">div</span>&gt;
+))}
+&lt;<span class="tag">AvisoContextoLongo</span> <span class="attr">historico</span>={historico} /&gt;</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Exercícios</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">→</div>
+      <div class="secao-info">
+        <div class="secao-label">Exercícios · UX + Conceito</div>
+        <div class="secao-titulo">4 exercícios — do skeleton ao Error Boundary</div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Skeleton para card de resultado</div>
+      <p>Crie um componente <code style="font-family:'JetBrains Mono',monospace;">SkeletonCardResultado</code> que simula o skeleton de um card com: uma linha de título (70% de largura), três linhas de texto (100%, 80%, 60%) e um thumbnail quadrado de 60×60px no canto. Use apenas CSS com a animação shimmer — sem nenhuma biblioteca. Aplique no classificador de imagem da Semana 10 enquanto o modelo está carregando.</p>
+      <span class="dif-basico">CSS + React</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — SkeletonCardResultado.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">export function</span> <span class="fn">SkeletonCardResultado</span>() {
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">role</span>=<span class="str">"status"</span> <span class="attr">aria-label</span>=<span class="str">"Carregando resultado..."</span>
+      <span class="attr">style</span>={{ display:<span class="str">'flex'</span>, gap:<span class="str">'1rem'</span>, padding:<span class="str">'1rem'</span>,
+        border:<span class="str">'1px solid rgba(255,255,255,.07)'</span>, borderRadius:<span class="str">'12px'</span> }}&gt;
+
+      <span class="cm">// Thumbnail</span>
+      &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"skeleton"</span>
+        <span class="attr">style</span>={{ width:<span class="str">'60px'</span>, height:<span class="str">'60px'</span>, borderRadius:<span class="str">'8px'</span>, flexShrink:<span class="num">0</span> }} /&gt;
+
+      <span class="cm">// Linhas de texto</span>
+      &lt;<span class="tag">div</span> <span class="attr">style</span>={{ flex:<span class="num">1</span>, display:<span class="str">'flex'</span>, flexDirection:<span class="str">'column'</span>, gap:<span class="str">'8px'</span>, paddingTop:<span class="str">'4px'</span> }}&gt;
+        &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"skeleton"</span> <span class="attr">style</span>={{ height:<span class="str">'16px'</span>, width:<span class="str">'70%'</span> }} /&gt;
+        &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"skeleton"</span> <span class="attr">style</span>={{ height:<span class="str">'13px'</span>, width:<span class="str">'100%'</span> }} /&gt;
+        &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"skeleton"</span> <span class="attr">style</span>={{ height:<span class="str">'13px'</span>, width:<span class="str">'80%'</span> }} /&gt;
+        &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"skeleton"</span> <span class="attr">style</span>={{ height:<span class="str">'13px'</span>, width:<span class="str">'60%'</span> }} /&gt;
+      &lt;/<span class="tag">div</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Retry automático com backoff</div>
+      <p>Implemente a lógica de retry automático no componente <code style="font-family:'JetBrains Mono',monospace;">EstadoErro</code>: quando o erro for do tipo "rate limit" (status 429), aguarde <code style="font-family:'JetBrains Mono',monospace;">tempoEspera</code> segundos e tente novamente automaticamente. Mostre um contador regressivo: "Tentando novamente em 5..." → 4 → 3 → 2 → 1 → retry. Permita que o usuário cancele o retry automático clicando em "Cancelar".</p>
+      <span class="dif-medio">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — EstadoErro com retry automático</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">function</span> <span class="fn">EstadoErro</span>({ erro, onRetry }) {
+  <span class="kw">const</span> [contador, setContador] = <span class="fn">useState</span>(
+    erro.tempoEspera ? erro.tempoEspera / <span class="num">1000</span> : <span class="kw">null</span>
+  );
+
+  <span class="fn">useEffect</span>(() => {
+    <span class="kw">if</span> (!contador) <span class="kw">return</span>;
+    <span class="kw">if</span> (contador <= <span class="num">0</span>) { <span class="fn">onRetry</span>(); <span class="kw">return</span>; }
+    <span class="kw">const</span> id = <span class="fn">setInterval</span>(() => <span class="fn">setContador</span>(c => c - <span class="num">1</span>), <span class="num">1000</span>);
+    <span class="kw">return</span> () => <span class="fn">clearInterval</span>(id);
+  }, [contador]);
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"estado-erro"</span>&gt;
+      &lt;<span class="tag">p</span>&gt;{erro.titulo}&lt;/<span class="tag">p</span>&gt;
+      &lt;<span class="tag">p</span>&gt;{erro.descricao}&lt;/<span class="tag">p</span>&gt;
+      {contador !== <span class="kw">null</span> &amp;&amp; &lt;<span class="tag">p</span>&gt;Tentando novamente em {contador}...&lt;/<span class="tag">p</span>&gt;}
+      &lt;<span class="tag">div</span>&gt;
+        &lt;<span class="tag">button</span> <span class="attr">onClick</span>={onRetry}&gt;Tentar agora&lt;/<span class="tag">button</span>&gt;
+        &lt;<span class="tag">button</span> <span class="attr">onClick</span>={() => <span class="fn">setContador</span>(<span class="kw">null</span>)}&gt;Cancelar&lt;/<span class="tag">button</span>&gt;
+      &lt;/<span class="tag">div</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Error Boundary para erros inesperados</div>
+      <p>React Error Boundaries capturam erros de renderização que escapam do try/catch — como um modelo retornar dados em formato inesperado que quebra o MarkdownRenderer. Implemente um <code style="font-family:'JetBrains Mono',monospace;">ErrorBoundary</code> como componente de classe (obrigatório para usar <code style="font-family:'JetBrains Mono',monospace;">componentDidCatch</code>) que envolve o chat e exibe uma UI amigável com botão para recarregar. Em quais situações um Error Boundary é necessário que um try/catch não cobre?</p>
+      <span class="dif-medio">Conceito + código</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — ErrorBoundary.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="pp">import</span> { Component } <span class="pp">from</span> <span class="str">'react'</span>;
+
+<span class="kw">export class</span> <span class="fn">ErrorBoundary</span> <span class="kw">extends</span> Component {
+  <span class="fn">constructor</span>(props) {
+    <span class="kw">super</span>(props);
+    <span class="kw">this</span>.state = { temErro: <span class="kw">false</span>, mensagem: <span class="str">''</span> };
+  }
+
+  <span class="kw">static</span> <span class="fn">getDerivedStateFromError</span>(erro) {
+    <span class="kw">return</span> { temErro: <span class="kw">true</span>, mensagem: erro.message };
+  }
+
+  <span class="fn">componentDidCatch</span>(erro, info) {
+    <span class="cm">// Em produção: enviar para Sentry, Datadog, etc.</span>
+    console.<span class="fn">error</span>(<span class="str">'ErrorBoundary capturou:'</span>, erro, info);
+  }
+
+  <span class="fn">render</span>() {
+    <span class="kw">if</span> (<span class="kw">this</span>.state.temErro) {
+      <span class="kw">return</span> (
+        &lt;<span class="tag">div</span> <span class="attr">style</span>={{ padding: <span class="str">'2rem'</span>, textAlign: <span class="str">'center'</span> }}&gt;
+          &lt;<span class="tag">p</span>&gt;😵 Algo inesperado aconteceu.&lt;/<span class="tag">p</span>&gt;
+          &lt;<span class="tag">button</span> <span class="attr">onClick</span>={() => { <span class="kw">this</span>.<span class="fn">setState</span>({ temErro: <span class="kw">false</span> }); window.<span class="fn">location.reload</span>(); }}&gt;
+            Recarregar
+          &lt;/<span class="tag">button</span>&gt;
+        &lt;/<span class="tag">div</span>&gt;
+      );
+    }
+    <span class="kw">return</span> <span class="kw">this</span>.props.children;
+  }
+}
+
+<span class="cm">// Uso: &lt;ErrorBoundary&gt;&lt;ChatbotStream /&gt;&lt;/ErrorBoundary&gt;</span>
+
+<span class="cm">// Por que try/catch não é suficiente?
+// try/catch captura erros em código imperativo (async/await).
+// Error Boundary captura erros durante a fase de RENDERIZAÇÃO do React —
+// quando um componente filho lança um erro ao retornar JSX.
+// Exemplo: MarkdownRenderer recebe null.replace() → quebra no render.
+// Esse erro NÃO é capturado por try/catch em useEffect ou event handlers.</span></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 04 — Desafio: auditoria de acessibilidade</div>
+      <p>Use a extensão <strong>axe DevTools</strong> (ou <code style="font-family:'JetBrains Mono',monospace;">@axe-core/react</code>) para auditar o chatbot completo e corrija os 5 problemas mais críticos encontrados. Problemas comuns em interfaces de IA: botões sem aria-label ("👍" não tem nome acessível), áreas de atualização sem aria-live, contadores de token sem texto alternativo, spinners sem role="status", e inputs sem label associado. Documente cada problema encontrado e a correção aplicada.</p>
+      <span class="dif-desafio">Desafio · Acessibilidade</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — correções de acessibilidade mais comuns</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="cm">// 1. Botão de emoji sem nome acessível</span>
+<span class="cm">// ❌ &lt;button onClick={() => votar('up')}&gt;👍&lt;/button&gt;</span>
+<span class="cm">// ✅</span>
+&lt;<span class="tag">button</span> <span class="attr">onClick</span>={() => <span class="fn">votar</span>(<span class="str">'up'</span>)} <span class="attr">aria-label</span>=<span class="str">"Resposta útil"</span>&gt;👍&lt;/<span class="tag">button</span>&gt;
+
+<span class="cm">// 2. Área de mensagens sem aria-live (leitor de tela não anuncia novas mensagens)</span>
+<span class="cm">// ✅</span>
+&lt;<span class="tag">div</span> <span class="attr">role</span>=<span class="str">"log"</span> <span class="attr">aria-live</span>=<span class="str">"polite"</span> <span class="attr">aria-label</span>=<span class="str">"Histórico de conversa"</span>&gt;
+  {historico.<span class="fn">map</span>(...)}
+&lt;/<span class="tag">div</span>&gt;
+
+<span class="cm">// 3. Spinner sem indicação de status</span>
+<span class="cm">// ✅</span>
+&lt;<span class="tag">div</span> <span class="attr">role</span>=<span class="str">"status"</span> <span class="attr">aria-label</span>=<span class="str">"Gerando resposta..."</span>&gt;
+  &lt;<span class="tag">span</span> <span class="attr">aria-hidden</span>=<span class="str">"true"</span>&gt;⏳&lt;/<span class="tag">span</span>&gt;
+&lt;/<span class="tag">div</span>&gt;
+
+<span class="cm">// 4. Textarea sem label visível</span>
+<span class="cm">// ✅</span>
+&lt;&gt;
+  &lt;<span class="tag">label</span> <span class="attr">htmlFor</span>=<span class="str">"chat-input"</span> <span class="attr">className</span>=<span class="str">"sr-only"</span>&gt;Digite sua mensagem&lt;/<span class="tag">label</span>&gt;
+  &lt;<span class="tag">textarea</span> <span class="attr">id</span>=<span class="str">"chat-input"</span> <span class="attr">placeholder</span>=<span class="str">"Digite sua mensagem..."</span> /&gt;
+&lt;/&gt;
+
+<span class="cm">// 5. Aviso de contexto longo sem role de alerta</span>
+<span class="cm">// ✅</span>
+&lt;<span class="tag">div</span> <span class="attr">role</span>=<span class="str">"alert"</span> <span class="attr">aria-live</span>=<span class="str">"assertive"</span>&gt;
+  Conversa usando 95% do contexto...
+&lt;/<span class="tag">div</span>&gt;
+
+<span class="cm">/* CSS — classe para esconder visualmente mas manter para leitores de tela */</span>
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); border: 0;
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 12</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-sitemap"></i>
+        <strong>Máquina de estados</strong>
+        <p>useReducer com idle/loading/success/error. Impossível ter estados contraditórios. Skeleton em loading, EstadoErro com retry em error, conteúdo em success.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-shield-alt"></i>
+        <strong>Transparência e erros úteis</strong>
+        <p>traduzirErro() converte status HTTP em mensagens amigáveis. Disclaimers automáticos por palavras-chave. Aviso de contexto longo. Nunca expor stack trace ao usuário.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-thumbs-up"></i>
+        <strong>Feedback e acessibilidade</strong>
+        <p>Thumbs up/down com localStorage. Error Boundary para erros de render. aria-live em áreas dinâmicas. aria-label em botões de emoji. role="status" em loading states.</p>
+      </div>
+    </div>
+    <div class="aviso-green" style="margin-top:1.5rem;">
+      <i class="fas fa-question-circle"></i>
+      <span><strong>Checklist final P2:</strong> o chatbot usa useReducer corretamente? O skeleton aparece antes do primeiro token? Erros 429 mostram mensagem amigável com retry? O disclaimer aparece para tópicos críticos? Thumbs up/down persiste ao recarregar? Leitores de tela anunciam novas mensagens? Se sim — pronto para a Semana 13: Avaliação P2.</span>
+    </div>
+    <div class="proxima" onclick="window.location.href='semana-13-frontend.html'">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 13 — Avaliação P2 · Conteúdo das Semanas 7 a 12</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+<script>
+@keyframes spin{to{transform:rotate(360deg)}}
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    :'<i class="fas fa-eye"></i> ver gabarito';
+}
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{btn.textContent='copiado!';setTimeout(()=>btn.textContent='copiar',2000);});
+}
+const quizData={
+  quiz1:{correct:'B',msg:'✅ Correto! Com múltiplos useState, é tecnicamente possível ter setIsLoading(true) e setError("algo") ao mesmo tempo — um estado impossível que causa bugs difíceis de debugar. Com useReducer, cada dispatch define o estado completo de uma vez: { status: "loading", dados: null, erro: null } — nunca loading E error coexistem. Além disso, todas as transições ficam visíveis em um único lugar (o reducer), tornando o fluxo fácil de rastrear e testar.'},
+  quiz2:{correct:'C',msg:'✅ Correto! O padrão certo é responder com a informação disponível e transparentemente indicar que pode estar desatualizada — com sugestão de verificar. Silenciar a limitação (A) cria confiança falsa: o usuário pode tomar decisões com informação errada. Recusar responder tópicos políticos (B) é excessivo e perde oportunidade de ser útil. Exibir "sem acesso à internet" (D) é tecnicamente impreciso — o modelo TEM a informação, só que até determinada data. O usuário que entende a limitação usa o produto com mais inteligência.'}
+};
+function responder(id,el,ok,letra){
+  const ops=document.getElementById(id+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  const correta=quizData[id].correct;
+  ops.querySelectorAll('.quiz-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    if(op.querySelector('.quiz-letra').textContent.trim()===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const fb=document.getElementById(id+'-feedback');
+  fb.textContent=quizData[id].msg;
+  fb.style.background=ok?'rgba(74,222,128,.08)':'rgba(239,68,68,.08)';
+  fb.style.border=ok?'1px solid rgba(74,222,128,.22)':'1px solid rgba(239,68,68,.25)';
+  fb.style.color=ok?'rgba(134,239,172,.9)':'#fca5a5';
+  fb.style.padding='.75rem 1rem';fb.style.borderRadius='8px';
+  fb.classList.add('show');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 10 — TensorFlow.js · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#0a0f1a;
+  --rose-900:#1a0510;
+  --rose-700:#9f1239;
+  --rose-500:#f43f5e;
+  --rose-400:#fb7185;
+  --rose-300:#fda4af;
+  --white:#fff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(251,113,133,.05);
+  --code-bg:#0a0208;
+  --code-border:rgba(251,113,133,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.25;pointer-events:none;}
+.blob-1{width:680px;height:680px;background:#881337;top:-240px;left:-200px;}
+.blob-2{width:540px;height:540px;background:#1a0510;bottom:-210px;right:-120px;}
+.blob-3{width:290px;height:290px;background:#f43f5e;top:36%;left:44%;opacity:.07;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(251,113,133,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--rose-300);border:1px solid rgba(251,113,133,.3);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--rose-300);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(251,113,133,.08);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--rose-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--rose-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(251,113,133,.06);border:1px solid rgba(251,113,133,.12);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}.topico:nth-child(6){animation-delay:.6s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(251,113,133,.15);color:var(--rose-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(251,113,133,.05);border-left:3px solid var(--rose-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--rose-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--rose-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--rose-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(251,113,133,.12);color:var(--rose-400);border:1px solid rgba(251,113,133,.28);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(251,113,133,.12);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(251,113,133,.15);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--rose-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(251,113,133,.18);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--rose-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(251,113,133,.06);border-left:3px solid var(--rose-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--rose-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-rose{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,113,133,.06);border:1px solid rgba(251,113,133,.2);font-size:.86rem;color:rgba(253,164,175,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-rose i{color:var(--rose-400);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+.aviso-blue{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.18);font-size:.86rem;color:rgba(125,211,252,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-blue i{color:#38bdf8;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(251,113,133,.08);}
+th{padding:.6rem 1rem;text-align:left;color:var(--rose-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(251,113,133,.18);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(251,113,133,.03);}
+td strong{color:var(--text-primary);}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(251,113,133,.06);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--rose-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--rose-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#fecdd3;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#374151;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(251,113,133,.12);color:var(--rose-400);border:1px solid rgba(251,113,133,.22);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-blue{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.22);}
+.badge-purple{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.22);}
+.badge-yellow{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.22);}
+
+/* ── Pipeline visual ── */
+.pipeline{display:flex;align-items:center;gap:0;margin:.75rem 0;flex-wrap:wrap;}
+.pipe-step{flex:1;min-width:120px;padding:.75rem 1rem;border-radius:10px;border:1px solid;text-align:center;position:relative;}
+.pipe-step__icon{font-size:1.1rem;margin-bottom:.3rem;display:block;}
+.pipe-step__label{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem;}
+.pipe-step__desc{font-size:.72rem;color:var(--text-muted);line-height:1.4;}
+.pipe-arrow{font-size:1rem;color:var(--text-muted);padding:0 .35rem;flex-shrink:0;}
+
+/* ── Backend vs client compare ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
+.compare-card{border-radius:12px;padding:1.1rem;border:1px solid;}
+.compare-card__title{font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.7rem;display:flex;align-items:center;gap:7px;}
+.compare-item{font-size:.8rem;color:var(--text-secondary);margin-bottom:.3rem;padding-left:.65rem;position:relative;line-height:1.5;}
+.compare-item::before{content:'▸';position:absolute;left:0;font-size:.6rem;margin-top:2px;}
+.compare-item.pro::before{color:#4ade80;}
+.compare-item.con::before{color:#f87171;}
+
+/* ── Tensor shape mockup ── */
+.tensor-mock{background:#0a0208;border:1px solid rgba(251,113,133,.18);border-radius:12px;padding:1.25rem;margin:.75rem 0;font-family:'JetBrains Mono',monospace;font-size:.8rem;}
+.tensor-mock__title{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--rose-400);font-weight:700;margin-bottom:.85rem;font-family:'Inter',monospace;}
+.tensor-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;}
+.tensor-label{color:rgba(251,113,133,.6);min-width:110px;}
+.tensor-val{color:#fecdd3;}
+.tensor-arrow{color:rgba(255,255,255,.2);}
+.tensor-shape{color:#86efac;font-weight:700;}
+
+/* ── Predict mockup ── */
+.predict-mock{background:#0a0208;border:1px solid rgba(251,113,133,.2);border-radius:12px;padding:1.25rem;margin:.75rem 0;}
+.predict-mock__title{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--rose-400);font-weight:700;margin-bottom:.85rem;}
+.predict-bar-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;}
+.predict-bar-label{font-size:.78rem;color:var(--text-secondary);width:80px;flex-shrink:0;text-align:right;}
+.predict-bar-track{flex:1;height:20px;background:rgba(255,255,255,.04);border-radius:5px;overflow:hidden;}
+.predict-bar-fill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:.45rem;font-size:.68rem;font-weight:700;color:rgba(255,255,255,.9);}
+.predict-bar-pct{font-size:.75rem;color:var(--text-muted);width:42px;text-align:right;flex-shrink:0;}
+
+/* ── Lab steps ── */
+.lab-steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.lab-steps::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--rose-400),rgba(251,113,133,.1));border-radius:1px;}
+.lab-step{display:flex;gap:1rem;padding:.75rem 0;}
+.lab-step__num{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;position:relative;z-index:2;background:rgba(251,113,133,.1);color:var(--rose-400);border:2px solid rgba(251,113,133,.28);}
+.lab-step__body{flex:1;padding-top:8px;}
+.lab-step__title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#f8fafc;margin-bottom:.3rem;}
+.lab-step__desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--rose-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(251,113,133,.18);border-radius:8px;padding:.5rem 1rem;color:var(--rose-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(251,113,133,.07);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+/* ── Quiz ── */
+.quiz-box{background:rgba(251,113,133,.03);border:1px solid rgba(251,113,133,.13);border-radius:12px;padding:1.25rem;margin:1rem 0;}
+.quiz-pergunta{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700;color:var(--white);margin-bottom:1rem;}
+.quiz-ops{display:flex;flex-direction:column;gap:.5rem;}
+.quiz-op{display:flex;align-items:center;gap:10px;padding:.6rem .9rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:9px;cursor:pointer;transition:all .2s;}
+.quiz-op:hover{background:rgba(251,113,133,.06);border-color:rgba(251,113,133,.2);}
+.quiz-op.correto{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);}
+.quiz-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);}
+.quiz-letra{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;}
+.quiz-texto{font-size:.85rem;color:var(--text-secondary);}
+.quiz-feedback{display:none;padding:.75rem 1rem;border-radius:8px;font-size:.83rem;line-height:1.55;margin-top:.75rem;}
+.quiz-feedback.show{display:block;}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--rose-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(251,113,133,.1);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--rose-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.compare-grid,.resumo-grid{grid-template-columns:1fr;}
+  .pipeline{gap:.5rem;}
+}
+@media(max-width:520px){.resumo-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">🧠 LAB + Conteúdo</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">10</div>
+    <h1 class="capa-titulo">IA direto<br><em>no Browser</em><br>TensorFlow.js</h1>
+    <p class="capa-sub">4 aulas · 200 minutos · Rodando modelos de ML sem servidor</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-server"></i></div><span>Client-side vs server-side ML — quando faz sentido cada um</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-cube"></i></div><span>Tensores — a estrutura de dados central do TensorFlow.js</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-download"></i></div><span>Carregar modelos pré-treinados — tf.loadLayersModel e tf.loadGraphModel</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-sliders-h"></i></div><span>Pré-processamento — normalizar, redimensionar e converter para tensor</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-bolt"></i></div><span>Inferência — model.predict(), argmax e probabilidades por classe</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-flask"></i></div><span>LAB: classificador de imagem no browser com MobileNet</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade LAB</div>
+      <p>Carregar o modelo MobileNet pré-treinado e classificar imagens enviadas pelo usuário diretamente no browser — sem nenhuma chamada de rede para fazer a predição.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>O que você vai usar hoje</div>
+      <ul class="info-lista">
+        <li>@tensorflow/tfjs — TensorFlow.js no browser</li>
+        <li>@tensorflow-models/mobilenet — modelo pré-treinado de visão</li>
+        <li>React com useState, useRef, useEffect</li>
+        <li>FileReader API — ler imagem do usuário como DataURL</li>
+        <li>Recharts (S9) para visualizar distribuição de probabilidades</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 7 — Streaming de IA (SSE, ReadableStream)</li>
+        <li>✅ Sem. 8 — Markdown e highlight de código</li>
+        <li>✅ Sem. 9 — Visualização com Chart.js e Recharts</li>
+        <li>▶ Sem. 10 — TensorFlow.js: ML client-side</li>
+        <li>Sem. 11 — Transformers.js: NLP no browser</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que isso importa</div>
+      <ul class="info-lista">
+        <li>Inferência no browser elimina latência de rede — predição em &lt;50ms</li>
+        <li>Dados sensíveis (foto, áudio, texto) nunca saem do dispositivo — privacidade por design</li>
+        <li>Funciona offline — edge AI sem dependência de servidor</li>
+        <li>TF.js usa WebGL/WebGPU — GPU do usuário para aceleração gratuita</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">Client-side ML — tensores, backends e quando usar</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-balance-scale"></i>Server-side vs Client-side ML</div>
+      <p>Nas semanas anteriores, toda a inteligência estava no servidor — você enviava texto para a API da OpenAI e recebia uma resposta. Com TensorFlow.js, o modelo roda <strong>dentro do browser do usuário</strong>, usando a CPU ou GPU local. Isso muda completamente o modelo de custo, privacidade e latência.</p>
+
+      <div class="compare-grid">
+        <div class="compare-card" style="background:rgba(56,189,248,.04);border-color:rgba(56,189,248,.18);">
+          <div class="compare-card__title" style="color:#38bdf8;"><i class="fas fa-server"></i> Server-side (API OpenAI, semanas 5–8)</div>
+          <div class="compare-item pro">Modelos enormes (GPT-4 tem ~1.8T parâmetros)</div>
+          <div class="compare-item pro">Zero setup no cliente — só uma requisição fetch</div>
+          <div class="compare-item pro">Sempre atualizado — você não gerencia o modelo</div>
+          <div class="compare-item con">Latência de rede para cada predição</div>
+          <div class="compare-item con">Custo por token/requisição</div>
+          <div class="compare-item con">Dados saem do dispositivo do usuário</div>
+          <div class="compare-item con">Offline = não funciona</div>
+        </div>
+        <div class="compare-card" style="background:rgba(251,113,133,.04);border-color:rgba(251,113,133,.18);">
+          <div class="compare-card__title" style="color:var(--rose-400);"><i class="fas fa-laptop"></i> Client-side (TF.js — hoje)</div>
+          <div class="compare-item pro">Predição em ~10–100ms — sem latência de rede</div>
+          <div class="compare-item pro">Dados ficam no dispositivo — privacidade real</div>
+          <div class="compare-item pro">Funciona offline após carregar o modelo</div>
+          <div class="compare-item pro">Sem custo por inferência após download do modelo</div>
+          <div class="compare-item con">Modelos grandes demais para o browser (limite ~500MB)</div>
+          <div class="compare-item con">GPU do usuário é imprevisível (mobile vs desktop)</div>
+          <div class="compare-item con">Modelo fica exposto — qualquer um pode extrair os pesos</div>
+          <div class="compare-item con">Download inicial do modelo (MobileNet ~16MB)</div>
+        </div>
+      </div>
+
+      <div class="destaque">
+        <strong>Quando usar client-side ML:</strong> dados sensíveis que não podem sair do dispositivo (foto do rosto, áudio, documentos privados), aplicações que precisam funcionar offline, casos onde latência mínima é crítica (detecção em tempo real via câmera), e modelos compactos suficientes para a tarefa (classificação de imagem, detecção de objetos simples).
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-cube"></i>Tensores — a estrutura de dados do TF.js</div>
+      <p>Tudo no TensorFlow.js é um <strong>tensor</strong> — um array multidimensional tipado. Um número é um tensor de rank 0, um vetor é rank 1, uma imagem colorida 224×224 é um tensor de rank 3 com shape [224, 224, 3].</p>
+      <p>A diferença crítica entre tensores e arrays JavaScript: tensores vivem na memória da GPU (WebGL), têm tipo fixo (float32, int32…) e precisam ser descartados manualmente com <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">.dispose()</code> para evitar memory leaks.</p>
+
+      <div class="tensor-mock">
+        <div class="tensor-mock__title">Shapes de tensor mais comuns em visão computacional</div>
+        <div class="tensor-row">
+          <span class="tensor-label">Pixel único RGB</span>
+          <span class="tensor-arrow">→</span>
+          <span class="tensor-shape">[3]</span>
+          <span class="tensor-val" style="margin-left:.75rem;">// [R, G, B] — rank 1</span>
+        </div>
+        <div class="tensor-row">
+          <span class="tensor-label">Imagem 224×224</span>
+          <span class="tensor-arrow">→</span>
+          <span class="tensor-shape">[224, 224, 3]</span>
+          <span class="tensor-val" style="margin-left:.75rem;">// height, width, channels — rank 3</span>
+        </div>
+        <div class="tensor-row">
+          <span class="tensor-label">Batch de 8 imagens</span>
+          <span class="tensor-arrow">→</span>
+          <span class="tensor-shape">[8, 224, 224, 3]</span>
+          <span class="tensor-val" style="margin-left:.75rem;">// batch, h, w, c — rank 4</span>
+        </div>
+        <div class="tensor-row">
+          <span class="tensor-label">Saída MobileNet</span>
+          <span class="tensor-arrow">→</span>
+          <span class="tensor-shape">[1, 1000]</span>
+          <span class="tensor-val" style="margin-left:.75rem;">// batch=1, 1000 classes ImageNet</span>
+        </div>
+        <div class="tensor-row">
+          <span class="tensor-label">Classe predita</span>
+          <span class="tensor-arrow">→</span>
+          <span class="tensor-shape">[1]</span>
+          <span class="tensor-val" style="margin-left:.75rem;">// índice do argmax</span>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — operações básicas com tensores</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> * <span class="pp">as</span> tf <span class="pp">from</span> <span class="str">'@tensorflow/tfjs'</span>;
+
+<span class="cm">// Criando tensores</span>
+<span class="kw">const</span> escalar = tf.<span class="fn">scalar</span>(<span class="num">3.14</span>);           <span class="cm">// shape: []</span>
+<span class="kw">const</span> vetor   = tf.<span class="fn">tensor1d</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]);   <span class="cm">// shape: [3]</span>
+<span class="kw">const</span> matriz  = tf.<span class="fn">tensor2d</span>([[<span class="num">1</span>,<span class="num">2</span>],[<span class="num">3</span>,<span class="num">4</span>]]); <span class="cm">// shape: [2, 2]</span>
+
+<span class="cm">// Inspecionando</span>
+vetor.<span class="fn">print</span>();           <span class="cm">// Tensor [1, 2, 3]</span>
+console.<span class="fn">log</span>(vetor.shape); <span class="cm">// [3]</span>
+console.<span class="fn">log</span>(vetor.dtype); <span class="cm">// 'float32'</span>
+
+<span class="cm">// Convertendo de volta para JS (assíncrono)</span>
+<span class="kw">const</span> jsArray = <span class="kw">await</span> vetor.<span class="fn">array</span>();  <span class="cm">// [1, 2, 3]</span>
+<span class="kw">const</span> jsData  = <span class="kw">await</span> vetor.<span class="fn">data</span>();   <span class="cm">// Float32Array([1, 2, 3])</span>
+
+<span class="cm">// ⚠ SEMPRE descartar tensores que não serão mais usados</span>
+vetor.<span class="fn">dispose</span>();
+<span class="cm">// Ou usar tf.tidy() para limpar automaticamente:</span>
+<span class="kw">const</span> resultado = tf.<span class="fn">tidy</span>(() => {
+  <span class="kw">const</span> a = tf.<span class="fn">tensor1d</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]);
+  <span class="kw">const</span> b = tf.<span class="fn">tensor1d</span>([<span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>]);
+  <span class="kw">return</span> a.<span class="fn">add</span>(b); <span class="cm">// a e b são descartados, resultado é retornado</span>
+});
+<span class="cm">// resultado ainda existe; descarte quando terminar:</span>
+resultado.<span class="fn">dispose</span>();</code></pre>
+      </div>
+
+      <div class="aviso-red">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span><strong>Memory leak com tensores:</strong> cada tensor criado ocupa memória GPU. Se você criar tensores dentro de funções chamadas repetidamente (ex: a cada frame de vídeo) sem <code style="font-family:'JetBrains Mono',monospace;">.dispose()</code> ou <code style="font-family:'JetBrains Mono',monospace;">tf.tidy()</code>, a memória GPU esgota em minutos e o browser trava. Use <code style="font-family:'JetBrains Mono',monospace;">tf.memory().numTensors</code> no console para monitorar.</span>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Por que tensores no TensorFlow.js precisam ser descartados com <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">.dispose()</code> enquanto objetos JavaScript normais não precisam?</div>
+      <div class="quiz-ops" id="quiz1-ops">
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'A')"><div class="quiz-letra" style="background:rgba(56,189,248,.15);color:#60a5fa;">A</div><span class="quiz-texto">É uma convenção da API — tecnicamente o garbage collector do browser já cuidaria, mas .dispose() é mais explícito</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">Tensores vivem na memória da GPU (WebGL), fora do controle do garbage collector do JavaScript — o GC não consegue liberar essa memória automaticamente</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">.dispose() apenas marca o tensor como inativo — a memória só é liberada quando o browser reinicia</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">Tensores não têm garbage collector porque são imutáveis — .dispose() é necessário por segurança de dados</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz1-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Carregar modelos, pré-processar imagens e fazer inferência</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-download"></i>Carregando um modelo pré-treinado</div>
+      <p>O TF.js suporta dois formatos de modelo: <strong>LayersModel</strong> (modelo Keras exportado como <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">model.json</code> + pesos) e <strong>GraphModel</strong> (modelo TF SavedModel convertido — mais eficiente). Para modelos pré-treinados populares, existem pacotes <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">@tensorflow-models/*</code> que abstraem o carregamento.</p>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Modelo</th><th>Pacote npm</th><th>Tarefa</th><th>Tamanho</th></tr></thead>
+          <tbody>
+            <tr><td><strong>MobileNet</strong></td><td><code style="font-family:'JetBrains Mono',monospace;">@tensorflow-models/mobilenet</code></td><td>Classificação de imagem (1000 classes)</td><td>~16 MB</td></tr>
+            <tr><td><strong>COCO-SSD</strong></td><td><code style="font-family:'JetBrains Mono',monospace;">@tensorflow-models/coco-ssd</code></td><td>Detecção de objetos (80 classes)</td><td>~25 MB</td></tr>
+            <tr><td><strong>BlazeFace</strong></td><td><code style="font-family:'JetBrains Mono',monospace;">@tensorflow-models/face-detection</code></td><td>Detecção de rosto</td><td>~2 MB</td></tr>
+            <tr><td><strong>PoseNet</strong></td><td><code style="font-family:'JetBrains Mono',monospace;">@tensorflow-models/posenet</code></td><td>Estimação de pose corporal</td><td>~13 MB</td></tr>
+            <tr><td><strong>Custom</strong></td><td><code style="font-family:'JetBrains Mono',monospace;">tf.loadLayersModel(url)</code></td><td>Qualquer modelo Keras exportado</td><td>Variável</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — hook para carregar modelo uma vez</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { <span class="fn">useState</span>, <span class="fn">useEffect</span> } <span class="pp">from</span> <span class="str">'react'</span>;
+<span class="pp">import</span> * <span class="pp">as</span> mobilenet <span class="pp">from</span> <span class="str">'@tensorflow-models/mobilenet'</span>;
+<span class="pp">import</span> <span class="str">'@tensorflow/tfjs'</span>;  <span class="cm">// necessário para o backend WebGL</span>
+
+<span class="kw">export function</span> <span class="fn">useModelo</span>() {
+  <span class="kw">const</span> [modelo, setModelo] = <span class="fn">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> [carregando, setCarregando] = <span class="fn">useState</span>(<span class="kw">true</span>);
+  <span class="kw">const</span> [erro, setErro] = <span class="fn">useState</span>(<span class="kw">null</span>);
+
+  <span class="fn">useEffect</span>(() => {
+    <span class="kw">let</span> cancelado = <span class="kw">false</span>;
+
+    <span class="kw">async function</span> <span class="fn">carregar</span>() {
+      <span class="kw">try</span> {
+        <span class="cm">// MobileNet faz o download dos pesos (~16MB) na primeira chamada</span>
+        <span class="cm">// O browser faz cache — carregamentos seguintes são instantâneos</span>
+        <span class="kw">const</span> m = <span class="kw">await</span> mobilenet.<span class="fn">load</span>({ version: <span class="num">2</span>, alpha: <span class="num">1.0</span> });
+        <span class="kw">if</span> (!cancelado) <span class="fn">setModelo</span>(m);
+      } <span class="kw">catch</span> (e) {
+        <span class="kw">if</span> (!cancelado) <span class="fn">setErro</span>(e.message);
+      } <span class="kw">finally</span> {
+        <span class="kw">if</span> (!cancelado) <span class="fn">setCarregando</span>(<span class="kw">false</span>);
+      }
+    }
+
+    <span class="fn">carregar</span>();
+    <span class="kw">return</span> () => { cancelado = <span class="kw">true</span>; };  <span class="cm">// cleanup se componente desmontar</span>
+  }, []);
+
+  <span class="kw">return</span> { modelo, carregando, erro };
+}</code></pre>
+      </div>
+
+      <div class="destaque">
+        <strong>version: 2, alpha: 1.0</strong> — alpha controla a largura do modelo: 0.25 é mais leve (menos acurado), 1.0 é o modelo completo. Para mobile, alpha 0.5 oferece bom equilíbrio. O modelo v2 é mais preciso que v1 para a maioria das classes.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-sliders-h"></i>Pré-processamento — da imagem do usuário ao tensor</div>
+      <p>O MobileNet espera uma imagem RGB de 224×224 pixels com valores float32 normalizados entre -1 e 1. Uma foto do usuário chega como arquivo — precisa ser convertida para um elemento <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">&lt;img&gt;</code>, redimensionada e normalizada. O pipeline completo:</p>
+
+      <div class="pipeline">
+        <div class="pipe-step" style="background:rgba(251,113,133,.05);border-color:rgba(251,113,133,.18);">
+          <span class="pipe-step__icon">🖼️</span>
+          <div class="pipe-step__label" style="color:var(--rose-400);">Arquivo</div>
+          <div class="pipe-step__desc">File do &lt;input&gt; — JPEG, PNG, WEBP</div>
+        </div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step" style="background:rgba(56,189,248,.04);border-color:rgba(56,189,248,.15);">
+          <span class="pipe-step__icon">🔗</span>
+          <div class="pipe-step__label" style="color:#38bdf8;">DataURL</div>
+          <div class="pipe-step__desc">FileReader → base64</div>
+        </div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step" style="background:rgba(74,222,128,.04);border-color:rgba(74,222,128,.15);">
+          <span class="pipe-step__icon">📷</span>
+          <div class="pipe-step__label" style="color:#4ade80;">HTMLImage</div>
+          <div class="pipe-step__desc">new Image() com src=DataURL</div>
+        </div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step" style="background:rgba(167,139,250,.04);border-color:rgba(167,139,250,.15);">
+          <span class="pipe-step__icon">🎲</span>
+          <div class="pipe-step__label" style="color:#a78bfa;">Tensor</div>
+          <div class="pipe-step__desc">tf.browser.fromPixels [224,224,3]</div>
+        </div>
+        <span class="pipe-arrow">→</span>
+        <div class="pipe-step" style="background:rgba(251,191,36,.04);border-color:rgba(251,191,36,.15);">
+          <span class="pipe-step__icon">⚡</span>
+          <div class="pipe-step__label" style="color:#fbbf24;">Predição</div>
+          <div class="pipe-step__desc">model.predict [1, 1000]</div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — pipeline completo de pré-processamento + predição</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> * <span class="pp">as</span> tf <span class="pp">from</span> <span class="str">'@tensorflow/tfjs'</span>;
+
+<span class="cm">/**
+ * Carrega um arquivo de imagem e retorna um DataURL
+ */</span>
+<span class="kw">function</span> <span class="fn">lerArquivoComoURL</span>(arquivo) {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="kw">const</span> reader = <span class="kw">new</span> <span class="fn">FileReader</span>();
+    reader.onload  = (e) => <span class="fn">resolve</span>(e.target.result);
+    reader.onerror = () => <span class="fn">reject</span>(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">'Erro ao ler arquivo'</span>));
+    reader.<span class="fn">readAsDataURL</span>(arquivo);
+  });
+}
+
+<span class="cm">/**
+ * Cria um HTMLImageElement a partir de uma URL (DataURL ou http)
+ */</span>
+<span class="kw">function</span> <span class="fn">carregarImagem</span>(url) {
+  <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="kw">const</span> img = <span class="kw">new</span> <span class="fn">Image</span>();
+    img.onload  = () => <span class="fn">resolve</span>(img);
+    img.onerror = () => <span class="fn">reject</span>(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">'Falha ao carregar imagem'</span>));
+    img.src = url;
+  });
+}
+
+<span class="cm">/**
+ * Pré-processa HTMLImageElement → tensor [1, 224, 224, 3] normalizado
+ * Todos os tensores intermediários são descartados pelo tf.tidy()
+ */</span>
+<span class="kw">function</span> <span class="fn">preprocessar</span>(imgElement) {
+  <span class="kw">return</span> tf.<span class="fn">tidy</span>(() => {
+    <span class="kw">return</span> tf.image
+      .<span class="fn">resizeBilinear</span>(
+        tf.browser.<span class="fn">fromPixels</span>(imgElement),  <span class="cm">// [h, w, 3] uint8</span>
+        [<span class="num">224</span>, <span class="num">224</span>]                            <span class="cm">// redimensiona para [224, 224, 3]</span>
+      )
+      .<span class="fn">toFloat</span>()                             <span class="cm">// converte para float32</span>
+      .<span class="fn">div</span>(tf.<span class="fn">scalar</span>(<span class="num">127.5</span>))                 <span class="cm">// normaliza para [0, 2]</span>
+      .<span class="fn">sub</span>(tf.<span class="fn">scalar</span>(<span class="num">1</span>))                      <span class="cm">// desloca para [-1, 1]</span>
+      .<span class="fn">expandDims</span>(<span class="num">0</span>);                         <span class="cm">// adiciona batch: [1, 224, 224, 3]</span>
+  });
+}
+
+<span class="cm">/**
+ * Função principal: arquivo → top-5 predições
+ */</span>
+<span class="kw">async function</span> <span class="fn">classificar</span>(arquivo, modelo) {
+  <span class="kw">const</span> url   = <span class="kw">await</span> <span class="fn">lerArquivoComoURL</span>(arquivo);
+  <span class="kw">const</span> img   = <span class="kw">await</span> <span class="fn">carregarImagem</span>(url);
+
+  <span class="cm">// O pacote mobilenet já expõe classify() que faz tudo isso por você:</span>
+  <span class="kw">const</span> preds = <span class="kw">await</span> modelo.<span class="fn">classify</span>(img, <span class="num">5</span>);  <span class="cm">// top-5</span>
+  <span class="cm">// preds: [{className: 'cat', probability: 0.94}, ...]</span>
+  <span class="kw">return</span> { url, preds };
+}
+
+<span class="cm">// OU usando model.predict() diretamente (para modelos customizados):</span>
+<span class="kw">async function</span> <span class="fn">classificarManual</span>(arquivo, modelo, classes) {
+  <span class="kw">const</span> url     = <span class="kw">await</span> <span class="fn">lerArquivoComoURL</span>(arquivo);
+  <span class="kw">const</span> img     = <span class="kw">await</span> <span class="fn">carregarImagem</span>(url);
+  <span class="kw">const</span> tensor  = <span class="fn">preprocessar</span>(img);
+
+  <span class="kw">const</span> saida   = modelo.<span class="fn">predict</span>(tensor);   <span class="cm">// [1, n_classes]</span>
+  <span class="kw">const</span> probs   = <span class="kw">await</span> saida.<span class="fn">data</span>();        <span class="cm">// Float32Array com probabilidades</span>
+  <span class="kw">const</span> topIdx  = <span class="fn">Array.from</span>(probs)
+    .<span class="fn">map</span>((p, i) => ({ p, i }))
+    .<span class="fn">sort</span>((a, b) => b.p - a.p)
+    .<span class="fn">slice</span>(<span class="num">0</span>, <span class="num">5</span>)
+    .<span class="fn">map</span>(({ p, i }) => ({ classe: classes[i], prob: p }));
+
+  tensor.<span class="fn">dispose</span>();
+  saida.<span class="fn">dispose</span>();
+  <span class="kw">return</span> { url, topIdx };
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 O MobileNet espera imagens com valores entre -1 e 1. Uma imagem JPEG vem com valores entre 0 e 255. Qual sequência de operações normaliza corretamente?</div>
+      <div class="quiz-ops" id="quiz2-ops">
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'A')"><div class="quiz-letra" style="background:rgba(56,189,248,.15);color:#60a5fa;">A</div><span class="quiz-texto">dividir por 255 → subtrair 0.5 → multiplicar por 2</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">dividir por 127.5 → subtrair 1 &nbsp; &nbsp; (equivalente a: valor → valor/127.5 - 1)</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">subtrair 128 → dividir por 128</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">dividir por 255 apenas — o MobileNet trata o resto internamente</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz2-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3 · LAB</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · LAB · ~50 minutos</div>
+        <div class="secao-titulo">LAB — Classificador de imagem no browser com MobileNet</div>
+      </div>
+    </div>
+
+    <div class="aviso-rose">
+      <i class="fas fa-flask"></i>
+      <span>Objetivo: construir um componente React que carrega o MobileNet, aceita uma imagem do usuário via drag-and-drop ou input, classifica em &lt;100ms e exibe as top-5 predições com barras de probabilidade — tudo sem nenhum servidor.</span>
+    </div>
+
+    <!-- Preview do resultado -->
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-eye"></i>Preview — resultado de uma classificação</div>
+      <div class="predict-mock">
+        <div class="predict-mock__title">Classificação de imagem — MobileNet v2 · 1000 classes ImageNet</div>
+        <div class="predict-bar-row"><span class="predict-bar-label">golden retriever</span><div class="predict-bar-track"><div class="predict-bar-fill" style="width:87%;background:linear-gradient(90deg,#fb7185,#f43f5e);">87.3%</div></div><span class="predict-bar-pct">0.873</span></div>
+        <div class="predict-bar-row"><span class="predict-bar-label">Labrador</span><div class="predict-bar-track"><div class="predict-bar-fill" style="width:7%;background:rgba(251,113,133,.5);">7%</div></div><span class="predict-bar-pct">0.071</span></div>
+        <div class="predict-bar-row"><span class="predict-bar-label">kuvasz</span><div class="predict-bar-track"><div class="predict-bar-fill" style="width:3%;background:rgba(251,113,133,.3);">3%</div></div><span class="predict-bar-pct">0.031</span></div>
+        <div class="predict-bar-row"><span class="predict-bar-label">clumber</span><div class="predict-bar-track"><div class="predict-bar-fill" style="width:2%;background:rgba(251,113,133,.2);">2%</div></div><span class="predict-bar-pct">0.018</span></div>
+        <div class="predict-bar-row"><span class="predict-bar-label">tennis ball</span><div class="predict-bar-track"><div class="predict-bar-fill" style="width:1%;background:rgba(251,113,133,.15);">1%</div></div><span class="predict-bar-pct">0.007</span></div>
+        <div style="margin-top:.75rem;font-size:.72rem;color:rgba(255,255,255,.25);">Tempo de inferência: 38ms · Backend: WebGL · Tensores ativos: 0</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>Passo a passo do LAB</div>
+      <div class="lab-steps">
+        <div class="lab-step">
+          <div class="lab-step__num">1</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Instalar dependências</div>
+            <div class="lab-step__desc"><code style="font-family:'JetBrains Mono',monospace;">npm install @tensorflow/tfjs @tensorflow-models/mobilenet</code>. O pacote tfjs é grande (~3MB minificado) — o primeiro build pode demorar. Verifique se o backend WebGL está disponível com <code style="font-family:'JetBrains Mono',monospace;">tf.getBackend()</code> no console após importar.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">2</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Criar o hook useModelo</div>
+            <div class="lab-step__desc">Copie o hook <code style="font-family:'JetBrains Mono',monospace;">useModelo</code> da Aula 2 para um arquivo separado. Ele carrega o MobileNet uma vez e o compartilha via prop. Teste no console: após o carregamento, <code style="font-family:'JetBrains Mono',monospace;">tf.memory().numTensors</code> deve mostrar os pesos do modelo.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">3</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Construir a área de upload</div>
+            <div class="lab-step__desc">Um <code style="font-family:'JetBrains Mono',monospace;">&lt;input type="file" accept="image/*"&gt;</code> estilizado como uma zona de drag-and-drop. Ao selecionar o arquivo, chame <code style="font-family:'JetBrains Mono',monospace;">FileReader</code> para gerar o DataURL e mostre a prévia com <code style="font-family:'JetBrains Mono',monospace;">&lt;img src={dataUrl}&gt;</code> — use um <code style="font-family:'JetBrains Mono',monospace;">useRef</code> nesse elemento img para passá-lo ao modelo.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">4</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Implementar a classificação</div>
+            <div class="lab-step__desc">Quando a imagem carregar (<code style="font-family:'JetBrains Mono',monospace;">img.onload</code>), chame <code style="font-family:'JetBrains Mono',monospace;">modelo.classify(imgRef.current, 5)</code>. Meça o tempo com <code style="font-family:'JetBrains Mono',monospace;">performance.now()</code>. Salve o array de predições no estado e renderize as barras.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">5</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Monitorar tensores e exibir stats</div>
+            <div class="lab-step__desc">Mostre no rodapé: tempo de inferência, backend ativo (<code style="font-family:'JetBrains Mono',monospace;">tf.getBackend()</code>) e número de tensores ativos (<code style="font-family:'JetBrains Mono',monospace;">tf.memory().numTensors</code>). Se numTensors crescer a cada classificação, há um leak.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — ClassificadorImagem.jsx completo</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { <span class="fn">useState</span>, <span class="fn">useRef</span>, <span class="fn">useCallback</span> } <span class="pp">from</span> <span class="str">'react'</span>;
+<span class="pp">import</span> * <span class="pp">as</span> tf <span class="pp">from</span> <span class="str">'@tensorflow/tfjs'</span>;
+<span class="pp">import</span> { <span class="fn">useModelo</span> } <span class="pp">from</span> <span class="str">'./useModelo'</span>;
+<span class="pp">import</span> <span class="str">'./ClassificadorImagem.css'</span>;
+
+<span class="kw">export default function</span> <span class="fn">ClassificadorImagem</span>() {
+  <span class="kw">const</span> { modelo, carregando } = <span class="fn">useModelo</span>();
+  <span class="kw">const</span> [imgUrl, setImgUrl] = <span class="fn">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> [predicoes, setPredicoes] = <span class="fn">useState</span>([]);
+  <span class="kw">const</span> [classificando, setClassificando] = <span class="fn">useState</span>(<span class="kw">false</span>);
+  <span class="kw">const</span> [stats, setStats] = <span class="fn">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> imgRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+
+  <span class="kw">const</span> <span class="fn">classificar</span> = <span class="fn">useCallback</span>(<span class="kw">async</span> () => {
+    <span class="kw">if</span> (!modelo || !imgRef.current) <span class="kw">return</span>;
+    <span class="fn">setClassificando</span>(<span class="kw">true</span>);
+    <span class="kw">try</span> {
+      <span class="kw">const</span> inicio = performance.<span class="fn">now</span>();
+      <span class="kw">const</span> preds = <span class="kw">await</span> modelo.<span class="fn">classify</span>(imgRef.current, <span class="num">5</span>);
+      <span class="kw">const</span> tempo = (performance.<span class="fn">now</span>() - inicio).<span class="fn">toFixed</span>(<span class="num">0</span>);
+      <span class="fn">setPredicoes</span>(preds);
+      <span class="fn">setStats</span>({
+        tempo,
+        backend: tf.<span class="fn">getBackend</span>(),
+        tensores: tf.<span class="fn">memory</span>().numTensors,
+      });
+    } <span class="kw">finally</span> {
+      <span class="fn">setClassificando</span>(<span class="kw">false</span>);
+    }
+  }, [modelo]);
+
+  <span class="kw">function</span> <span class="fn">aoSelecionarArquivo</span>(e) {
+    <span class="kw">const</span> arquivo = e.target.files[<span class="num">0</span>];
+    <span class="kw">if</span> (!arquivo) <span class="kw">return</span>;
+    <span class="fn">setPredicoes</span>([]);
+    <span class="fn">setStats</span>(<span class="kw">null</span>);
+    <span class="kw">const</span> reader = <span class="kw">new</span> <span class="fn">FileReader</span>();
+    reader.onload = (ev) => <span class="fn">setImgUrl</span>(ev.target.result);
+    reader.<span class="fn">readAsDataURL</span>(arquivo);
+  }
+
+  <span class="kw">if</span> (carregando) <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"cls-loading"</span>&gt;
+      &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"cls-spinner"</span> /&gt;
+      &lt;<span class="tag">p</span>&gt;Carregando MobileNet (~16 MB)...&lt;/<span class="tag">p</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"cls"</span>&gt;
+      &lt;<span class="tag">h1</span> <span class="attr">className</span>=<span class="str">"cls-titulo"</span>&gt;Classificador de Imagem&lt;/<span class="tag">h1</span>&gt;
+      &lt;<span class="tag">p</span> <span class="attr">className</span>=<span class="str">"cls-sub"</span>&gt;MobileNet v2 · 1000 classes · 100% no browser&lt;/<span class="tag">p</span>&gt;
+
+      &lt;<span class="tag">label</span> <span class="attr">className</span>=<span class="str">"cls-upload"</span>&gt;
+        {imgUrl
+          ? &lt;<span class="tag">img</span> <span class="attr">ref</span>={imgRef} <span class="attr">src</span>={imgUrl} <span class="attr">alt</span>=<span class="str">"preview"</span> <span class="attr">className</span>=<span class="str">"cls-preview"</span>
+              <span class="attr">onLoad</span>={classificar} /&gt;
+          : &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"cls-placeholder"</span>&gt;
+              &lt;<span class="tag">i</span> <span class="attr">className</span>=<span class="str">"fas fa-cloud-upload-alt"</span>&gt;&lt;/<span class="tag">i</span>&gt;
+              &lt;<span class="tag">p</span>&gt;Clique ou arraste uma imagem aqui&lt;/<span class="tag">p</span>&gt;
+            &lt;/<span class="tag">div</span>&gt;
+        }
+        &lt;<span class="tag">input</span> <span class="attr">type</span>=<span class="str">"file"</span> <span class="attr">accept</span>=<span class="str">"image/*"</span> <span class="attr">onChange</span>={aoSelecionarArquivo} <span class="attr">hidden</span> /&gt;
+      &lt;/<span class="tag">label</span>&gt;
+
+      {classificando &amp;&amp; &lt;<span class="tag">p</span> <span class="attr">className</span>=<span class="str">"cls-status"</span>&gt;⏳ Classificando...&lt;/<span class="tag">p</span>&gt;}
+
+      {predicoes.length &gt; <span class="num">0</span> &amp;&amp; (
+        &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"cls-resultado"</span>&gt;
+          {predicoes.<span class="fn">map</span>((p) => (
+            &lt;<span class="tag">div</span> <span class="attr">key</span>={p.className} <span class="attr">className</span>=<span class="str">"cls-pred-row"</span>&gt;
+              &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"cls-pred-label"</span>&gt;{p.className}&lt;/<span class="tag">span</span>&gt;
+              &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"cls-pred-track"</span>&gt;
+                &lt;<span class="tag">div</span>
+                  <span class="attr">className</span>=<span class="str">"cls-pred-fill"</span>
+                  <span class="attr">style</span>={{ width: `${(p.probability * <span class="num">100</span>).<span class="fn">toFixed</span>(<span class="num">1</span>)}%` }}
+                /&gt;
+              &lt;/<span class="tag">div</span>&gt;
+              &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"cls-pred-pct"</span>&gt;
+                {(p.probability * <span class="num">100</span>).<span class="fn">toFixed</span>(<span class="num">1</span>)}%
+              &lt;/<span class="tag">span</span>&gt;
+            &lt;/<span class="tag">div</span>&gt;
+          ))}
+          {stats &amp;&amp; (
+            &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"cls-stats"</span>&gt;
+              {stats.tempo}ms · {stats.backend} · {stats.tensores} tensores
+            &lt;/<span class="tag">div</span>&gt;
+          )}
+        &lt;/<span class="tag">div</span>&gt;
+      )}
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Exercícios</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">→</div>
+      <div class="secao-info">
+        <div class="secao-label">Exercícios · Conceito + LAB</div>
+        <div class="secao-titulo">4 exercícios — do básico ao modelo customizado</div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Monitorando memória</div>
+      <p>Adicione ao classificador um botão "Classificar novamente" que chama <code style="font-family:'JetBrains Mono',monospace;">modelo.classify()</code> sem recarregar a imagem. Classifique a mesma imagem 10 vezes e observe o valor de <code style="font-family:'JetBrains Mono',monospace;">tf.memory().numTensors</code> a cada chamada. O número cresce? Se sim, por que? Se não, como o MobileNet garante isso? Documente sua observação.</p>
+      <span class="dif-basico">Observação</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="card" style="margin-top:.5rem;">
+          <ul class="icon-list">
+            <li><i class="fas fa-check-circle"></i><span>O número de tensores NÃO deve crescer a cada classificação — se crescer, há um leak. O pacote <code style="font-family:'JetBrains Mono',monospace;">@tensorflow-models/mobilenet</code> usa <code style="font-family:'JetBrains Mono',monospace;">tf.tidy()</code> internamente para limpar tensores intermediários, retornando apenas o resultado final.</span></li>
+            <li><i class="fas fa-check-circle"></i><span>Os tensores ativos após carregar o modelo são os <strong>pesos do modelo</strong> — esses ficam na memória para sempre (necessário para inferência rápida). O número que você vê é constante, não cresce com cada predição.</span></li>
+            <li><i class="fas fa-check-circle"></i><span>Para verificar: <code style="font-family:'JetBrains Mono',monospace;">const antes = tf.memory().numTensors; await modelo.classify(img); const depois = tf.memory().numTensors; console.log(depois - antes);</code> deve imprimir 0.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Classificação via câmera em tempo real</div>
+      <p>Substitua o input de arquivo por um feed de câmera ao vivo usando <code style="font-family:'JetBrains Mono',monospace;">navigator.mediaDevices.getUserMedia()</code>. Classifique o frame atual a cada 500ms usando <code style="font-family:'JetBrains Mono',monospace;">setInterval</code>. Passe o elemento <code style="font-family:'JetBrains Mono',monospace;">&lt;video&gt;</code> diretamente para <code style="font-family:'JetBrains Mono',monospace;">modelo.classify(videoRef.current)</code> — o TF.js aceita HTMLVideoElement como entrada. Não esqueça de parar a câmera e limpar o interval no cleanup do useEffect.</p>
+      <span class="dif-medio">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — trecho da câmera em tempo real</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">const</span> videoRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">let</span> stream, intervalId;
+
+  <span class="kw">async function</span> <span class="fn">iniciarCamera</span>() {
+    stream = <span class="kw">await</span> navigator.mediaDevices.<span class="fn">getUserMedia</span>({ video: { facingMode: <span class="str">'environment'</span> } });
+    videoRef.current.srcObject = stream;
+    <span class="kw">await</span> videoRef.current.<span class="fn">play</span>();
+
+    intervalId = <span class="fn">setInterval</span>(<span class="kw">async</span> () => {
+      <span class="kw">if</span> (!modelo || !videoRef.current) <span class="kw">return</span>;
+      <span class="kw">const</span> preds = <span class="kw">await</span> modelo.<span class="fn">classify</span>(videoRef.current, <span class="num">3</span>);
+      <span class="fn">setPredicoes</span>(preds);
+    }, <span class="num">500</span>);
+  }
+
+  <span class="kw">if</span> (modelo) <span class="fn">iniciarCamera</span>();
+
+  <span class="kw">return</span> () => {
+    <span class="fn">clearInterval</span>(intervalId);
+    stream?.getTracks().<span class="fn">forEach</span>(t => t.<span class="fn">stop</span>());
+  };
+}, [modelo]);
+
+<span class="cm">// No JSX:</span>
+<span class="cm">// &lt;video ref={videoRef} muted playsInline style={{ width: '100%' }} /&gt;</span></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Comparando MobileNet v1 e v2</div>
+      <p>Carregue dois modelos em paralelo: MobileNet v1 (<code style="font-family:'JetBrains Mono',monospace;">{version: 1, alpha: 1.0}</code>) e v2 (<code style="font-family:'JetBrains Mono',monospace;">{version: 2, alpha: 1.0}</code>) usando <code style="font-family:'JetBrains Mono',monospace;">Promise.all()</code>. Para a mesma imagem, exiba as predições dos dois modelos lado a lado e o tempo de inferência de cada um. Qual é mais rápido? Qual é mais confiante na classe correta?</p>
+      <span class="dif-medio">Integração</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — carregando dois modelos em paralelo</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">const</span> [modelos, setModelos] = <span class="fn">useState</span>({ v1: <span class="kw">null</span>, v2: <span class="kw">null</span> });
+
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">async function</span> <span class="fn">carregar</span>() {
+    <span class="kw">const</span> [v1, v2] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+      mobilenet.<span class="fn">load</span>({ version: <span class="num">1</span>, alpha: <span class="num">1.0</span> }),
+      mobilenet.<span class="fn">load</span>({ version: <span class="num">2</span>, alpha: <span class="num">1.0</span> }),
+    ]);
+    <span class="fn">setModelos</span>({ v1, v2 });
+  }
+  <span class="fn">carregar</span>();
+}, []);
+
+<span class="cm">// Ao classificar:</span>
+<span class="kw">const</span> [t1, t2, r1, r2] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+  <span class="fn">medirTempo</span>(() => modelos.v1.<span class="fn">classify</span>(img, <span class="num">5</span>)),
+  <span class="fn">medirTempo</span>(() => modelos.v2.<span class="fn">classify</span>(img, <span class="num">5</span>)),
+]);
+<span class="cm">// medirTempo: wrapper que retorna [tempo, resultado]</span></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 04 — Desafio: carregar modelo Keras customizado</div>
+      <p>Treine (ou use um modelo pré-treinado já exportado) um classificador binário simples em Python com Keras e exporte com <code style="font-family:'JetBrains Mono',monospace;">tensorflowjs_converter</code> para o formato <code style="font-family:'JetBrains Mono',monospace;">model.json</code>. Carregue-o no browser com <code style="font-family:'JetBrains Mono',monospace;">tf.loadLayersModel('URL/model.json')</code> e faça uma predição manual com <code style="font-family:'JetBrains Mono',monospace;">model.predict(tensor)</code>. Explique por que o pré-processamento deve ser <strong>idêntico</strong> ao usado durante o treinamento em Python.</p>
+      <span class="dif-desafio">Desafio</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Terminal + JavaScript — exportar e carregar modelo customizado</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="cm"># Python: exportar modelo Keras para TF.js</span>
+<span class="cm"># pip install tensorflowjs</span>
+tensorflowjs_converter \
+  --input_format=keras \
+  meu_modelo.h5 \
+  ./public/modelo_tfjs/
+
+<span class="cm"># Gera: public/modelo_tfjs/model.json + group1-shard1of1.bin</span>
+
+<span class="cm">// React: carregar e usar</span>
+<span class="kw">import</span> * <span class="kw">as</span> tf <span class="kw">from</span> <span class="str">'@tensorflow/tfjs'</span>;
+
+<span class="kw">const</span> modelo = <span class="kw">await</span> tf.<span class="fn">loadLayersModel</span>(<span class="str">'/modelo_tfjs/model.json'</span>);
+
+<span class="cm">// Pré-processamento DEVE ser idêntico ao treinamento</span>
+<span class="cm">// Se treinou com imagens divididas por 255.0 em Python:</span>
+<span class="kw">const</span> tensor = tf.<span class="fn">tidy</span>(() =>
+  tf.browser.<span class="fn">fromPixels</span>(img)
+    .<span class="fn">toFloat</span>()
+    .<span class="fn">div</span>(tf.<span class="fn">scalar</span>(<span class="num">255.0</span>))   <span class="cm">// deve ser EXATAMENTE o mesmo que no treino</span>
+    .<span class="fn">expandDims</span>(<span class="num">0</span>)
+);
+
+<span class="kw">const</span> saida = modelo.<span class="fn">predict</span>(tensor);
+<span class="kw">const</span> prob  = (<span class="kw">await</span> saida.<span class="fn">data</span>())[<span class="num">0</span>];
+console.<span class="fn">log</span>(<span class="str">`Probabilidade classe 1: ${(prob*<span class="num">100</span>).<span class="fn">toFixed</span>(<span class="num">1</span>)}%`</span>);</code></pre>
+        </div>
+        <div class="card" style="margin-top:.75rem;">
+          <div class="card-titulo" style="font-size:.78rem;"><i class="fas fa-lightbulb"></i>Por que o pré-processamento precisa ser idêntico</div>
+          <p style="font-size:.85rem;">O modelo aprendeu padrões nos dados <strong>na escala em que foram apresentados</strong>. Se treinou com pixels entre 0 e 1 (÷255) e você inferir com pixels entre -1 e 1 (÷127.5 − 1), os pesos que aprenderam "gato tem padrão X em escala [0,1]" receberão entrada em escala diferente e as ativações serão completamente diferentes. A predição será aleatória, não importa quão bem o modelo foi treinado.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 10</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-cube"></i>
+        <strong>Tensores e memória</strong>
+        <p>Tensor = array multidimensional na GPU. Shape define as dimensões. Sempre usar tf.tidy() ou .dispose() para evitar memory leak. tf.memory().numTensors para monitorar.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-sliders-h"></i>
+        <strong>Pipeline de pré-processamento</strong>
+        <p>Arquivo → FileReader → DataURL → HTMLImageElement → tf.browser.fromPixels → resize → normalizar → expandDims. Normalização DEVE ser idêntica ao treino.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-bolt"></i>
+        <strong>Inferência client-side</strong>
+        <p>mobilenet.load() uma vez no useEffect. classify(imgElement, topK) retorna array de {className, probability}. Modelo fica no browser — zero latência de rede, zero custo por predição.</p>
+      </div>
+    </div>
+    <div class="aviso-green" style="margin-top:1.5rem;">
+      <i class="fas fa-question-circle"></i>
+      <span><strong>Checklist:</strong> o modelo carrega sem erro e <code style="font-family:'JetBrains Mono',monospace;">tf.getBackend()</code> retorna "webgl"? A classificação roda em &lt;200ms? <code style="font-family:'JetBrains Mono',monospace;">tf.memory().numTensors</code> não cresce após várias predições? Se sim — pronto para a Semana 11: Transformers.js e NLP no browser sem servidor.</span>
+    </div>
+    <div class="proxima" onclick="window.location.href='semana-11-frontend.html'">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 11 — Transformers.js: pipeline NLP no front-end (sentimento, embedding, geração de texto)</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    :'<i class="fas fa-eye"></i> ver gabarito';
+}
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{btn.textContent='copiado!';setTimeout(()=>btn.textContent='copiar',2000);});
+}
+const quizData={
+  quiz1:{correct:'B',msg:'✅ Correto! O garbage collector do JavaScript só gerencia a heap JS — memória alocada via new, arrays, objetos. Tensores no TensorFlow.js vivem na memória da GPU, gerenciada pelo contexto WebGL. O GC do browser não tem visibilidade sobre essa memória e não consegue liberá-la. Por isso tf.tidy() e .dispose() são essenciais — eles chamam a API WebGL para liberar explicitamente os buffers na GPU. Sem isso, a VRAM esgota e o browser trava.'},
+  quiz2:{correct:'B',msg:'✅ Correto! A normalização para [-1, 1] funciona assim: pixel 0 → 0/127.5 - 1 = -1; pixel 127 → 127/127.5 - 1 ≈ 0; pixel 255 → 255/127.5 - 1 = 1. A opção A (÷255 → -0.5 → ×2) produz o mesmo resultado mas é mais verbosa. A opção C (−128 → ÷128) é uma aproximação — pixel 255 daria (255-128)/128 ≈ 0.99, não exatamente 1. A opção D está errada — o MobileNet não trata a normalização internamente; isso é responsabilidade do código de inferência.'}
+};
+function responder(id,el,ok,letra){
+  const ops=document.getElementById(id+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  const correta=quizData[id].correct;
+  ops.querySelectorAll('.quiz-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    if(op.querySelector('.quiz-letra').textContent.trim()===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const fb=document.getElementById(id+'-feedback');
+  fb.textContent=quizData[id].msg;
+  fb.style.background=ok?'rgba(74,222,128,.08)':'rgba(239,68,68,.08)';
+  fb.style.border=ok?'1px solid rgba(74,222,128,.22)':'1px solid rgba(239,68,68,.25)';
+  fb.style.color=ok?'rgba(134,239,172,.9)':'#fca5a5';
+  fb.style.padding='.75rem 1rem';fb.style.borderRadius='8px';
+  fb.classList.add('show');
+}
+</script>
+</body>
+</html>

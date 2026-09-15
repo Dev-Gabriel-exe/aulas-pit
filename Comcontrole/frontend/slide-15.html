@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 15 — Performance · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#0c0c14;
+  --orange-900:#1c0d00;
+  --orange-600:#ea580c;
+  --orange-500:#f97316;
+  --orange-400:#fb923c;
+  --orange-300:#fdba74;
+  --white:#fff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(249,115,22,.05);
+  --code-bg:#080500;
+  --code-border:rgba(249,115,22,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.22;pointer-events:none;}
+.blob-1{width:680px;height:680px;background:#7c2d12;top:-240px;left:-200px;}
+.blob-2{width:540px;height:540px;background:#1c0d00;bottom:-210px;right:-120px;}
+.blob-3{width:290px;height:290px;background:#f97316;top:36%;left:44%;opacity:.07;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(249,115,22,.14);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--orange-300);border:1px solid rgba(249,115,22,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--orange-300);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(249,115,22,.07);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--orange-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--orange-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.11);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}.topico:nth-child(6){animation-delay:.6s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(249,115,22,.14);color:var(--orange-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(249,115,22,.05);border-left:3px solid var(--orange-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--orange-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--orange-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--orange-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(249,115,22,.11);color:var(--orange-400);border:1px solid rgba(249,115,22,.26);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(249,115,22,.11);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(249,115,22,.13);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--orange-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(249,115,22,.17);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--orange-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(249,115,22,.06);border-left:3px solid var(--orange-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--orange-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-orange{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.18);font-size:.86rem;color:rgba(253,186,116,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-orange i{color:var(--orange-400);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(249,115,22,.08);}
+th{padding:.6rem 1rem;text-align:left;color:var(--orange-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(249,115,22,.16);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(249,115,22,.03);}
+td strong{color:var(--text-primary);}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(249,115,22,.05);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--orange-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--orange-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#fed7aa;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#374151;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(249,115,22,.11);color:var(--orange-400);border:1px solid rgba(249,115,22,.22);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.22);}
+.badge-blue{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.22);}
+.badge-purple{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.22);}
+
+/* ── Web Vitals mockup ── */
+.vitals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:.75rem 0;}
+.vital-card{border-radius:12px;padding:1.1rem;border:1px solid;text-align:center;}
+.vital-card__abbr{font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:.2rem;}
+.vital-card__full{font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.65rem;}
+.vital-card__threshold{font-size:.75rem;line-height:1.5;}
+.vital-card__threshold span{display:block;}
+
+/* ── Bundle viz mockup ── */
+.bundle-bar{margin:.5rem 0;}
+.bundle-bar__label{display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-secondary);margin-bottom:.3rem;}
+.bundle-bar__track{height:18px;background:rgba(255,255,255,.04);border-radius:5px;overflow:hidden;}
+.bundle-bar__fill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:.5rem;font-size:.7rem;font-weight:700;color:rgba(255,255,255,.9);}
+
+/* ── Waterfall mockup ── */
+.waterfall{display:flex;flex-direction:column;gap:.35rem;margin:.75rem 0;}
+.wf-row{display:flex;align-items:center;gap:.75rem;}
+.wf-label{font-size:.72rem;color:var(--text-secondary);min-width:130px;text-align:right;flex-shrink:0;}
+.wf-track{flex:1;height:16px;background:rgba(255,255,255,.04);border-radius:4px;position:relative;overflow:hidden;}
+.wf-bar{position:absolute;height:100%;border-radius:4px;display:flex;align-items:center;padding:0 .35rem;font-size:.62rem;font-weight:700;white-space:nowrap;}
+.wf-time{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-muted);min-width:42px;text-align:right;flex-shrink:0;}
+
+/* ── Lab steps ── */
+.lab-steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.lab-steps::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--orange-400),rgba(249,115,22,.1));border-radius:1px;}
+.lab-step{display:flex;gap:1rem;padding:.75rem 0;}
+.lab-step__num{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;position:relative;z-index:2;background:rgba(249,115,22,.1);color:var(--orange-400);border:2px solid rgba(249,115,22,.27);}
+.lab-step__body{flex:1;padding-top:8px;}
+.lab-step__title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#f8fafc;margin-bottom:.3rem;}
+.lab-step__desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--orange-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(249,115,22,.17);border-radius:8px;padding:.5rem 1rem;color:var(--orange-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(249,115,22,.07);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+/* ── Quiz ── */
+.quiz-box{background:rgba(249,115,22,.03);border:1px solid rgba(249,115,22,.12);border-radius:12px;padding:1.25rem;margin:1rem 0;}
+.quiz-pergunta{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700;color:var(--white);margin-bottom:1rem;}
+.quiz-ops{display:flex;flex-direction:column;gap:.5rem;}
+.quiz-op{display:flex;align-items:center;gap:10px;padding:.6rem .9rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:9px;cursor:pointer;transition:all .2s;}
+.quiz-op:hover{background:rgba(249,115,22,.06);border-color:rgba(249,115,22,.2);}
+.quiz-op.correto{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);}
+.quiz-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);}
+.quiz-letra{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;}
+.quiz-texto{font-size:.85rem;color:var(--text-secondary);}
+.quiz-feedback{display:none;padding:.75rem 1rem;border-radius:8px;font-size:.83rem;line-height:1.55;margin-top:.75rem;}
+.quiz-feedback.show{display:block;}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--orange-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(249,115,22,.09);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--orange-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.vitals-grid,.resumo-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:520px){.vitals-grid,.resumo-grid,.grid-3{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">⚡ LAB + Conteúdo</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">15</div>
+    <h1 class="capa-titulo">Performance<br><em>Front-end</em><br>para Apps de IA</h1>
+    <p class="capa-sub">4 aulas · 200 minutos · Fazendo sua IA carregar rápida em qualquer conexão</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-tachometer-alt"></i></div><span>Core Web Vitals — LCP, FID/INP, CLS e o que o Google mede</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-code-branch"></i></div><span>Code splitting e lazy loading — React.lazy, Suspense e rotas</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-memory"></i></div><span>useMemo e useCallback — memorizando cálculos e funções pesadas</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-database"></i></div><span>Caching de modelos de IA — IndexedDB, Service Worker e estratégias</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-image"></i></div><span>Otimização de imagens e assets — formatos modernos e carregamento inteligente</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-flask"></i></div><span>LAB: auditoria de performance no Lighthouse e aplicar otimizações reais</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade LAB</div>
+      <p>Auditar o chatbot com Lighthouse, identificar os 3 maiores gargalos de performance, aplicar lazy loading nos componentes pesados (MarkdownRenderer, gráficos Recharts) e medir o ganho real em milissegundos.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>Ferramentas da semana</div>
+      <ul class="info-lista">
+        <li>Lighthouse (DevTools → Performance) — score e métricas Web Vitals</li>
+        <li>Chrome DevTools → Network (throttling para 3G)</li>
+        <li>Chrome DevTools → Coverage (bundle não utilizado)</li>
+        <li>webpack-bundle-analyzer / vite-bundle-visualizer</li>
+        <li>React DevTools Profiler — re-renders desnecessários</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 12 — UX para IA</li>
+        <li>✅ Sem. 14 — Acessibilidade (a11y)</li>
+        <li>▶ Sem. 15 — Performance: Web Vitals, lazy loading, caching</li>
+        <li>Sem. 16 — Deploy: Vercel, variáveis de ambiente, CI/CD</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que isso importa especialmente em IA</div>
+      <ul class="info-lista">
+        <li>Apps de IA têm bundles enormes — react-syntax-highlighter, recharts e @xenova/transformers somam facilmente 2–5MB</li>
+        <li>Cada 100ms a mais de carregamento custa ~1% de conversão (Amazon, 2006)</li>
+        <li>Modelos de IA client-side (TF.js, Transformers.js) fazem downloads de 10–100MB — caching é crítico</li>
+        <li>Google usa Core Web Vitals como sinal de ranking — performance é SEO</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">Core Web Vitals, bundle analysis e o custo real de apps de IA</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-tachometer-alt"></i>Core Web Vitals — as métricas que o Google mede</div>
+      <p>O Google criou o programa Core Web Vitals para padronizar como medimos a experiência do usuário. Desde 2021, elas são sinal de ranking. Para apps de IA, <strong>LCP e INP são os mais críticos</strong> — carregar o bundle de um modelo ou processar tokens pode facilmente exceder os thresholds.</p>
+
+      <div class="vitals-grid">
+        <div class="vital-card" style="background:rgba(249,115,22,.04);border-color:rgba(249,115,22,.2);">
+          <div class="vital-card__abbr" style="color:var(--orange-400);">LCP</div>
+          <div class="vital-card__full">Largest Contentful Paint</div>
+          <div class="vital-card__threshold">
+            <span style="color:#4ade80;">✅ Bom: ≤ 2.5s</span>
+            <span style="color:#fbbf24;">⚠ Melhora: ≤ 4.0s</span>
+            <span style="color:#f87171;">❌ Ruim: &gt; 4.0s</span>
+          </div>
+          <div style="font-size:.75rem;color:var(--text-muted);margin-top:.6rem;">Tempo até o maior elemento visível carregar. Em chatbots: a área de mensagens ou o título da página.</div>
+        </div>
+        <div class="vital-card" style="background:rgba(96,165,250,.04);border-color:rgba(96,165,250,.2);">
+          <div class="vital-card__abbr" style="color:#60a5fa;">INP</div>
+          <div class="vital-card__full">Interaction to Next Paint</div>
+          <div class="vital-card__threshold">
+            <span style="color:#4ade80;">✅ Bom: ≤ 200ms</span>
+            <span style="color:#fbbf24;">⚠ Melhora: ≤ 500ms</span>
+            <span style="color:#f87171;">❌ Ruim: &gt; 500ms</span>
+          </div>
+          <div style="font-size:.75rem;color:var(--text-muted);margin-top:.6rem;">Latência de interação. Inferência de Transformers.js na thread principal bloqueia o INP — use Web Worker.</div>
+        </div>
+        <div class="vital-card" style="background:rgba(139,92,246,.04);border-color:rgba(139,92,246,.2);">
+          <div class="vital-card__abbr" style="color:#a78bfa;">CLS</div>
+          <div class="vital-card__full">Cumulative Layout Shift</div>
+          <div class="vital-card__threshold">
+            <span style="color:#4ade80;">✅ Bom: ≤ 0.1</span>
+            <span style="color:#fbbf24;">⚠ Melhora: ≤ 0.25</span>
+            <span style="color:#f87171;">❌ Ruim: &gt; 0.25</span>
+          </div>
+          <div style="font-size:.75rem;color:var(--text-muted);margin-top:.6rem;">Layout se movendo enquanto o usuário lê. Em chatbots: skeletons sem altura definida causam shift ao carregar.</div>
+        </div>
+      </div>
+
+      <div class="aviso-orange">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span><strong>CLS em chatbots:</strong> quando o skeleton não tem a mesma altura que o conteúdo real, a página "pula" ao renderizar a resposta. Defina <code style="font-family:'JetBrains Mono',monospace;">min-height</code> nos bubbles de chat e evite deixar elementos sem dimensões explícitas antes de carregarem.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-box"></i>O peso real do bundle de um app de IA</div>
+      <p>Apps de IA acumulam dependências pesadas rapidamente. Um chatbot com markdown, highlight e gráficos pode ter um bundle inicial de <strong>2–4MB</strong> — antes de qualquer código do desenvolvedor. Entender de onde vem o peso é o primeiro passo para otimizar.</p>
+
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1.25rem;margin:.75rem 0;">
+        <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--orange-400);font-weight:700;margin-bottom:.85rem;">Bundle típico de chatbot com IA — sem otimização</div>
+        <div class="bundle-bar">
+          <div class="bundle-bar__label"><span>react-syntax-highlighter (todos os temas)</span><span style="color:#f87171;">~900 KB</span></div>
+          <div class="bundle-bar__track"><div class="bundle-bar__fill" style="width:90%;background:linear-gradient(90deg,#f87171,#ef4444);">900 KB</div></div>
+        </div>
+        <div class="bundle-bar">
+          <div class="bundle-bar__label"><span>recharts</span><span style="color:#fbbf24;">~480 KB</span></div>
+          <div class="bundle-bar__track"><div class="bundle-bar__fill" style="width:48%;background:linear-gradient(90deg,#fbbf24,#f59e0b);">480 KB</div></div>
+        </div>
+        <div class="bundle-bar">
+          <div class="bundle-bar__label"><span>react-markdown + plugins</span><span style="color:#fb923c;">~180 KB</span></div>
+          <div class="bundle-bar__track"><div class="bundle-bar__fill" style="width:18%;background:linear-gradient(90deg,#fb923c,#ea580c);">180 KB</div></div>
+        </div>
+        <div class="bundle-bar">
+          <div class="bundle-bar__label"><span>react + react-dom</span><span style="color:#fbbf24;">~140 KB</span></div>
+          <div class="bundle-bar__track"><div class="bundle-bar__fill" style="width:14%;background:rgba(251,191,36,.6);">140 KB</div></div>
+        </div>
+        <div class="bundle-bar">
+          <div class="bundle-bar__label"><span>Código da aplicação</span><span style="color:#4ade80;">~80 KB</span></div>
+          <div class="bundle-bar__track"><div class="bundle-bar__fill" style="width:8%;background:rgba(74,222,128,.6);">80 KB</div></div>
+        </div>
+        <div style="margin-top:.85rem;font-size:.78rem;color:var(--text-muted);border-top:1px solid rgba(255,255,255,.06);padding-top:.75rem;">
+          Total sem otimização: <strong style="color:#f87171;">~1.8 MB gzipado</strong> (a syntax-highlighter com TODOS os temas é o maior culpado)
+        </div>
+      </div>
+
+      <div class="destaque">
+        <strong>Solução imediata:</strong> importar apenas os temas que você usa do react-syntax-highlighter reduz o peso de 900 KB para ~60 KB. <code style="font-family:'JetBrains Mono',monospace;">import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'</code> em vez de importar o pacote completo. Esse único ajuste pode cortar 840 KB do bundle.
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Um chatbot React tem INP de 650ms. O usuário clica em "Enviar" e a página demora 650ms para mostrar qualquer feedback visual. Qual é a causa mais provável se Transformers.js está sendo usado?</div>
+      <div class="quiz-ops" id="quiz1-ops">
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">O bundle JavaScript é muito grande — o parser demora para processar o código</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">A inferência do modelo está rodando na thread principal — bloqueia todo o JavaScript, incluindo a atualização da UI, até terminar</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">O servidor da API de IA está lento — a latência de rede é de 650ms</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">O React está re-renderizando componentes desnecessários ao clicar</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz1-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Code splitting, lazy loading, useMemo e caching de modelos</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-code-branch"></i>Code splitting com React.lazy e Suspense</div>
+      <p>Por padrão, o Vite/CRA coloca todo o app em um único bundle JS. O usuário baixa <em>todo</em> o código antes de ver qualquer coisa — incluindo componentes que só serão usados depois (gráficos, markdown renderer, configurações). <strong>Code splitting</strong> divide o bundle em partes menores que são carregadas sob demanda.</p>
+      <p><code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">React.lazy()</code> faz o import dinâmico de um componente — o bundle desse componente só é baixado quando ele vai ser renderizado pela primeira vez. <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">Suspense</code> exibe um fallback enquanto o chunk está carregando.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — lazy loading de componentes pesados</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { <span class="fn">lazy</span>, <span class="fn">Suspense</span> } <span class="pp">from</span> <span class="str">'react'</span>;
+
+<span class="cm">// Componentes pesados são carregados apenas quando necessários</span>
+<span class="cm">// O bundle do MarkdownRenderer (~180KB) só é baixado na primeira mensagem</span>
+<span class="kw">const</span> MarkdownRenderer = <span class="fn">lazy</span>(() => <span class="pp">import</span>(<span class="str">'./MarkdownRenderer'</span>));
+
+<span class="cm">// Recharts inteiro (~480KB) só carrega quando o dashboard é aberto</span>
+<span class="kw">const</span> Dashboard = <span class="fn">lazy</span>(() => <span class="pp">import</span>(<span class="str">'./Dashboard'</span>));
+
+<span class="cm">// O classificador de imagem (TF.js ~3MB) só carrega quando o usuário navega para essa rota</span>
+<span class="kw">const</span> ClassificadorImagem = <span class="fn">lazy</span>(() => <span class="pp">import</span>(<span class="str">'./ClassificadorImagem'</span>));
+
+<span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">return</span> (
+    &lt;<span class="tag">BrowserRouter</span>&gt;
+      &lt;<span class="tag">Routes</span>&gt;
+        <span class="cm">{/* Rota do chatbot — MarkdownRenderer carregado sob demanda */}</span>
+        &lt;<span class="tag">Route</span> <span class="attr">path</span>=<span class="str">"/"</span> <span class="attr">element</span>={
+          &lt;<span class="tag">Suspense</span> <span class="attr">fallback</span>={&lt;<span class="tag">SkeletonBubble</span> /&gt;}&gt;
+            &lt;<span class="tag">Chatbot</span> /&gt;
+          &lt;/<span class="tag">Suspense</span>&gt;
+        } /&gt;
+
+        <span class="cm">{/* Rota do dashboard — Recharts não entra no bundle inicial */}</span>
+        &lt;<span class="tag">Route</span> <span class="attr">path</span>=<span class="str">"/dashboard"</span> <span class="attr">element</span>={
+          &lt;<span class="tag">Suspense</span> <span class="attr">fallback</span>={&lt;<span class="tag">div</span>&gt;Carregando dashboard...&lt;/<span class="tag">div</span>&gt;}&gt;
+            &lt;<span class="tag">Dashboard</span> /&gt;
+          &lt;/<span class="tag">Suspense</span>&gt;
+        } /&gt;
+
+        <span class="cm">{/* Rota do classificador — TF.js fica fora do bundle principal */}</span>
+        &lt;<span class="tag">Route</span> <span class="attr">path</span>=<span class="str">"/classificar"</span> <span class="attr">element</span>={
+          &lt;<span class="tag">Suspense</span> <span class="attr">fallback</span>={&lt;<span class="tag">CarregandoModelo</span> /&gt;}&gt;
+            &lt;<span class="tag">ClassificadorImagem</span> /&gt;
+          &lt;/<span class="tag">Suspense</span>&gt;
+        } /&gt;
+      &lt;/<span class="tag">Routes</span>&gt;
+    &lt;/<span class="tag">BrowserRouter</span>&gt;
+  );
+}</code></pre>
+      </div>
+
+      <div class="grid-2" style="margin-top:.75rem;">
+        <div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.15);border-radius:12px;padding:1rem;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:700;color:#f87171;margin-bottom:.5rem;">❌ Sem code splitting</div>
+          <div class="waterfall">
+            <div class="wf-row">
+              <span class="wf-label">bundle.js (2.1MB)</span>
+              <div class="wf-track"><div class="wf-bar" style="left:0%;width:100%;background:rgba(239,68,68,.5);color:#fca5a5;">parse + exec</div></div>
+              <span class="wf-time">4.2s</span>
+            </div>
+            <div class="wf-row">
+              <span class="wf-label">Primeira interação</span>
+              <div class="wf-track"><div class="wf-bar" style="left:100%;width:5%;background:rgba(239,68,68,.3);"></div></div>
+              <span class="wf-time">4.4s</span>
+            </div>
+          </div>
+        </div>
+        <div style="background:rgba(74,222,128,.04);border:1px solid rgba(74,222,128,.15);border-radius:12px;padding:1rem;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:700;color:#4ade80;margin-bottom:.5rem;">✅ Com code splitting</div>
+          <div class="waterfall">
+            <div class="wf-row">
+              <span class="wf-label">main.js (320KB)</span>
+              <div class="wf-track"><div class="wf-bar" style="left:0%;width:15%;background:rgba(74,222,128,.5);color:rgba(255,255,255,.9);">main</div></div>
+              <span class="wf-time">0.6s</span>
+            </div>
+            <div class="wf-row">
+              <span class="wf-label">Primeira interação</span>
+              <div class="wf-track"><div class="wf-bar" style="left:15%;width:5%;background:rgba(74,222,128,.3);"></div></div>
+              <span class="wf-time">0.8s</span>
+            </div>
+            <div class="wf-row">
+              <span class="wf-label">markdown.chunk (180KB)</span>
+              <div class="wf-track"><div class="wf-bar" style="left:20%;width:9%;background:rgba(251,191,36,.4);">lazy</div></div>
+              <span class="wf-time">1.2s</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-memory"></i>useMemo e useCallback — quando memorizar compensa</div>
+      <p>useMemo e useCallback são ferramentas de otimização — <strong>não devem ser usados por padrão em todo lugar</strong>. Eles têm custo de memória e de comparação de dependências. São indicados especificamente quando um cálculo é caro (lento) e o componente re-renderiza frequentemente.</p>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Hook</th><th>O que faz</th><th>Quando usar em IA</th><th>Quando NÃO usar</th></tr></thead>
+          <tbody>
+            <tr><td><strong>useMemo</strong></td><td>Memoriza o resultado de um cálculo entre renders</td><td>Similaridade de cosseno entre embeddings (array.map + Math.sqrt por 384 dims). Filtro de histórico de conversas (slice, find em arrays grandes)</td><td>Cálculos simples (somar 2 números). Props que mudam todo render mesmo assim</td></tr>
+            <tr><td><strong>useCallback</strong></td><td>Memoriza uma referência de função entre renders</td><td>Função analisar() passada como prop para componente filho em Worker (evita recriar o Worker). Handlers de evento em listas longas de mensagens</td><td>Funções que não são passadas como prop ou dependência de useEffect</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — useMemo para busca semântica cara</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">// Sem useMemo: cosSim é recalculado a cada render mesmo sem mudar
+// Com 1000 embeddings × 384 dims = 384.000 operações por render</span>
+<span class="kw">const</span> resultadosBusca = <span class="fn">useMemo</span>(() => {
+  <span class="kw">if</span> (!queryEmbedding || embeddingsProdutos.length === <span class="num">0</span>) <span class="kw">return</span> [];
+
+  <span class="kw">return</span> embeddingsProdutos
+    .<span class="fn">map</span>((emb, i) => ({
+      produto: produtos[i],
+      score: <span class="fn">cosSim</span>(queryEmbedding, emb)  <span class="cm">// 384 operações por produto</span>
+    }))
+    .<span class="fn">sort</span>((a, b) => b.score - a.score)
+    .<span class="fn">slice</span>(<span class="num">0</span>, <span class="num">5</span>);
+
+<span class="cm">// Dependências: só recalcula quando query ou produtos mudam</span>
+}, [queryEmbedding, embeddingsProdutos]);
+
+<span class="cm">// useCallback para a função de análise passada ao componente filho</span>
+<span class="kw">const</span> <span class="fn">analisarTexto</span> = <span class="fn">useCallback</span>((texto) => {
+  <span class="kw">return</span> <span class="kw">new</span> <span class="fn">Promise</span>((resolve, reject) => {
+    <span class="kw">const</span> id = ++contadorId.current;
+    pendentesRef.current[id] = { resolve, reject };
+    workerRef.current?.<span class="fn">postMessage</span>({ tipo: <span class="str">'analisar'</span>, texto, id });
+  });
+}, []); <span class="cm">// [] = referência estável — não recria a função entre renders</span></code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-database"></i>Caching de modelos de IA — nunca baixar duas vezes</div>
+      <p>O MobileNet (~16MB) e o DistilBERT (~17MB) fazem um download significativo na primeira visita. Sem caching, cada vez que o usuário retorna ao site ele precisa baixar tudo de novo. Com uma estratégia de cache correta, o modelo fica persistido e carrega instantaneamente.</p>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Estratégia</th><th>Como funciona</th><th>Melhor para</th><th>Limitação</th></tr></thead>
+          <tbody>
+            <tr><td><strong>HTTP Cache (automático)</strong></td><td>Browser armazena arquivos com base nos headers Cache-Control do servidor</td><td>Assets estáticos com URL imutável (ex: modelo.v2.bin)</td><td>Não funciona offline. Expiração depende do servidor</td></tr>
+            <tr><td><strong>IndexedDB (TF.js nativo)</strong></td><td><code style="font-family:'JetBrains Mono',monospace;">tf.loadLayersModel('indexeddb://model')</code> persiste o modelo localmente</td><td>Modelos Keras customizados carregados via TF.js</td><td>Tamanho limitado por quota do browser (~50MB–1GB)</td></tr>
+            <tr><td><strong>Cache API (Service Worker)</strong></td><td>Intercepta requests dos pesos do modelo e serve do cache local</td><td>Transformers.js — pesos ficam no Cache Storage offline</td><td>Requer Service Worker e HTTPS</td></tr>
+            <tr><td><strong>Browser Cache automático</strong></td><td>Transformers.js usa o cache do browser por padrão via fetch</td><td>Primeira linha de cache — zero configuração</td><td>Limpo quando o usuário limpa dados do browser</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — persistindo modelo TF.js no IndexedDB</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> * <span class="pp">as</span> tf <span class="pp">from</span> <span class="str">'@tensorflow/tfjs'</span>;
+<span class="pp">import</span> * <span class="pp">as</span> mobilenet <span class="pp">from</span> <span class="str">'@tensorflow-models/mobilenet'</span>;
+
+<span class="kw">const</span> CACHE_KEY = <span class="str">'indexeddb://mobilenet-v2'</span>;
+
+<span class="kw">async function</span> <span class="fn">carregarComCache</span>() {
+  <span class="kw">try</span> {
+    <span class="cm">// Tenta carregar do IndexedDB (instantâneo se existir)</span>
+    <span class="kw">const</span> modelo = <span class="kw">await</span> tf.<span class="fn">loadLayersModel</span>(CACHE_KEY);
+    console.<span class="fn">log</span>(<span class="str">'✅ Modelo carregado do cache local'</span>);
+    <span class="kw">return</span> modelo;
+  } <span class="kw">catch</span> {
+    <span class="cm">// Primeira vez: baixa do servidor e salva no IndexedDB</span>
+    console.<span class="fn">log</span>(<span class="str">'⬇ Baixando modelo pela primeira vez...'</span>);
+    <span class="kw">const</span> modelo = <span class="kw">await</span> mobilenet.<span class="fn">load</span>({ version: <span class="num">2</span>, alpha: <span class="num">1.0</span> });
+
+    <span class="cm">// Salva para uso futuro offline</span>
+    <span class="kw">await</span> modelo.model.<span class="fn">save</span>(CACHE_KEY);
+    console.<span class="fn">log</span>(<span class="str">'💾 Modelo salvo no IndexedDB para próximas visitas'</span>);
+    <span class="kw">return</span> modelo;
+  }
+}
+
+<span class="cm">// O Transformers.js tem cache automático via browser fetch cache
+// env.cacheDir configura onde os modelos ficam armazenados:</span>
+<span class="pp">import</span> { <span class="fn">env</span> } <span class="pp">from</span> <span class="str">'@xenova/transformers'</span>;
+env.useBrowserCache = <span class="kw">true</span>;  <span class="cm">// padrão — usa o cache HTTP do browser</span>
+<span class="cm">// Na segunda visita, os pesos são servidos do cache sem nenhum download</span></code></pre>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-pergunta">🙋 Um usuário visita o chatbot pela primeira vez em 4G e o MobileNet (~16MB) demora 8 segundos para carregar. Na segunda visita, quanto tempo leva o carregamento do modelo se IndexedDB caching está implementado?</div>
+        <div class="quiz-ops" id="quiz2-ops">
+          <div class="quiz-op" onclick="responder('quiz2',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">~4 segundos — o browser baixa da CDN em vez do servidor original, que é mais rápido</span></div>
+          <div class="quiz-op" onclick="responder('quiz2',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">~100–300ms — o modelo é carregado do armazenamento local (IndexedDB), sem nenhuma requisição de rede</span></div>
+          <div class="quiz-op" onclick="responder('quiz2',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">~8 segundos — o IndexedDB não acelera o tempo de parsing e compilação do modelo</span></div>
+          <div class="quiz-op" onclick="responder('quiz2',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">0ms — o modelo fica em memória RAM permanente após a primeira visita</span></div>
+        </div>
+        <div class="quiz-feedback" id="quiz2-feedback"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3 · LAB</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · LAB · ~50 minutos</div>
+        <div class="secao-titulo">LAB — Auditar, otimizar e medir o ganho real de performance</div>
+      </div>
+    </div>
+
+    <div class="aviso-orange">
+      <i class="fas fa-flask"></i>
+      <span>Objetivo: rodar o Lighthouse Performance no chatbot, identificar os 3 maiores gargalos, aplicar lazy loading e importações seletivas, e medir a diferença em segundos de LCP antes e depois.</span>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>Passo a passo do LAB</div>
+      <div class="lab-steps">
+        <div class="lab-step">
+          <div class="lab-step__num">1</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Baseline — medir antes de otimizar</div>
+            <div class="lab-step__desc">Abra o chatbot em localhost. DevTools → Lighthouse → selecionar "Performance" → "Analyze page load" com "Slow 4G" throttling. Anote: LCP, INP, CLS, Total Blocking Time e o tamanho do bundle principal. Isso é o baseline — cada otimização será comparada a ele.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">2</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Instalar e rodar o bundle analyzer</div>
+            <div class="lab-step__desc">Para Vite: <code style="font-family:'JetBrains Mono',monospace;">npm install -D rollup-plugin-visualizer</code>. Adicione ao vite.config.js e rode <code style="font-family:'JetBrains Mono',monospace;">npm run build</code>. Abrirá um mapa visual do bundle — identifique os 3 maiores módulos. Para CRA: <code style="font-family:'JetBrains Mono',monospace;">npx source-map-explorer build/static/js/*.js</code>.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">3</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Aplicar importação seletiva do syntax-highlighter</div>
+            <div class="lab-step__desc">Substitua a importação atual por uma específica: <code style="font-family:'JetBrains Mono',monospace;">import {"{"} oneDark {"}"} from 'react-syntax-highlighter/dist/esm/styles/prism'</code>. Isso remove ~840KB do bundle. Meça o tamanho do build antes e depois com <code style="font-family:'JetBrains Mono',monospace;">npm run build</code>.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">4</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Aplicar React.lazy nos componentes pesados</div>
+            <div class="lab-step__desc">Converta os imports de MarkdownRenderer e Dashboard para React.lazy(). Envolva com Suspense usando SkeletonBubble como fallback. Rode o build — verifique que esses componentes agora aparecem como chunks separados no output do Vite/webpack.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">5</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Medir depois e documentar o ganho</div>
+            <div class="lab-step__desc">Rode o Lighthouse novamente com as mesmas condições (Slow 4G). Compare: LCP antes → LCP depois. Tamanho do bundle principal antes → depois. Total Blocking Time antes → depois. Documente cada otimização com o ganho em milissegundos e KB.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — vite.config.js com bundle analyzer</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { defineConfig } <span class="pp">from</span> <span class="str">'vite'</span>;
+<span class="pp">import</span> react <span class="pp">from</span> <span class="str">'@vitejs/plugin-react'</span>;
+<span class="pp">import</span> { visualizer } <span class="pp">from</span> <span class="str">'rollup-plugin-visualizer'</span>;
+
+<span class="kw">export default</span> <span class="fn">defineConfig</span>({
+  plugins: [
+    <span class="fn">react</span>(),
+    <span class="fn">visualizer</span>({
+      open: <span class="kw">true</span>,        <span class="cm">// abre o mapa no browser após o build</span>
+      gzipSize: <span class="kw">true</span>,     <span class="cm">// mostra tamanho gzipado real</span>
+      brotliSize: <span class="kw">true</span>,   <span class="cm">// mostra tamanho brotli</span>
+      filename: <span class="str">'dist/stats.html'</span>,
+    }),
+  ],
+  build: {
+    rollupOptions: {
+      output: {
+        <span class="cm">// Separar dependências grandes em chunks próprios</span>
+        <span class="fn">manualChunks</span>(id) {
+          <span class="kw">if</span> (id.<span class="fn">includes</span>(<span class="str">'react-syntax-highlighter'</span>)) {
+            <span class="kw">return</span> <span class="str">'syntax-highlighter'</span>;
+          }
+          <span class="kw">if</span> (id.<span class="fn">includes</span>(<span class="str">'recharts'</span>)) {
+            <span class="kw">return</span> <span class="str">'recharts'</span>;
+          }
+          <span class="kw">if</span> (id.<span class="fn">includes</span>(<span class="str">'react-markdown'</span>)) {
+            <span class="kw">return</span> <span class="str">'markdown'</span>;
+          }
+        },
+      },
+    },
+  },
+});</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Exercícios</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">→</div>
+      <div class="secao-info">
+        <div class="secao-label">Exercícios · Conceito + LAB</div>
+        <div class="secao-titulo">4 exercícios — do lazy loading ao preload de modelos</div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Preloading do modelo em background</div>
+      <p>Em vez de carregar o MobileNet ou DistilBERT apenas quando o usuário abre o componente, inicie o download em background assim que o app carrega — enquanto o usuário ainda está lendo a página inicial. Use o hook <code style="font-family:'JetBrains Mono',monospace;">useEffect</code> no componente raiz App.jsx para chamar <code style="font-family:'JetBrains Mono',monospace;">mobilenet.load()</code> e guardar a Promise em um ref global. O componente filho que precisa do modelo await essa Promise em vez de iniciar um novo download.</p>
+      <span class="dif-basico">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — preloading do modelo com ref global</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="cm">// modelPromise.js — singleton compartilhado</span>
+<span class="pp">import</span> * <span class="pp">as</span> mobilenet <span class="pp">from</span> <span class="str">'@tensorflow-models/mobilenet'</span>;
+
+<span class="kw">let</span> _modelPromise = <span class="kw">null</span>;
+
+<span class="kw">export function</span> <span class="fn">preloadModel</span>() {
+  <span class="cm">// Inicia o download apenas uma vez — chamadas seguintes recebem a mesma Promise</span>
+  <span class="kw">if</span> (!_modelPromise) {
+    _modelPromise = mobilenet.<span class="fn">load</span>({ version: <span class="num">2</span>, alpha: <span class="num">1.0</span> });
+  }
+  <span class="kw">return</span> _modelPromise;
+}
+
+<span class="kw">export function</span> <span class="fn">getModel</span>() {
+  <span class="kw">return</span> _modelPromise || <span class="fn">preloadModel</span>();
+}
+
+<span class="cm">// No App.jsx — preload em background ao iniciar</span>
+<span class="fn">useEffect</span>(() => {
+  <span class="fn">preloadModel</span>();  <span class="cm">// fire-and-forget — não aguarda</span>
+}, []);
+
+<span class="cm">// No ClassificadorImagem.jsx — modelo já está carregando/carregado</span>
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">async function</span> <span class="fn">init</span>() {
+    <span class="kw">const</span> m = <span class="kw">await</span> <span class="fn">getModel</span>();  <span class="cm">// resolve imediatamente se já baixou</span>
+    <span class="fn">setModelo</span>(m);
+    <span class="fn">setCarregando</span>(<span class="kw">false</span>);
+  }
+  <span class="fn">init</span>();
+}, []);</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Virtualização de lista de mensagens</div>
+      <p>Em conversas longas (100+ mensagens), renderizar todo o histórico no DOM é lento — o browser precisa calcular o layout de centenas de elementos. Implemente virtualização usando a biblioteca <code style="font-family:'JetBrains Mono',monospace;">react-window</code>: renderize apenas as mensagens visíveis na viewport + um buffer de 5 acima e abaixo. Compare o tempo de renderização e o número de nós DOM com e sem virtualização em uma conversa simulada de 200 mensagens.</p>
+      <span class="dif-medio">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — lista virtualizada com react-window</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="pp">import</span> { VariableSizeList } <span class="pp">from</span> <span class="str">'react-window'</span>;
+<span class="pp">import</span> { <span class="fn">useRef</span>, <span class="fn">useCallback</span> } <span class="pp">from</span> <span class="str">'react'</span>;
+
+<span class="cm">// Cache de alturas — mensagens longas têm alturas diferentes</span>
+<span class="kw">const</span> alturaCache = <span class="kw">new</span> <span class="fn">Map</span>();
+
+<span class="kw">function</span> <span class="fn">ListaMensagens</span>({ historico }) {
+  <span class="kw">const</span> listaRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+
+  <span class="kw">const</span> <span class="fn">getAltura</span> = <span class="fn">useCallback</span>((index) => {
+    <span class="kw">return</span> alturaCache.<span class="fn">get</span>(index) || <span class="num">80</span>;  <span class="cm">// estimativa inicial</span>
+  }, []);
+
+  <span class="kw">const</span> <span class="fn">Linha</span> = ({ index, style }) => {
+    <span class="kw">const</span> m = historico[index];
+    <span class="kw">return</span> (
+      &lt;<span class="tag">div</span> <span class="attr">style</span>={style}&gt;
+        &lt;<span class="tag">BubbleMensagem</span>
+          <span class="attr">mensagem</span>={m}
+          <span class="attr">onAlturaMedida</span>={(h) => {
+            <span class="kw">if</span> (alturaCache.<span class="fn">get</span>(index) !== h) {
+              alturaCache.<span class="fn">set</span>(index, h);
+              listaRef.current?.<span class="fn">resetAfterIndex</span>(index);
+            }
+          }}
+        /&gt;
+      &lt;/<span class="tag">div</span>&gt;
+    );
+  };
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">VariableSizeList</span>
+      <span class="attr">ref</span>={listaRef}
+      <span class="attr">height</span>={<span class="num">500</span>}
+      <span class="attr">itemCount</span>={historico.length}
+      <span class="attr">itemSize</span>={getAltura}
+      <span class="attr">overscanCount</span>={<span class="num">5</span>}   <span class="cm">// renderiza 5 itens fora da viewport</span>
+    &gt;
+      {Linha}
+    &lt;/<span class="tag">VariableSizeList</span>&gt;
+  );
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Otimização de imagens no classificador</div>
+      <p>No classificador de imagem da Semana 10, o usuário pode fazer upload de fotos grandes (3–10MB). Antes de enviar ao MobileNet: (1) redimensione a imagem para máximo 800×800px usando um canvas, (2) converta para WebP (20–30% menor que JPEG), (3) meça o tempo de inferência com a imagem original vs redimensionada. O MobileNet internamente redimensiona para 224×224 de qualquer forma — enviar uma imagem menor reduz o tempo de pré-processamento.</p>
+      <span class="dif-medio">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JavaScript — redimensionar imagem com Canvas antes da inferência</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">async function</span> <span class="fn">redimensionarImagem</span>(arquivo, maxSize = <span class="num">800</span>) {
+  <span class="kw">const</span> bitmap = <span class="kw">await</span> <span class="fn">createImageBitmap</span>(arquivo);
+  <span class="kw">const</span> escala = <span class="fn">Math.min</span>(maxSize / bitmap.width, maxSize / bitmap.height, <span class="num">1</span>);
+
+  <span class="kw">const</span> canvas = document.<span class="fn">createElement</span>(<span class="str">'canvas'</span>);
+  canvas.width  = Math.<span class="fn">round</span>(bitmap.width  * escala);
+  canvas.height = Math.<span class="fn">round</span>(bitmap.height * escala);
+
+  <span class="kw">const</span> ctx = canvas.<span class="fn">getContext</span>(<span class="str">'2d'</span>);
+  ctx.<span class="fn">drawImage</span>(bitmap, <span class="num">0</span>, <span class="num">0</span>, canvas.width, canvas.height);
+
+  <span class="cm">// Converte para WebP com qualidade 85% (menor que JPEG, mesma qualidade visual)</span>
+  <span class="kw">return new</span> <span class="fn">Promise</span>(resolve => {
+    canvas.<span class="fn">toBlob</span>(resolve, <span class="str">'image/webp'</span>, <span class="num">0.85</span>);
+  });
+}
+
+<span class="cm">// Uso na função de classificação:</span>
+<span class="kw">async function</span> <span class="fn">aoSelecionarArquivo</span>(arquivo) {
+  <span class="kw">const</span> t0 = performance.<span class="fn">now</span>();
+  <span class="kw">const</span> imagemOtimizada = <span class="kw">await</span> <span class="fn">redimensionarImagem</span>(arquivo);
+  console.<span class="fn">log</span>(<span class="str">`Redimensionamento: ${(performance.now()-t0).toFixed(0)}ms`</span>);
+  console.<span class="fn">log</span>(<span class="str">`Original: ${(arquivo.size/1024).toFixed(0)}KB | Otimizada: ${(imagemOtimizada.size/1024).toFixed(0)}KB`</span>);
+  <span class="cm">// Continua com a imagem otimizada para o MobileNet...</span>
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 04 — Desafio: Service Worker para cache offline</div>
+      <p>Implemente um Service Worker que intercep­ta os downloads dos pesos do modelo Transformers.js e os armazena na Cache API. Na segunda visita — mesmo offline — os pesos são servidos do cache local. Use a estratégia "Cache First": verifica o cache antes de ir para a rede. Implemente também um evento "install" que faz o pre-cache do bundle principal do app e um fallback para quando o usuário está completamente offline.</p>
+      <span class="dif-desafio">Desafio · Service Worker</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JavaScript — sw.js (Service Worker com Cache First)</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">const</span> CACHE_NAME = <span class="str">'ai-app-v1'</span>;
+<span class="kw">const</span> MODELO_CACHE = <span class="str">'ai-models-v1'</span>;
+
+<span class="cm">// URLs de pesos do modelo para pré-cachear</span>
+<span class="kw">const</span> MODELO_URLS = [
+  <span class="str">'https://cdn.jsdelivr.net/npm/@xenova/transformers@...'</span>,
+];
+
+self.<span class="fn">addEventListener</span>(<span class="str">'install'</span>, event => {
+  event.<span class="fn">waitUntil</span>(
+    <span class="fn">caches</span>.<span class="fn">open</span>(CACHE_NAME).<span class="fn">then</span>(cache => cache.<span class="fn">addAll</span>([
+      <span class="str">'/'</span>, <span class="str">'/index.html'</span>, <span class="str">'/offline.html'</span>
+    ]))
+  );
+});
+
+<span class="cm">// Cache First — para assets estáticos e pesos de modelo</span>
+self.<span class="fn">addEventListener</span>(<span class="str">'fetch'</span>, event => {
+  <span class="kw">const</span> url = <span class="kw">new</span> <span class="fn">URL</span>(event.request.url);
+
+  <span class="cm">// Pesos de modelo: sempre Cache First</span>
+  <span class="kw">if</span> (url.pathname.<span class="fn">includes</span>(<span class="str">'.bin'</span>) || url.pathname.<span class="fn">includes</span>(<span class="str">'.onnx'</span>)) {
+    event.<span class="fn">respondWith</span>(
+      <span class="fn">caches</span>.<span class="fn">match</span>(event.request).<span class="fn">then</span>(cached => {
+        <span class="kw">if</span> (cached) <span class="kw">return</span> cached;  <span class="cm">// servir do cache</span>
+
+        <span class="cm">// Não está no cache — baixar e salvar para próximas vezes</span>
+        <span class="kw">return</span> <span class="fn">fetch</span>(event.request).<span class="fn">then</span>(response => {
+          <span class="kw">const</span> copia = response.<span class="fn">clone</span>();
+          <span class="fn">caches</span>.<span class="fn">open</span>(MODELO_CACHE).<span class="fn">then</span>(cache => cache.<span class="fn">put</span>(event.request, copia));
+          <span class="kw">return</span> response;
+        });
+      })
+    );
+  }
+});</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 15</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-tachometer-alt"></i>
+        <strong>Core Web Vitals</strong>
+        <p>LCP ≤ 2.5s (maior elemento visível), INP ≤ 200ms (interação → pintura), CLS ≤ 0.1 (estabilidade visual). Inferência na thread principal quebra o INP — use Web Worker.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-code-branch"></i>
+        <strong>Code splitting</strong>
+        <p>React.lazy() + Suspense para imports dinâmicos. Componentes pesados (syntax-highlighter, recharts, TF.js) em chunks separados. Importação seletiva de temas economiza 840KB.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-database"></i>
+        <strong>Caching de modelos</strong>
+        <p>IndexedDB para modelos TF.js. Browser cache automático para Transformers.js. Service Worker para offline. Segunda visita: carregamento instantâneo sem rede.</p>
+      </div>
+    </div>
+    <div class="aviso-green" style="margin-top:1.5rem;">
+      <i class="fas fa-question-circle"></i>
+      <span><strong>Checklist final:</strong> o Lighthouse Performance score está ≥ 80? O LCP é ≤ 2.5s em 3G simulado? Os componentes pesados estão em chunks separados (verificar no Network do DevTools)? A importação do syntax-highlighter é seletiva? O modelo de IA carrega instantaneamente na segunda visita? Se sim — pronto para a Semana 16: Deploy com Vercel e variáveis de ambiente em produção.</span>
+    </div>
+    <div class="proxima" onclick="window.location.href='semana-16-frontend.html'">
+      <div>
+        <div class="proxima-label">Próxima semana — última!</div>
+        <div class="proxima-titulo">Semana 16 — Deploy: Vercel, variáveis de ambiente, CI/CD e lançando sua aplicação de IA</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    :'<i class="fas fa-eye"></i> ver gabarito';
+}
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{btn.textContent='copiado!';setTimeout(()=>btn.textContent='copiar',2000);});
+}
+const quizData={
+  quiz1:{correct:'B',msg:'✅ Correto! INP (Interaction to Next Paint) mede o tempo entre uma interação do usuário e o próximo frame pintado na tela. Quando a inferência do Transformers.js roda na thread principal, ela bloqueia todo o JavaScript — incluindo a atualização do DOM que mostraria o feedback de clique. O usuário fica 650ms olhando para uma tela congelada. A solução é mover a inferência para um Web Worker (Semana 11): a thread principal fica livre para atualizar a UI imediatamente, enquanto o Worker processa em paralelo.'},
+  quiz2:{correct:'B',msg:'✅ Correto! IndexedDB é um banco de dados local do browser — dados persistem entre sessões e são acessados sem nenhuma requisição de rede. Um modelo de 16MB no IndexedDB é lido do disco local em ~100–300ms independente da conexão de rede. Na memória RAM (opção D), os dados não persistem entre visitas — quando o usuário fecha o browser, os dados são perdidos. O browser cache HTTP também funciona bem mas tem uma quota menor e pode ser limpo pelo browser sob pressão de armazenamento; o IndexedDB dá mais controle ao desenvolvedor.'}
+};
+function responder(id,el,ok,letra){
+  const ops=document.getElementById(id+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  const correta=quizData[id].correct;
+  ops.querySelectorAll('.quiz-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    if(op.querySelector('.quiz-letra').textContent.trim()===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const fb=document.getElementById(id+'-feedback');
+  fb.textContent=quizData[id].msg;
+  fb.style.background=ok?'rgba(74,222,128,.08)':'rgba(239,68,68,.08)';
+  fb.style.border=ok?'1px solid rgba(74,222,128,.22)':'1px solid rgba(239,68,68,.25)';
+  fb.style.color=ok?'rgba(134,239,172,.9)':'#fca5a5';
+  fb.style.padding='.75rem 1rem';fb.style.borderRadius='8px';
+  fb.classList.add('show');
+}
+</script>
+</body>
+</html>

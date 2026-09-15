@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 16 — Gerenciamento de Estado Global · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#0e0b16;
+  --violet-900:#1e0b3a;
+  --violet-600:#7c3aed;
+  --violet-500:#8b5cf6;
+  --violet-400:#a78bfa;
+  --violet-300:#c4b5fd;
+  --white:#fff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(139,92,246,.05);
+  --code-bg:#0a0713;
+  --code-border:rgba(139,92,246,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.22;pointer-events:none;}
+.blob-1{width:680px;height:680px;background:#4c1d95;top:-240px;left:-200px;}
+.blob-2{width:540px;height:540px;background:#1e0b3a;bottom:-210px;right:-120px;}
+.blob-3{width:290px;height:290px;background:#8b5cf6;top:36%;left:44%;opacity:.07;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(139,92,246,.14);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--violet-300);border:1px solid rgba(139,92,246,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--violet-300);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(139,92,246,.07);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--violet-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--violet-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.11);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}.topico:nth-child(6){animation-delay:.6s;}.topico:nth-child(7){animation-delay:.7s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(139,92,246,.14);color:var(--violet-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(139,92,246,.05);border-left:3px solid var(--violet-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--violet-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--violet-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--violet-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(139,92,246,.11);color:var(--violet-400);border:1px solid rgba(139,92,246,.26);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(139,92,246,.11);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(139,92,246,.13);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--violet-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(139,92,246,.17);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--violet-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(139,92,246,.06);border-left:3px solid var(--violet-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--violet-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-violet{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.18);font-size:.86rem;color:rgba(196,181,253,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-violet i{color:var(--violet-400);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(139,92,246,.08);}
+th{padding:.6rem 1rem;text-align:left;color:var(--violet-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(139,92,246,.16);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(139,92,246,.03);}
+td strong{color:var(--text-primary);}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(139,92,246,.05);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--violet-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--violet-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#ddd6fe;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#4b5563;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(139,92,246,.11);color:var(--violet-400);border:1px solid rgba(139,92,246,.22);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.22);}
+.badge-orange{background:rgba(251,146,60,.12);color:#fb923c;border:1px solid rgba(251,146,60,.22);}
+
+/* ── Comparação Zustand vs Redux ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
+.compare-panel{border-radius:12px;padding:1.1rem;border:1px solid;}
+.compare-panel__title{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:800;margin-bottom:.7rem;display:flex;align-items:center;gap:8px;}
+.compare-panel__list{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.compare-panel__list li{font-size:.8rem;color:var(--text-secondary);line-height:1.5;padding-left:1rem;position:relative;}
+.compare-panel__list li::before{content:'▸';position:absolute;left:0;color:var(--text-muted);}
+
+/* ── Fluxo de dados diagram (mock) ── */
+.fluxo{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin:1rem 0;flex-wrap:wrap;}
+.fluxo-box{flex:1;min-width:130px;background:rgba(139,92,246,.05);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:.75rem 1rem;text-align:center;font-size:.78rem;color:var(--text-secondary);}
+.fluxo-box strong{display:block;color:var(--violet-400);font-family:'Montserrat',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;}
+.fluxo-arrow{color:var(--violet-400);font-size:1.1rem;flex-shrink:0;}
+
+/* ── Lab steps ── */
+.lab-steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.lab-steps::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--violet-400),rgba(139,92,246,.1));border-radius:1px;}
+.lab-step{display:flex;gap:1rem;padding:.75rem 0;}
+.lab-step__num{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;position:relative;z-index:2;background:rgba(139,92,246,.1);color:var(--violet-400);border:2px solid rgba(139,92,246,.27);}
+.lab-step__body{flex:1;padding-top:8px;}
+.lab-step__title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#f8fafc;margin-bottom:.3rem;}
+.lab-step__desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--violet-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(139,92,246,.17);border-radius:8px;padding:.5rem 1rem;color:var(--violet-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(139,92,246,.07);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+/* ── Quiz ── */
+.quiz-box{background:rgba(139,92,246,.03);border:1px solid rgba(139,92,246,.12);border-radius:12px;padding:1.25rem;margin:1rem 0;}
+.quiz-pergunta{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700;color:var(--white);margin-bottom:1rem;}
+.quiz-ops{display:flex;flex-direction:column;gap:.5rem;}
+.quiz-op{display:flex;align-items:center;gap:10px;padding:.6rem .9rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:9px;cursor:pointer;transition:all .2s;}
+.quiz-op:hover{background:rgba(139,92,246,.06);border-color:rgba(139,92,246,.2);}
+.quiz-op.correto{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);}
+.quiz-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);}
+.quiz-letra{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;}
+.quiz-texto{font-size:.85rem;color:var(--text-secondary);}
+.quiz-feedback{display:none;padding:.75rem 1rem;border-radius:8px;font-size:.83rem;line-height:1.55;margin-top:.75rem;}
+.quiz-feedback.show{display:block;}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--violet-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(139,92,246,.09);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--violet-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.resumo-grid,.compare-grid{grid-template-columns:1fr 1fr;}
+  .fluxo{flex-direction:column;}
+  .fluxo-arrow{transform:rotate(90deg);}
+}
+@media(max-width:520px){.resumo-grid,.grid-3,.compare-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">🗃️ LAB + Conteúdo</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">16</div>
+    <h1 class="capa-titulo">Gerenciamento de<br><em>Estado Global</em><br>em Apps de IA</h1>
+    <p class="capa-sub">4 aulas · Zustand, Redux Toolkit e histórico de conversas persistido</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-question-circle"></i></div><span>Por que Context API não basta — re-renders e o limite do prop drilling</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-cube"></i></div><span>Zustand — store mínima, sem Provider, sem boilerplate</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-layer-group"></i></div><span>Zustand avançado — slices, middleware persist e devtools</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-boxes"></i></div><span>Redux Toolkit — createSlice, configureStore, useSelector/useDispatch</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-balance-scale"></i></div><span>Zustand vs Redux Toolkit — quando cada um vale a complexidade</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-save"></i></div><span>Persistência de histórico de conversas com localStorage/IndexedDB</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-flask"></i></div><span>LAB: migrar o estado do chatbot para uma store global persistida</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade LAB</div>
+      <p>Migrar o estado do chatbot (mensagens, modelo selecionado, tema) de useState/Context para uma store Zustand com middleware persist, mantendo múltiplas conversas salvas e recuperáveis após recarregar a página.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>Ferramentas da semana</div>
+      <ul class="info-lista">
+        <li>Zustand — <code style="font-family:'JetBrains Mono',monospace;">npm install zustand</code></li>
+        <li>Redux Toolkit — <code style="font-family:'JetBrains Mono',monospace;">npm install @reduxjs/toolkit react-redux</code></li>
+        <li>Redux DevTools (extensão do browser) — inspecionar ações e estado</li>
+        <li>zustand/middleware — persist, devtools, immer</li>
+        <li>React DevTools — verificar re-renders desnecessários</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 13 — Avaliação P2</li>
+        <li>✅ Sem. 14 — Acessibilidade (a11y)</li>
+        <li>✅ Sem. 15 — Performance (Web Vitals, lazy loading, caching)</li>
+        <li>▶ Sem. 16 — Estado global: Zustand, Redux Toolkit, persistência</li>
+        <li>Sem. 17 — Testes de front-end: Jest, React Testing Library</li>
+        <li>Sem. 18 — Revisão Geral + Deploy: Vercel, CI/CD, Lighthouse</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que isso importa especialmente em IA</div>
+      <ul class="info-lista">
+        <li>Um chatbot real tem várias conversas, configurações de modelo e preferências — Context API sozinho vira um emaranhado de Providers aninhados</li>
+        <li>Toda mudança em um Context re-renderiza TODOS os consumidores, mesmo os que não usam o dado que mudou</li>
+        <li>Histórico de conversa precisa sobreviver ao F5 — sem uma store persistida, o usuário perde tudo ao recarregar</li>
+        <li>Múltiplos componentes (input, sidebar de histórico, configurações) precisam ler e escrever no mesmo estado sem prop drilling</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1</div>
+        <div class="secao-titulo">Os limites da Context API e por que apps de IA precisam de mais</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-question-circle"></i>O que a Context API resolve — e o que ela não resolve bem</div>
+      <p>Desde a Semana 3, você usa Context API para evitar prop drilling — passar um estado por vários níveis de componentes que não precisam dele. Isso funciona bem para dados que mudam pouco (tema, usuário logado, idioma). Mas em um chatbot de IA real, o estado muda o tempo todo: cada token que chega no streaming, cada troca de conversa, cada configuração de modelo.</p>
+      <p>O problema: <strong>todo componente que consome um Context re-renderiza sempre que qualquer parte do valor do Context muda</strong> — mesmo que o componente só use uma fatia pequena dele. Se o seu <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">ChatContext</code> guarda { mensagens, modeloAtivo, tema, listaConversas }, um componente que só lê <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">tema</code> vai re-renderizar a cada novo token de streaming.</p>
+
+      <div class="destaque">
+        <strong>A regra prática:</strong> Context API é ótimo para estado que muda raramente e é lido por muitos componentes (tema, autenticação). Para estado que muda com frequência alta (streaming, listas de mensagens, formulários complexos) ou que precisa de seletores granulares (ler só uma fatia sem re-renderizar por causa de outra), uma store dedicada como Zustand ou Redux Toolkit resolve melhor.
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — o problema do re-render em cascata com Context</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">// ChatContext guarda tudo junto — qualquer mudança re-renderiza todo mundo</span>
+<span class="kw">const</span> ChatContext = <span class="fn">createContext</span>();
+
+<span class="kw">function</span> <span class="fn">ChatProvider</span>({ children }) {
+  <span class="kw">const</span> [mensagens, setMensagens] = <span class="fn">useState</span>([]);
+  <span class="kw">const</span> [modeloAtivo, setModeloAtivo] = <span class="fn">useState</span>(<span class="str">'gpt-4o-mini'</span>);
+  <span class="kw">const</span> [tema, setTema] = <span class="fn">useState</span>(<span class="str">'escuro'</span>);
+
+  <span class="cm">// Um único objeto de valor — cada streaming de token recria isso inteiro</span>
+  <span class="kw">const</span> valor = { mensagens, setMensagens, modeloAtivo, setModeloAtivo, tema, setTema };
+
+  <span class="kw">return</span> &lt;<span class="tag">ChatContext.Provider</span> <span class="attr">value</span>={valor}&gt;{children}&lt;/<span class="tag">ChatContext.Provider</span>&gt;;
+}
+
+<span class="cm">// Este componente só lê "tema", mas re-renderiza a cada token de streaming
+// porque "valor" é um objeto novo a cada render do Provider</span>
+<span class="kw">function</span> <span class="fn">BotaoTema</span>() {
+  <span class="kw">const</span> { tema, setTema } = <span class="fn">useContext</span>(ChatContext);
+  <span class="kw">return</span> &lt;<span class="tag">button</span> <span class="attr">onClick</span>={() => <span class="fn">setTema</span>(t => t === <span class="str">'escuro'</span> ? <span class="str">'claro'</span> : <span class="str">'escuro'</span>)}&gt;{tema}&lt;/<span class="tag">button</span>&gt;;
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-cube"></i>Zustand — a store mínima que resolve isso sem boilerplate</div>
+      <p>Zustand ("estado" em alemão) é uma biblioteca de gerenciamento de estado que resolve o problema de re-render seletivamente: cada componente escolhe exatamente qual fatia do estado quer ler, e só re-renderiza quando <em>aquela fatia</em> muda. Não precisa de Provider envolvendo a árvore, não precisa de reducers verbosos — é uma função que cria um hook.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — primeira store Zustand para o chatbot</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">// store/useChatStore.js</span>
+<span class="pp">import</span> { create } <span class="pp">from</span> <span class="str">'zustand'</span>;
+
+<span class="kw">export const</span> useChatStore = <span class="fn">create</span>((set, get) => ({
+  <span class="cm">// Estado</span>
+  mensagens: [],
+  modeloAtivo: <span class="str">'gpt-4o-mini'</span>,
+  tema: <span class="str">'escuro'</span>,
+
+  <span class="cm">// Ações — funções que modificam o estado, vivem no mesmo lugar</span>
+  <span class="fn">adicionarMensagem</span>: (msg) => <span class="fn">set</span>((estado) => ({
+    mensagens: [...estado.mensagens, msg]
+  })),
+
+  <span class="fn">definirModelo</span>: (modelo) => <span class="fn">set</span>({ modeloAtivo: modelo }),
+
+  <span class="fn">alternarTema</span>: () => <span class="fn">set</span>((estado) => ({
+    tema: estado.tema === <span class="str">'escuro'</span> ? <span class="str">'claro'</span> : <span class="str">'escuro'</span>
+  })),
+
+  <span class="fn">limparConversa</span>: () => <span class="fn">set</span>({ mensagens: [] }),
+}));
+
+<span class="cm">// ── Uso em qualquer componente, sem Provider ──</span>
+
+<span class="cm">// Este componente SÓ re-renderiza quando "tema" muda —
+// não é afetado por novas mensagens chegando via streaming</span>
+<span class="kw">function</span> <span class="fn">BotaoTema</span>() {
+  <span class="kw">const</span> tema = useChatStore((estado) => estado.tema);
+  <span class="kw">const</span> alternarTema = useChatStore((estado) => estado.alternarTema);
+  <span class="kw">return</span> &lt;<span class="tag">button</span> <span class="attr">onClick</span>={alternarTema}&gt;{tema}&lt;/<span class="tag">button</span>&gt;;
+}
+
+<span class="cm">// Este componente só re-renderiza quando "mensagens" muda</span>
+<span class="kw">function</span> <span class="fn">ListaMensagens</span>() {
+  <span class="kw">const</span> mensagens = useChatStore((estado) => estado.mensagens);
+  <span class="kw">return</span> mensagens.<span class="fn">map</span>(m => &lt;<span class="tag">Bubble</span> <span class="attr">key</span>={m.id} <span class="attr">msg</span>={m} /&gt;);
+}</code></pre>
+      </div>
+
+      <div class="destaque">
+        <strong>O segredo da seletividade:</strong> <code style="font-family:'JetBrains Mono',monospace;">useChatStore((estado) => estado.tema)</code> passa um <em>seletor</em> — uma função que extrai só a fatia que o componente precisa. O Zustand compara o valor retornado entre renders e só dispara re-render se ele mudou. É por isso que <code style="font-family:'JetBrains Mono',monospace;">BotaoTema</code> ignora completamente as mudanças em <code style="font-family:'JetBrains Mono',monospace;">mensagens</code>.
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Um componente Sidebar lê apenas <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">useChatStore(estado => estado.modeloAtivo)</code>. Uma nova mensagem chega via streaming e é adicionada ao array de mensagens na store. O que acontece com a Sidebar?</div>
+      <div class="quiz-ops" id="quiz1-ops">
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">A Sidebar re-renderiza, pois qualquer mudança na store afeta todos os componentes que a usam</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">A Sidebar NÃO re-renderiza, porque o seletor só observa modeloAtivo, que não mudou</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">A Sidebar lança um erro, pois duas partes da store não podem mudar de forma independente</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">Depende de haver um Provider envolvendo a Sidebar — sem ele, o valor fica desatualizado</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz1-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2</div>
+        <div class="secao-titulo">Zustand avançado — slices, middleware persist e devtools</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-layer-group"></i>Organizando a store em slices</div>
+      <p>Conforme o app cresce, uma única store com dezenas de campos fica difícil de navegar. O padrão de <strong>slices</strong> divide a store em fatias temáticas (chat, configurações, UI) que são combinadas em uma store única — mantendo a simplicidade do Zustand mas com organização de código clara.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — store dividida em slices</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">// slices/chatSlice.js</span>
+<span class="kw">export const</span> <span class="fn">criarChatSlice</span> = (set, get) => ({
+  mensagens: [],
+  streaming: <span class="kw">false</span>,
+  <span class="fn">adicionarMensagem</span>: (msg) => <span class="fn">set</span>((estado) => ({ mensagens: [...estado.mensagens, msg] })),
+  <span class="fn">setStreaming</span>: (valor) => <span class="fn">set</span>({ streaming: valor }),
+});
+
+<span class="cm">// slices/configSlice.js</span>
+<span class="kw">export const</span> <span class="fn">criarConfigSlice</span> = (set, get) => ({
+  modeloAtivo: <span class="str">'gpt-4o-mini'</span>,
+  temperatura: <span class="num">0.7</span>,
+  <span class="fn">definirModelo</span>: (modelo) => <span class="fn">set</span>({ modeloAtivo: modelo }),
+  <span class="fn">definirTemperatura</span>: (t) => <span class="fn">set</span>({ temperatura: t }),
+});
+
+<span class="cm">// store/useAppStore.js — combina os slices em uma única store</span>
+<span class="pp">import</span> { create } <span class="pp">from</span> <span class="str">'zustand'</span>;
+<span class="pp">import</span> { criarChatSlice } <span class="pp">from</span> <span class="str">'../slices/chatSlice'</span>;
+<span class="pp">import</span> { criarConfigSlice } <span class="pp">from</span> <span class="str">'../slices/configSlice'</span>;
+
+<span class="kw">export const</span> useAppStore = <span class="fn">create</span>((...a) => ({
+  ...<span class="fn">criarChatSlice</span>(...a),
+  ...<span class="fn">criarConfigSlice</span>(...a),
+}));
+
+<span class="cm">// Uso — continua sendo um único hook, componentes não sabem que é dividido em slices</span>
+<span class="kw">const</span> streaming = useAppStore((e) => e.streaming);
+<span class="kw">const</span> modeloAtivo = useAppStore((e) => e.modeloAtivo);</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-save"></i>Middleware persist — salvando a store no localStorage automaticamente</div>
+      <p>O middleware <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">persist</code> envolve a store e sincroniza automaticamente com localStorage (ou outra engine de storage) a cada mudança. É exatamente o que resolve o problema de perder o histórico de conversa ao recarregar a página.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — store com persist e partialize</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { create } <span class="pp">from</span> <span class="str">'zustand'</span>;
+<span class="pp">import</span> { persist, createJSONStorage } <span class="pp">from</span> <span class="str">'zustand/middleware'</span>;
+
+<span class="kw">export const</span> useChatStore = <span class="fn">create</span>(
+  <span class="fn">persist</span>(
+    (set, get) => ({
+      conversas: [],           <span class="cm">// [{ id, titulo, mensagens: [...] }]</span>
+      conversaAtivaId: <span class="kw">null</span>,
+      streaming: <span class="kw">false</span>,       <span class="cm">// NÃO deve ser persistido — é estado transitório</span>
+
+      <span class="fn">novaConversa</span>: () => <span class="fn">set</span>((estado) => {
+        <span class="kw">const</span> nova = { id: crypto.<span class="fn">randomUUID</span>(), titulo: <span class="str">'Nova conversa'</span>, mensagens: [] };
+        <span class="kw">return</span> { conversas: [nova, ...estado.conversas], conversaAtivaId: nova.id };
+      }),
+
+      <span class="fn">adicionarMensagem</span>: (msg) => <span class="fn">set</span>((estado) => ({
+        conversas: estado.conversas.<span class="fn">map</span>(c =>
+          c.id === estado.conversaAtivaId
+            ? { ...c, mensagens: [...c.mensagens, msg] }
+            : c
+        )
+      })),
+    }),
+    {
+      name: <span class="str">'chatbot-storage'</span>,               <span class="cm">// chave usada no localStorage</span>
+      storage: <span class="fn">createJSONStorage</span>(() => localStorage),
+      <span class="cm">// partialize escolhe o que É salvo — exclui campos transitórios como "streaming"</span>
+      <span class="fn">partialize</span>: (estado) => ({
+        conversas: estado.conversas,
+        conversaAtivaId: estado.conversaAtivaId,
+      }),
+    }
+  )
+);
+
+<span class="cm">// Ao recarregar a página, o Zustand automaticamente reidrata o estado
+// a partir do localStorage antes do primeiro render — sem código extra.</span></code></pre>
+      </div>
+
+      <div class="aviso-violet">
+        <i class="fas fa-lightbulb"></i>
+        <span><strong>Por que usar partialize:</strong> nem tudo na store deve ir para o localStorage. Estados transitórios como <code style="font-family:'JetBrains Mono',monospace;">streaming: true/false</code> ou uma referência a um AbortController não fazem sentido persistidos — se o usuário recarrega no meio de um streaming, ele não estava realmente "streamando" mais. partialize evita salvar lixo e mantém o localStorage enxuto.</span>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Por que o campo <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">streaming</code> foi excluído no <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">partialize</code> do exemplo acima?</div>
+      <div class="quiz-ops" id="quiz2-ops">
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">Porque booleans não podem ser serializados em JSON</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">Porque é um estado transitório da sessão atual — persistir "streaming: true" faria a UI achar que ainda está gerando uma resposta após recarregar, quando na verdade a conexão foi perdida</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">Porque o localStorage tem um limite de tamanho e esse campo ocuparia espaço demais</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">Não há motivo técnico — foi apenas uma escolha estética do exemplo</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz2-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3</div>
+        <div class="secao-titulo">Redux Toolkit — quando a complexidade do projeto pede mais estrutura</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-boxes"></i>Redux Toolkit — createSlice e configureStore</div>
+      <p>Redux existe há mais tempo que Zustand e é usado em bases de código grandes, times maiores e projetos com regras de negócio complexas envolvendo estado. O <strong>Redux Toolkit (RTK)</strong> é a forma moderna e recomendada de usar Redux — elimina o boilerplate do Redux clássico (action types, action creators e reducers separados) através de <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">createSlice</code>.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — slice e store com Redux Toolkit</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">// features/chatSlice.js</span>
+<span class="pp">import</span> { createSlice } <span class="pp">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+
+<span class="kw">const</span> chatSlice = <span class="fn">createSlice</span>({
+  name: <span class="str">'chat'</span>,
+  initialState: {
+    mensagens: [],
+    modeloAtivo: <span class="str">'gpt-4o-mini'</span>,
+  },
+  reducers: {
+    <span class="cm">// RTK usa Immer por baixo dos panos — parece que você está "mutando"
+    // o estado diretamente, mas na verdade produz um novo estado imutável</span>
+    <span class="fn">mensagemAdicionada</span>(estado, acao) {
+      estado.mensagens.<span class="fn">push</span>(acao.payload);   <span class="cm">// "mutação" segura via Immer</span>
+    },
+    <span class="fn">modeloDefinido</span>(estado, acao) {
+      estado.modeloAtivo = acao.payload;
+    },
+    <span class="fn">conversaLimpa</span>(estado) {
+      estado.mensagens = [];
+    },
+  },
+});
+
+<span class="cm">// Actions são geradas automaticamente a partir dos nomes dos reducers</span>
+<span class="kw">export const</span> { mensagemAdicionada, modeloDefinido, conversaLimpa } = chatSlice.actions;
+<span class="kw">export default</span> chatSlice.reducer;
+
+<span class="cm">// store/index.js</span>
+<span class="pp">import</span> { configureStore } <span class="pp">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+<span class="pp">import</span> chatReducer <span class="pp">from</span> <span class="str">'../features/chatSlice'</span>;
+
+<span class="kw">export const</span> store = <span class="fn">configureStore</span>({
+  reducer: { chat: chatReducer },
+  <span class="cm">// configureStore já vem com Redux DevTools e middleware de checagem habilitados</span>
+});
+
+<span class="cm">// main.jsx — Redux PRECISA de um Provider envolvendo a árvore</span>
+<span class="pp">import</span> { Provider } <span class="pp">from</span> <span class="str">'react-redux'</span>;
+&lt;<span class="tag">Provider</span> <span class="attr">store</span>={store}&gt;
+  &lt;<span class="tag">App</span> /&gt;
+&lt;/<span class="tag">Provider</span>&gt;
+
+<span class="cm">// Uso em um componente — useSelector lê, useDispatch escreve</span>
+<span class="pp">import</span> { useSelector, useDispatch } <span class="pp">from</span> <span class="str">'react-redux'</span>;
+<span class="pp">import</span> { mensagemAdicionada } <span class="pp">from</span> <span class="str">'../features/chatSlice'</span>;
+
+<span class="kw">function</span> <span class="fn">CampoInput</span>() {
+  <span class="kw">const</span> dispatch = <span class="fn">useDispatch</span>();
+  <span class="kw">const</span> mensagens = <span class="fn">useSelector</span>((estado) => estado.chat.mensagens);
+
+  <span class="kw">function</span> <span class="fn">enviar</span>(texto) {
+    dispatch(<span class="fn">mensagemAdicionada</span>({ id: crypto.<span class="fn">randomUUID</span>(), role: <span class="str">'user'</span>, content: texto }));
+  }
+  <span class="cm">// ...</span>
+}</code></pre>
+      </div>
+
+      <div class="destaque">
+        <strong>Immer por baixo dos panos:</strong> em Redux clássico, mutar o estado diretamente (<code style="font-family:'JetBrains Mono',monospace;">estado.mensagens.push(...)</code>) é proibido e quebra a previsibilidade do Redux. O RTK usa a biblioteca Immer internamente: dentro de um reducer do createSlice, você <em>escreve</em> como se estivesse mutando, mas o Immer produz um novo objeto imutável por trás. Isso elimina o erro mais comum do Redux clássico (retornar um novo objeto manualmente com spread em cada campo).
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-balance-scale"></i>Zustand vs Redux Toolkit — qual escolher</div>
+      <div class="compare-grid">
+        <div class="compare-panel" style="background:rgba(139,92,246,.04);border-color:rgba(139,92,246,.2);">
+          <div class="compare-panel__title" style="color:var(--violet-400);"><i class="fas fa-cube"></i> Zustand</div>
+          <ul class="compare-panel__list">
+            <li>~1KB, zero boilerplate, sem Provider</li>
+            <li>Ótimo para projetos pequenos e médios, MVPs, protótipos de IA</li>
+            <li>Curva de aprendizado mínima — é só um hook</li>
+            <li>Menos convenções impostas — pode gerar inconsistência em times grandes sem disciplina própria</li>
+            <li>DevTools e persist via middleware opcional</li>
+          </ul>
+        </div>
+        <div class="compare-panel" style="background:rgba(96,165,250,.04);border-color:rgba(96,165,250,.2);">
+          <div class="compare-panel__title" style="color:#60a5fa;"><i class="fas fa-boxes"></i> Redux Toolkit</div>
+          <ul class="compare-panel__list">
+            <li>Mais estrutura e convenções — bom para times grandes e projetos de longa duração</li>
+            <li>Redux DevTools nativo e maduro — time-travel debugging</li>
+            <li>Ecossistema extenso (RTK Query para cache de API, middleware customizado)</li>
+            <li>Exige Provider, mais conceitos (actions, reducers, slices, store)</li>
+            <li>Mais verboso para casos simples — pode ser "demais" para um app pequeno</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="aviso-violet">
+        <i class="fas fa-lightbulb"></i>
+        <span><strong>Regra prática para projetos de IA:</strong> se o app tem uma store relativamente simples (histórico de chat, configurações, tema), Zustand é a escolha mais rápida e com menos atrito. Se o projeto já usa Redux em outras partes, tem uma equipe grande, ou precisa de ferramentas avançadas como RTK Query para cache de chamadas de API, Redux Toolkit compensa o boilerplate extra. Para a maioria dos projetos acadêmicos e MVPs desta disciplina, Zustand é suficiente e mais produtivo.</span>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Um estudante mistura mutação direta de estado dentro de um reducer criado com <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">createSlice</code> do Redux Toolkit: <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">estado.mensagens.push(msg)</code>. Isso quebra o app?</div>
+      <div class="quiz-ops" id="quiz3-ops">
+        <div class="quiz-op" onclick="responder('quiz3',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">Sim — Redux nunca permite mutação, isso lança uma exceção imediatamente em qualquer versão</span></div>
+        <div class="quiz-op" onclick="responder('quiz3',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">Não — dentro de reducers do createSlice, o RTK usa Immer, que permite essa sintaxe de "mutação" e converte para uma atualização imutável automaticamente</span></div>
+        <div class="quiz-op" onclick="responder('quiz3',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">Só funciona se o array já existir e tiver pelo menos um item</span></div>
+        <div class="quiz-op" onclick="responder('quiz3',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">Funciona igual em Redux clássico e RTK — mutação sempre foi permitida em reducers</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz3-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 4 · LAB</span></div>
+
+  <!-- ── AULA 4 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">04</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 4 · LAB</div>
+        <div class="secao-titulo">LAB — Migrando o chatbot para uma store Zustand persistida com múltiplas conversas</div>
+      </div>
+    </div>
+
+    <div class="aviso-violet">
+      <i class="fas fa-flask"></i>
+      <span>Objetivo: substituir o useState/useContext do chatbot por uma store Zustand com persist, suportando múltiplas conversas salvas, seleção de conversa ativa e recuperação completa do histórico após recarregar a página.</span>
+    </div>
+
+    <div class="fluxo">
+      <div class="fluxo-box"><strong>Componente</strong>dispara ação (ex: enviar mensagem)</div>
+      <span class="fluxo-arrow"><i class="fas fa-arrow-right"></i></span>
+      <div class="fluxo-box"><strong>Store Zustand</strong>atualiza o estado imutavelmente</div>
+      <span class="fluxo-arrow"><i class="fas fa-arrow-right"></i></span>
+      <div class="fluxo-box"><strong>Middleware persist</strong>grava no localStorage</div>
+      <span class="fluxo-arrow"><i class="fas fa-arrow-right"></i></span>
+      <div class="fluxo-box"><strong>Componentes inscritos</strong>re-renderizam seletivamente</div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>Passo a passo do LAB</div>
+      <div class="lab-steps">
+        <div class="lab-step">
+          <div class="lab-step__num">1</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Instalar o Zustand e desenhar o shape da store</div>
+            <div class="lab-step__desc"><code style="font-family:'JetBrains Mono',monospace;">npm install zustand</code>. Defina o shape: conversas (array de {id, titulo, mensagens}), conversaAtivaId, modeloAtivo, streaming. Decida o que vai para o partialize (tudo, exceto streaming).</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">2</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Criar a store com persist</div>
+            <div class="lab-step__desc">Implemente useChatStore.js com create + persist + createJSONStorage(() => localStorage). Adicione as ações: novaConversa, selecionarConversa, adicionarMensagem, renomearConversa, excluirConversa.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">3</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Remover o Context/useState antigo</div>
+            <div class="lab-step__desc">Delete o ChatProvider e ChatContext. Substitua cada <code style="font-family:'JetBrains Mono',monospace;">useContext(ChatContext)</code> por chamadas seletivas de <code style="font-family:'JetBrains Mono',monospace;">useChatStore(estado => estado.campo)</code>. Isso já reduz re-renders desnecessários.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">4</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Construir a sidebar de conversas</div>
+            <div class="lab-step__desc">Crie um componente Sidebar que lista <code style="font-family:'JetBrains Mono',monospace;">conversas</code>, mostra qual está ativa e permite clicar para trocar (chama selecionarConversa). Adicione um botão "+ Nova conversa" que chama novaConversa.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">5</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Testar a persistência</div>
+            <div class="lab-step__desc">Envie algumas mensagens em duas conversas diferentes, recarregue a página (F5) e confirme que ambas as conversas e a conversa ativa selecionada continuam corretas. Abra o DevTools → Application → Local Storage e inspecione a chave "chatbot-storage".</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">6</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Adicionar o middleware devtools (opcional)</div>
+            <div class="lab-step__desc">Envolva a store com <code style="font-family:'JetBrains Mono',monospace;">devtools(persist(...))</code> do zustand/middleware. Abra a extensão Redux DevTools no browser — mesmo usando Zustand, ela mostra cada ação disparada e o diff de estado, útil para depurar o streaming.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — store final com múltiplas conversas e devtools</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { create } <span class="pp">from</span> <span class="str">'zustand'</span>;
+<span class="pp">import</span> { persist, createJSONStorage, devtools } <span class="pp">from</span> <span class="str">'zustand/middleware'</span>;
+
+<span class="kw">export const</span> useChatStore = <span class="fn">create</span>(
+  <span class="fn">devtools</span>(
+    <span class="fn">persist</span>(
+      (set, get) => ({
+        conversas: [],
+        conversaAtivaId: <span class="kw">null</span>,
+        streaming: <span class="kw">false</span>,
+
+        <span class="fn">novaConversa</span>: () => <span class="fn">set</span>((estado) => {
+          <span class="kw">const</span> nova = { id: crypto.<span class="fn">randomUUID</span>(), titulo: <span class="str">'Nova conversa'</span>, mensagens: [] };
+          <span class="kw">return</span> { conversas: [nova, ...estado.conversas], conversaAtivaId: nova.id };
+        }, <span class="kw">false</span>, <span class="str">'chat/novaConversa'</span>),  <span class="cm">// terceiro argumento = nome da ação no DevTools</span>
+
+        <span class="fn">selecionarConversa</span>: (id) => <span class="fn">set</span>({ conversaAtivaId: id }, <span class="kw">false</span>, <span class="str">'chat/selecionarConversa'</span>),
+
+        <span class="fn">adicionarMensagem</span>: (msg) => <span class="fn">set</span>((estado) => ({
+          conversas: estado.conversas.<span class="fn">map</span>(c =>
+            c.id === estado.conversaAtivaId ? { ...c, mensagens: [...c.mensagens, msg] } : c
+          )
+        }), <span class="kw">false</span>, <span class="str">'chat/adicionarMensagem'</span>),
+
+        <span class="fn">excluirConversa</span>: (id) => <span class="fn">set</span>((estado) => ({
+          conversas: estado.conversas.<span class="fn">filter</span>(c => c.id !== id),
+          conversaAtivaId: estado.conversaAtivaId === id ? <span class="kw">null</span> : estado.conversaAtivaId,
+        }), <span class="kw">false</span>, <span class="str">'chat/excluirConversa'</span>),
+      }),
+      {
+        name: <span class="str">'chatbot-storage'</span>,
+        storage: <span class="fn">createJSONStorage</span>(() => localStorage),
+        <span class="fn">partialize</span>: (estado) => ({ conversas: estado.conversas, conversaAtivaId: estado.conversaAtivaId }),
+      }
+    ),
+    { name: <span class="str">'ChatStore'</span> }  <span class="cm">// nome que aparece no Redux DevTools</span>
+  )
+);</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Exercícios</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">→</div>
+      <div class="secao-info">
+        <div class="secao-label">Exercícios · Conceito + LAB</div>
+        <div class="secao-titulo">4 exercícios — da store seletiva ao Redux Toolkit</div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Seletor derivado com useMemo/shallow</div>
+      <p>Um componente <code style="font-family:'JetBrains Mono',monospace;">ContadorMensagens</code> precisa exibir quantas mensagens tem a conversa ativa. Escreva o seletor que combina <code style="font-family:'JetBrains Mono',monospace;">conversas</code> e <code style="font-family:'JetBrains Mono',monospace;">conversaAtivaId</code> para retornar apenas o número, evitando re-renderizar quando outras conversas mudam. Use <code style="font-family:'JetBrains Mono',monospace;">useShallow</code> de <code style="font-family:'JetBrains Mono',monospace;">zustand/react/shallow</code> se o seletor retornar um objeto/array.</p>
+      <span class="dif-basico">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — seletor derivado eficiente</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">function</span> <span class="fn">ContadorMensagens</span>() {
+  <span class="cm">// Seletor derivado — retorna só um número primitivo
+  // re-renderiza apenas quando esse número muda, não a cada mudança em "conversas"</span>
+  <span class="kw">const</span> total = useChatStore((estado) => {
+    <span class="kw">const</span> ativa = estado.conversas.<span class="fn">find</span>(c => c.id === estado.conversaAtivaId);
+    <span class="kw">return</span> ativa ? ativa.mensagens.length : <span class="num">0</span>;
+  });
+
+  <span class="kw">return</span> &lt;<span class="tag">span</span>&gt;{total} mensagens&lt;/<span class="tag">span</span>&gt;;
+}
+
+<span class="cm">// Se precisar retornar um objeto/array do seletor (ex: as últimas 3 mensagens),
+// use useShallow para comparar por igualdade rasa em vez de referência:</span>
+<span class="pp">import</span> { useShallow } <span class="pp">from</span> <span class="str">'zustand/react/shallow'</span>;
+
+<span class="kw">const</span> ultimasTres = useChatStore(
+  <span class="fn">useShallow</span>((estado) => {
+    <span class="kw">const</span> ativa = estado.conversas.<span class="fn">find</span>(c => c.id === estado.conversaAtivaId);
+    <span class="kw">return</span> ativa ? ativa.mensagens.<span class="fn">slice</span>(-<span class="num">3</span>) : [];
+  })
+);</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Exportar e importar conversas em JSON</div>
+      <p>Adicione duas ações à store: <code style="font-family:'JetBrains Mono',monospace;">exportarConversas()</code> que gera um Blob JSON de todas as conversas e dispara o download via <code style="font-family:'JetBrains Mono',monospace;">URL.createObjectURL</code>, e <code style="font-family:'JetBrains Mono',monospace;">importarConversas(arquivo)</code> que lê um arquivo JSON selecionado pelo usuário (via input type="file") e mescla as conversas na store, evitando ids duplicados.</p>
+      <span class="dif-medio">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JavaScript — exportar/importar conversas</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="cm">// Ações adicionadas à store</span>
+<span class="fn">exportarConversas</span>: () => {
+  <span class="kw">const</span> { conversas } = get();
+  <span class="kw">const</span> blob = <span class="kw">new</span> <span class="fn">Blob</span>([<span class="fn">JSON.stringify</span>(conversas, <span class="kw">null</span>, <span class="num">2</span>)], { type: <span class="str">'application/json'</span> });
+  <span class="kw">const</span> url = URL.<span class="fn">createObjectURL</span>(blob);
+  <span class="kw">const</span> a = document.<span class="fn">createElement</span>(<span class="str">'a'</span>);
+  a.href = url;
+  a.download = <span class="str">`conversas-${Date.now()}.json`</span>;
+  a.<span class="fn">click</span>();
+  URL.<span class="fn">revokeObjectURL</span>(url);
+},
+
+<span class="fn">importarConversas</span>: <span class="kw">async</span> (arquivo) => {
+  <span class="kw">const</span> texto = <span class="kw">await</span> arquivo.<span class="fn">text</span>();
+  <span class="kw">const</span> novasConversas = <span class="fn">JSON.parse</span>(texto);
+  <span class="fn">set</span>((estado) => {
+    <span class="kw">const</span> idsExistentes = <span class="kw">new</span> <span class="fn">Set</span>(estado.conversas.<span class="fn">map</span>(c => c.id));
+    <span class="kw">const</span> semDuplicar = novasConversas.<span class="fn">filter</span>(c => !idsExistentes.<span class="fn">has</span>(c.id));
+    <span class="kw">return</span> { conversas: [...semDuplicar, ...estado.conversas] };
+  });
+},
+
+<span class="cm">// Componente — input file disparando a importação</span>
+&lt;<span class="tag">input</span>
+  <span class="attr">type</span>=<span class="str">"file"</span>
+  <span class="attr">accept</span>=<span class="str">"application/json"</span>
+  <span class="attr">onChange</span>={(e) => e.target.files[<span class="num">0</span>] &amp;&amp; <span class="fn">importarConversas</span>(e.target.files[<span class="num">0</span>])}
+/&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Migrar uma slice para Redux Toolkit</div>
+      <p>Pegue a store Zustand de configurações (modeloAtivo, temperatura) construída na Aula 3 e reescreva-a como uma slice de Redux Toolkit equivalente: createSlice com os mesmos dois campos e ações, configureStore combinando essa slice, e dois componentes (um lendo com useSelector, outro escrevendo com useDispatch). Compare a quantidade de código entre as duas abordagens.</p>
+      <span class="dif-medio">Conceito + código</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JavaScript — configSlice equivalente em Redux Toolkit</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="cm">// features/configSlice.js</span>
+<span class="pp">import</span> { createSlice } <span class="pp">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+
+<span class="kw">const</span> configSlice = <span class="fn">createSlice</span>({
+  name: <span class="str">'config'</span>,
+  initialState: { modeloAtivo: <span class="str">'gpt-4o-mini'</span>, temperatura: <span class="num">0.7</span> },
+  reducers: {
+    <span class="fn">modeloDefinido</span>(estado, acao) { estado.modeloAtivo = acao.payload; },
+    <span class="fn">temperaturaDefinida</span>(estado, acao) { estado.temperatura = acao.payload; },
+  },
+});
+<span class="kw">export const</span> { modeloDefinido, temperaturaDefinida } = configSlice.actions;
+<span class="kw">export default</span> configSlice.reducer;
+
+<span class="cm">// store/index.js</span>
+<span class="pp">import</span> { configureStore } <span class="pp">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+<span class="pp">import</span> configReducer <span class="pp">from</span> <span class="str">'../features/configSlice'</span>;
+<span class="kw">export const</span> store = <span class="fn">configureStore</span>({ reducer: { config: configReducer } });
+
+<span class="cm">// Leitura</span>
+<span class="kw">function</span> <span class="fn">ModeloAtual</span>() {
+  <span class="kw">const</span> modelo = <span class="fn">useSelector</span>((estado) => estado.config.modeloAtivo);
+  <span class="kw">return</span> &lt;<span class="tag">span</span>&gt;{modelo}&lt;/<span class="tag">span</span>&gt;;
+}
+
+<span class="cm">// Escrita</span>
+<span class="kw">function</span> <span class="fn">SeletorModelo</span>() {
+  <span class="kw">const</span> dispatch = <span class="fn">useDispatch</span>();
+  <span class="kw">return</span> (
+    &lt;<span class="tag">select</span> <span class="attr">onChange</span>={(e) => dispatch(<span class="fn">modeloDefinido</span>(e.target.value))}&gt;
+      &lt;<span class="tag">option</span> <span class="attr">value</span>=<span class="str">"gpt-4o-mini"</span>&gt;GPT-4o mini&lt;/<span class="tag">option</span>&gt;
+      &lt;<span class="tag">option</span> <span class="attr">value</span>=<span class="str">"gpt-4o"</span>&gt;GPT-4o&lt;/<span class="tag">option</span>&gt;
+    &lt;/<span class="tag">select</span>&gt;
+  );
+}
+
+<span class="cm">// Comparação: a versão Zustand equivalente tem ~8 linhas na store e não
+// precisa de Provider nem de arquivo de store separado combinando reducers.
+// A versão RTK tem mais arquivos, mas ganha DevTools nativo e convenções
+// mais rígidas — valioso em times grandes.</span></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 04 — Desafio: migrar para IndexedDB com storage customizado</div>
+      <p>O localStorage tem limite de ~5-10MB e é síncrono (pode travar a thread para históricos grandes). Implemente um adapter de storage customizado para o middleware persist do Zustand usando IndexedDB (via biblioteca <code style="font-family:'JetBrains Mono',monospace;">idb-keyval</code>) em vez de localStorage, mantendo a mesma interface esperada pelo <code style="font-family:'JetBrains Mono',monospace;">createJSONStorage</code>. Explique por que isso é preferível para históricos de conversa muito longos.</p>
+      <span class="dif-desafio">Desafio · Storage</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JavaScript — storage customizado com IndexedDB</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="cm">// npm install idb-keyval</span>
+<span class="pp">import</span> { get, set, del } <span class="pp">from</span> <span class="str">'idb-keyval'</span>;
+<span class="pp">import</span> { persist } <span class="pp">from</span> <span class="str">'zustand/middleware'</span>;
+
+<span class="cm">// Adapter que implementa a interface StateStorage esperada pelo Zustand:
+// getItem, setItem e removeItem, todos podendo retornar Promises</span>
+<span class="kw">const</span> indexedDBStorage = {
+  <span class="fn">getItem</span>: <span class="kw">async</span> (name) => {
+    <span class="kw">const</span> valor = <span class="kw">await</span> <span class="fn">get</span>(name);
+    <span class="kw">return</span> valor ?? <span class="kw">null</span>;
+  },
+  <span class="fn">setItem</span>: <span class="kw">async</span> (name, valor) => {
+    <span class="kw">await</span> <span class="fn">set</span>(name, valor);
+  },
+  <span class="fn">removeItem</span>: <span class="kw">async</span> (name) => {
+    <span class="kw">await</span> <span class="fn">del</span>(name);
+  },
+};
+
+<span class="kw">export const</span> useChatStore = <span class="fn">create</span>(
+  <span class="fn">persist</span>(
+    (set, get) => ({ <span class="cm">/* ...estado e ações... */</span> }),
+    {
+      name: <span class="str">'chatbot-storage'</span>,
+      storage: indexedDBStorage,  <span class="cm">// substitui createJSONStorage(() => localStorage)</span>
+    }
+  )
+);
+
+<span class="cm">/* Por que IndexedDB para históricos longos?
+ * 1. Limite de armazenamento MUITO maior (centenas de MB a GB, vs ~5-10MB do localStorage)
+ * 2. API assíncrona por natureza — não bloqueia a thread principal ao ler/escrever
+ *    payloads grandes, ao contrário do localStorage que é síncrono
+ * 3. Suporta estruturas de dados mais ricas nativamente (Blobs, ArrayBuffers) —
+ *    útil se o histórico incluir anexos ou imagens geradas pela IA
+ * 4. O Zustand persist funciona igual — só troca o adapter de storage,
+ *    o resto do código (ações, seletores) não muda nada
+ */</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 16</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-question-circle"></i>
+        <strong>Limites da Context API</strong>
+        <p>Todo consumidor de um Context re-renderiza quando qualquer parte do valor muda. Bom para dados estáveis (tema, auth); ruim para estado de alta frequência (streaming, listas).</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-cube"></i>
+        <strong>Zustand</strong>
+        <p>Store sem Provider, seletores granulares evitam re-render desnecessário. Slices para organização. Middleware persist salva no localStorage/IndexedDB automaticamente.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-boxes"></i>
+        <strong>Redux Toolkit</strong>
+        <p>createSlice + configureStore eliminam o boilerplate do Redux clássico. Immer permite "mutação" segura dentro de reducers. DevTools nativo com time-travel debugging.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-save"></i>
+        <strong>Persistência de conversas</strong>
+        <p>partialize escolhe o que é salvo, excluindo estado transitório. Múltiplas conversas com seleção ativa. IndexedDB para históricos grandes além do limite do localStorage.</p>
+      </div>
+    </div>
+    <div class="aviso-green" style="margin-top:1.5rem;">
+      <i class="fas fa-question-circle"></i>
+      <span><strong>Checklist final:</strong> a store Zustand está sem Provider e os componentes usam seletores granulares? O histórico de conversas sobrevive a um F5? O campo streaming está fora do partialize? Você sabe explicar quando escolheria Redux Toolkit em vez de Zustand? Se sim — pronto para a Semana 17: Testes de front-end.</span>
+    </div>
+    <div class="proxima" onclick="window.location.href='semana-17-frontend.html'">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 17 — Testes de front-end: Jest, React Testing Library e testes de integração com APIs mockadas</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    :'<i class="fas fa-eye"></i> ver gabarito';
+}
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{btn.textContent='copiado!';setTimeout(()=>btn.textContent='copiar',2000);});
+}
+const quizData={
+  quiz1:{correct:'B',msg:'✅ Correto! A grande vantagem do Zustand é que useChatStore(estado => estado.modeloAtivo) inscreve o componente APENAS na fatia modeloAtivo. Quando adicionarMensagem muda o array de mensagens, o Zustand compara o retorno do seletor da Sidebar (modeloAtivo) entre o estado antigo e o novo — como não mudou, não dispara re-render. Isso é bem diferente da Context API, onde qualquer mudança no value do Provider afeta todo consumidor, independente do que ele realmente usa.'},
+  quiz2:{correct:'B',msg:'✅ Correto! streaming=true é um reflexo de "existe uma requisição de rede em andamento agora". Se o usuário recarrega a página no meio de um streaming, essa requisição foi perdida — não existe mais. Se persistíssemos streaming:true, ao reabrir o app a UI mostraria um estado de "gerando resposta" para sempre, sem nenhuma requisição real por trás para completá-lo. partialize existe exatamente para separar "dado que deve sobreviver ao reload" de "estado da sessão atual".'},
+  quiz3:{correct:'B',msg:'✅ Correto! O Redux Toolkit usa a biblioteca Immer internamente dentro de createSlice. Isso permite escrever reducers com uma sintaxe que parece mutação direta (estado.mensagens.push(msg)), mas o Immer intercepta essas operações e produz um novo estado imutável por trás das cortinas via um "rascunho" (draft). Isso só vale dentro de reducers do createSlice — fora desse contexto (ex: em um componente qualquer), mutar o estado do Redux diretamente continua sendo incorreto e quebra a previsibilidade.'}
+};
+function responder(id,el,ok,letra){
+  const ops=document.getElementById(id+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  const correta=quizData[id].correct;
+  ops.querySelectorAll('.quiz-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    if(op.querySelector('.quiz-letra').textContent.trim()===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const fb=document.getElementById(id+'-feedback');
+  fb.textContent=quizData[id].msg;
+  fb.style.background=ok?'rgba(74,222,128,.08)':'rgba(239,68,68,.08)';
+  fb.style.border=ok?'1px solid rgba(74,222,128,.22)':'1px solid rgba(239,68,68,.25)';
+  fb.style.color=ok?'rgba(134,239,172,.9)':'#fca5a5';
+  fb.style.padding='.75rem 1rem';fb.style.borderRadius='8px';
+  fb.classList.add('show');
+}
+</script>
+</body>
+</html>

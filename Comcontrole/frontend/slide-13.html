@@ -1,0 +1,792 @@
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 13 — AVALIAÇÃO P2 · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#100c1e;
+  --accent-400:#c084fc;
+  --accent-300:#d8b4fe;
+  --accent-500:#a855f7;
+  --white:#ffffff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(192,132,252,.05);
+  --code-bg:#09060f;
+  --code-border:rgba(192,132,252,.2);
+  --exam-purple:#9333ea;
+  --exam-purple-acc:#c084fc;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═════════════════════════════ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:#4c1d95;top:-220px;left:-180px;}
+.blob-2{width:500px;height:500px;background:#2e1065;bottom:-200px;right:-100px;}
+.blob-3{width:260px;height:260px;background:#9333ea;top:38%;left:42%;opacity:.1;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(192,132,252,.2);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--exam-purple-acc);border:1px solid rgba(192,132,252,.35);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--exam-purple-acc);animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(192,132,252,.08);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2.2rem;font-weight:800;color:var(--white);line-height:1.1;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--exam-purple-acc);}
+.capa-sub{font-size:.9rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--exam-purple-acc);border-radius:2px;margin-bottom:2rem;}
+.cobertura{display:flex;flex-direction:column;gap:.65rem;}
+.cob-item{display:flex;align-items:center;gap:12px;padding:.65rem 1rem;border-radius:10px;background:rgba(192,132,252,.06);border:1px solid rgba(192,132,252,.15);font-size:.83rem;animation:slideIn .5s ease both;}
+.cob-item:nth-child(1){animation-delay:.1s;}.cob-item:nth-child(2){animation-delay:.2s;}.cob-item:nth-child(3){animation-delay:.3s;}.cob-item:nth-child(4){animation-delay:.4s;}.cob-item:nth-child(5){animation-delay:.5s;}.cob-item:nth-child(6){animation-delay:.6s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.cob-num{width:28px;height:28px;border-radius:8px;flex-shrink:0;background:rgba(192,132,252,.15);color:var(--exam-purple-acc);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:800;}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--exam-purple-acc);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--exam-purple-acc);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(192,132,252,.15);color:var(--exam-purple-acc);border:1px solid rgba(192,132,252,.35);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══════════════════════════ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(192,132,252,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(192,132,252,.15);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--exam-purple-acc);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(192,132,252,.2);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--exam-purple-acc);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(192,132,252,.07);border-left:3px solid var(--accent-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--accent-400);}
+.aviso-exam{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(192,132,252,.06);border:1px solid rgba(192,132,252,.2);font-size:.86rem;color:rgba(216,180,254,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-exam i{color:var(--exam-purple-acc);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-orange{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,146,60,.06);border:1px solid rgba(251,146,60,.2);font-size:.86rem;color:rgba(253,186,116,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-orange i{color:#fb923c;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(192,132,252,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--exam-purple-acc);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(192,132,252,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(192,132,252,.03);}
+td strong{color:var(--text-primary);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--accent-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+/* ── Semana cards ── */
+.semana-card{border-radius:14px;padding:1.25rem;border:1px solid;margin-bottom:0;}
+.s7{background:rgba(139,92,246,.04);border-color:rgba(139,92,246,.2);}
+.s8{background:rgba(34,211,238,.04);border-color:rgba(34,211,238,.18);}
+.s9{background:rgba(251,191,36,.04);border-color:rgba(251,191,36,.18);}
+.s10{background:rgba(251,113,133,.04);border-color:rgba(251,113,133,.18);}
+.s11{background:rgba(74,222,128,.04);border-color:rgba(74,222,128,.18);}
+.s12{background:rgba(129,140,248,.04);border-color:rgba(129,140,248,.18);}
+.s-titulo{font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.7rem;display:flex;align-items:center;gap:8px;}
+.s7 .s-titulo{color:#a78bfa;}.s8 .s-titulo{color:#22d3ee;}.s9 .s-titulo{color:#fbbf24;}
+.s10 .s-titulo{color:#fb7185;}.s11 .s-titulo{color:#4ade80;}.s12 .s-titulo{color:#818cf8;}
+.s-item{font-size:.8rem;color:var(--text-secondary);margin-bottom:.35rem;padding-left:.7rem;position:relative;line-height:1.5;}
+.s-item::before{content:'▸';position:absolute;left:0;font-size:.6rem;color:var(--text-muted);margin-top:2px;}
+.s-armadilha{font-size:.75rem;margin-top:.6rem;padding:.5rem .75rem;border-radius:7px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.18);color:rgba(253,230,138,.8);}
+.s-armadilha::before{content:'⚠ ';font-weight:700;}
+
+/* ── Simulado ── */
+.questao{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s;}
+.questao:hover{border-color:rgba(192,132,252,.2);}
+.q-header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;}
+.q-num{width:32px;height:32px;border-radius:9px;background:rgba(192,132,252,.12);color:var(--exam-purple-acc);font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.q-semana{font-size:.65rem;padding:2px 7px;border-radius:4px;font-weight:600;margin-top:6px;flex-shrink:0;}
+.q-texto{font-size:.92rem;color:var(--text-primary);line-height:1.6;font-weight:500;}
+.q-opcoes{display:flex;flex-direction:column;gap:.45rem;}
+.q-op{display:flex;align-items:flex-start;gap:.65rem;padding:.6rem .85rem;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);transition:all .2s;font-size:.85rem;color:var(--text-secondary);}
+.q-op:hover{background:rgba(192,132,252,.06);border-color:rgba(192,132,252,.2);}
+.q-op.correto{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.35);color:#86efac;}
+.q-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);color:#fca5a5;}
+.q-letra{width:22px;height:22px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;margin-top:1px;}
+.q-gabarito{display:none;margin-top:.85rem;padding:.85rem 1rem;border-radius:9px;font-size:.83rem;line-height:1.6;}
+.q-gabarito.show{display:block;}
+
+/* ── Badges semanas ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.22);}
+.badge-s8{background:rgba(34,211,238,.12);color:#22d3ee;border:1px solid rgba(34,211,238,.22);}
+.badge-s9{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.22);}
+.badge-s10{background:rgba(251,113,133,.12);color:#fb7185;border:1px solid rgba(251,113,133,.22);}
+.badge-s11{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-s12{background:rgba(129,140,248,.12);color:#818cf8;border:1px solid rgba(129,140,248,.22);}
+
+/* ── Dissertativas ── */
+.dissertativa{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;}
+.d-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--exam-purple-acc);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}
+.d-enunciado{font-size:.92rem;color:var(--text-primary);line-height:1.65;margin-bottom:1rem;padding:.85rem 1rem;border-radius:9px;background:rgba(192,132,252,.05);border:1px solid rgba(192,132,252,.12);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(192,132,252,.2);border-radius:8px;padding:.5rem 1rem;color:var(--exam-purple-acc);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(192,132,252,.08);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+.modelo-resposta{padding:1rem 1.1rem;border-radius:10px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);font-size:.85rem;color:var(--text-secondary);line-height:1.7;}
+.modelo-resposta strong{color:#4ade80;}
+
+/* ── Checklist ── */
+.checklist-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.75rem 0;}
+.check-item{display:flex;align-items:flex-start;gap:.6rem;padding:.55rem .8rem;border-radius:8px;border:1px solid var(--card-border);background:var(--card-bg);cursor:pointer;transition:all .2s;}
+.check-item:hover{border-color:rgba(74,222,128,.3);}
+.check-item.checked{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.3);}
+.check-box{width:18px;height:18px;border-radius:4px;border:1px solid rgba(255,255,255,.2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .2s;}
+.check-item.checked .check-box{background:rgba(74,222,128,.3);border-color:#4ade80;color:#4ade80;}
+.check-label{font-size:.8rem;color:var(--text-secondary);line-height:1.45;}
+.check-item.checked .check-label{color:rgba(134,239,172,.8);}
+.progress-bar-wrap{margin:1rem 0;padding:1rem 1.25rem;border-radius:12px;background:var(--card-bg);border:1px solid var(--card-border);}
+.progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;}
+.progress-label span{font-size:.78rem;color:var(--text-secondary);}
+.progress-label strong{font-size:.82rem;color:var(--text-primary);}
+.progress-track{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#9333ea,#c084fc);border-radius:4px;transition:width .4s ease;}
+
+/* ── Instrução de prova ── */
+.prova-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
+.prova-etapa{border-radius:12px;padding:1rem;border:1px solid rgba(255,255,255,.07);background:var(--card-bg);}
+.prova-num{font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:800;color:rgba(192,132,252,.12);line-height:1;margin-bottom:.4rem;}
+.prova-titulo{font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:700;color:var(--exam-purple-acc);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;}
+.prova-texto{font-size:.8rem;color:var(--text-secondary);line-height:1.55;}
+
+/* Score */
+.score-box{display:none;margin-top:1rem;padding:1rem 1.25rem;border-radius:12px;text-align:center;}
+.score-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(192,132,252,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.checklist-grid,.prova-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ CAPA ════════════════════════════════════════════════════════════ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">🟣 Avaliação P2</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">13</div>
+    <h1 class="capa-titulo"><em>Avaliação P2</em></h1>
+    <p class="capa-sub">Semana de prova · Conteúdo das semanas 7 a 12</p>
+    <div class="divider"></div>
+    <p style="font-size:.85rem;color:var(--text-secondary);margin-bottom:1.25rem;">Esta página é o seu guia de preparação para a P2. Use o simulado, os gabaritos das questões dissertativas e o checklist interativo para chegar à prova com confiança.</p>
+    <div class="cobertura">
+      <div class="cob-item"><div class="cob-num">S7</div><span>Streaming — SSE, fetch com ReadableStream, AbortController, cursor piscante</span></div>
+      <div class="cob-item"><div class="cob-num">S8</div><span>react-markdown, remark-gfm, react-syntax-highlighter, XSS e dangerouslySetInnerHTML</span></div>
+      <div class="cob-item"><div class="cob-num">S9</div><span>Recharts — LineChart, BarChart, PieChart, ResponsiveContainer, dataKey, Tooltip</span></div>
+      <div class="cob-item"><div class="cob-num">S10</div><span>TensorFlow.js — tensores, tf.tidy, dispose, MobileNet, pré-processamento</span></div>
+      <div class="cob-item"><div class="cob-num">S11</div><span>Transformers.js — pipelines, ONNX, embeddings, similaridade cosseno, Web Worker</span></div>
+      <div class="cob-item"><div class="cob-num">S12</div><span>UX para IA — useReducer, skeleton, erros úteis, transparência, thumbs, Error Boundary</span></div>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-clipboard-list"></i>Formato da P2</div>
+      <ul class="info-lista">
+        <li>Questões de múltipla escolha — conceito, leitura de código e cenários</li>
+        <li>Questões dissertativas — comparação e justificativa de decisões técnicas</li>
+        <li>Componente prático — escrever ou completar código com streaming, gráfico ou UX</li>
+        <li>Consulta: sem consulta (prova fechada)</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-star"></i>Temas mais importantes</div>
+      <ul class="info-lista">
+        <li>Por que fetch + ReadableStream e não EventSource com a OpenAI</li>
+        <li>dangerouslySetInnerHTML com IA — o risco de XSS</li>
+        <li>dataKey no Recharts — o que aponta e o que não é</li>
+        <li>tf.tidy() e dispose() — por que tensores precisam ser descartados</li>
+        <li>Web Worker para Transformers.js — por que é obrigatório</li>
+        <li>useReducer vs useState para estados de loading/error/success</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Dica de ouro</div>
+      <ul class="info-lista">
+        <li>Leia cada questão buscando a palavra-chave técnica: "memória GPU" → tensores, "thread principal" → Web Worker, "estados impossíveis" → useReducer, "HTML cru" → XSS</li>
+        <li>Para questões de código, trace o fluxo: o que entra, o que acontece, o que sai</li>
+        <li>Na prova prática, declare os estados primeiro, depois o useEffect, depois o JSX</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>começar a revisão</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ═══ CONTEÚDO ════════════════════════════════════════════════════════ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── REVISÃO RÁPIDA ────────────────────────────────────────────── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">①</div>
+      <div class="secao-info">
+        <div class="secao-label">Revisão rápida</div>
+        <div class="secao-titulo">Os 6 temas — pontos-chave e armadilhas comuns</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="semana-card s7">
+        <div class="s-titulo"><i class="fas fa-stream"></i>Semana 7 — Streaming</div>
+        <div class="s-item"><strong>EventSource:</strong> só GET, sem headers → não funciona direto com OpenAI (precisa Authorization)</div>
+        <div class="s-item"><strong>fetch + ReadableStream:</strong> POST com headers livres, chunks via reader.read() + TextDecoder</div>
+        <div class="s-item"><strong>Formato SSE:</strong> linhas data: JSON → filtrar, parsear, ignorar [DONE]</div>
+        <div class="s-item"><strong>AbortController:</strong> cancelar stream → useRef (não useState) → e.name === 'AbortError'</div>
+        <div class="s-item"><strong>Cursor piscante:</strong> span com animation blink → some quando gerando === false</div>
+        <div class="s-item"><strong>textoCompleto:</strong> variável local acumuladora → setState ao fim para o histórico</div>
+        <div class="s-armadilha">Armadilha: guardar AbortController em useState causa re-render toda vez que é criado. Use useRef — persiste sem disparar renders.</div>
+      </div>
+
+      <div class="semana-card s8">
+        <div class="s-titulo"><i class="fab fa-markdown"></i>Semana 8 — Markdown</div>
+        <div class="s-item"><strong>dangerouslySetInnerHTML + IA:</strong> risco XSS real — scripts no conteúdo do modelo são executados</div>
+        <div class="s-item"><strong>react-markdown:</strong> converte para componentes React, não HTML cru — sem XSS</div>
+        <div class="s-item"><strong>remark-gfm:</strong> habilita tabelas, checklists, strikethrough (GFM não é markdown padrão)</div>
+        <div class="s-item"><strong>components prop:</strong> sobrescreve como cada elemento é renderizado → BlocoCode para code</div>
+        <div class="s-item"><strong>className="language-X":</strong> o react-markdown passa o prefixo "language-" na className do code</div>
+        <div class="s-item"><strong>Streaming + markdown:</strong> texto puro durante geração → ReactMarkdown só após [DONE]</div>
+        <div class="s-armadilha">Armadilha: usar dangerouslySetInnerHTML com marked() em vez de react-markdown. Mesmo que "funcione", é vulnerabilidade XSS com conteúdo de LLM.</div>
+      </div>
+
+      <div class="semana-card s9">
+        <div class="s-titulo"><i class="fas fa-chart-bar"></i>Semana 9 — Recharts</div>
+        <div class="s-item"><strong>ResponsiveContainer:</strong> sempre o mais externo — ajusta width ao pai</div>
+        <div class="s-item"><strong>dataKey:</strong> aponta para o campo do objeto de dados que a série vai plotar (campo numérico)</div>
+        <div class="s-item"><strong>XAxis dataKey:</strong> o campo usado como categoria no eixo X (ex: "epoca", "classe")</div>
+        <div class="s-item"><strong>LineChart:</strong> evolução temporal — accuracy/loss por época, overfitting visível</div>
+        <div class="s-item"><strong>BarChart:</strong> comparação entre categorias — precision/recall por classe</div>
+        <div class="s-item"><strong>PieChart:</strong> proporção — innerRadius &gt; 0 = donut. Evitar com mais de 5 fatias</div>
+        <div class="s-item"><strong>Tooltip customizado:</strong> componente React com active, payload, label</div>
+        <div class="s-armadilha">Armadilha: confundir dataKey do XAxis (campo categoria) com dataKey do Line/Bar (campo de valor). São props do mesmo nome mas em componentes diferentes e com significados opostos.</div>
+      </div>
+
+      <div class="semana-card s10">
+        <div class="s-titulo"><i class="fas fa-cube"></i>Semana 10 — TensorFlow.js</div>
+        <div class="s-item"><strong>Tensor:</strong> array multidimensional na GPU (WebGL) — fora do GC do JavaScript</div>
+        <div class="s-item"><strong>dispose():</strong> libera memória GPU manualmente — obrigatório para evitar memory leak</div>
+        <div class="s-item"><strong>tf.tidy():</strong> descarta todos os tensores intermediários criados dentro do callback, retorna o final</div>
+        <div class="s-item"><strong>tf.memory().numTensors:</strong> monitora leaks — não deve crescer a cada inferência</div>
+        <div class="s-item"><strong>Pipeline MobileNet:</strong> Arquivo → DataURL → HTMLImage → fromPixels → resize → /127.5 − 1 → expandDims</div>
+        <div class="s-item"><strong>model.classify(img, k):</strong> retorna [{className, probability}] — pré-processamento embutido no pacote</div>
+        <div class="s-armadilha">Armadilha: normalização deve ser IDÊNTICA ao treino. Se treinou com ÷255, inferir com ÷127.5−1 produz predições aleatórias.</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:1.25rem;">
+      <div class="semana-card s11">
+        <div class="s-titulo"><i class="fas fa-brain"></i>Semana 11 — Transformers.js</div>
+        <div class="s-item"><strong>ONNX Runtime Web:</strong> PyTorch não roda no browser → ONNX é formato neutro executado via WebAssembly/WebGL</div>
+        <div class="s-item"><strong>pipeline("tarefa", "Xenova/modelo"):</strong> mesma API do Python — carrega modelo do HuggingFace Hub</div>
+        <div class="s-item"><strong>Cache automático:</strong> pesos ficam no browser (IndexedDB) — download só na primeira vez</div>
+        <div class="s-item"><strong>Web Worker obrigatório:</strong> inferência bloqueia a thread principal 100–500ms → UI congela sem worker</div>
+        <div class="s-item"><strong>postMessage / onmessage:</strong> comunicação assíncrona entre thread principal e worker</div>
+        <div class="s-item"><strong>Embeddings:</strong> feature-extraction + pooling:"mean" + normalize:true → vetor [384]</div>
+        <div class="s-item"><strong>Similaridade cosseno:</strong> dot(a,b) / (|a| × |b|) → 1.0 = idêntico, 0.0 = sem relação</div>
+        <div class="s-armadilha">Armadilha: rodar pipeline() na thread principal. Em UI interativa, o usuário não consegue digitar durante a inferência. Worker é obrigatório — não opcional.</div>
+      </div>
+
+      <div class="semana-card s12">
+        <div class="s-titulo"><i class="fas fa-shield-alt"></i>Semana 12 — UX para IA</div>
+        <div class="s-item"><strong>useReducer:</strong> impede estados impossíveis (loading + error ao mesmo tempo) — todas as transições em um lugar</div>
+        <div class="s-item"><strong>4 estados:</strong> idle → loading → success | error → loading (retry)</div>
+        <div class="s-item"><strong>Skeleton:</strong> CSS shimmer animation — melhor que spinner porque informa shape do conteúdo</div>
+        <div class="s-item"><strong>traduzirErro():</strong> status HTTP → mensagem amigável + ação. Nunca expor stack trace</div>
+        <div class="s-item"><strong>Disclaimer automático:</strong> detectar keywords críticas (médico, lei, investir) → nota no rodapé</div>
+        <div class="s-item"><strong>Thumbs up/down:</strong> localStorage para persistir feedback — em prod: endpoint de analytics</div>
+        <div class="s-item"><strong>Error Boundary:</strong> captura erros de renderização — try/catch NÃO captura erros no render do React</div>
+        <div class="s-armadilha">Armadilha: expor e.message bruto ao usuário (ex: "TypeError: Cannot read properties of undefined"). Use traduzirErro() para converter em linguagem humana.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Simulado — 12 questões</span></div>
+
+  <!-- ── SIMULADO ──────────────────────────────────────────────────── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">②</div>
+      <div class="secao-info">
+        <div class="secao-label">Simulado</div>
+        <div class="secao-titulo">12 questões de múltipla escolha — clique para revelar o gabarito</div>
+      </div>
+    </div>
+
+    <div class="aviso-exam">
+      <i class="fas fa-stopwatch"></i>
+      <span>Para simular a prova, tente responder todas as questões SEM ver o gabarito. Marque sua resposta mentalmente, depois revele. O score aparece ao final.</span>
+    </div>
+
+    <!-- Q1 -->
+    <div class="questao">
+      <div class="q-header"><div class="q-num">1</div><span class="q-semana badge">Sem. 7</span>
+        <div class="q-texto">Por que não se pode usar a API nativa <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">EventSource</code> para receber o stream da API da OpenAI diretamente do browser?</div>
+      </div>
+      <div class="q-opcoes" id="q1-ops">
+        <div class="q-op" onclick="respQ('q1',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>EventSource não suporta dados em formato JSON — só texto plano</div>
+        <div class="q-op" onclick="respQ('q1',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>EventSource só faz requisições GET e não permite enviar headers customizados como Authorization — a OpenAI exige POST com token Bearer</div>
+        <div class="q-op" onclick="respQ('q1',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>EventSource não reconecta automaticamente ao cair — tornando-o instável para respostas longas</div>
+        <div class="q-op" onclick="respQ('q1',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>EventSource só funciona em HTTPS — ambientes locais não suportam</div>
+      </div>
+      <div class="q-gabarito" id="q1-gab"><strong>✅ Alternativa B.</strong> EventSource só faz GET e não permite customizar headers. A API da OpenAI exige POST (para enviar o body com as mensagens e parâmetros) e o header Authorization: Bearer TOKEN. A solução é fetch com ReadableStream — permite POST, headers livres e leitura incremental do body via reader.read().</div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="questao">
+      <div class="q-header"><div class="q-num">2</div><span class="q-semana badge">Sem. 7</span>
+        <div class="q-texto">Durante um stream, um chunk retorna a string <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">"data: {\"choices\":[{\"delta\":{\"conten"</code> — uma linha SSE cortada no meio. O que deve acontecer?</div>
+      </div>
+      <div class="q-opcoes" id="q2-ops">
+        <div class="q-op" onclick="respQ('q2',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>O stream deve ser cancelado — dados corrompidos invalidam toda a resposta</div>
+        <div class="q-op" onclick="respQ('q2',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>O JSON incompleto falha no JSON.parse — o try/catch silencia o erro e o próximo chunk trará o restante da linha</div>
+        <div class="q-op" onclick="respQ('q2',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>O TextDecoder remonta automaticamente as linhas cortadas entre chunks</div>
+        <div class="q-op" onclick="respQ('q2',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Isso nunca acontece — o servidor sempre envia chunks alinhados às linhas SSE</div>
+      </div>
+      <div class="q-gabarito" id="q2-gab"><strong>✅ Alternativa B.</strong> Chunks chegam com tamanhos variáveis determinados pela rede e buffers do servidor — uma linha SSE pode chegar em múltiplos chunks. O try/catch dentro do loop é exatamente para capturar silenciosamente o SyntaxError do JSON.parse incompleto e aguardar o próximo chunk. Para máxima robustez, a solução avançada é acumular fragmentos em um buffer antes de tentar o parse.</div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="questao">
+      <div class="q-header"><div class="q-num">3</div><span class="q-semana badge-s8">Sem. 8</span>
+        <div class="q-texto">Um LLM retorna uma resposta que contém <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">&lt;script&gt;document.cookie&lt;/script&gt;</code>. Se você usar <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">dangerouslySetInnerHTML</code> com <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">marked()</code>, o que acontece?</div>
+      </div>
+      <div class="q-opcoes" id="q3-ops">
+        <div class="q-op" onclick="respQ('q3',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Nada — o React sanitiza automaticamente o HTML antes de injetar no DOM</div>
+        <div class="q-op" onclick="respQ('q3',this,'B',false)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>O script é renderizado como texto — browsers modernos bloqueiam scripts injetados via innerHTML</div>
+        <div class="q-op" onclick="respQ('q3',this,'C',true)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>O script é executado no browser do usuário — isso é XSS real, podendo vazar cookies e dados</div>
+        <div class="q-op" onclick="respQ('q3',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>O marked() já sanitiza scripts — dangerouslySetInnerHTML é seguro quando combinado com marked</div>
+      </div>
+      <div class="q-gabarito" id="q3-gab"><strong>✅ Alternativa C.</strong> dangerouslySetInnerHTML injeta HTML diretamente no DOM sem qualquer sanitização do React. Scripts em HTML injetado via innerHTML são executados pelo browser. marked() por padrão também não remove scripts. O resultado é XSS — o script pode roubar cookies, fazer requisições em nome do usuário ou redirecionar para páginas maliciosas. A solução é react-markdown, que converte para componentes React e nunca injeta HTML executável.</div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="questao">
+      <div class="q-header"><div class="q-num">4</div><span class="q-semana badge-s8">Sem. 8</span>
+        <div class="q-texto">Um LLM retorna <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">```python\nprint("hello")\n```</code>. Qual valor tem a prop <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">className</code> no componente <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">code</code> renderizado pelo react-markdown?</div>
+      </div>
+      <div class="q-opcoes" id="q4-ops">
+        <div class="q-op" onclick="respQ('q4',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>"python"</div>
+        <div class="q-op" onclick="respQ('q4',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>"language-python"</div>
+        <div class="q-op" onclick="respQ('q4',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>"code-block" </div>
+        <div class="q-op" onclick="respQ('q4',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>undefined — className não é passada para blocos de código</div>
+      </div>
+      <div class="q-gabarito" id="q4-gab"><strong>✅ Alternativa B.</strong> O react-markdown segue a convenção do highlight.js/Prism e adiciona o prefixo "language-" ao nome da linguagem. Por isso no componente BlocoCode usamos <code style="font-family:'JetBrains Mono',monospace;">/language-(\w+)/.exec(className)</code> para extrair "python" do "language-python". Essa convenção é o que permite o react-syntax-highlighter identificar qual linguagem colorizar.</div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="questao">
+      <div class="q-header"><div class="q-num">5</div><span class="q-semana badge-s9">Sem. 9</span>
+        <div class="q-texto">Analise: <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">&lt;Line dataKey="accuracy" /&gt;</code> dentro de um <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">LineChart data={dados}</code>. O que <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">dataKey="accuracy"</code> indica?</div>
+      </div>
+      <div class="q-opcoes" id="q5-ops">
+        <div class="q-op" onclick="respQ('q5',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>O campo do array de dados usado como eixo X — a categoria horizontal</div>
+        <div class="q-op" onclick="respQ('q5',this,'B',false)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>O ID único da série no gráfico — usado para distinguir linhas na legenda</div>
+        <div class="q-op" onclick="respQ('q5',this,'C',true)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>O campo numérico do objeto de dados que determina a altura (valor Y) de cada ponto desta série</div>
+        <div class="q-op" onclick="respQ('q5',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>O nome exibido no tooltip — é equivalente ao atributo name</div>
+      </div>
+      <div class="q-gabarito" id="q5-gab"><strong>✅ Alternativa C.</strong> dataKey em um componente Line/Bar/Area aponta para o campo numérico do objeto de dados que alimenta os valores no eixo Y. Se o dado é <code style="font-family:'JetBrains Mono',monospace;">{epoca: 5, accuracy: 0.82, loss: 0.44}</code>, então dataKey="accuracy" plota 0.82 e dataKey="loss" plota 0.44 para essa mesma época. O eixo X é controlado pelo dataKey no XAxis — prop de mesmo nome mas significados diferentes.</div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="questao">
+      <div class="q-header"><div class="q-num">6</div><span class="q-semana badge-s9">Sem. 9</span>
+        <div class="q-texto">Um dashboard precisa exibir a proporção de e-mails classificados como spam, ham e incerto. Qual tipo de gráfico do Recharts é mais adequado?</div>
+      </div>
+      <div class="q-opcoes" id="q6-ops">
+        <div class="q-op" onclick="respQ('q6',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>LineChart — para mostrar a evolução ao longo do tempo</div>
+        <div class="q-op" onclick="respQ('q6',this,'B',false)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>BarChart — barras de mesma altura com as três categorias lado a lado</div>
+        <div class="q-op" onclick="respQ('q6',this,'C',true)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>PieChart (ou donut com innerRadius) — ideal para mostrar proporção de partes de um todo com poucas categorias</div>
+        <div class="q-op" onclick="respQ('q6',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>ScatterChart — para mostrar a correlação entre confiança e categoria</div>
+      </div>
+      <div class="q-gabarito" id="q6-gab"><strong>✅ Alternativa C.</strong> Proporção de partes de um todo com poucas categorias (3 aqui) é o caso de uso clássico do PieChart. Com innerRadius > 0 vira um donut, que facilita a leitura do percentual no centro. BarChart também funcionaria mas é menos intuitivo para proporção. LineChart é para séries temporais. Regra geral: pizza só para até 5 fatias e quando o que importa é a proporção relativa, não a comparação de valores absolutos.</div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="questao">
+      <div class="q-header"><div class="q-num">7</div><span class="q-semana badge-s10">Sem. 10</span>
+        <div class="q-texto">Por que tensores no TensorFlow.js precisam de <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">.dispose()</code> ou <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">tf.tidy()</code> enquanto objetos JavaScript normais são coletados pelo GC automaticamente?</div>
+      </div>
+      <div class="q-opcoes" id="q7-ops">
+        <div class="q-op" onclick="respQ('q7',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>É uma convenção de API — tecnicamente o GC já cuida, .dispose() é apenas explicitação</div>
+        <div class="q-op" onclick="respQ('q7',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Tensores vivem na memória da GPU (WebGL buffers) — fora do heap JavaScript e invisíveis ao GC do browser</div>
+        <div class="q-op" onclick="respQ('q7',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Tensores são imutáveis — .dispose() libera o lock de leitura e permite reuso do buffer</div>
+        <div class="q-op" onclick="respQ('q7',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>É para segurança — .dispose() apaga os dados do tensor para impedir acesso não autorizado</div>
+      </div>
+      <div class="q-gabarito" id="q7-gab"><strong>✅ Alternativa B.</strong> O garbage collector do JavaScript gerencia o heap JS — onde vivem objetos, arrays, closures. Tensores do TF.js são alocados em buffers WebGL na memória da GPU, completamente fora do controle do GC. Sem dispose() ou tf.tidy(), esses buffers acumulam na VRAM até o browser travar. tf.memory().numTensors mostra o total ativo — deve ser estável a cada inferência.</div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="questao">
+      <div class="q-header"><div class="q-num">8</div><span class="q-semana badge-s10">Sem. 10</span>
+        <div class="q-texto">O MobileNet foi treinado com imagens normalizadas para [-1, 1] usando <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">pixel/127.5 - 1</code>. Se você fizer inferência com pixels normalizados para [0, 1] usando apenas <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">pixel/255</code>, o que acontece com as predições?</div>
+      </div>
+      <div class="q-opcoes" id="q8-ops">
+        <div class="q-op" onclick="respQ('q8',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>As predições são levemente menos precisas — a diferença é pequena e aceitável</div>
+        <div class="q-op" onclick="respQ('q8',this,'B',false)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>O modelo detecta a normalização errada e a corrige internamente antes da inferência</div>
+        <div class="q-op" onclick="respQ('q8',this,'C',true)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>As predições são essencialmente aleatórias — os pesos foram aprendidos para a escala [-1,1] e receber [0,1] gera ativações completamente fora do esperado</div>
+        <div class="q-op" onclick="respQ('q8',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>O modelo retorna um erro indicando normalização incorreta</div>
+      </div>
+      <div class="q-gabarito" id="q8-gab"><strong>✅ Alternativa C.</strong> Os pesos de uma rede neural aprendem padrões na escala exata dos dados de treino. Um pixel 255 (branco) normalizado para [-1,1] dá 1.0; normalizado para [0,1] dá 1.0 também — mas um pixel 0 (preto) dá -1.0 vs 0.0, e pixels intermediários diferem drasticamente. As ativações de todas as camadas ficam fora do range esperado, resultando em probabilidades distribuídas de forma quase aleatória.</div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="questao">
+      <div class="q-header"><div class="q-num">9</div><span class="q-semana badge-s11">Sem. 11</span>
+        <div class="q-texto">Por que o Transformers.js usa o formato ONNX em vez de carregar pesos PyTorch (.pt) diretamente no browser?</div>
+      </div>
+      <div class="q-opcoes" id="q9-ops">
+        <div class="q-op" onclick="respQ('q9',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>ONNX comprime os pesos automaticamente — modelos ficam 10x menores</div>
+        <div class="q-op" onclick="respQ('q9',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>PyTorch não roda no browser — ONNX é um formato neutro executável pelo ONNX Runtime Web via WebAssembly/WebGL sem precisar do Python runtime</div>
+        <div class="q-op" onclick="respQ('q9',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>ONNX é um requisito de licença — HuggingFace só distribui modelos no browser em formato ONNX</div>
+        <div class="q-op" onclick="respQ('q9',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>É apenas uma preferência — PyTorch funcionaria igual no browser com um polyfill</div>
+      </div>
+      <div class="q-gabarito" id="q9-gab"><strong>✅ Alternativa B.</strong> PyTorch depende do runtime Python, CUDA e do ecossistema científico C++/Python para funcionar — nada disso existe no browser. ONNX (Open Neural Network Exchange) é um formato aberto de representação de modelos que pode ser executado por engines independentes. O ONNX Runtime Web roda em WebAssembly (fallback CPU) ou WebGL/WebGPU (acelerado GPU) — disponíveis em browsers modernos sem instalar nada.</div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="questao">
+      <div class="q-header"><div class="q-num">10</div><span class="q-semana badge-s11">Sem. 11</span>
+        <div class="q-texto">Dois embeddings de frases têm similaridade de cosseno de 0.92. O que isso indica sobre as frases?</div>
+      </div>
+      <div class="q-opcoes" id="q10-ops">
+        <div class="q-op" onclick="respQ('q10',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>As frases têm 92% de palavras em comum</div>
+        <div class="q-op" onclick="respQ('q10',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>As frases são semanticamente muito próximas — os vetores apontam em direções quase idênticas no espaço de embeddings, independente das palavras exatas usadas</div>
+        <div class="q-op" onclick="respQ('q10',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Uma frase é uma paráfrase direta da outra — a similaridade mede apenas equivalência sintática</div>
+        <div class="q-op" onclick="respQ('q10',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>As frases são 92% idênticas em comprimento e estrutura gramatical</div>
+      </div>
+      <div class="q-gabarito" id="q10-gab"><strong>✅ Alternativa B.</strong> Similaridade de cosseno mede o ângulo entre dois vetores no espaço semântico — não conta palavras compartilhadas nem estrutura sintática. 0.92 indica que os vetores quase se sobrepõem: as frases têm significado muito similar mesmo usando palavras completamente diferentes. Exemplo: "O cachorro brinca no jardim" e "O cão se diverte no quintal" têm similaridade ~0.92 sem compartilhar nenhuma palavra principal.</div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="questao">
+      <div class="q-header"><div class="q-num">11</div><span class="q-semana badge-s12">Sem. 12</span>
+        <div class="q-texto">Um componente usa três useState: <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">isLoading</code>, <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">isError</code> e <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;">data</code>. Qual é o principal problema dessa abordagem para estados de operação assíncrona?</div>
+      </div>
+      <div class="q-opcoes" id="q11-ops">
+        <div class="q-op" onclick="respQ('q11',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>O componente re-renderiza três vezes a cada atualização — um por setState chamado</div>
+        <div class="q-op" onclick="respQ('q11',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Estados impossíveis podem existir — isLoading=true e isError=true simultaneamente é tecnicamente possível e causa bugs difíceis de rastrear</div>
+        <div class="q-op" onclick="respQ('q11',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>useState não suporta valores booleanos — é necessário usar strings</div>
+        <div class="q-op" onclick="respQ('q11',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>O React não permite mais de dois useState no mesmo componente funcional</div>
+      </div>
+      <div class="q-gabarito" id="q11-gab"><strong>✅ Alternativa B.</strong> Com três useState independentes, nada impede que isLoading e isError sejam true ao mesmo tempo — um bug que aparece se setError() for chamado sem setIsLoading(false) antes. Com useReducer, cada ação define o estado completo: dispatch({tipo:'ERRO'}) resulta em {status:'error', dados:null, erro:msg} — jamais {status:'loading', erro:msg}. Os estados impossíveis são eliminados pela estrutura do reducer.</div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="questao">
+      <div class="q-header"><div class="q-num">12</div><span class="q-semana badge-s12">Sem. 12</span>
+        <div class="q-texto">Uma interface de chatbot chama a API da OpenAI e recebe status 429. Qual é a UX correta?</div>
+      </div>
+      <div class="q-opcoes" id="q12-ops">
+        <div class="q-op" onclick="respQ('q12',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Exibir: "Error 429: Too Many Requests" e encerrar a conversa</div>
+        <div class="q-op" onclick="respQ('q12',this,'B',false)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Tentar novamente imediatamente em loop até conseguir</div>
+        <div class="q-op" onclick="respQ('q12',this,'C',true)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Exibir mensagem amigável ("Muitas mensagens em pouco tempo, aguarde alguns segundos"), iniciar contador regressivo de retry automático e permitir que o usuário cancele</div>
+        <div class="q-op" onclick="respQ('q12',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Silenciar o erro e reenviar a mensagem silenciosamente sem o usuário saber</div>
+      </div>
+      <div class="q-gabarito" id="q12-gab"><strong>✅ Alternativa C.</strong> Status 429 (rate limit) tem três requisitos de UX: (1) mensagem em linguagem humana — o usuário não sabe o que é 429; (2) retry com backoff — tentar imediatamente em loop piora o rate limit; (3) controle do usuário — ele pode cancelar o retry se quiser digitar algo diferente ou esperar menos. Silenciar (D) quebra a confiança; exibir o erro técnico (A) assusta sem ajudar; retry imediato em loop (B) pode causar bloqueio permanente da chave de API.</div>
+    </div>
+
+    <!-- Score -->
+    <div class="score-box" id="score-box">
+      <div class="score-num" id="score-num">0/12</div>
+      <div style="font-size:.85rem;color:var(--text-secondary);margin-top:.25rem;" id="score-msg"></div>
+    </div>
+    <div style="text-align:center;margin-top:1rem;">
+      <button onclick="calcScore()" style="background:rgba(192,132,252,.15);border:1px solid rgba(192,132,252,.3);color:var(--exam-purple-acc);padding:.7rem 2rem;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(192,132,252,.25)'" onmouseout="this.style.background='rgba(192,132,252,.15)'">
+        <i class="fas fa-calculator" style="margin-right:8px;"></i>Ver meu score
+      </button>
+    </div>
+  </section>
+
+  <div class="sep"><span>Questões Dissertativas</span></div>
+
+  <!-- ── DISSERTATIVAS ──────────────────────────────────────────────── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">③</div>
+      <div class="secao-info">
+        <div class="secao-label">Questões dissertativas</div>
+        <div class="secao-titulo">4 questões abertas — modelo de resposta completo</div>
+      </div>
+    </div>
+
+    <div class="dissertativa">
+      <div class="d-num">Questão Dissertativa 1 — Semanas 7 e 8</div>
+      <div class="d-enunciado">Você precisa construir um chatbot que exibe as respostas da IA com formatação markdown e efeito de digitação token a token. Descreva: (a) por que usar fetch com ReadableStream em vez de EventSource, (b) o que deve aparecer durante o stream (texto puro ou markdown renderizado) e por quê, e (c) por que react-markdown é mais seguro que marked() com dangerouslySetInnerHTML.</div>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-lightbulb"></i> ver modelo de resposta</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta">
+          <strong>(a) fetch vs EventSource:</strong> EventSource é a API nativa de SSE do browser, mas só faz requisições GET e não permite customizar headers. A API da OpenAI exige um POST (para enviar body com mensagens e parâmetros como model, temperature, stream:true) e o header Authorization: Bearer TOKEN. EventSource simplesmente não suporta esse requisito. A solução é fetch com a opção de leitura incremental: response.body.getReader() retorna um ReadableStream que pode ser lido chunk a chunk com reader.read(), enquanto o TextDecoder converte os bytes em texto SSE.
+          <br><br>
+          <strong>(b) Durante o stream — texto puro, não markdown:</strong> durante a geração, o markdown está incompleto. Um bloco de código que ainda não fechou o ``` faz o parser de markdown "engolir" o texto seguinte como código, causando artefatos visuais: títulos onde deveria ter texto, listas onde deveria ter parágrafo. O melhor padrão é exibir o texto crescente com white-space: pre-wrap e fonte monospace (dá sensação de "digitação de terminal"), e só renderizar com ReactMarkdown depois que o stream completa e a mensagem é adicionada ao histórico. Esse é o comportamento do Claude e do ChatGPT.
+          <br><br>
+          <strong>(c) react-markdown vs dangerouslySetInnerHTML:</strong> marked() converte markdown para HTML — uma string com tags HTML. dangerouslySetInnerHTML injeta essa string diretamente no DOM sem qualquer sanitização. Se o LLM retornar &lt;script&gt;alert(document.cookie)&lt;/script&gt; como parte da resposta, esse script será executado no browser do usuário — isso é XSS (Cross-Site Scripting). react-markdown, por outro lado, analisa o markdown e o converte em componentes React — nunca em HTML cru. Scripts e tags perigosas nunca chegam ao DOM como HTML executável; são serializados como texto.
+        </div>
+      </div>
+    </div>
+
+    <div class="dissertativa">
+      <div class="d-num">Questão Dissertativa 2 — Semanas 9 e 10</div>
+      <div class="d-enunciado">Um time de ML quer um dashboard que exibe: (a) a curva de treinamento de um modelo (accuracy e loss por época), (b) precision e recall por classe, e (c) distribuição das predições. Para cada um, indique qual tipo de gráfico Recharts usar e por quê. Adicione também: como você detectaria overfitting visualizando o dashboard?</div>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-lightbulb"></i> ver modelo de resposta</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta">
+          <strong>(a) Curva de treinamento → LineChart:</strong> a pergunta é "como X muda ao longo do tempo (épocas)?" — esse é o caso de uso clássico do gráfico de linha. O dado tem uma dimensão temporal (época no XAxis) e duas séries numéricas (accuracy e loss, cada uma com seu dataKey). Para diferenciar treino de validação, adiciona-se mais duas linhas com strokeDasharray para as curvas de validação.
+          <br><br>
+          <strong>(b) Precision e recall por classe → BarChart:</strong> a pergunta é "como X se compara a Y e Z por categoria?" — comparação entre categorias é o caso de uso do gráfico de barras. O dado tem as classes no XAxis (dataKey="classe") e três séries no YAxis: precision, recall e f1 — cada uma como um Bar com dataKey próprio. Isso permite ver imediatamente quais classes têm métricas baixas.
+          <br><br>
+          <strong>(c) Distribuição das predições → PieChart com innerRadius:</strong> a pergunta é "qual é a proporção de cada categoria?" — proporção de partes de um todo é o caso do donut. Com innerRadius > 0, o percentual dominante pode ser exibido no centro. Com apenas 3–5 classes, o donut é legível; com mais fatias, BarChart seria mais adequado.
+          <br><br>
+          <strong>Detectando overfitting no dashboard:</strong> no LineChart da curva de treinamento, overfitting fica visível quando a linha de accuracy (treino) continua subindo mas a linha de val_accuracy (validação, geralmente com strokeDasharray) para de subir e começa a descer — ou quando a linha de loss cai mas val_loss sobe. O ponto de cruzamento é o epoch ótimo. Em uma tabela de números, identificar isso requer comparar linha por linha; no gráfico, o padrão é imediatamente visível.
+        </div>
+      </div>
+    </div>
+
+    <div class="dissertativa">
+      <div class="d-num">Questão Dissertativa 3 — Semanas 10 e 11</div>
+      <div class="d-enunciado">Compare TensorFlow.js (Semana 10) e Transformers.js (Semana 11) em termos de: (a) tipos de tarefas para os quais cada um é adequado, (b) como cada um gerencia memória no browser, e (c) por que Transformers.js exige Web Worker enquanto TensorFlow.js tolera rodar na thread principal para inferências pontuais.</div>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-lightbulb"></i> ver modelo de resposta</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta">
+          <strong>(a) Tarefas adequadas:</strong> TensorFlow.js é ideal para visão computacional (classificação de imagem com MobileNet, detecção de objetos com COCO-SSD, estimação de pose), manipulação de tensores matemáticos e modelos customizados exportados do Keras. Transformers.js brilha em NLP (sentimento, NER, tradução, embeddings, geração de texto) — modelos baseados na arquitetura Transformer do HuggingFace. As bibliotecas não são competidoras: TF.js domina visão, Transformers.js domina texto.
+          <br><br>
+          <strong>(b) Gerenciamento de memória:</strong> TensorFlow.js usa WebGL buffers na GPU — completamente fora do heap JavaScript e invisíveis ao GC. Toda memória deve ser liberada manualmente com .dispose() ou encapsulada em tf.tidy() que descarta automaticamente os tensores intermediários ao terminar. tf.memory().numTensors monitora leaks em tempo real. Transformers.js usa o ONNX Runtime Web que gerencia sua própria memória interna — o desenvolvedor não precisa chamar dispose() explicitamente, mas deve carregar o modelo apenas uma vez (em Worker) para não duplicar o download e uso de memória.
+          <br><br>
+          <strong>(c) Thread principal vs Web Worker:</strong> uma inferência com MobileNet para uma imagem leva ~50–100ms — rápido o suficiente para não ser perceptível em uma interação pontual (clique em botão). Uma inferência com DistilBERT para análise de sentimento leva ~100–300ms e, mais importante, pode ser chamada com alta frequência (debounce de 400ms enquanto o usuário digita), acumulando bloqueios. Modelos Transformer têm mais operações de atenção e são mais pesados por token. O Web Worker é obrigatório para Transformers.js porque a inferência deve acontecer continuamente sem jamais congelar a UI — cada tecla pressionada aciona uma análise.
+        </div>
+      </div>
+    </div>
+
+    <div class="dissertativa">
+      <div class="d-num">Questão Dissertativa 4 — Semana 12</div>
+      <div class="d-enunciado">Um chatbot de IA para suporte ao cliente recebe um erro 500 da API, um usuário pergunta sobre dosagem de medicamento e a conversa acumulou 3.800 tokens de um limite de 4.096. Descreva como o front-end deve tratar cada uma dessas três situações usando os padrões de UX da Semana 12.</div>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-lightbulb"></i> ver modelo de resposta</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta">
+          <strong>Erro 500 (internal server error):</strong> o reducer despacha {tipo:'ERRO'} com o resultado de traduzirErro(). Para status 500, a mensagem deve ser: "O serviço está com instabilidade no momento. Tente novamente em alguns instantes." — um ícone de servidor ou alerta, título amigável, descrição sem jargão técnico. O componente EstadoErro exibe um botão "Tentar novamente" que re-executa a última requisição, opcionalmente com retry automático após 5 segundos (contador regressivo visível). Nunca exibir "Error 500: Internal Server Error" para o usuário.
+          <br><br>
+          <strong>Pergunta sobre dosagem de medicamento:</strong> detectar a presença de palavras-chave críticas na resposta gerada (medicamento, dosagem, remédio, tratamento, diagnóstico). Ao identificar, adicionar automaticamente abaixo da mensagem o componente Disclaimer com role="note": "⚠ Esta resposta é informativa. Para decisões de saúde, consulte um médico ou farmacêutico habilitado." O disclaimer não substitui a resposta — é aditivo. Em casos extremamente sensíveis (suicídio, emergência médica), pode-se implementar um filtro no prompt que instrui o modelo a sempre incluir referência a serviços de emergência.
+          <br><br>
+          <strong>3.800 de 4.096 tokens (93% do contexto):</strong> exibir o componente AvisoContextoLongo com role="alert" e aria-live="assertive" — o leitor de tela anuncia o aviso. A mensagem: "🧠 Conversa usando 93% do contexto disponível. Inicie uma nova conversa para continuar com qualidade." Com um botão "Nova conversa" proeminente. A estimativa de tokens é feita contando palavras × 1.3 (fator de aproximação). Ao atingir 100%, a próxima mensagem falhará com erro 400 (context length exceeded) — antecipe com o aviso antes de chegar lá.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Instrução para a Prova</span></div>
+
+  <!-- ── INSTRUÇÃO + CHECKLIST ──────────────────────────────────────── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">④</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · Instrução</div>
+        <div class="secao-titulo">Como a P2 funciona — formato, critérios e estratégia</div>
+      </div>
+    </div>
+
+    <div class="aviso-orange">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span><strong>Atenção:</strong> a P2 é prova fechada — sem consulta. Abrange streaming (S7), markdown (S8), gráficos (S9), TF.js (S10), Transformers.js (S11) e UX (S12). A prova prática pode envolver qualquer combinação dessas tecnologias em um único componente.</span>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-tasks"></i>Formato e critérios</div>
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Parte</th><th>Tipo</th><th>O que é avaliado</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Parte 1</strong></td><td>Múltipla escolha</td><td>Reconhecimento de conceito, leitura de código, identificação de erro de UX/segurança</td></tr>
+            <tr><td><strong>Parte 2</strong></td><td>Dissertativa</td><td>Comparação de tecnologias, justificativa de escolha arquitetural, fluxo completo</td></tr>
+            <tr><td><strong>Parte 3</strong></td><td>Prática de código</td><td>Escrever/completar componente com streaming, gráfico Recharts ou estados de UX</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="destaque">
+        <strong>Diferencial em dissertativa:</strong> "usar useReducer para evitar estados impossíveis como loading=true e error=true ao mesmo tempo" pontua muito mais que "useReducer é melhor que useState". Seja específico, use termos técnicos e nomeie os estados, ações e transições.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-route"></i>Estratégia para a parte prática</div>
+      <div class="prova-grid">
+        <div class="prova-etapa">
+          <div class="prova-num">01</div>
+          <div class="prova-titulo">Identifique a tecnologia central</div>
+          <div class="prova-texto">Leia o enunciado e identifique: streaming (ReadableStream), gráfico (Recharts + dados), ML client-side (TF.js ou Transformers.js) ou UX (useReducer + skeleton). A tecnologia central dita a estrutura do código.</div>
+        </div>
+        <div class="prova-etapa">
+          <div class="prova-num">02</div>
+          <div class="prova-titulo">Declare os estados primeiro</div>
+          <div class="prova-texto">Para streaming: status, respostaAtual, histórico, abortRef. Para gráfico: dados, carregando. Para UX: useReducer com os 4 estados. Ter os estados claros antes de escrever JSX evita erros estruturais.</div>
+        </div>
+        <div class="prova-etapa">
+          <div class="prova-num">03</div>
+          <div class="prova-titulo">Palavras-chave do enunciado</div>
+          <div class="prova-texto">"sem travar a UI" → Web Worker. "dados sensíveis" → client-side ML. "exibir formatado" → react-markdown. "erro amigável" → traduzirErro(). "cancelar" → AbortController. "loading state" → skeleton + useReducer.</div>
+        </div>
+        <div class="prova-etapa">
+          <div class="prova-num">04</div>
+          <div class="prova-texto">Código incompleto com comentários explicando o restante pontua mais que código completo sem lógica. Demonstre que você entende o fluxo mesmo que não lembre a sintaxe exata de uma função.</div>
+          <div class="prova-titulo">Raciocínio vale pontos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sep"><span>Checklist de Preparação</span></div>
+
+    <div class="secao-header" style="margin-top:2rem;">
+      <div class="secao-num">⑤</div>
+      <div class="secao-info">
+        <div class="secao-label">Checklist interativo</div>
+        <div class="secao-titulo">Marque o que você já domina</div>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-label">
+        <span>Progresso de revisão</span>
+        <strong id="progress-text">0 / 24 conceitos</strong>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%;"></div></div>
+    </div>
+
+    <div class="checklist-grid" id="checklist">
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei por que EventSource não funciona com a API da OpenAI e qual é a alternativa</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei implementar fetch + ReadableStream + TextDecoder para ler chunks SSE</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei usar AbortController em useRef para cancelar stream sem causar re-render</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei o que acontece com o cursor piscante durante e após a geração</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei por que dangerouslySetInnerHTML com conteúdo de LLM é vulnerabilidade XSS</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei configurar react-markdown com remark-gfm e o componente BlocoCode customizado</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei que a className do code tem formato "language-X" e uso isso para extrair a linguagem</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei que durante o stream exibo texto puro e só renderizo markdown após [DONE]</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei a diferença entre dataKey no XAxis (categoria) e dataKey no Line/Bar (valor Y)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei quando usar LineChart, BarChart e PieChart — e quando cada um é inadequado</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei criar um Tooltip customizado no Recharts com active, payload e label</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei detectar overfitting olhando para accuracy vs val_accuracy no LineChart</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei por que tensores do TF.js precisam de dispose() — estão na GPU, fora do GC</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei usar tf.tidy() para descartar tensores intermediários automaticamente</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei o pipeline de pré-processamento: arquivo → DataURL → HTMLImage → tensor → normalizar</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei que a normalização na inferência deve ser IDÊNTICA à usada no treinamento</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei por que o Transformers.js usa ONNX e não pesos PyTorch diretamente</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei por que inferência de transformer deve rodar em Web Worker (não thread principal)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei gerar embeddings com feature-extraction + pooling:"mean" + normalize:true</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei calcular similaridade de cosseno entre dois vetores de embedding</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei estruturar um useReducer com os 4 estados e por que ele impede estados impossíveis</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei criar um skeleton loader com CSS shimmer animation e role="status"</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei implementar traduzirErro() mapeando status HTTP para mensagens amigáveis</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei quando usar Error Boundary vs try/catch — erros de render vs erros em código imperativo</div></div>
+    </div>
+
+    <div class="aviso-green" style="margin-top:1.25rem;">
+      <i class="fas fa-check-circle"></i>
+      <span><strong>Dica de estudo:</strong> para cada item não marcado, abra o VS Code e escreva um mini-componente que demonstra exatamente aquele conceito — 10 linhas que provam que você entende. Digitar código ativa uma memória diferente da leitura. Para conceitos de segurança (XSS, rate limit), escreva também o exemplo do que NÃO fazer.</span>
+    </div>
+  </section>
+
+  <div class="proxima" onclick="window.location.href='semana-14-frontend.html'">
+    <div>
+      <div class="proxima-label">Após a P2 · Semana 14</div>
+      <div class="proxima-titulo">Semana 14 — Acessibilidade (a11y): WCAG 2.1, ARIA labels, navegação por teclado e ferramentas de auditoria</div>
+    </div>
+    <i class="fas fa-arrow-right"></i>
+  </div>
+
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar modelo de resposta'
+    :'<i class="fas fa-lightbulb"></i> ver modelo de resposta';
+}
+
+const correctAnswers={q1:'B',q2:'B',q3:'C',q4:'B',q5:'C',q6:'C',q7:'B',q8:'C',q9:'B',q10:'B',q11:'B',q12:'C'};
+const userAnswers={};
+
+function respQ(qId,el,letra,isCorrect){
+  const ops=document.getElementById(qId+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  userAnswers[qId]=letra;
+  const correta=correctAnswers[qId];
+  ops.querySelectorAll('.q-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    const l=op.querySelector('.q-letra').textContent.trim();
+    if(l===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const gab=document.getElementById(qId+'-gab');
+  gab.style.background=isCorrect?'rgba(74,222,128,.07)':'rgba(239,68,68,.07)';
+  gab.style.border=isCorrect?'1px solid rgba(74,222,128,.2)':'1px solid rgba(239,68,68,.2)';
+  gab.style.color=isCorrect?'rgba(134,239,172,.9)':'rgba(252,165,165,.9)';
+  gab.classList.add('show');
+}
+
+function calcScore(){
+  const total=Object.keys(correctAnswers).length;
+  let correct=0;
+  for(const [q,ans] of Object.entries(userAnswers)){
+    if(ans===correctAnswers[q])correct++;
+  }
+  const unanswered=total-Object.keys(userAnswers).length;
+  const box=document.getElementById('score-box');
+  const num=document.getElementById('score-num');
+  const msg=document.getElementById('score-msg');
+  box.style.display='block';
+  num.textContent=`${correct}/${total}`;
+  const pct=Math.round(correct/total*100);
+  if(pct>=80){num.style.color='#4ade80';msg.textContent=`${pct}% — Excelente! Você está pronto para a P2.`;}
+  else if(pct>=60){num.style.color='#fbbf24';msg.textContent=`${pct}% — Bom! Revise os temas que errou antes da prova.`;}
+  else{num.style.color='#f87171';msg.textContent=`${pct}% — Atenção! Volte às semanas com mais erros e revise os pontos-chave.`;}
+  if(unanswered>0)msg.textContent+=` (${unanswered} questão(ões) não respondida(s))`;
+  box.style.padding='1.25rem';box.style.borderRadius='12px';
+  box.style.background='rgba(255,255,255,.04)';box.style.border='1px solid rgba(255,255,255,.08)';
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function toggleCheck(el){
+  el.classList.toggle('checked');
+  el.querySelector('.check-box').innerHTML=el.classList.contains('checked')?'✓':'';
+  updateProgress();
+}
+function updateProgress(){
+  const total=document.querySelectorAll('.check-item').length;
+  const checked=document.querySelectorAll('.check-item.checked').length;
+  const pct=Math.round(checked/total*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-text').textContent=`${checked} / ${total} conceitos`;
+}
+</script>
+</body>
+</html>

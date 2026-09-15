@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 11 — Transformers.js · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#080f18;
+  --cyan-900:#001a22;
+  --cyan-700:#0e7490;
+  --cyan-500:#06b6d4;
+  --cyan-400:#22d3ee;
+  --cyan-300:#67e8f9;
+  --white:#fff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(34,211,238,.05);
+  --code-bg:#020d12;
+  --code-border:rgba(34,211,238,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.22;pointer-events:none;}
+.blob-1{width:680px;height:680px;background:#0e7490;top:-240px;left:-200px;}
+.blob-2{width:540px;height:540px;background:#001a22;bottom:-210px;right:-120px;}
+.blob-3{width:290px;height:290px;background:#06b6d4;top:36%;left:44%;opacity:.07;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(34,211,238,.14);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--cyan-300);border:1px solid rgba(34,211,238,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan-300);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(34,211,238,.07);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--cyan-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--cyan-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.11);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}.topico:nth-child(6){animation-delay:.6s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(34,211,238,.14);color:var(--cyan-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(34,211,238,.05);border-left:3px solid var(--cyan-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--cyan-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--cyan-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(34,211,238,.11);color:var(--cyan-400);border:1px solid rgba(34,211,238,.26);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(34,211,238,.11);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(34,211,238,.13);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--cyan-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(34,211,238,.17);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--cyan-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(34,211,238,.06);border-left:3px solid var(--cyan-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--cyan-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-cyan{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.18);font-size:.86rem;color:rgba(103,232,249,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-cyan i{color:var(--cyan-400);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(34,211,238,.08);}
+th{padding:.6rem 1rem;text-align:left;color:var(--cyan-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(34,211,238,.16);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(34,211,238,.03);}
+td strong{color:var(--text-primary);}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(34,211,238,.05);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--cyan-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#a5f3fc;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#374151;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(34,211,238,.11);color:var(--cyan-400);border:1px solid rgba(34,211,238,.22);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-purple{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.22);}
+.badge-orange{background:rgba(251,146,60,.12);color:#fb923c;border:1px solid rgba(251,146,60,.22);}
+.badge-yellow{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.22);}
+.badge-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.22);}
+
+/* ── Pipeline cards ── */
+.pipeline-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:.75rem 0;}
+.pipeline-card{border-radius:12px;padding:1.1rem;border:1px solid;position:relative;overflow:hidden;transition:transform .15s;}
+.pipeline-card:hover{transform:translateY(-2px);}
+.pipeline-card__bg{position:absolute;top:-12px;right:-8px;font-size:4rem;opacity:.05;font-family:'JetBrains Mono',monospace;font-weight:800;pointer-events:none;}
+.pipeline-card__task{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem;}
+.pipeline-card__model{font-family:'JetBrains Mono',monospace;font-size:.75rem;margin-bottom:.7rem;opacity:.55;}
+.pipeline-card__spec{display:flex;justify-content:space-between;font-size:.78rem;padding:.22rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.pipeline-card__spec:last-of-type{border-bottom:none;}
+.pipeline-card__spec-label{color:var(--text-muted);}
+.pipeline-card__spec-val{color:var(--text-primary);font-weight:600;}
+
+/* ── Sentimento demo mockup ── */
+.sent-mock{background:#020d12;border:1px solid rgba(34,211,238,.17);border-radius:12px;padding:1.25rem;margin:.75rem 0;}
+.sent-mock__title{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan-400);font-weight:700;margin-bottom:.85rem;}
+.sent-input-mock{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.65rem 1rem;font-size:.85rem;color:var(--text-secondary);margin-bottom:.75rem;font-style:italic;}
+.sent-result{display:flex;align-items:center;gap:1rem;margin-bottom:.5rem;}
+.sent-label{padding:.3rem .9rem;border-radius:20px;font-size:.75rem;font-weight:700;letter-spacing:.05em;}
+.sent-label.pos{background:rgba(74,222,128,.15);color:#4ade80;border:1px solid rgba(74,222,128,.3);}
+.sent-label.neg{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25);}
+.sent-bar-track{flex:1;height:12px;background:rgba(255,255,255,.04);border-radius:6px;overflow:hidden;}
+.sent-bar-fill{height:100%;border-radius:6px;}
+.sent-score{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-muted);min-width:42px;text-align:right;}
+
+/* ── Embedding mockup ── */
+.emb-mock{background:#020d12;border:1px solid rgba(34,211,238,.16);border-radius:12px;padding:1.25rem;margin:.75rem 0;}
+.emb-mock__title{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan-400);font-weight:700;margin-bottom:.75rem;}
+.emb-vector{display:flex;gap:.25rem;flex-wrap:wrap;margin:.4rem 0;}
+.emb-cell{width:28px;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-family:'JetBrains Mono',monospace;font-weight:700;}
+.emb-dots{font-size:.8rem;color:var(--text-muted);align-self:center;padding:0 .2rem;}
+.sim-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.4rem;font-size:.82rem;}
+.sim-label{color:var(--text-secondary);flex:1;}
+.sim-score-val{font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:.75rem;min-width:38px;text-align:right;}
+.sim-bar{height:8px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden;width:80px;flex-shrink:0;}
+.sim-fill{height:100%;border-radius:4px;}
+
+/* ── Worker diagram ── */
+.worker-diagram{background:#020d12;border:1px solid rgba(34,211,238,.15);border-radius:12px;padding:1.25rem;margin:.75rem 0;}
+.worker-diagram__title{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan-400);font-weight:700;margin-bottom:1rem;}
+.worker-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem;flex-wrap:wrap;}
+.worker-box{padding:.45rem .9rem;border-radius:8px;font-size:.78rem;font-weight:700;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+.worker-arrow{color:rgba(255,255,255,.2);font-size:.85rem;flex-shrink:0;}
+.worker-label{font-size:.72rem;color:var(--text-muted);}
+
+/* ── Lab steps ── */
+.lab-steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.lab-steps::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--cyan-400),rgba(34,211,238,.1));border-radius:1px;}
+.lab-step{display:flex;gap:1rem;padding:.75rem 0;}
+.lab-step__num{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;position:relative;z-index:2;background:rgba(34,211,238,.1);color:var(--cyan-400);border:2px solid rgba(34,211,238,.27);}
+.lab-step__body{flex:1;padding-top:8px;}
+.lab-step__title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#f8fafc;margin-bottom:.3rem;}
+.lab-step__desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--cyan-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(34,211,238,.17);border-radius:8px;padding:.5rem 1rem;color:var(--cyan-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(34,211,238,.07);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+/* ── Quiz ── */
+.quiz-box{background:rgba(34,211,238,.03);border:1px solid rgba(34,211,238,.12);border-radius:12px;padding:1.25rem;margin:1rem 0;}
+.quiz-pergunta{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700;color:var(--white);margin-bottom:1rem;}
+.quiz-ops{display:flex;flex-direction:column;gap:.5rem;}
+.quiz-op{display:flex;align-items:center;gap:10px;padding:.6rem .9rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:9px;cursor:pointer;transition:all .2s;}
+.quiz-op:hover{background:rgba(34,211,238,.06);border-color:rgba(34,211,238,.2);}
+.quiz-op.correto{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);}
+.quiz-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);}
+.quiz-letra{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;}
+.quiz-texto{font-size:.85rem;color:var(--text-secondary);}
+.quiz-feedback{display:none;padding:.75rem 1rem;border-radius:8px;font-size:.83rem;line-height:1.55;margin-top:.75rem;}
+.quiz-feedback.show{display:block;}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--cyan-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(34,211,238,.09);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--cyan-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.pipeline-grid,.resumo-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:520px){
+  .pipeline-grid,.resumo-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">🤖 LAB + Conteúdo</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">11</div>
+    <h1 class="capa-titulo">NLP direto<br><em>no Browser</em><br>Transformers.js</h1>
+    <p class="capa-sub">4 aulas · 200 minutos · Sentimento, embeddings e geração sem servidor</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-brain"></i></div><span>Transformers.js — HuggingFace no browser via ONNX Runtime</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-smile"></i></div><span>Análise de sentimento — classificação de texto em tempo real</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-project-diagram"></i></div><span>Embeddings — representação vetorial e similaridade semântica</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-font"></i></div><span>Geração de texto — modelos leves de linguagem no cliente</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-cogs"></i></div><span>Web Workers — inferência sem travar a interface</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-flask"></i></div><span>LAB: analisador de sentimento em tempo real com barra de confiança</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade LAB</div>
+      <p>Construir um analisador de sentimento React que classifica texto enquanto o usuário digita — usando Transformers.js em um Web Worker para não bloquear a UI, com barra animada de confiança positivo/negativo.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>O que você vai usar hoje</div>
+      <ul class="info-lista">
+        <li>@xenova/transformers — Transformers.js (HuggingFace no browser)</li>
+        <li>Modelos ONNX quantizados do HuggingFace Hub</li>
+        <li>Web Worker API — thread separada para inferência pesada</li>
+        <li>React com useState, useEffect, useRef</li>
+        <li>Recharts (S9) para visualizar scores em tempo real</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 9 — Visualização com Recharts</li>
+        <li>✅ Sem. 10 — TensorFlow.js: ML client-side com imagens</li>
+        <li>▶ Sem. 11 — Transformers.js: NLP no browser</li>
+        <li>Sem. 12 — UX para IA: loading, erro, feedback e confiança</li>
+        <li>Sem. 13 — Avaliação P2</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que isso importa</div>
+      <ul class="info-lista">
+        <li>Mesma API Python do HuggingFace — pipeline("sentiment-analysis") — agora no browser</li>
+        <li>Modelos quantizados INT8/FP16: 10–100x menores que os originais</li>
+        <li>Sentimento, NER, tradução e geração sem custo de API e sem enviar dados ao servidor</li>
+        <li>Web Worker é obrigatório — inferência de transformer bloqueia a UI por 100–500ms</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">Transformers.js — da API Python ao browser com ONNX</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-brain"></i>O que é Transformers.js e como funciona</div>
+      <p>O <strong>Transformers.js</strong> é a port JavaScript da biblioteca HuggingFace Transformers. Ele usa o <strong>ONNX Runtime Web</strong> como engine de execução — os modelos são convertidos do formato PyTorch para ONNX (Open Neural Network Exchange) e quantizados para reduzir o tamanho, mantendo boa parte da acurácia.</p>
+      <p>A grande vantagem: <strong>a mesma API</strong> que você usa em Python agora funciona no browser. <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">pipeline("sentiment-analysis")</code> em Python e em JavaScript funcionam identicamente — mesmo conceito de pipeline, mesmo modelo do HuggingFace Hub, mesmo formato de saída.</p>
+
+      <div class="grid-2" style="margin-top:.75rem;">
+        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1rem;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;">Python (HuggingFace)</div>
+          <pre style="background:none;padding:0;"><code style="font-size:.8rem;color:#a5f3fc;"><span class="pp">from</span> transformers <span class="pp">import</span> pipeline
+
+classificador = <span class="fn">pipeline</span>(<span class="str">"sentiment-analysis"</span>)
+resultado = <span class="fn">classificador</span>(<span class="str">"I love this!"</span>)
+<span class="cm"># [{'label': 'POSITIVE', 'score': 0.9998}]</span></code></pre>
+        </div>
+        <div style="background:rgba(34,211,238,.03);border:1px solid rgba(34,211,238,.12);border-radius:12px;padding:1rem;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--cyan-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;">JavaScript (Transformers.js)</div>
+          <pre style="background:none;padding:0;"><code style="font-size:.8rem;color:#a5f3fc;"><span class="pp">import</span> { <span class="fn">pipeline</span> } <span class="pp">from</span> <span class="str">'@xenova/transformers'</span>;
+
+<span class="kw">const</span> classificador = <span class="kw">await</span> <span class="fn">pipeline</span>(<span class="str">"sentiment-analysis"</span>);
+<span class="kw">const</span> resultado = <span class="kw">await</span> <span class="fn">classificador</span>(<span class="str">"I love this!"</span>);
+<span class="cm">// [{label: 'POSITIVE', score: 0.9998}]</span></code></pre>
+        </div>
+      </div>
+
+      <div class="destaque">
+        <strong>Como os modelos chegam ao browser:</strong> o Transformers.js baixa automaticamente os pesos ONNX quantizados do HuggingFace Hub na primeira execução e os armazena no cache do browser (IndexedDB). Chamadas seguintes são instantâneas — sem download. Modelos como <code style="font-family:'JetBrains Mono',monospace;">distilbert-base-uncased-finetuned-sst-2-english</code> chegam a ~67MB; versões INT8 quantizadas ficam em ~17MB.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list"></i>Pipelines disponíveis e modelos recomendados</div>
+      <div class="pipeline-grid">
+        <div class="pipeline-card" style="background:rgba(34,211,238,.04);border-color:rgba(34,211,238,.18);">
+          <div class="pipeline-card__bg">SA</div>
+          <div class="pipeline-card__task" style="color:var(--cyan-400);">Sentimento</div>
+          <div class="pipeline-card__model">sentiment-analysis</div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Modelo padrão</span><span class="pipeline-card__spec-val">distilbert-sst-2</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Tamanho</span><span class="pipeline-card__spec-val">~17 MB (INT8)</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Saída</span><span class="pipeline-card__spec-val">[{label, score}]</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Latência</span><span class="pipeline-card__spec-val">~50–150ms</span></div>
+        </div>
+        <div class="pipeline-card" style="background:rgba(167,139,250,.04);border-color:rgba(167,139,250,.18);">
+          <div class="pipeline-card__bg">FE</div>
+          <div class="pipeline-card__task" style="color:#a78bfa;">Embeddings</div>
+          <div class="pipeline-card__model">feature-extraction</div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Modelo padrão</span><span class="pipeline-card__spec-val">all-MiniLM-L6-v2</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Tamanho</span><span class="pipeline-card__spec-val">~23 MB (FP16)</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Saída</span><span class="pipeline-card__spec-val">vetor [384]</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Latência</span><span class="pipeline-card__spec-val">~80–200ms</span></div>
+        </div>
+        <div class="pipeline-card" style="background:rgba(74,222,128,.04);border-color:rgba(74,222,128,.17);">
+          <div class="pipeline-card__bg">NER</div>
+          <div class="pipeline-card__task" style="color:#4ade80;">Entidades (NER)</div>
+          <div class="pipeline-card__model">token-classification</div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Modelo padrão</span><span class="pipeline-card__spec-val">bert-base-NER</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Tamanho</span><span class="pipeline-card__spec-val">~43 MB (INT8)</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Saída</span><span class="pipeline-card__spec-val">[{word, entity}]</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Latência</span><span class="pipeline-card__spec-val">~100–300ms</span></div>
+        </div>
+        <div class="pipeline-card" style="background:rgba(251,146,60,.04);border-color:rgba(251,146,60,.17);">
+          <div class="pipeline-card__bg">TG</div>
+          <div class="pipeline-card__task" style="color:#fb923c;">Geração de texto</div>
+          <div class="pipeline-card__model">text-generation</div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Modelo padrão</span><span class="pipeline-card__spec-val">Xenova/gpt2</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Tamanho</span><span class="pipeline-card__spec-val">~90 MB (INT8)</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Saída</span><span class="pipeline-card__spec-val">[{generated_text}]</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Latência</span><span class="pipeline-card__spec-val">~500ms+/token</span></div>
+        </div>
+        <div class="pipeline-card" style="background:rgba(251,191,36,.04);border-color:rgba(251,191,36,.17);">
+          <div class="pipeline-card__bg">TR</div>
+          <div class="pipeline-card__task" style="color:#fbbf24;">Tradução</div>
+          <div class="pipeline-card__model">translation</div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Modelo padrão</span><span class="pipeline-card__spec-val">Helsinki-NLP/opus</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Tamanho</span><span class="pipeline-card__spec-val">~75 MB (INT8)</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Saída</span><span class="pipeline-card__spec-val">[{translation_text}]</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Latência</span><span class="pipeline-card__spec-val">~200ms/frase</span></div>
+        </div>
+        <div class="pipeline-card" style="background:rgba(239,68,68,.04);border-color:rgba(239,68,68,.17);">
+          <div class="pipeline-card__bg">ZS</div>
+          <div class="pipeline-card__task" style="color:#f87171;">Zero-shot</div>
+          <div class="pipeline-card__model">zero-shot-classification</div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Modelo padrão</span><span class="pipeline-card__spec-val">bart-large-mnli</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Tamanho</span><span class="pipeline-card__spec-val">~400 MB — pesado!</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Saída</span><span class="pipeline-card__spec-val">[{labels, scores}]</span></div>
+          <div class="pipeline-card__spec"><span class="pipeline-card__spec-label">Latência</span><span class="pipeline-card__spec-val">~500ms+</span></div>
+        </div>
+      </div>
+
+      <div class="aviso-red">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span><strong>Limitação real:</strong> modelos como GPT-2 (90MB INT8) e BART-large (400MB) são pesados para o browser. O download inicial pode levar 30–60 segundos em conexões lentas. Para geração de texto de qualidade, ainda vale a pena usar a API da OpenAI (Semana 5). Transformers.js brilha em tarefas focadas: sentimento, embedding, NER e tradução com modelos leves.</span>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Por que o Transformers.js usa o formato ONNX em vez de carregar diretamente pesos PyTorch (.pt)?</div>
+      <div class="quiz-ops" id="quiz1-ops">
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">ONNX é mais fácil de debugar — os pesos ficam em texto legível no browser</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,true,'B')"><div class="quiz-letra" style="background:rgba(34,211,238,.15);color:var(--cyan-400);">B</div><span class="quiz-texto">PyTorch não roda no browser — ONNX é um formato neutro executável pelo ONNX Runtime Web via WebAssembly/WebGL, sem precisar do Python runtime</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">ONNX comprime os pesos melhor do que PyTorch — modelos ficam 10x menores automaticamente</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">É apenas uma preferência da HuggingFace — tecnicamente os dois formatos funcionam igual no browser</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz1-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Embeddings, similaridade semântica e Web Workers</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-project-diagram"></i>Embeddings — texto como coordenada no espaço semântico</div>
+      <p>Um <strong>embedding</strong> é uma representação vetorial de texto — uma lista de números (ex: 384 números no all-MiniLM-L6-v2) onde textos semanticamente similares ficam próximos no espaço vetorial. "Cachorro" e "cão" produzem vetores próximos; "cachorro" e "avião" produzem vetores distantes.</p>
+      <p>A <strong>similaridade de cosseno</strong> mede o ângulo entre dois vetores — 1.0 = idênticos, 0.0 = perpendiculares (sem relação), -1.0 = opostos. É a métrica padrão para busca semântica e deduplicação.</p>
+
+      <div class="emb-mock">
+        <div class="emb-mock__title">Embedding de "O cachorro brinca no jardim" — all-MiniLM-L6-v2 (384 dims)</div>
+        <div class="emb-vector">
+          <div class="emb-cell" style="background:rgba(34,211,238,.25);color:#a5f3fc;">0.23</div>
+          <div class="emb-cell" style="background:rgba(34,211,238,.08);color:#67e8f9;">-0.1</div>
+          <div class="emb-cell" style="background:rgba(34,211,238,.4);color:#a5f3fc;">0.41</div>
+          <div class="emb-cell" style="background:rgba(239,68,68,.15);color:#fca5a5;">-0.3</div>
+          <div class="emb-cell" style="background:rgba(34,211,238,.15);color:#a5f3fc;">0.18</div>
+          <div class="emb-cell" style="background:rgba(34,211,238,.35);color:#a5f3fc;">0.37</div>
+          <div class="emb-cell" style="background:rgba(239,68,68,.2);color:#fca5a5;">-0.2</div>
+          <div class="emb-cell" style="background:rgba(34,211,238,.05);color:#67e8f9;">0.05</div>
+          <span class="emb-dots">··· 376 mais ···</span>
+        </div>
+
+        <div style="margin-top:.85rem;font-size:.72rem;color:var(--cyan-400);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:.5rem;">Similaridade de cosseno com outras frases</div>
+        <div class="sim-row">
+          <span class="sim-label">"O cão se diverte no quintal"</span>
+          <div class="sim-bar"><div class="sim-fill" style="width:92%;background:linear-gradient(90deg,#22d3ee,#06b6d4);"></div></div>
+          <span class="sim-score-val">0.921</span>
+        </div>
+        <div class="sim-row">
+          <span class="sim-label">"Um animal doméstico joga"</span>
+          <div class="sim-bar"><div class="sim-fill" style="width:78%;background:linear-gradient(90deg,#22d3ee,#06b6d4);"></div></div>
+          <span class="sim-score-val">0.783</span>
+        </div>
+        <div class="sim-row">
+          <span class="sim-label">"Hoje o mercado financeiro subiu"</span>
+          <div class="sim-bar"><div class="sim-fill" style="width:12%;background:rgba(34,211,238,.3);"></div></div>
+          <span class="sim-score-val">0.121</span>
+        </div>
+        <div class="sim-row">
+          <span class="sim-label">"O avião aterrissou no aeroporto"</span>
+          <div class="sim-bar"><div class="sim-fill" style="width:8%;background:rgba(34,211,238,.2);"></div></div>
+          <span class="sim-score-val">0.082</span>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — embeddings e similaridade de cosseno</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { <span class="fn">pipeline</span> } <span class="pp">from</span> <span class="str">'@xenova/transformers'</span>;
+
+<span class="cm">// Função de similaridade de cosseno entre dois vetores</span>
+<span class="kw">function</span> <span class="fn">cosSim</span>(a, b) {
+  <span class="kw">let</span> dot = <span class="num">0</span>, normA = <span class="num">0</span>, normB = <span class="num">0</span>;
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i < a.length; i++) {
+    dot   += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
+  }
+  <span class="kw">return</span> dot / (Math.<span class="fn">sqrt</span>(normA) * Math.<span class="fn">sqrt</span>(normB));
+}
+
+<span class="cm">// Gerar embeddings e calcular similaridade</span>
+<span class="kw">async function</span> <span class="fn">demo</span>() {
+  <span class="kw">const</span> extrator = <span class="kw">await</span> <span class="fn">pipeline</span>(
+    <span class="str">'feature-extraction'</span>,
+    <span class="str">'Xenova/all-MiniLM-L6-v2'</span>   <span class="cm">// modelo leve, 384 dims</span>
+  );
+
+  <span class="kw">const</span> frases = [
+    <span class="str">'O cachorro brinca no jardim'</span>,
+    <span class="str">'O cão se diverte no quintal'</span>,
+    <span class="str">'O avião aterrissou no aeroporto'</span>,
+  ];
+
+  <span class="cm">// Gerar os três embeddings em paralelo</span>
+  <span class="kw">const</span> resultados = <span class="kw">await</span> Promise.<span class="fn">all</span>(
+    frases.<span class="fn">map</span>(f => <span class="fn">extrator</span>(f, {
+      pooling: <span class="str">'mean'</span>,   <span class="cm">// média dos tokens → vetor único</span>
+      normalize: <span class="kw">true</span>, <span class="cm">// normaliza para norma unitária</span>
+    }))
+  );
+
+  <span class="cm">// Extrair o vetor Float32Array de cada resultado</span>
+  <span class="kw">const</span> [v1, v2, v3] = resultados.<span class="fn">map</span>(r => <span class="fn">Array.from</span>(r.data));
+
+  console.<span class="fn">log</span>(<span class="str">'cachorro ↔ cão:    '</span>, <span class="fn">cosSim</span>(v1, v2).<span class="fn">toFixed</span>(<span class="num">3</span>)); <span class="cm">// ~0.92</span>
+  console.<span class="fn">log</span>(<span class="str">'cachorro ↔ avião:  '</span>, <span class="fn">cosSim</span>(v1, v3).<span class="fn">toFixed</span>(<span class="num">3</span>)); <span class="cm">// ~0.08</span>
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-cogs"></i>Web Workers — inferência sem travar a UI</div>
+      <p>Transformers de NLP bloqueiam a thread principal por 100–500ms durante a inferência. Isso congela a interface — o usuário não consegue digitar, clicar ou rolar. A solução é mover toda a inferência para um <strong>Web Worker</strong>: uma thread JavaScript separada que roda em paralelo sem bloquear o DOM.</p>
+
+      <div class="worker-diagram">
+        <div class="worker-diagram__title">Arquitetura com Web Worker</div>
+        <div class="worker-row">
+          <div class="worker-box" style="background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);color:var(--cyan-400);">Thread Principal (UI)</div>
+          <span class="worker-arrow">──postMessage(texto)──▶</span>
+          <div class="worker-box" style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);color:#a78bfa;">Web Worker</div>
+          <span class="worker-label">— inferência roda aqui, sem bloquear UI</span>
+        </div>
+        <div class="worker-row">
+          <div class="worker-box" style="background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);color:var(--cyan-400);">Thread Principal (UI)</div>
+          <span class="worker-arrow">◀─onmessage(resultado)─</span>
+          <div class="worker-box" style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);color:#a78bfa;">Web Worker</div>
+          <span class="worker-label">— resultado enviado de volta após concluir</span>
+        </div>
+        <div style="margin-top:.75rem;font-size:.75rem;color:var(--text-muted);">O modelo é carregado UMA VEZ no Worker e fica na memória. Cada análise é uma troca de mensagens. A UI permanece responsiva durante toda a inferência.</div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — sentimento.worker.js</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { <span class="fn">pipeline</span>, <span class="fn">env</span> } <span class="pp">from</span> <span class="str">'@xenova/transformers'</span>;
+
+<span class="cm">// Desabilita cache local (opcional — útil em dev para sempre baixar fresco)</span>
+<span class="cm">// env.useBrowserCache = false;</span>
+
+<span class="kw">let</span> classificador = <span class="kw">null</span>;
+
+<span class="cm">// Recebe mensagens da thread principal</span>
+self.<span class="fn">addEventListener</span>(<span class="str">'message'</span>, <span class="kw">async</span> (evento) => {
+  <span class="kw">const</span> { tipo, texto, id } = evento.data;
+
+  <span class="kw">if</span> (tipo === <span class="str">'carregar'</span>) {
+    <span class="cm">// Carrega o modelo uma única vez</span>
+    self.<span class="fn">postMessage</span>({ tipo: <span class="str">'status'</span>, texto: <span class="str">'Baixando modelo...'</span> });
+    classificador = <span class="kw">await</span> <span class="fn">pipeline</span>(
+      <span class="str">'sentiment-analysis'</span>,
+      <span class="str">'Xenova/distilbert-base-uncased-finetuned-sst-2-english'</span>,
+      { progress_callback: (info) => {
+          <span class="kw">if</span> (info.status === <span class="str">'progress'</span>)
+            self.<span class="fn">postMessage</span>({ tipo: <span class="str">'progresso'</span>, pct: info.progress });
+        }
+      }
+    );
+    self.<span class="fn">postMessage</span>({ tipo: <span class="str">'pronto'</span> });
+  }
+
+  <span class="kw">if</span> (tipo === <span class="str">'analisar'</span> && classificador) {
+    <span class="kw">const</span> resultado = <span class="kw">await</span> <span class="fn">classificador</span>(texto, { topk: <span class="kw">null</span> }); <span class="cm">// todas as classes</span>
+    self.<span class="fn">postMessage</span>({ tipo: <span class="str">'resultado'</span>, id, resultado });
+  }
+});</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — useAnaliseSentimento.js (hook para usar o worker)</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { <span class="fn">useState</span>, <span class="fn">useEffect</span>, <span class="fn">useRef</span>, <span class="fn">useCallback</span> } <span class="pp">from</span> <span class="str">'react'</span>;
+
+<span class="kw">export function</span> <span class="fn">useAnaliseSentimento</span>() {
+  <span class="kw">const</span> [status, setStatus] = <span class="fn">useState</span>(<span class="str">'inativo'</span>); <span class="cm">// inativo|carregando|pronto</span>
+  <span class="kw">const</span> [progresso, setProgresso] = <span class="fn">useState</span>(<span class="num">0</span>);
+  <span class="kw">const</span> workerRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> pendentesRef = <span class="fn">useRef</span>({}); <span class="cm">// map de id → {resolve, reject}</span>
+  <span class="kw">let</span> contadorId = <span class="fn">useRef</span>(<span class="num">0</span>);
+
+  <span class="fn">useEffect</span>(() => {
+    <span class="cm">// Cria o worker (Vite usa import.meta.url; CRA usa new URL)</span>
+    <span class="kw">const</span> worker = <span class="kw">new</span> <span class="fn">Worker</span>(
+      <span class="kw">new</span> <span class="fn">URL</span>(<span class="str">'./sentimento.worker.js'</span>, <span class="kw">import</span>.meta.url),
+      { type: <span class="str">'module'</span> }
+    );
+
+    worker.<span class="fn">addEventListener</span>(<span class="str">'message'</span>, ({ data }) => {
+      <span class="kw">if</span> (data.tipo === <span class="str">'status'</span>)    <span class="fn">setStatus</span>(<span class="str">'carregando'</span>);
+      <span class="kw">if</span> (data.tipo === <span class="str">'progresso'</span>) <span class="fn">setProgresso</span>(data.pct);
+      <span class="kw">if</span> (data.tipo === <span class="str">'pronto'</span>)    { <span class="fn">setStatus</span>(<span class="str">'pronto'</span>); <span class="fn">setProgresso</span>(<span class="num">100</span>); }
+      <span class="kw">if</span> (data.tipo === <span class="str">'resultado'</span>) {
+        <span class="kw">const</span> pendente = pendentesRef.current[data.id];
+        <span class="kw">if</span> (pendente) { pendente.<span class="fn">resolve</span>(data.resultado); <span class="kw">delete</span> pendentesRef.current[data.id]; }
+      }
+    });
+
+    workerRef.current = worker;
+    worker.<span class="fn">postMessage</span>({ tipo: <span class="str">'carregar'</span> });
+
+    <span class="kw">return</span> () => worker.<span class="fn">terminate</span>();
+  }, []);
+
+  <span class="kw">const</span> <span class="fn">analisar</span> = <span class="fn">useCallback</span>((texto) => {
+    <span class="kw">return new</span> <span class="fn">Promise</span>((resolve, reject) => {
+      <span class="kw">const</span> id = ++contadorId.current;
+      pendentesRef.current[id] = { resolve, reject };
+      workerRef.current?.<span class="fn">postMessage</span>({ tipo: <span class="str">'analisar'</span>, texto, id });
+    });
+  }, []);
+
+  <span class="kw">return</span> { status, progresso, analisar };
+}</code></pre>
+      </div>
+
+      <div class="aviso-cyan">
+        <i class="fas fa-info-circle"></i>
+        <span><strong>Por que usar um Map de Promises (pendentesRef)?</strong> O Worker processa mensagens em sequência mas o usuário pode digitar rápido, gerando várias análises quase simultâneas. O mapa de id → {resolve} garante que cada resposta chegue à Promise certa, mesmo se chegarem fora de ordem. Sem isso, a última Promise resolveria todas as anteriores com o mesmo resultado.</span>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-pergunta">🙋 Por que a inferência com Transformers.js deve sempre rodar em um Web Worker em vez da thread principal?</div>
+        <div class="quiz-ops" id="quiz2-ops">
+          <div class="quiz-op" onclick="responder('quiz2',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">Web Workers têm acesso a mais memória RAM — necessário para modelos grandes</span></div>
+          <div class="quiz-op" onclick="responder('quiz2',this,true,'B')"><div class="quiz-letra" style="background:rgba(34,211,238,.15);color:var(--cyan-400);">B</div><span class="quiz-texto">Inferência bloqueia a thread principal por 100–500ms, congelando a interface — o Worker roda em paralelo e permite que a UI permaneça responsiva durante toda a inferência</span></div>
+          <div class="quiz-op" onclick="responder('quiz2',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">Workers têm acesso ao WebGPU — necessário para acelerar modelos de linguagem</span></div>
+          <div class="quiz-op" onclick="responder('quiz2',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">É uma exigência do Transformers.js — a biblioteca só funciona dentro de Workers</span></div>
+        </div>
+        <div class="quiz-feedback" id="quiz2-feedback"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3 · LAB</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · LAB · ~50 minutos</div>
+        <div class="secao-titulo">LAB — Analisador de sentimento em tempo real com Web Worker</div>
+      </div>
+    </div>
+
+    <div class="aviso-cyan">
+      <i class="fas fa-flask"></i>
+      <span>Objetivo: construir um componente React que analisa o sentimento de texto enquanto o usuário digita (com debounce de 400ms), usando o hook <code style="font-family:'JetBrains Mono',monospace;">useAnaliseSentimento</code> com Web Worker — UI nunca trava, progresso de download visível, barras animadas de POSITIVE/NEGATIVE.</span>
+    </div>
+
+    <!-- Preview -->
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-eye"></i>Preview — analisador em ação</div>
+      <div class="sent-mock">
+        <div class="sent-mock__title">Análise de sentimento em tempo real · DistilBERT-SST2 · Web Worker</div>
+        <div class="sent-input-mock">"Este produto é absolutamente incrível, superou todas as minhas expectativas!"</div>
+        <div class="sent-result">
+          <span class="sent-label pos">POSITIVE</span>
+          <div class="sent-bar-track"><div class="sent-bar-fill" style="width:99%;background:linear-gradient(90deg,#22d3ee,#06b6d4);"></div></div>
+          <span class="sent-score">99.8%</span>
+        </div>
+        <div class="sent-result">
+          <span class="sent-label neg">NEGATIVE</span>
+          <div class="sent-bar-track"><div class="sent-bar-fill" style="width:1%;background:rgba(239,68,68,.4);"></div></div>
+          <span class="sent-score">0.2%</span>
+        </div>
+        <div style="margin-top:.65rem;font-size:.7rem;color:rgba(255,255,255,.25);">Inferência: 68ms · Worker ativo · Modelo: distilbert-sst-2 (INT8, 17MB cached)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>Passo a passo do LAB</div>
+      <div class="lab-steps">
+        <div class="lab-step">
+          <div class="lab-step__num">1</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Instalar e configurar o Vite com suporte a Workers</div>
+            <div class="lab-step__desc"><code style="font-family:'JetBrains Mono',monospace;">npm install @xenova/transformers</code>. Se estiver usando Vite (recomendado), adicione ao <code style="font-family:'JetBrains Mono',monospace;">vite.config.js</code>: <code style="font-family:'JetBrains Mono',monospace;">optimizeDeps: { exclude: ['@xenova/transformers'] }</code> para evitar problemas de bundle com o WASM.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">2</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Criar o arquivo sentimento.worker.js</div>
+            <div class="lab-step__desc">Copie o código do Worker da Aula 2 para <code style="font-family:'JetBrains Mono',monospace;">src/sentimento.worker.js</code>. Teste isolado: abra o DevTools → Application → Service Workers e confirme que o worker foi registrado após carregar a página.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">3</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Criar o hook useAnaliseSentimento</div>
+            <div class="lab-step__desc">Copie o hook da Aula 2 para <code style="font-family:'JetBrains Mono',monospace;">src/useAnaliseSentimento.js</code>. Importe e use no componente principal. Enquanto status for "carregando", mostre uma barra de progresso com o valor de <code style="font-family:'JetBrains Mono',monospace;">progresso</code>.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">4</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Implementar o debounce de análise</div>
+            <div class="lab-step__desc">A cada keystroke, resetar um timer de 400ms. Quando o timer disparar, chamar <code style="font-family:'JetBrains Mono',monospace;">analisar(texto)</code>. Isso evita uma chamada por tecla pressionada. Use <code style="font-family:'JetBrains Mono',monospace;">useEffect</code> com <code style="font-family:'JetBrains Mono',monospace;">setTimeout</code> e cleanup <code style="font-family:'JetBrains Mono',monospace;">clearTimeout</code>.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">5</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Renderizar as barras de resultado</div>
+            <div class="lab-step__desc">O resultado tem formato <code style="font-family:'JetBrains Mono',monospace;">[{label: 'POSITIVE', score: 0.998}, {label: 'NEGATIVE', score: 0.002}]</code>. Renderize um par de barras com <code style="font-family:'JetBrains Mono',monospace;">width: score * 100 + '%'</code> e transição CSS suave. Exiba o texto da label e o percentual.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — AnalisadorSentimento.jsx completo</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { <span class="fn">useState</span>, <span class="fn">useEffect</span>, <span class="fn">useRef</span> } <span class="pp">from</span> <span class="str">'react'</span>;
+<span class="pp">import</span> { <span class="fn">useAnaliseSentimento</span> } <span class="pp">from</span> <span class="str">'./useAnaliseSentimento'</span>;
+<span class="pp">import</span> <span class="str">'./AnalisadorSentimento.css'</span>;
+
+<span class="kw">const</span> EXEMPLOS = [
+  <span class="str">"Este produto é absolutamente incrível, superou todas as minhas expectativas!"</span>,
+  <span class="str">"Péssimo serviço, nunca mais compro nada aqui. Total decepção."</span>,
+  <span class="str">"O produto chegou no prazo, nada de especial."</span>,
+];
+
+<span class="kw">export default function</span> <span class="fn">AnalisadorSentimento</span>() {
+  <span class="kw">const</span> { status, progresso, analisar } = <span class="fn">useAnaliseSentimento</span>();
+  <span class="kw">const</span> [texto, setTexto] = <span class="fn">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> [resultado, setResultado] = <span class="fn">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> [analisando, setAnalisando] = <span class="fn">useState</span>(<span class="kw">false</span>);
+  <span class="kw">const</span> [tempoInferencia, setTempoInferencia] = <span class="fn">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> debounceRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+
+  <span class="fn">useEffect</span>(() => {
+    <span class="kw">if</span> (!texto.<span class="fn">trim</span>() || status !== <span class="str">'pronto'</span>) <span class="kw">return</span>;
+
+    <span class="cm">// Debounce: espera 400ms após o usuário parar de digitar</span>
+    <span class="fn">clearTimeout</span>(debounceRef.current);
+    debounceRef.current = <span class="fn">setTimeout</span>(<span class="kw">async</span> () => {
+      <span class="fn">setAnalisando</span>(<span class="kw">true</span>);
+      <span class="kw">const</span> inicio = performance.<span class="fn">now</span>();
+      <span class="kw">try</span> {
+        <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">analisar</span>(texto);
+        <span class="fn">setResultado</span>(res);
+        <span class="fn">setTempoInferencia</span>((performance.<span class="fn">now</span>() - inicio).<span class="fn">toFixed</span>(<span class="num">0</span>));
+      } <span class="kw">finally</span> {
+        <span class="fn">setAnalisando</span>(<span class="kw">false</span>);
+      }
+    }, <span class="num">400</span>);
+
+    <span class="kw">return</span> () => <span class="fn">clearTimeout</span>(debounceRef.current);
+  }, [texto, status, analisar]);
+
+  <span class="cm">// Encontrar o rótulo com maior score para destacar</span>
+  <span class="kw">const</span> labelDominante = resultado?.<span class="fn">reduce</span>((a, b) => a.score > b.score ? a : b);
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"analisador"</span>&gt;
+      &lt;<span class="tag">h1</span>&gt;Análise de Sentimento&lt;/<span class="tag">h1</span>&gt;
+      &lt;<span class="tag">p</span> <span class="attr">className</span>=<span class="str">"sub"</span>&gt;DistilBERT · 100% no browser · Privado por design&lt;/<span class="tag">p</span>&gt;
+
+      {<span class="cm">/* Status de carregamento */</span>}
+      {status !== <span class="str">'pronto'</span> &amp;&amp; (
+        &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"carregamento"</span>&gt;
+          &lt;<span class="tag">p</span>&gt;{status === <span class="str">'inativo'</span> ? <span class="str">'Inicializando worker...'</span> : <span class="str">`Baixando modelo... ${progresso.<span class="fn">toFixed</span>(0)}%`</span>}&lt;/<span class="tag">p</span>&gt;
+          &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"progresso-track"</span>&gt;
+            &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"progresso-fill"</span> <span class="attr">style</span>={{ width: `${progresso}%` }} /&gt;
+          &lt;/<span class="tag">div</span>&gt;
+        &lt;/<span class="tag">div</span>&gt;
+      )}
+
+      {<span class="cm">/* Exemplos rápidos */</span>}
+      &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"exemplos"</span>&gt;
+        {EXEMPLOS.<span class="fn">map</span>((ex, i) => (
+          &lt;<span class="tag">button</span> <span class="attr">key</span>={i} <span class="attr">className</span>=<span class="str">"btn-exemplo"</span>
+            <span class="attr">onClick</span>={() => <span class="fn">setTexto</span>(ex)} <span class="attr">disabled</span>={status !== <span class="str">'pronto'</span>}&gt;
+            Exemplo {i + <span class="num">1</span>}
+          &lt;/<span class="tag">button</span>&gt;
+        ))}
+      &lt;/<span class="tag">div</span>&gt;
+
+      &lt;<span class="tag">textarea</span>
+        <span class="attr">value</span>={texto}
+        <span class="attr">onChange</span>={e => <span class="fn">setTexto</span>(e.target.value)}
+        <span class="attr">placeholder</span>=<span class="str">"Digite seu texto aqui — a análise acontece automaticamente..."</span>
+        <span class="attr">disabled</span>={status !== <span class="str">'pronto'</span>}
+        <span class="attr">rows</span>={<span class="num">4</span>}
+      /&gt;
+
+      {analisando &amp;&amp; &lt;<span class="tag">p</span> <span class="attr">className</span>=<span class="str">"status-analisando"</span>&gt;⏳ Analisando...&lt;/<span class="tag">p</span>&gt;}
+
+      {resultado &amp;&amp; !analisando &amp;&amp; (
+        &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"resultado"</span>&gt;
+          &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">`sentimento-tag ${labelDominante.label.<span class="fn">toLowerCase</span>()}`</span>&gt;
+            {labelDominante.label === <span class="str">'POSITIVE'</span> ? <span class="str">'😊 Positivo'</span> : <span class="str">'😞 Negativo'</span>}
+          &lt;/<span class="tag">div</span>&gt;
+
+          {resultado.<span class="fn">map</span>(item => (
+            &lt;<span class="tag">div</span> <span class="attr">key</span>={item.label} <span class="attr">className</span>=<span class="str">"bar-row"</span>&gt;
+              &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"bar-label"</span>&gt;{item.label}&lt;/<span class="tag">span</span>&gt;
+              &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"bar-track"</span>&gt;
+                &lt;<span class="tag">div</span>
+                  <span class="attr">className</span>={<span class="str">`bar-fill ${item.label.<span class="fn">toLowerCase</span>()}`</span>}
+                  <span class="attr">style</span>={{ width: `${(item.score * <span class="num">100</span>).<span class="fn">toFixed</span>(<span class="num">1</span>)}%` }}
+                /&gt;
+              &lt;/<span class="tag">div</span>&gt;
+              &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"bar-pct"</span>&gt;{(item.score * <span class="num">100</span>).<span class="fn">toFixed</span>(<span class="num">1</span>)}%&lt;/<span class="tag">span</span>&gt;
+            &lt;/<span class="tag">div</span>&gt;
+          ))}
+
+          {tempoInferencia &amp;&amp; (
+            &lt;<span class="tag">p</span> <span class="attr">className</span>=<span class="str">"tempo"</span>&gt;Inferência: {tempoInferencia}ms · Worker ativo&lt;/<span class="tag">p</span>&gt;
+          )}
+        &lt;/<span class="tag">div</span>&gt;
+      )}
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Exercícios</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">→</div>
+      <div class="secao-info">
+        <div class="secao-label">Exercícios · Conceito + LAB</div>
+        <div class="secao-titulo">4 exercícios — do sentimento à busca semântica</div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Histórico de análises</div>
+      <p>Adicione um histórico de análises abaixo do analisador: cada texto enviado (ao pressionar Enter ou clicar "Analisar") é adicionado a uma lista com o texto, o label dominante e o score. Exiba os últimos 5 itens com um ícone de emoji (😊 ou 😞) na frente. Use um array de objetos no estado e limite a 5 com <code style="font-family:'JetBrains Mono',monospace;">historico.slice(-5)</code>.</p>
+      <span class="dif-basico">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Trecho — histórico de análises</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">const</span> [historico, setHistorico] = <span class="fn">useState</span>([]);
+
+<span class="cm">// Após receber o resultado:</span>
+<span class="fn">setHistorico</span>(prev => [...prev, {
+  texto: texto.<span class="fn">slice</span>(<span class="num">0</span>, <span class="num">60</span>) + (texto.length > <span class="num">60</span> ? <span class="str">'...'</span> : <span class="str">''</span>),
+  label: labelDominante.label,
+  score: labelDominante.score,
+  ts: <span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">toLocaleTimeString</span>(<span class="str">'pt-BR'</span>),
+}].<span class="fn">slice</span>(-<span class="num">5</span>)); <span class="cm">// guarda só os últimos 5</span>
+
+<span class="cm">// No JSX:</span>
+{historico.length > <span class="num">0</span> &amp;&amp; (
+  &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"historico"</span>&gt;
+    &lt;<span class="tag">h3</span>&gt;Histórico recente&lt;/<span class="tag">h3</span>&gt;
+    {[...historico].<span class="fn">reverse</span>().<span class="fn">map</span>((h, i) => (
+      &lt;<span class="tag">div</span> <span class="attr">key</span>={i} <span class="attr">className</span>=<span class="str">`hist-item ${h.label.<span class="fn">toLowerCase</span>()}`</span>&gt;
+        &lt;<span class="tag">span</span>&gt;{h.label === <span class="str">'POSITIVE'</span> ? <span class="str">'😊'</span> : <span class="str">'😞'</span>}&lt;/<span class="tag">span</span>&gt;
+        &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"hist-texto"</span>&gt;{h.texto}&lt;/<span class="tag">span</span>&gt;
+        &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"hist-score"</span>&gt;{(h.score*<span class="num">100</span>).<span class="fn">toFixed</span>(<span class="num">1</span>)}%&lt;/<span class="tag">span</span>&gt;
+        &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"hist-ts"</span>&gt;{h.ts}&lt;/<span class="tag">span</span>&gt;
+      &lt;/<span class="tag">div</span>&gt;
+    ))}
+  &lt;/<span class="tag">div</span>&gt;
+)}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Busca semântica em lista de produtos</div>
+      <p>Use o pipeline <code style="font-family:'JetBrains Mono',monospace;">feature-extraction</code> com <code style="font-family:'JetBrains Mono',monospace;">Xenova/all-MiniLM-L6-v2</code> para construir uma busca semântica. Dada uma lista de 10 produtos com descrições, pré-compute os embeddings de todos ao carregar a página. Quando o usuário digitar uma busca, compute o embedding da query e calcule a similaridade de cosseno com cada produto. Exiba os 3 mais similares — mesmo sem conter as mesmas palavras da query.</p>
+      <span class="dif-medio">LAB · conceito</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Estrutura — BuscaSemantica.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="cm">// Ao carregar: pré-computar embeddings de todos os produtos</span>
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">async function</span> <span class="fn">preComputar</span>() {
+    <span class="kw">const</span> extrator = <span class="kw">await</span> <span class="fn">pipeline</span>(<span class="str">'feature-extraction'</span>, <span class="str">'Xenova/all-MiniLM-L6-v2'</span>);
+    <span class="kw">const</span> embs = <span class="kw">await</span> Promise.<span class="fn">all</span>(
+      produtos.<span class="fn">map</span>(p => <span class="fn">extrator</span>(p.descricao, { pooling: <span class="str">'mean'</span>, normalize: <span class="kw">true</span> }))
+    );
+    <span class="fn">setEmbeddingsProdutos</span>(embs.<span class="fn">map</span>(e => <span class="fn">Array.from</span>(e.data)));
+    <span class="fn">setExtrator</span>(extrator);
+  }
+  <span class="fn">preComputar</span>();
+}, []);
+
+<span class="cm">// Ao buscar:</span>
+<span class="kw">async function</span> <span class="fn">buscar</span>(query) {
+  <span class="kw">const</span> embQuery = <span class="fn">Array.from</span>(
+    (<span class="kw">await</span> <span class="fn">extrator</span>(query, { pooling: <span class="str">'mean'</span>, normalize: <span class="kw">true</span> })).data
+  );
+  <span class="kw">const</span> scores = embeddingsProdutos
+    .<span class="fn">map</span>((emb, i) => ({ produto: produtos[i], score: <span class="fn">cosSim</span>(embQuery, emb) }))
+    .<span class="fn">sort</span>((a, b) => b.score - a.score)
+    .<span class="fn">slice</span>(<span class="num">0</span>, <span class="num">3</span>);
+  <span class="fn">setResultados</span>(scores);
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Análise de sentimento em múltiplos idiomas</div>
+      <p>O modelo DistilBERT-SST2 foi treinado em inglês. Teste a análise com textos em português e observe os resultados. Em seguida, substitua pelo modelo multilingual <code style="font-family:'JetBrains Mono',monospace;">Xenova/bert-base-multilingual-uncased-sentiment</code> (que classifica de 1 a 5 estrelas) e compare os resultados. Quais são as diferenças em tamanho do modelo, latência e qualidade das predições em PT-BR?</p>
+      <span class="dif-medio">Experimentação</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="card" style="margin-top:.5rem;">
+          <ul class="icon-list">
+            <li><i class="fas fa-check-circle"></i><span><strong>DistilBERT-SST2 em português:</strong> funciona parcialmente — o modelo nunca viu português, mas o tokenizador WordPiece decompõe palavras em subwords que podem ter algum sinal. Textos fortemente positivos/negativos geralmente acertam; textos neutros ou com gírias brasileiras falham com frequência.</span></li>
+            <li><i class="fas fa-check-circle"></i><span><strong>bert-base-multilingual-sentiment:</strong> ~450MB no formato completo, ~110MB INT8. Saída são 5 classes (1-5 estrelas) em vez de POSITIVE/NEGATIVE. Muito melhor para PT-BR. Mas é 6x maior que o DistilBERT-SST2 — primeiro carregamento demora mais.</span></li>
+            <li><i class="fas fa-check-circle"></i><span><strong>Lição prática:</strong> a escolha do modelo impacta tamanho, latência e qualidade em cada idioma. Para produção em PT-BR, um modelo fine-tuned em português (ex: <code style="font-family:'JetBrains Mono',monospace;">neuralmind/bert-base-portuguese-cased</code>) seria ideal — mas ainda não há uma versão Xenova/ONNX publicada para ele.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 04 — Desafio: geração de texto token a token</div>
+      <p>Use o pipeline <code style="font-family:'JetBrains Mono',monospace;">text-generation</code> com <code style="font-family:'JetBrains Mono',monospace;">Xenova/gpt2</code> e o callback <code style="font-family:'JetBrains Mono',monospace;">callback_function</code> para implementar efeito de streaming — cada token gerado aparece imediatamente na tela, assim como na Semana 7. No Worker, passe <code style="font-family:'JetBrains Mono',monospace;">{ callback_function: (beams) => self.postMessage({tipo:'token', token: beams[0].output_token_ids}) }</code> e reconstitua o texto acumulado no componente React.</p>
+      <span class="dif-desafio">Desafio</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JavaScript — geração com streaming no Worker</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="cm">// No geracao.worker.js:</span>
+<span class="kw">let</span> gerador = <span class="kw">null</span>;
+<span class="kw">let</span> tokenizer = <span class="kw">null</span>;
+
+self.<span class="fn">addEventListener</span>(<span class="str">'message'</span>, <span class="kw">async</span> ({ data }) => {
+  <span class="kw">if</span> (data.tipo === <span class="str">'carregar'</span>) {
+    <span class="kw">const</span> { <span class="fn">pipeline</span>, <span class="fn">AutoTokenizer</span> } = <span class="kw">await</span> <span class="pp">import</span>(<span class="str">'@xenova/transformers'</span>);
+    gerador   = <span class="kw">await</span> <span class="fn">pipeline</span>(<span class="str">'text-generation'</span>, <span class="str">'Xenova/gpt2'</span>);
+    tokenizer = <span class="kw">await</span> AutoTokenizer.<span class="fn">from_pretrained</span>(<span class="str">'Xenova/gpt2'</span>);
+    self.<span class="fn">postMessage</span>({ tipo: <span class="str">'pronto'</span> });
+  }
+
+  <span class="kw">if</span> (data.tipo === <span class="str">'gerar'</span>) {
+    <span class="kw">let</span> textoAcumulado = <span class="str">''</span>;
+    <span class="kw">await</span> <span class="fn">gerador</span>(data.prompt, {
+      max_new_tokens: <span class="num">100</span>,
+      <span class="fn">callback_function</span>: (beams) => {
+        <span class="kw">const</span> tokens = beams[<span class="num">0</span>].output_token_ids;
+        <span class="cm">// decodifica apenas o último token novo</span>
+        <span class="kw">const</span> novoToken = tokenizer.<span class="fn">decode</span>([tokens[tokens.length - <span class="num">1</span>]], { skip_special_tokens: <span class="kw">true</span> });
+        textoAcumulado += novoToken;
+        self.<span class="fn">postMessage</span>({ tipo: <span class="str">'token'</span>, token: novoToken, texto: textoAcumulado });
+      }
+    });
+    self.<span class="fn">postMessage</span>({ tipo: <span class="str">'fim'</span> });
+  }
+});</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 11</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-brain"></i>
+        <strong>Transformers.js</strong>
+        <p>API idêntica ao Python. Modelos ONNX do HuggingFace Hub. Cache automático no browser. pipeline("tarefa", "Xenova/modelo") — mesma sintaxe, zero servidor.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-cogs"></i>
+        <strong>Web Worker obrigatório</strong>
+        <p>Inferência de transformer bloqueia a UI. Worker roda em thread separada. Comunicação via postMessage. Carregar o modelo uma vez no Worker, reusar para todas as análises.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-project-diagram"></i>
+        <strong>Embeddings e similaridade</strong>
+        <p>feature-extraction + pooling:"mean" + normalize:true → vetor [384]. Similaridade de cosseno entre vetores → busca semântica sem servidor, zero custo por consulta.</p>
+      </div>
+    </div>
+    <div class="aviso-green" style="margin-top:1.5rem;">
+      <i class="fas fa-question-circle"></i>
+      <span><strong>Checklist:</strong> o Worker carrega o modelo e emite eventos de progresso? A análise de sentimento não trava a UI durante a inferência? O debounce de 400ms funciona (só analisa após parar de digitar)? A busca semântica retorna resultados relevantes mesmo sem palavras em comum? Se sim — pronto para a Semana 12: UX para IA, estados de loading, feedback e confiança do usuário.</span>
+    </div>
+    <div class="proxima" onclick="window.location.href='semana-12-frontend.html'">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 12 — UX para IA: skeleton loaders, estados de erro, feedback e transparência</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    :'<i class="fas fa-eye"></i> ver gabarito';
+}
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{btn.textContent='copiado!';setTimeout(()=>btn.textContent='copiar',2000);});
+}
+const quizData={
+  quiz1:{correct:'B',msg:'✅ Correto! PyTorch é um framework Python — ele depende do runtime Python, CUDA e do ecossistema científico Python para funcionar. Nada disso existe no browser. ONNX (Open Neural Network Exchange) é um formato aberto de representação de modelos que pode ser executado por runtimes independentes. O ONNX Runtime Web roda em WebAssembly (fallback) ou WebGL/WebGPU (acelerado) — disponíveis em qualquer browser moderno sem instalar nada. A quantização (INT8, FP16) reduz o tamanho mas é um passo separado da conversão para ONNX.'},
+  quiz2:{correct:'B',msg:'✅ Correto! JavaScript é single-threaded — a thread principal executa o código, atualiza o DOM, processa eventos de mouse/teclado e pinta pixels. Quando você roda uma operação pesada na thread principal por 100–500ms, TUDO congela: o usuário não consegue digitar, clicar, rolar ou ver qualquer animação. Web Workers rodam em uma thread separada e se comunicam com a thread principal via mensagens assíncronas. O DOM permanece totalmente responsivo durante a inferência.'}
+};
+function responder(id,el,ok,letra){
+  const ops=document.getElementById(id+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  const correta=quizData[id].correct;
+  ops.querySelectorAll('.quiz-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    if(op.querySelector('.quiz-letra').textContent.trim()===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const fb=document.getElementById(id+'-feedback');
+  fb.textContent=quizData[id].msg;
+  fb.style.background=ok?'rgba(74,222,128,.08)':'rgba(239,68,68,.08)';
+  fb.style.border=ok?'1px solid rgba(74,222,128,.22)':'1px solid rgba(239,68,68,.25)';
+  fb.style.color=ok?'rgba(134,239,172,.9)':'#fca5a5';
+  fb.style.padding='.75rem 1rem';fb.style.borderRadius='8px';
+  fb.classList.add('show');
+}
+</script>
+</body>
+</html>

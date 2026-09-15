@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 18 — Revisão Geral + Deploy · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#140f04;
+  --amber-900:#3a2a02;
+  --amber-600:#d97706;
+  --amber-500:#f59e0b;
+  --amber-400:#fbbf24;
+  --amber-300:#fcd34d;
+  --white:#fff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(245,158,11,.05);
+  --code-bg:#120c02;
+  --code-border:rgba(245,158,11,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.22;pointer-events:none;}
+.blob-1{width:680px;height:680px;background:#7c4a03;top:-240px;left:-200px;}
+.blob-2{width:540px;height:540px;background:#3a2a02;bottom:-210px;right:-120px;}
+.blob-3{width:290px;height:290px;background:#f59e0b;top:36%;left:44%;opacity:.07;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(245,158,11,.14);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--amber-300);border:1px solid rgba(245,158,11,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--amber-300);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(245,158,11,.07);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--amber-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--amber-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.11);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}.topico:nth-child(6){animation-delay:.6s;}.topico:nth-child(7){animation-delay:.7s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(245,158,11,.14);color:var(--amber-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(245,158,11,.05);border-left:3px solid var(--amber-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--amber-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--amber-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(245,158,11,.11);color:var(--amber-400);border:1px solid rgba(245,158,11,.26);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(245,158,11,.11);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(245,158,11,.13);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--amber-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(245,158,11,.17);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--amber-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(245,158,11,.06);border-left:3px solid var(--amber-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--amber-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-amber{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);font-size:.86rem;color:rgba(252,211,77,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-amber i{color:var(--amber-400);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(245,158,11,.08);}
+th{padding:.6rem 1rem;text-align:left;color:var(--amber-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(245,158,11,.16);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(245,158,11,.03);}
+td strong{color:var(--text-primary);}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(245,158,11,.05);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--amber-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#fde68a;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#bef264;}.cm{color:#4b5563;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(245,158,11,.11);color:var(--amber-400);border:1px solid rgba(245,158,11,.22);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.22);}
+.badge-blue{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.22);}
+
+/* ── Fluxo de deploy ── */
+.fluxo{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin:1rem 0;flex-wrap:wrap;}
+.fluxo-box{flex:1;min-width:120px;background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:.75rem 1rem;text-align:center;font-size:.78rem;color:var(--text-secondary);}
+.fluxo-box strong{display:block;color:var(--amber-400);font-family:'Montserrat',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;}
+.fluxo-arrow{color:var(--amber-400);font-size:1.1rem;flex-shrink:0;}
+
+/* ── Terminal mockup ── */
+.term-mock{background:#100b02;border:1px solid rgba(245,158,11,.18);border-radius:12px;padding:1rem 1.25rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.75;margin:.75rem 0;}
+.term-pass{color:#34d399;}
+.term-fail{color:#f87171;}
+.term-muted{color:rgba(255,255,255,.4);}
+.term-white{color:rgba(255,255,255,.85);}
+.term-amber{color:#fbbf24;}
+
+/* ── Lighthouse score mockup ── */
+.lh-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:.75rem 0;}
+.lh-card{border-radius:12px;padding:1.1rem;border:1px solid;text-align:center;}
+.lh-card__score{font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.2rem;}
+.lh-card__label{font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;}
+
+/* ── Before/After grid ── */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
+.ba-panel{border-radius:12px;overflow:hidden;border:1px solid;}
+.ba-header{padding:.5rem 1rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;display:flex;align-items:center;gap:6px;}
+.ba-header.bad{background:rgba(239,68,68,.08);color:#f87171;border-bottom:1px solid rgba(239,68,68,.15);}
+.ba-header.good{background:rgba(245,158,11,.08);color:var(--amber-400);border-bottom:1px solid rgba(245,158,11,.15);}
+.ba-body{padding:1rem;background:var(--card-bg);font-size:.82rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Lab steps ── */
+.lab-steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.lab-steps::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--amber-400),rgba(245,158,11,.1));border-radius:1px;}
+.lab-step{display:flex;gap:1rem;padding:.75rem 0;}
+.lab-step__num{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;position:relative;z-index:2;background:rgba(245,158,11,.1);color:var(--amber-400);border:2px solid rgba(245,158,11,.27);}
+.lab-step__body{flex:1;padding-top:8px;}
+.lab-step__title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#f8fafc;margin-bottom:.3rem;}
+.lab-step__desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Revisão semestral ── */
+.rev-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin:.75rem 0;}
+.rev-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1rem 1.1rem;}
+.rev-card__semana{font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:800;color:var(--amber-400);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem;}
+.rev-card__titulo{font-size:.85rem;font-weight:600;color:var(--text-primary);margin-bottom:.3rem;}
+.rev-card__desc{font-size:.78rem;color:var(--text-secondary);line-height:1.5;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--amber-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(245,158,11,.17);border-radius:8px;padding:.5rem 1rem;color:var(--amber-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(245,158,11,.07);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+/* ── Quiz ── */
+.quiz-box{background:rgba(245,158,11,.03);border:1px solid rgba(245,158,11,.12);border-radius:12px;padding:1.25rem;margin:1rem 0;}
+.quiz-pergunta{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700;color:var(--white);margin-bottom:1rem;}
+.quiz-ops{display:flex;flex-direction:column;gap:.5rem;}
+.quiz-op{display:flex;align-items:center;gap:10px;padding:.6rem .9rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:9px;cursor:pointer;transition:all .2s;}
+.quiz-op:hover{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.2);}
+.quiz-op.correto{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);}
+.quiz-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);}
+.quiz-letra{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;}
+.quiz-texto{font-size:.85rem;color:var(--text-secondary);}
+.quiz-feedback{display:none;padding:.75rem 1rem;border-radius:8px;font-size:.83rem;line-height:1.55;margin-top:.75rem;}
+.quiz-feedback.show{display:block;}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--amber-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(245,158,11,.09);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--amber-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.ba-grid,.resumo-grid,.lh-grid,.rev-grid{grid-template-columns:1fr 1fr;}
+  .fluxo{flex-direction:column;}
+  .fluxo-arrow{transform:rotate(90deg);}
+}
+@media(max-width:520px){.resumo-grid,.grid-3,.lh-grid,.rev-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">🚀 Revisão + Deploy</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">18</div>
+    <h1 class="capa-titulo">Revisão Geral<br>+ <em>Deploy</em><br>em Produção</h1>
+    <p class="capa-sub">4 aulas · Vercel, variáveis de ambiente, GitHub Actions e Lighthouse</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-rocket"></i></div><span>Deploy na Vercel — do repositório Git ao app no ar em minutos</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-key"></i></div><span>Variáveis de ambiente em produção — Preview vs Production, secrets seguros</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-code-branch"></i></div><span>GitHub Actions — rodando os testes da Semana 17 automaticamente antes do deploy</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-tachometer-alt"></i></div><span>Lighthouse CI — auditoria de performance automatizada a cada deploy</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-book"></i></div><span>Revisão geral — conectando streaming, UX, a11y, performance, estado e testes</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-flask"></i></div><span>LAB: pipeline completo — deploy + CI/CD + auditoria Lighthouse do projeto final</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade LAB</div>
+      <p>Fazer o deploy completo do projeto na Vercel com variáveis de ambiente configuradas com segurança, montar um workflow de GitHub Actions que roda os testes antes de cada deploy, e alcançar um score Lighthouse acima de 85 em Performance e Acessibilidade.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>Ferramentas da semana</div>
+      <ul class="info-lista">
+        <li>Vercel CLI — <code style="font-family:'JetBrains Mono',monospace;">npm install -g vercel</code></li>
+        <li>GitHub Actions — arquivos <code style="font-family:'JetBrains Mono',monospace;">.github/workflows/*.yml</code></li>
+        <li>Lighthouse CI — <code style="font-family:'JetBrains Mono',monospace;">npm install -D @lhci/cli</code></li>
+        <li>Vercel Dashboard — variáveis de ambiente por ambiente (Production/Preview/Development)</li>
+        <li>GitHub Secrets — armazenar tokens e chaves usados no CI</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 16 — Estado global: Zustand, Redux Toolkit</li>
+        <li>✅ Sem. 17 — Testes: Jest, React Testing Library, mocks</li>
+        <li>▶ Sem. 18 — Revisão Geral + Deploy: Vercel, CI/CD, Lighthouse</li>
+        <li>Sem. 19 — Prova Final (P3) + apresentação do projeto</li>
+        <li>Sem. 20 — Segunda chamada</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que isso importa especialmente em IA</div>
+      <ul class="info-lista">
+        <li>Toda a segurança das chaves de API (Semana 5) só vale a pena se a variável de ambiente em produção estiver configurada corretamente — um erro aqui expõe tudo</li>
+        <li>CI/CD sem os testes da Semana 17 rodando é só automação de deploy, não automação de qualidade</li>
+        <li>Lighthouse fecha o ciclo da Semana 14 (a11y) e Semana 15 (performance) — o app só está pronto quando os números comprovam</li>
+        <li>É o momento em que o projeto sai do "roda na minha máquina" para "roda para qualquer pessoa"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1</div>
+        <div class="secao-titulo">Deploy na Vercel — do repositório Git ao app no ar</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-rocket"></i>Como a Vercel transforma um push em um deploy</div>
+      <p>A Vercel é a plataforma de deploy mais usada para projetos React/Next.js. O fluxo básico: você conecta um repositório GitHub, a Vercel detecta automaticamente o framework (Vite, Next.js, CRA), executa o build e publica o resultado em uma URL pública. Cada novo <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">git push</code> dispara um novo deploy automaticamente.</p>
+
+      <div class="fluxo">
+        <div class="fluxo-box"><strong>git push</strong>código enviado ao GitHub</div>
+        <span class="fluxo-arrow"><i class="fas fa-arrow-right"></i></span>
+        <div class="fluxo-box"><strong>Vercel detecta</strong>webhook dispara o build</div>
+        <span class="fluxo-arrow"><i class="fas fa-arrow-right"></i></span>
+        <div class="fluxo-box"><strong>Build</strong>npm install + npm run build</div>
+        <span class="fluxo-arrow"><i class="fas fa-arrow-right"></i></span>
+        <div class="fluxo-box"><strong>Deploy</strong>URL pública gerada</div>
+      </div>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Tipo de deploy</th><th>Quando acontece</th><th>URL gerada</th><th>Uso típico</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Production</strong></td><td>Push/merge na branch principal (main)</td><td>seu-projeto.vercel.app (ou domínio customizado)</td><td>A versão que os usuários finais acessam</td></tr>
+            <tr><td><strong>Preview</strong></td><td>Push em qualquer outra branch ou Pull Request</td><td>URL única por commit (ex: seu-projeto-git-feature-x.vercel.app)</td><td>Testar uma feature antes de mesclar, compartilhar com o professor/cliente para revisão</td></tr>
+            <tr><td><strong>Development</strong></td><td>Rodando localmente com <code style="font-family:'JetBrains Mono',monospace;">vercel dev</code></td><td>localhost</td><td>Testar variáveis de ambiente de produção localmente antes de commitar</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="destaque">
+        <strong>Por que Preview Deployments mudam o fluxo de trabalho:</strong> antes de mesclar uma Pull Request, cada commit já gera uma URL funcional e isolada. Isso significa que você pode testar uma nova feature do chatbot (ex: um novo modelo de IA) em produção real, sem afetar o app que os outros usuários estão usando — e compartilhar o link para revisão antes do merge.
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Terminal — primeiro deploy com Vercel CLI</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm"># Instalar a CLI globalmente</span>
+npm install -g vercel
+
+<span class="cm"># Dentro da pasta do projeto — login e deploy</span>
+vercel login
+vercel
+
+<span class="cm"># A CLI pergunta interativamente:
+# "Set up and deploy?" → yes
+# "Which scope?" → sua conta
+# "Link to existing project?" → no (primeira vez)
+# "What's your project's name?" → chatbot-ia
+# "In which directory is your code located?" → ./
+# A Vercel detecta automaticamente Vite/Next.js/CRA e configura o build</span>
+
+<span class="cm"># Deploy de produção (não gera Preview, vai direto para produção)</span>
+vercel --prod
+
+<span class="cm"># Depois do primeiro deploy, basta dar push no Git —
+# a integração GitHub + Vercel cuida do resto automaticamente</span></code></pre>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Um estudante abre uma Pull Request no GitHub com uma nova feature do chatbot. O que a Vercel faz automaticamente, assumindo que a integração já está configurada?</div>
+      <div class="quiz-ops" id="quiz1-ops">
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">Nada acontece até a PR ser mesclada na branch main</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">A Vercel gera um Preview Deployment com uma URL única para aquele commit, sem afetar a versão de produção</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">A Vercel substitui automaticamente a versão de produção pela nova feature</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">A PR é bloqueada até que o deploy manual seja feito via CLI</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz1-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2</div>
+        <div class="secao-titulo">Variáveis de ambiente em produção — fechando o ciclo da Semana 5</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-key"></i>Do .env local ao dashboard da Vercel</div>
+      <p>Na Semana 5, você aprendeu que a chave de API nunca deve ficar hardcoded no código, e sim em um arquivo <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">.env</code> ignorado pelo Git. Em produção, esse arquivo não existe no servidor — as variáveis são configuradas diretamente no <strong>dashboard da Vercel</strong>, por ambiente (Production, Preview, Development).</p>
+
+      <div class="ba-grid">
+        <div class="ba-panel" style="border-color:rgba(239,68,68,.2);">
+          <div class="ba-header bad"><i class="fas fa-times-circle"></i> Errado — chave exposta no front</div>
+          <div class="ba-body">
+            Uma variável como <code style="font-family:'JetBrains Mono',monospace;">VITE_OPENAI_KEY</code> ou <code style="font-family:'JetBrains Mono',monospace;">REACT_APP_OPENAI_KEY</code> é embutida no bundle JavaScript no momento do build — qualquer usuário pode abrir o DevTools e ver a chave, mesmo em produção na Vercel.
+          </div>
+        </div>
+        <div class="ba-panel" style="border-color:rgba(245,158,11,.2);">
+          <div class="ba-header good"><i class="fas fa-check-circle"></i> Certo — chave só no servidor</div>
+          <div class="ba-body">
+            A chave fica em uma variável <strong>sem</strong> o prefixo VITE_/REACT_APP_ (ex: <code style="font-family:'JetBrains Mono',monospace;">OPENAI_API_KEY</code>), usada apenas dentro de uma API Route/Serverless Function da Vercel. O bundle do cliente nunca a recebe.
+          </div>
+        </div>
+      </div>
+
+      <div class="aviso-red">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span><strong>A armadilha do prefixo:</strong> em projetos Vite, qualquer variável de ambiente prefixada com <code style="font-family:'JetBrains Mono',monospace;">VITE_</code> é injetada no bundle do cliente por design — é assim que o Vite decide o que é seguro expor ao browser. O mesmo vale para <code style="font-family:'JetBrains Mono',monospace;">REACT_APP_</code> no Create React App e <code style="font-family:'JetBrains Mono',monospace;">NEXT_PUBLIC_</code> no Next.js. Se a chave da OpenAI usar esse prefixo, ela SEMPRE vai parar no bundle público, não importa onde ela esteja configurada no dashboard da Vercel.</span>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — API Route da Vercel usando a chave com segurança</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">// api/chat.js — Serverless Function da Vercel (roda no servidor, nunca no browser)</span>
+<span class="kw">export default async function</span> <span class="fn">handler</span>(req, res) {
+  <span class="kw">if</span> (req.method !== <span class="str">'POST'</span>) {
+    <span class="kw">return</span> res.<span class="fn">status</span>(<span class="num">405</span>).<span class="fn">json</span>({ erro: <span class="str">'Método não permitido'</span> });
+  }
+
+  <span class="cm">// process.env.OPENAI_API_KEY — SEM prefixo VITE_/NEXT_PUBLIC_
+  // Essa variável só existe no ambiente do servidor, nunca chega ao cliente</span>
+  <span class="kw">const</span> resposta = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://api.openai.com/v1/chat/completions'</span>, {
+    method: <span class="str">'POST'</span>,
+    headers: {
+      <span class="str">'Authorization'</span>: <span class="str">`Bearer ${process.env.OPENAI_API_KEY}`</span>,
+      <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+    },
+    body: <span class="fn">JSON.stringify</span>({
+      model: <span class="str">'gpt-4o-mini'</span>,
+      messages: req.body.mensagens,
+    }),
+  });
+
+  <span class="kw">const</span> dados = <span class="kw">await</span> resposta.<span class="fn">json</span>();
+  res.<span class="fn">status</span>(<span class="num">200</span>).<span class="fn">json</span>(dados);
+}
+
+<span class="cm">// No front-end, o app chama SEU PRÓPRIO endpoint, nunca a OpenAI diretamente:</span>
+<span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/chat'</span>, {
+  method: <span class="str">'POST'</span>,
+  body: <span class="fn">JSON.stringify</span>({ mensagens }),
+});</code></pre>
+      </div>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Onde configurar</th><th>Como fazer</th><th>Visibilidade</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Vercel Dashboard</strong></td><td>Project Settings → Environment Variables → adicionar chave/valor, escolher ambiente(s)</td><td>Só no servidor, a menos que tenha prefixo público</td></tr>
+            <tr><td><strong>Vercel CLI</strong></td><td><code style="font-family:'JetBrains Mono',monospace;">vercel env add OPENAI_API_KEY production</code></td><td>Mesmo efeito do dashboard, via terminal</td></tr>
+            <tr><td><strong>Local (.env.local)</strong></td><td>Arquivo ignorado pelo Git, usado só em desenvolvimento</td><td>Só na sua máquina</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Um estudante configura a chave da OpenAI na Vercel como <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">VITE_OPENAI_KEY</code> e a usa direto em um componente React com <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">fetch('https://api.openai.com/...')</code>. Isso é seguro em produção?</div>
+      <div class="quiz-ops" id="quiz2-ops">
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">Sim — configurar a variável no dashboard da Vercel já protege a chave automaticamente</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">Não — o prefixo VITE_ injeta a variável no bundle JavaScript do cliente independente de onde ela foi configurada, expondo a chave para qualquer usuário via DevTools</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">Sim, desde que o domínio use HTTPS</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">Depende apenas de a chave ter sido gerada recentemente na OpenAI</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz2-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3</div>
+        <div class="secao-titulo">GitHub Actions e Lighthouse CI — qualidade automatizada a cada push</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-code-branch"></i>GitHub Actions — rodando os testes da Semana 17 automaticamente</div>
+      <p>CI/CD significa Integração Contínua (Continuous Integration) e Entrega/Deploy Contínuo (Continuous Delivery/Deployment). GitHub Actions permite definir <strong>workflows</strong> — sequências de passos automatizados que rodam a cada push ou Pull Request, como instalar dependências, rodar a suíte de testes e fazer build.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">YAML — .github/workflows/ci.yml</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="kw">name</span>: CI
+
+<span class="kw">on</span>:
+  <span class="kw">pull_request</span>:
+    <span class="kw">branches</span>: [main]
+  <span class="kw">push</span>:
+    <span class="kw">branches</span>: [main]
+
+<span class="kw">jobs</span>:
+  <span class="kw">test</span>:
+    <span class="kw">runs-on</span>: ubuntu-latest
+    <span class="kw">steps</span>:
+      <span class="kw">- name</span>: Checkout do código
+        <span class="kw">uses</span>: actions/checkout@v4
+
+      <span class="kw">- name</span>: Configurar Node.js
+        <span class="kw">uses</span>: actions/setup-node@v4
+        <span class="kw">with</span>:
+          <span class="kw">node-version</span>: <span class="str">'20'</span>
+          <span class="kw">cache</span>: <span class="str">'npm'</span>
+
+      <span class="kw">- name</span>: Instalar dependências
+        <span class="kw">run</span>: npm ci
+
+      <span class="kw">- name</span>: Rodar testes
+        <span class="kw">run</span>: npm test -- --coverage
+
+      <span class="kw">- name</span>: Build de produção
+        <span class="kw">run</span>: npm run build
+
+<span class="cm"># Com esse workflow, uma Pull Request só pode ser mesclada se:
+# 1. npm ci não falhar (dependências instalam corretamente)
+# 2. npm test não falhar (todos os testes da Semana 17 passam)
+# 3. npm run build não falhar (o projeto compila sem erros)
+# O GitHub mostra um ✓ verde ou ✗ vermelho diretamente na PR</span></code></pre>
+      </div>
+
+      <div class="destaque">
+        <strong>Por que isso muda tudo:</strong> sem CI, é possível mesclar código quebrado na branch principal por descuido — um teste que falha localmente mas ninguém rodou antes do commit. Com o workflow acima, o GitHub bloqueia visualmente o merge (ou ao menos avisa claramente) se qualquer teste da Semana 17 falhar. A suíte de testes só tem valor real quando ela roda automaticamente, não quando depende de alguém lembrar de rodar <code style="font-family:'JetBrains Mono',monospace;">npm test</code> manualmente.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-tachometer-alt"></i>Lighthouse CI — auditoria de performance e acessibilidade automatizada</div>
+      <p>A Semana 14 (a11y) e a Semana 15 (performance) ensinaram a rodar o Lighthouse manualmente no DevTools. O <strong>Lighthouse CI</strong> automatiza essa auditoria: roda a cada push, compara com um histórico de scores, e pode <em>falhar o build</em> se a pontuação cair abaixo de um limite definido — evitando que uma regressão de performance ou acessibilidade passe despercebida.</p>
+
+      <div class="lh-grid">
+        <div class="lh-card" style="background:rgba(74,222,128,.05);border-color:rgba(74,222,128,.25);">
+          <div class="lh-card__score" style="color:#4ade80;">92</div>
+          <div class="lh-card__label">Performance</div>
+        </div>
+        <div class="lh-card" style="background:rgba(74,222,128,.05);border-color:rgba(74,222,128,.25);">
+          <div class="lh-card__score" style="color:#4ade80;">96</div>
+          <div class="lh-card__label">Acessibilidade</div>
+        </div>
+        <div class="lh-card" style="background:rgba(74,222,128,.05);border-color:rgba(74,222,128,.25);">
+          <div class="lh-card__score" style="color:#4ade80;">100</div>
+          <div class="lh-card__label">Boas práticas</div>
+        </div>
+        <div class="lh-card" style="background:rgba(251,191,36,.05);border-color:rgba(251,191,36,.25);">
+          <div class="lh-card__score" style="color:#fbbf24;">89</div>
+          <div class="lh-card__label">SEO</div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">YAML — adicionando Lighthouse CI ao workflow</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm"># lighthouserc.json — configuração dos limites mínimos aceitos</span>
+{
+  <span class="str">"ci"</span>: {
+    <span class="str">"collect"</span>: {
+      <span class="str">"staticDistDir"</span>: <span class="str">"./dist"</span>,
+      <span class="str">"numberOfRuns"</span>: <span class="num">3</span>
+    },
+    <span class="str">"assert"</span>: {
+      <span class="str">"assertions"</span>: {
+        <span class="str">"categories:performance"</span>: [<span class="str">"error"</span>, {<span class="str">"minScore"</span>: <span class="num">0.85</span>}],
+        <span class="str">"categories:accessibility"</span>: [<span class="str">"error"</span>, {<span class="str">"minScore"</span>: <span class="num">0.9</span>}]
+      }
+    }
+  }
+}
+
+<span class="cm"># Job adicional no .github/workflows/ci.yml</span>
+<span class="kw">- name</span>: Lighthouse CI
+  <span class="kw">run</span>: |
+    npm install -g @lhci/cli
+    lhci autorun
+
+<span class="cm"># Se "categories:performance" cair abaixo de 0.85 (85), o job falha
+# e a PR mostra um X vermelho — igual a um teste que falhou.
+# Isso transforma o Lighthouse de "checagem manual esquecível"
+# em um portão de qualidade automático do projeto.</span></code></pre>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Um workflow de GitHub Actions roda os testes Jest, mas ninguém configurou Lighthouse CI. Um novo componente pesado (ex: um gráfico de 480KB sem lazy loading) é mesclado na main. O que acontece?</div>
+      <div class="quiz-ops" id="quiz3-ops">
+        <div class="quiz-op" onclick="responder('quiz3',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">O GitHub Actions bloqueia o merge automaticamente por questões de bundle size</span></div>
+        <div class="quiz-op" onclick="responder('quiz3',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">O merge é aceito normalmente — os testes Jest não avaliam performance/bundle size, então a regressão de performance passa despercebida sem Lighthouse CI configurado</span></div>
+        <div class="quiz-op" onclick="responder('quiz3',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">A Vercel recusa o deploy de qualquer bundle acima de 400KB automaticamente</span></div>
+        <div class="quiz-op" onclick="responder('quiz3',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">O React lança um erro em tempo de build se um componente for muito pesado</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz3-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 4 · LAB + Revisão</span></div>
+
+  <!-- ── AULA 4 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">04</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 4 · LAB + Revisão Geral</div>
+        <div class="secao-titulo">LAB — Pipeline completo de deploy e revisão do semestre</div>
+      </div>
+    </div>
+
+    <div class="aviso-amber">
+      <i class="fas fa-flask"></i>
+      <span>Objetivo: publicar o projeto na Vercel com variáveis de ambiente seguras, configurar um workflow de CI que roda os testes antes do deploy, e alcançar Performance ≥ 85 e Acessibilidade ≥ 90 no Lighthouse.</span>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>Passo a passo do LAB</div>
+      <div class="lab-steps">
+        <div class="lab-step">
+          <div class="lab-step__num">1</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Preparar a API Route e mover a chave para o servidor</div>
+            <div class="lab-step__desc">Se ainda houver alguma chamada direta à API de IA no front-end, crie uma API Route (/api/chat) que a receba no servidor. Remova qualquer variável com prefixo VITE_/REACT_APP_/NEXT_PUBLIC_ que contenha uma chave sensível.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">2</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Conectar o repositório à Vercel e configurar as variáveis</div>
+            <div class="lab-step__desc">Importe o repositório GitHub no dashboard da Vercel. Em Project Settings → Environment Variables, adicione OPENAI_API_KEY (sem prefixo) marcada apenas para Production e Preview — nunca commitada no código.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">3</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Criar o workflow de CI com os testes da Semana 17</div>
+            <div class="lab-step__desc">Adicione .github/workflows/ci.yml rodando npm ci, npm test e npm run build a cada Pull Request. Confirme que o GitHub mostra o status (✓ ou ✗) diretamente na PR.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">4</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Adicionar Lighthouse CI ao workflow</div>
+            <div class="lab-step__desc">Configure lighthouserc.json com limites mínimos (performance ≥ 0.85, acessibilidade ≥ 0.9). Adicione o step de Lighthouse CI ao workflow, rodando contra o build gerado (dist/).</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">5</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Fazer o primeiro deploy de produção</div>
+            <div class="lab-step__desc">Dê push na branch main (ou mescle uma PR já validada pelo CI). Acompanhe o deploy no dashboard da Vercel. Acesse a URL de produção e confirme que o chatbot funciona de ponta a ponta, incluindo a chamada de IA através da API Route.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">6</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Revisão geral — testar o app publicado contra o checklist do semestre</div>
+            <div class="lab-step__desc">Na URL de produção: navegue só com teclado (Semana 14), simule 3G no DevTools (Semana 15), recarregue a página e confirme que o histórico persiste (Semana 16), e rode o Lighthouse uma última vez direto na URL pública.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="term-mock">
+        <div class="term-white">$ git push origin main</div>
+        <div class="term-muted">Enumerating objects, done.</div>
+        <div class="term-amber">▲ Vercel — Building...</div>
+        <div class="term-muted">  Running "npm run build"</div>
+        <div class="term-pass">  ✓ Compiled successfully</div>
+        <div class="term-amber">▲ Vercel — Deploying...</div>
+        <div class="term-pass">✓ Production: https://chatbot-ia.vercel.app (37s)</div>
+        <div class="term-muted"><br>GitHub Actions — CI</div>
+        <div class="term-pass">  ✓ test (Jest — 24 passed)</div>
+        <div class="term-pass">  ✓ build</div>
+        <div class="term-pass">  ✓ lighthouse-ci (performance: 91, a11y: 96)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-book"></i>Revisão geral — conectando as últimas semanas</div>
+      <p>Antes da Prova Final (Semana 19), vale conectar os pontos entre os temas mais recentes — eles não são independentes, e a prova pode cobrar como um afeta o outro.</p>
+
+      <div class="rev-grid">
+        <div class="rev-card">
+          <div class="rev-card__semana">Semana 14 — a11y</div>
+          <div class="rev-card__titulo">WCAG, ARIA, foco visível</div>
+          <div class="rev-card__desc">Lighthouse (Semana 18) mede Acessibilidade automaticamente — é a mesma auditoria, agora rodando em CI a cada push.</div>
+        </div>
+        <div class="rev-card">
+          <div class="rev-card__semana">Semana 15 — Performance</div>
+          <div class="rev-card__titulo">Web Vitals, lazy loading, caching</div>
+          <div class="rev-card__desc">Score de Performance do Lighthouse é exatamente o que o Lighthouse CI (Semana 18) vai falhar se cair — os conceitos são os mesmos, agora automatizados.</div>
+        </div>
+        <div class="rev-card">
+          <div class="rev-card__semana">Semana 16 — Estado global</div>
+          <div class="rev-card__titulo">Zustand, persist, múltiplas conversas</div>
+          <div class="rev-card__desc">O teste manual pós-deploy (recarregar e checar persistência) valida em produção o que os testes automatizados (Semana 17) já garantiam localmente.</div>
+        </div>
+        <div class="rev-card">
+          <div class="rev-card__semana">Semana 17 — Testes</div>
+          <div class="rev-card__titulo">Jest, RTL, mocks de API</div>
+          <div class="rev-card__desc">Só tem valor real quando roda em CI (Semana 18) a cada Pull Request — testes que só rodam manualmente são esquecidos com o tempo.</div>
+        </div>
+      </div>
+
+      <div class="destaque">
+        <strong>O fio condutor do semestre:</strong> Semana 5 (nunca expor a chave) → Semana 12 (UX resiliente a erros de IA) → Semana 14 (acessível) → Semana 15 (rápido) → Semana 16 (estado confiável) → Semana 17 (testado) → Semana 18 (publicado com esses cuidados verificados automaticamente). Cada semana resolveu um risco específico de um app de IA em produção; o deploy é onde todos esses cuidados são colocados à prova ao mesmo tempo.
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Exercícios</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">→</div>
+      <div class="secao-info">
+        <div class="secao-label">Exercícios · Conceito + LAB</div>
+        <div class="secao-titulo">4 exercícios — de rollback a monorepo</div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Rollback de um deploy com problema</div>
+      <p>Um deploy recente introduziu um bug crítico em produção (o botão de enviar parou de funcionar). Pesquise e descreva o processo de <strong>rollback</strong> na Vercel: como reverter instantaneamente para o último deploy estável sem precisar reverter o commit no Git primeiro. Explique por que isso é mais rápido que um <code style="font-family:'JetBrains Mono',monospace;">git revert</code> + novo deploy.</p>
+      <span class="dif-basico">Conceito</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta" style="padding:1rem 1.1rem;border-radius:10px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);font-size:.85rem;color:var(--text-secondary);line-height:1.7;">
+          Na Vercel, cada deploy fica arquivado e acessível permanentemente (a menos que seja excluído manualmente). No dashboard, em <strong>Deployments</strong>, cada entrada tem um botão <strong>"Promote to Production"</strong> (ou "Instant Rollback" em planos com esse recurso) que aponta o domínio de produção diretamente para um deploy anterior já buildado — sem rodar um novo build.
+          <br><br>
+          Isso é mais rápido que <code style="font-family:'JetBrains Mono',monospace;">git revert</code> porque: (1) não depende de re-executar <code style="font-family:'JetBrains Mono',monospace;">npm install</code> e <code style="font-family:'JetBrains Mono',monospace;">npm run build</code> — o artefato já existe pronto; (2) elimina o risco de o build do revert falhar por algum motivo externo (dependência que mudou de versão, por exemplo); (3) leva segundos, enquanto um novo ciclo completo de CI/CD pode levar minutos. O revert no Git ainda deve ser feito depois, para que o histórico do repositório reflita a correção — mas ele não precisa bloquear a recuperação imediata da produção.
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Workflow de CI que só faz build em Pull Requests</div>
+      <p>Modifique o workflow <code style="font-family:'JetBrains Mono',monospace;">ci.yml</code> da Aula 3 para que o job de testes rode em toda Pull Request e todo push na main, mas o job de Lighthouse CI rode <strong>apenas</strong> em Pull Requests (não em pushes diretos na main) — evitando gastar minutos de CI desnecessariamente em merges já testados anteriormente.</p>
+      <span class="dif-medio">GitHub Actions</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">YAML — workflow com jobs condicionais por evento</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">name</span>: CI
+
+<span class="kw">on</span>:
+  <span class="kw">pull_request</span>:
+    <span class="kw">branches</span>: [main]
+  <span class="kw">push</span>:
+    <span class="kw">branches</span>: [main]
+
+<span class="kw">jobs</span>:
+  <span class="kw">test</span>:
+    <span class="kw">runs-on</span>: ubuntu-latest
+    <span class="kw">steps</span>:
+      <span class="kw">- uses</span>: actions/checkout@v4
+      <span class="kw">- uses</span>: actions/setup-node@v4
+        <span class="kw">with</span>: { <span class="kw">node-version</span>: <span class="str">'20'</span> }
+      <span class="kw">- run</span>: npm ci
+      <span class="kw">- run</span>: npm test
+      <span class="kw">- run</span>: npm run build
+
+  <span class="kw">lighthouse</span>:
+    <span class="cm"># Roda SÓ em Pull Requests — condição verifica o evento que disparou o workflow</span>
+    <span class="kw">if</span>: github.event_name == 'pull_request'
+    <span class="kw">needs</span>: test  <span class="cm"># só roda se o job "test" passou primeiro</span>
+    <span class="kw">runs-on</span>: ubuntu-latest
+    <span class="kw">steps</span>:
+      <span class="kw">- uses</span>: actions/checkout@v4
+      <span class="kw">- uses</span>: actions/setup-node@v4
+        <span class="kw">with</span>: { <span class="kw">node-version</span>: <span class="str">'20'</span> }
+      <span class="kw">- run</span>: npm ci && npm run build
+      <span class="kw">- run</span>: npx @lhci/cli autorun</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Comentário automático do score Lighthouse na PR</div>
+      <p>Pesquise e configure a ação <code style="font-family:'JetBrains Mono',monospace;">treosh/lighthouse-ci-action</code> (ou similar) para que o resultado do Lighthouse CI seja postado automaticamente como um comentário na Pull Request, mostrando os 4 scores (Performance, Acessibilidade, Boas Práticas, SEO) sem que ninguém precise abrir os logs do GitHub Actions manualmente.</p>
+      <span class="dif-medio">GitHub Actions</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">YAML — comentário automático de Lighthouse na PR</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">- name</span>: Lighthouse CI com comentário na PR
+  <span class="kw">uses</span>: treosh/lighthouse-ci-action@v11
+  <span class="kw">with</span>:
+    <span class="kw">urls</span>: |
+      https://chatbot-ia-git-${{ github.head_ref }}.vercel.app
+    <span class="kw">uploadArtifacts</span>: true
+    <span class="kw">temporaryPublicStorage</span>: true
+
+<span class="cm"># Essa action:
+# 1. Roda o Lighthouse contra a URL de Preview daquele Pull Request específico
+#    (a URL segue o padrão de branch da Vercel)
+# 2. Publica os relatórios em um storage temporário público
+# 3. Comenta automaticamente na PR com os 4 scores e um link para o relatório completo
+# Isso elimina a necessidade de qualquer pessoa abrir os logs brutos do
+# GitHub Actions para saber se a performance regrediu — a informação
+# aparece diretamente onde a revisão de código já está acontecendo.</span></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 04 — Desafio: domínio customizado com preview de branches de feature</div>
+      <p>Configure um domínio customizado (pode ser gratuito, tipo .vercel.app mesmo, ou um domínio real se tiver) e explore o recurso de Vercel de gerar automaticamente uma URL de preview estável por nome de branch (ex: sempre a mesma URL para a branch <code style="font-family:'JetBrains Mono',monospace;">feature/novo-modelo</code>, mesmo com múltiplos commits). Documente como isso ajuda um time a compartilhar links fixos durante o desenvolvimento de uma feature de IA ao longo de vários dias.</p>
+      <span class="dif-desafio">Desafio · Configuração</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta" style="padding:1rem 1.1rem;border-radius:10px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);font-size:.85rem;color:var(--text-secondary);line-height:1.7;">
+          A Vercel gera uma URL de preview <em>por branch</em> no formato <code style="font-family:'JetBrains Mono',monospace;">projeto-git-nome-da-branch-usuario.vercel.app</code>, que permanece estável entre commits — cada novo push na mesma branch atualiza o conteúdo servido nessa mesma URL, em vez de gerar uma URL nova a cada commit (essa é a diferença entre a "branch URL" e a "commit URL", ambas geradas pela Vercel).
+          <br><br>
+          Para um time trabalhando em uma feature de IA por vários dias (ex: testar um novo modelo ou um novo fluxo de streaming), isso significa: (1) o link pode ser compartilhado uma única vez com o professor/cliente/QA no início do trabalho; (2) cada novo commit na branch atualiza automaticamente o que essa pessoa vê, sem precisar reenviar um novo link a cada mudança; (3) a comparação lado a lado com a produção fica trivial — duas abas, duas URLs, o mesmo app em dois estados. Isso reduz drasticamente o atrito de dar e receber feedback durante o desenvolvimento incremental de uma feature.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 18</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-rocket"></i>
+        <strong>Deploy na Vercel</strong>
+        <p>Production vs Preview vs Development. Cada push gera um deploy; PRs geram Preview Deployments isolados com URL própria.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-key"></i>
+        <strong>Variáveis em produção</strong>
+        <p>Prefixos VITE_/REACT_APP_/NEXT_PUBLIC_ sempre vazam para o bundle do cliente. Chaves sensíveis só em variáveis sem prefixo, usadas em API Routes.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-code-branch"></i>
+        <strong>CI com GitHub Actions</strong>
+        <p>Workflow roda testes (Semana 17) e build a cada PR. Só tem valor real quando bloqueia merges com falha, não quando é opcional.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-tachometer-alt"></i>
+        <strong>Lighthouse CI</strong>
+        <p>Automatiza a auditoria de performance/a11y das Semanas 14-15. Pode falhar o build se o score cair abaixo de um limite definido.</p>
+      </div>
+    </div>
+    <div class="aviso-green" style="margin-top:1.5rem;">
+      <i class="fas fa-question-circle"></i>
+      <span><strong>Checklist final:</strong> o app está publicado e acessível por uma URL pública? Nenhuma chave sensível usa prefixo VITE_/REACT_APP_/NEXT_PUBLIC_? O CI roda os testes da Semana 17 antes de qualquer merge? O Lighthouse na URL de produção mostra Performance ≥ 85 e Acessibilidade ≥ 90? Se sim — pronto para a Semana 19: Prova Final e apresentação do projeto.</span>
+    </div>
+    <div class="proxima" onclick="window.location.href='semana-19-frontend.html'">
+      <div>
+        <div class="proxima-label">Próxima semana — última!</div>
+        <div class="proxima-titulo">Semana 19 — Prova Final (P3) + Apresentação do Projeto Final</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    :'<i class="fas fa-eye"></i> ver gabarito';
+}
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{btn.textContent='copiado!';setTimeout(()=>btn.textContent='copiar',2000);});
+}
+const quizData={
+  quiz1:{correct:'B',msg:'✅ Correto! A integração GitHub + Vercel gera automaticamente um Preview Deployment para cada Pull Request, com uma URL única e isolada (ex: projeto-git-nome-da-branch.vercel.app). Essa URL é totalmente funcional — roda o app de verdade — mas não afeta em nada a versão de produção que os usuários reais acessam. Isso permite revisar visualmente e testar a feature antes de decidir mesclar a PR na branch main.'},
+  quiz2:{correct:'B',msg:'✅ Correto! O prefixo VITE_ (assim como REACT_APP_ no CRA e NEXT_PUBLIC_ no Next.js) é uma instrução para a ferramenta de build injetar aquela variável diretamente no bundle JavaScript que é enviado ao navegador — isso é uma decisão de design dessas ferramentas, não um bug. Configurar a variável no dashboard da Vercel não muda esse comportamento: a chave ainda entra no bundle público e fica visível em texto claro para qualquer pessoa que abrir o DevTools → Sources. A única forma segura é usar uma variável sem esse prefixo, consumida apenas dentro de uma API Route/Serverless Function.'},
+  quiz3:{correct:'B',msg:'✅ Correto! Testes Jest e React Testing Library validam comportamento funcional (o componente renderiza, reage a cliques, mostra o texto esperado) — eles não medem bundle size, LCP, ou qualquer métrica de performance. Sem Lighthouse CI configurado no pipeline, nada impede que um componente pesado seja mesclado e vá para produção, degradando silenciosamente a experiência do usuário até que alguém note manualmente (ou nunca note). É exatamente esse ponto cego que o Lighthouse CI fecha, tornando a performance um critério de merge tão obrigatório quanto os testes.'}
+};
+function responder(id,el,ok,letra){
+  const ops=document.getElementById(id+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  const correta=quizData[id].correct;
+  ops.querySelectorAll('.quiz-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    if(op.querySelector('.quiz-letra').textContent.trim()===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const fb=document.getElementById(id+'-feedback');
+  fb.textContent=quizData[id].msg;
+  fb.style.background=ok?'rgba(74,222,128,.08)':'rgba(239,68,68,.08)';
+  fb.style.border=ok?'1px solid rgba(74,222,128,.22)':'1px solid rgba(239,68,68,.25)';
+  fb.style.color=ok?'rgba(134,239,172,.9)':'#fca5a5';
+  fb.style.padding='.75rem 1rem';fb.style.borderRadius='8px';
+  fb.classList.add('show');
+}
+</script>
+</body>
+</html>

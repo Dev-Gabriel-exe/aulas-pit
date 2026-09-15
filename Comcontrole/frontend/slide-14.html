@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 14 — Acessibilidade (a11y) · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#0a0f0a;
+  --teal-900:#012a1a;
+  --teal-700:#0f766e;
+  --teal-500:#14b8a6;
+  --teal-400:#2dd4bf;
+  --teal-300:#5eead4;
+  --white:#fff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(45,212,191,.05);
+  --code-bg:#020c09;
+  --code-border:rgba(45,212,191,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.22;pointer-events:none;}
+.blob-1{width:680px;height:680px;background:#134e4a;top:-240px;left:-200px;}
+.blob-2{width:540px;height:540px;background:#012a1a;bottom:-210px;right:-120px;}
+.blob-3{width:290px;height:290px;background:#14b8a6;top:36%;left:44%;opacity:.07;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(45,212,191,.14);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--teal-300);border:1px solid rgba(45,212,191,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--teal-300);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(45,212,191,.07);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--teal-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--teal-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(45,212,191,.06);border:1px solid rgba(45,212,191,.11);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}.topico:nth-child(6){animation-delay:.6s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(45,212,191,.14);color:var(--teal-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(45,212,191,.05);border-left:3px solid var(--teal-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--teal-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--teal-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(45,212,191,.11);color:var(--teal-400);border:1px solid rgba(45,212,191,.26);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(45,212,191,.11);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(45,212,191,.13);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--teal-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(45,212,191,.17);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--teal-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(45,212,191,.06);border-left:3px solid var(--teal-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--teal-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-teal{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(45,212,191,.06);border:1px solid rgba(45,212,191,.18);font-size:.86rem;color:rgba(94,234,212,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-teal i{color:var(--teal-400);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(45,212,191,.08);}
+th{padding:.6rem 1rem;text-align:left;color:var(--teal-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(45,212,191,.16);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(45,212,191,.03);}
+td strong{color:var(--text-primary);}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(45,212,191,.05);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--teal-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#99f6e4;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#374151;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}.ari{color:#2dd4bf;font-weight:600;}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(45,212,191,.11);color:var(--teal-400);border:1px solid rgba(45,212,191,.22);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.22);}
+.badge-yellow{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.22);}
+.badge-purple{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.22);}
+
+/* ── WCAG level chips ── */
+.wcag-chip{display:inline-block;padding:1px 7px;border-radius:5px;font-size:.68rem;font-weight:800;letter-spacing:.04em;margin-left:.35rem;}
+.wcag-a{background:rgba(74,222,128,.15);color:#4ade80;}
+.wcag-aa{background:rgba(251,191,36,.15);color:#fbbf24;}
+.wcag-aaa{background:rgba(167,139,250,.15);color:#a78bfa;}
+
+/* ── Antes/depois ── */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
+.ba-panel{border-radius:12px;overflow:hidden;border:1px solid;}
+.ba-header{padding:.5rem 1rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;display:flex;align-items:center;gap:6px;}
+.ba-header.bad{background:rgba(239,68,68,.08);color:#f87171;border-bottom:1px solid rgba(239,68,68,.15);}
+.ba-header.good{background:rgba(45,212,191,.08);color:var(--teal-400);border-bottom:1px solid rgba(45,212,191,.15);}
+.ba-body{padding:1rem;background:var(--card-bg);font-size:.83rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Focus ring demo ── */
+.focus-demo{display:flex;gap:1rem;flex-wrap:wrap;margin:.75rem 0;}
+.focus-btn{padding:.55rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid;transition:all .15s;}
+.focus-btn:focus-visible{outline:3px solid var(--teal-400);outline-offset:3px;}
+.focus-btn.bad-focus:focus{outline:none;}
+.focus-btn.bad-focus:focus-visible{outline:none;}
+
+/* ── Contraste visual ── */
+.contrast-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;margin:.75rem 0;}
+.contrast-chip{border-radius:10px;padding:.85rem;text-align:center;}
+.contrast-chip__text{font-weight:700;font-size:.95rem;margin-bottom:.3rem;}
+.contrast-chip__ratio{font-size:.7rem;font-weight:600;}
+
+/* ── Lab steps ── */
+.lab-steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.lab-steps::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--teal-400),rgba(45,212,191,.1));border-radius:1px;}
+.lab-step{display:flex;gap:1rem;padding:.75rem 0;}
+.lab-step__num{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;position:relative;z-index:2;background:rgba(45,212,191,.1);color:var(--teal-400);border:2px solid rgba(45,212,191,.27);}
+.lab-step__body{flex:1;padding-top:8px;}
+.lab-step__title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#f8fafc;margin-bottom:.3rem;}
+.lab-step__desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--teal-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(45,212,191,.17);border-radius:8px;padding:.5rem 1rem;color:var(--teal-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(45,212,191,.07);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+/* ── Quiz ── */
+.quiz-box{background:rgba(45,212,191,.03);border:1px solid rgba(45,212,191,.12);border-radius:12px;padding:1.25rem;margin:1rem 0;}
+.quiz-pergunta{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700;color:var(--white);margin-bottom:1rem;}
+.quiz-ops{display:flex;flex-direction:column;gap:.5rem;}
+.quiz-op{display:flex;align-items:center;gap:10px;padding:.6rem .9rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:9px;cursor:pointer;transition:all .2s;}
+.quiz-op:hover{background:rgba(45,212,191,.06);border-color:rgba(45,212,191,.2);}
+.quiz-op.correto{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);}
+.quiz-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);}
+.quiz-letra{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;}
+.quiz-texto{font-size:.85rem;color:var(--text-secondary);}
+.quiz-feedback{display:none;padding:.75rem 1rem;border-radius:8px;font-size:.83rem;line-height:1.55;margin-top:.75rem;}
+.quiz-feedback.show{display:block;}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--teal-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(45,212,191,.09);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--teal-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.ba-grid,.resumo-grid,.contrast-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:520px){.resumo-grid,.contrast-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">♿ LAB + Conteúdo</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">14</div>
+    <h1 class="capa-titulo">Acessibilidade<br><em>(a11y)</em><br>para Interfaces de IA</h1>
+    <p class="capa-sub">4 aulas · 200 minutos · Construindo IA para todos</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-universal-access"></i></div><span>Por que a11y importa — quem são os usuários afetados e o impacto legal</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-list-ol"></i></div><span>WCAG 2.1 — os quatro princípios e os critérios mais relevantes para IA</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-tags"></i></div><span>ARIA — roles, states e properties nos componentes de chatbot</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-keyboard"></i></div><span>Navegação por teclado — focus management e ordem de tab</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-adjust"></i></div><span>Contraste de cores e motion — prefers-reduced-motion para animações de IA</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-tools"></i></div><span>Ferramentas de auditoria — axe, Lighthouse, NVDA e teclado</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade LAB</div>
+      <p>Auditar o chatbot completo com axe DevTools, corrigir os 5 problemas críticos encontrados e documentar: problema → critério WCAG violado → correção aplicada → como testar.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>Ferramentas da semana</div>
+      <ul class="info-lista">
+        <li>axe DevTools (extensão Chrome/Firefox) — auditoria automática</li>
+        <li>Lighthouse (DevTools → tab Accessibility) — score e sugestões</li>
+        <li>NVDA (Windows) ou VoiceOver (Mac) — leitor de tela real</li>
+        <li>Tab key — navegação por teclado sem mouse</li>
+        <li>Chrome DevTools → Contrast ratio picker</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 12 — UX para IA (skeleton, erro, feedback)</li>
+        <li>✅ Sem. 13 — P2</li>
+        <li>▶ Sem. 14 — Acessibilidade (a11y) para interfaces de IA</li>
+        <li>Sem. 15 — Performance: lazy loading, code splitting, PWA</li>
+        <li>Sem. 16 — Deploy: Vercel, variáveis de ambiente em produção</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que isso importa</div>
+      <ul class="info-lista">
+        <li>~15% da população mundial tem alguma deficiência — são usuários reais</li>
+        <li>No Brasil, a Lei 13.146/2015 (LBI) exige acessibilidade em serviços digitais</li>
+        <li>Interfaces de IA têm problemas específicos: aria-live para respostas dinâmicas, botões de emoji sem label, skeletons sem role="status"</li>
+        <li>Acessibilidade melhora SEO e é frequentemente critério em licitações públicas</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">WCAG 2.1, os quatro princípios e contraste de cores</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-universal-access"></i>Quem são os usuários que acessibilidade impacta</div>
+      <p>Acessibilidade não é um recurso extra para uma minoria — é uma necessidade que afeta a maioria das pessoas em algum momento da vida. Uma interface inacessível exclui: usuários com deficiência visual (cegos, baixa visão, daltonismo), deficiência motora (navegam só com teclado), deficiência auditiva (dependem de legendas) e deficiência cognitiva (beneficiam-se de linguagem clara e estrutura previsível).</p>
+      <p>Em interfaces de IA, os problemas mais comuns surgem exatamente onde o conteúdo é dinâmico e imprevisível: <strong>uma resposta que aparece token a token não é anunciada por leitores de tela sem aria-live</strong>. Um botão "👍" sem aria-label é completamente invisível para quem usa leitor de tela. Um skeleton sem role="status" não comunica que algo está carregando.</p>
+      <div class="destaque">
+        <strong>Regra dos 15%:</strong> estima-se que ~15% da população mundial tem alguma deficiência permanente. Some a isso as deficiências temporárias (braço quebrado, olhos irritados) e situacionais (sol na tela, ambiente barulhento): a maioria das pessoas experimenta barreiras de acessibilidade em algum momento. Construir para acessibilidade é construir para todos.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>WCAG 2.1 — os quatro princípios (POUR)</div>
+      <p>As diretrizes WCAG (Web Content Accessibility Guidelines) organizam os requisitos em quatro princípios. Cada princípio tem critérios de sucesso classificados em três níveis: A (mínimo), AA (recomendado para a maioria dos produtos) e AAA (excelência).</p>
+
+      <div class="grid-2">
+        <div style="background:rgba(45,212,191,.04);border:1px solid rgba(45,212,191,.16);border-radius:12px;padding:1.1rem;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:800;color:var(--teal-400);margin-bottom:.65rem;">1. Perceptível</div>
+          <div style="font-size:.8rem;color:var(--text-secondary);line-height:1.6;margin-bottom:.5rem;">A informação deve ser apresentável de múltiplas formas — não depender exclusivamente de uma modalidade sensorial.</div>
+          <ul class="icon-list" style="margin:0;">
+            <li><i class="fas fa-check"></i><span>Texto alternativo para imagens (alt="")</span></li>
+            <li><i class="fas fa-check"></i><span>Legendas para vídeo e áudio</span></li>
+            <li><i class="fas fa-check"></i><span>Contraste mínimo 4.5:1 (AA)</span></li>
+            <li><i class="fas fa-check"></i><span>Conteúdo não depende só de cor</span></li>
+          </ul>
+        </div>
+        <div style="background:rgba(139,92,246,.04);border:1px solid rgba(139,92,246,.16);border-radius:12px;padding:1.1rem;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:800;color:#a78bfa;margin-bottom:.65rem;">2. Operável</div>
+          <div style="font-size:.8rem;color:var(--text-secondary);line-height:1.6;margin-bottom:.5rem;">A interface deve ser navegável e operável sem depender de mouse ou gestos de toque.</div>
+          <ul class="icon-list" style="margin:0;">
+            <li><i class="fas fa-check"></i><span>Toda funcionalidade acessível por teclado</span></li>
+            <li><i class="fas fa-check"></i><span>Focus visível em todos os elementos interativos</span></li>
+            <li><i class="fas fa-check"></i><span>Sem armadilhas de teclado (keyboard traps)</span></li>
+            <li><i class="fas fa-check"></i><span>prefers-reduced-motion respeitado</span></li>
+          </ul>
+        </div>
+        <div style="background:rgba(96,165,250,.04);border:1px solid rgba(96,165,250,.16);border-radius:12px;padding:1.1rem;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:800;color:#60a5fa;margin-bottom:.65rem;">3. Compreensível</div>
+          <div style="font-size:.8rem;color:var(--text-secondary);line-height:1.6;margin-bottom:.5rem;">O conteúdo e a operação da interface devem ser compreensíveis.</div>
+          <ul class="icon-list" style="margin:0;">
+            <li><i class="fas fa-check"></i><span>Linguagem clara (lang= no html)</span></li>
+            <li><i class="fas fa-check"></i><span>Labels descritivos em formulários</span></li>
+            <li><i class="fas fa-check"></i><span>Erros identificados com texto, não só cor</span></li>
+            <li><i class="fas fa-check"></i><span>Comportamento previsível e consistente</span></li>
+          </ul>
+        </div>
+        <div style="background:rgba(74,222,128,.04);border:1px solid rgba(74,222,128,.16);border-radius:12px;padding:1.1rem;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:800;color:#4ade80;margin-bottom:.65rem;">4. Robusto</div>
+          <div style="font-size:.8rem;color:var(--text-secondary);line-height:1.6;margin-bottom:.5rem;">O conteúdo deve ser robusto o suficiente para ser interpretado por tecnologias assistivas.</div>
+          <ul class="icon-list" style="margin:0;">
+            <li><i class="fas fa-check"></i><span>HTML semântico correto (&lt;button&gt;, &lt;nav&gt;, &lt;main&gt;)</span></li>
+            <li><i class="fas fa-check"></i><span>ARIA só quando HTML nativo não é suficiente</span></li>
+            <li><i class="fas fa-check"></i><span>ID únicos na página</span></li>
+            <li><i class="fas fa-check"></i><span>Status e erros comunicados via ARIA</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-adjust"></i>Contraste de cores — o critério mais violado</div>
+      <p>O critério 1.4.3 (Contraste Mínimo, nível AA) exige razão de contraste de <strong>4.5:1</strong> para texto normal e <strong>3:1</strong> para texto grande (18pt+ ou 14pt+ negrito). É o critério mais violado em interfaces escuras de IA — textos cinza sobre fundo escuro frequentemente ficam abaixo do limite.</p>
+
+      <div class="contrast-grid">
+        <div class="contrast-chip" style="background:#0a0f0a;">
+          <div class="contrast-chip__text" style="color:rgba(255,255,255,.35);">Muted text</div>
+          <div class="contrast-chip__ratio" style="color:#f87171;">1.8:1 ❌ Falha AA</div>
+        </div>
+        <div class="contrast-chip" style="background:#0a0f0a;">
+          <div class="contrast-chip__text" style="color:rgba(255,255,255,.55);">Secondary</div>
+          <div class="contrast-chip__ratio" style="color:#fbbf24;">3.2:1 ⚠ Falha AA texto</div>
+        </div>
+        <div class="contrast-chip" style="background:#0a0f0a;">
+          <div class="contrast-chip__text" style="color:rgba(255,255,255,.75);">Body text</div>
+          <div class="contrast-chip__ratio" style="color:#fbbf24;">4.1:1 ⚠ Quase</div>
+        </div>
+        <div class="contrast-chip" style="background:#0a0f0a;">
+          <div class="contrast-chip__text" style="color:rgba(255,255,255,.92);">Primary text</div>
+          <div class="contrast-chip__ratio" style="color:#4ade80;">16.8:1 ✅ Passa AAA</div>
+        </div>
+      </div>
+
+      <div class="aviso-red">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span><strong>Atenção para interfaces dark:</strong> textos de categoria "muted" e "secondary" muito comuns em UIs minimalistas costumam falhar o contraste. Use o Chrome DevTools → inspecionar elemento → clicar na cor → ver o "Contrast ratio" para checar cada texto. Toda informação essencial precisa passar 4.5:1.</span>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS — prefers-reduced-motion para animações de IA</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">/* Cursor piscante do chatbot (Semana 7) */</span>
+.cursor-blink {
+  animation: blink .7s step-end infinite;
+}
+
+<span class="cm">/* Shimmer do skeleton (Semana 12) */</span>
+.skeleton {
+  animation: shimmer 1.4s infinite linear;
+}
+
+<span class="cm">/* Respeitar preferência de movimento reduzido do sistema operacional */</span>
+@media (prefers-reduced-motion: reduce) {
+  .cursor-blink,
+  .skeleton,
+  .fade-in,
+  .slide-in {
+    animation: none;           <span class="cm">/* desativa todas as animações */</span>
+  }
+  .skeleton {
+    background: rgba(255,255,255,.07);  <span class="cm">/* versão estática do skeleton */</span>
+  }
+  * {
+    transition-duration: 0.01ms !important;  <span class="cm">/* minimiza transições CSS */</span>
+  }
+}</code></pre>
+      </div>
+
+      <div class="destaque">
+        <strong>prefers-reduced-motion:</strong> ~35% dos usuários de iOS têm "Reduzir movimento" ativado (dados da Apple). Animações contínuas como o shimmer do skeleton e o cursor piscante do chatbot podem causar desconforto em pessoas com epilepsia fotossensível, vertigem ou problemas vestibulares. Sempre envolva animações de IA nessa media query.
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Um texto de label de gráfico aparece em rgba(255,255,255,.35) sobre fundo #0a0f0a. O contraste calculado é 1.8:1. Qual WCAG 2.1 nível AA foi violado e qual é o critério mínimo?</div>
+      <div class="quiz-ops" id="quiz1-ops">
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">Critério 1.4.1 — uso de cor: a informação não pode depender só de cor</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,true,'B')"><div class="quiz-letra" style="background:rgba(45,212,191,.15);color:var(--teal-400);">B</div><span class="quiz-texto">Critério 1.4.3 — Contraste Mínimo (AA): texto normal exige razão ≥ 4.5:1; 1.8:1 falha amplamente</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">Critério 2.4.7 — Foco Visível: o elemento não tem indicador de foco suficiente</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">Critério 4.1.2 — Nome, Função, Valor: o texto não tem nome acessível programático</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz1-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">ARIA, navegação por teclado e problemas específicos de IA</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-tags"></i>ARIA — quando usar e quando não usar</div>
+      <p>ARIA (Accessible Rich Internet Applications) é um conjunto de atributos que enriquece o HTML com informações semânticas para tecnologias assistivas. A <strong>primeira regra do ARIA é: não use ARIA se um elemento HTML nativo resolve</strong>. <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">&lt;button&gt;</code> já tem role="button" e é focável — usar uma <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">&lt;div role="button"&gt;</code> exige mais trabalho e mais atributos para equivalência.</p>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Atributo ARIA</th><th>O que faz</th><th>Uso em chatbot de IA</th></tr></thead>
+          <tbody>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">aria-live</code></td><td>Anuncia mudanças dinâmicas para leitores de tela</td><td>Obrigatório no histórico de mensagens — sem isso, tokens chegando são silenciosos</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">aria-label</code></td><td>Nome acessível para elementos sem texto visível</td><td>Botões de emoji (👍), botão de parar stream, textarea do chat</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">role="status"</code></td><td>Região de status — anuncia com pouca interrupção</td><td>Skeleton loader, "Gerando resposta...", contador de tokens</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">role="alert"</code></td><td>Alerta urgente — anuncia imediatamente</td><td>Erro de API, aviso de contexto longo, rate limit</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">role="log"</code></td><td>Log de mensagens — anuncia adições ao final</td><td>Área de histórico de conversa do chatbot</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">aria-busy</code></td><td>Indica que uma região está sendo atualizada</td><td>Container das mensagens durante streaming</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">aria-describedby</code></td><td>Associa descrição adicional a um elemento</td><td>Input do chat → aponta para dica "pressione Enter para enviar"</td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">aria-disabled</code></td><td>Estado desabilitado (sem retirar do tab order)</td><td>Botão de enviar durante geração — disabled remove do tab, aria-disabled mantém</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — chatbot com ARIA completo</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="kw">return</span> (
+  &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"chat"</span>&gt;
+
+    <span class="cm">{/* Histórico de mensagens — role="log" + aria-live="polite" */}</span>
+    &lt;<span class="tag">div</span>
+      <span class="attr">className</span>=<span class="str">"chat__mensagens"</span>
+      <span class="ari">role</span>=<span class="str">"log"</span>
+      <span class="ari">aria-live</span>=<span class="str">"polite"</span>
+      <span class="ari">aria-label</span>=<span class="str">"Histórico de conversa"</span>
+      <span class="ari">aria-busy</span>={gerando}
+    &gt;
+      {historico.<span class="fn">map</span>((m, i) => (
+        &lt;<span class="tag">div</span> <span class="attr">key</span>={i} <span class="attr">className</span>={<span class="str">`bubble bubble--${m.role}`</span>}&gt;
+          <span class="cm">{/* label da mensagem para leitores de tela */}</span>
+          &lt;<span class="tag">span</span> <span class="ari">aria-label</span>={m.role === <span class="str">'user'</span> ? <span class="str">'Você disse'</span> : <span class="str">'A IA respondeu'</span>} <span class="attr">className</span>=<span class="str">"bubble__role-label"</span>&gt;
+            {m.role === <span class="str">'user'</span> ? <span class="str">'Você'</span> : <span class="str">'IA'</span>}
+          &lt;/<span class="tag">span</span>&gt;
+          &lt;<span class="tag">MarkdownRenderer</span> <span class="attr">conteudo</span>={m.content} /&gt;
+        &lt;/<span class="tag">div</span>&gt;
+      ))}
+
+      <span class="cm">{/* Skeleton durante carregamento — role="status" */}</span>
+      {gerando &amp;&amp; !respostaAtual &amp;&amp; (
+        &lt;<span class="tag">div</span>
+          <span class="ari">role</span>=<span class="str">"status"</span>
+          <span class="ari">aria-label</span>=<span class="str">"Gerando resposta, aguarde..."</span>
+        &gt;
+          &lt;<span class="tag">SkeletonBubble</span> /&gt;
+        &lt;/<span class="tag">div</span>&gt;
+      )}
+    &lt;/<span class="tag">div</span>&gt;
+
+    <span class="cm">{/* Estado de erro — role="alert" */}</span>
+    {estado.status === <span class="str">'error'</span> &amp;&amp; (
+      &lt;<span class="tag">div</span> <span class="ari">role</span>=<span class="str">"alert"</span>&gt;
+        &lt;<span class="tag">EstadoErro</span> <span class="attr">erro</span>={estado.erro} <span class="attr">onRetry</span>={retry} /&gt;
+      &lt;/<span class="tag">div</span>&gt;
+    )}
+
+    <span class="cm">{/* Área de input */}</span>
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"chat__input-area"</span>&gt;
+      &lt;<span class="tag">label</span> <span class="attr">htmlFor</span>=<span class="str">"chat-input"</span> <span class="attr">className</span>=<span class="str">"sr-only"</span>&gt;
+        Digite sua mensagem para a IA
+      &lt;/<span class="tag">label</span>&gt;
+      &lt;<span class="tag">textarea</span>
+        <span class="attr">id</span>=<span class="str">"chat-input"</span>
+        <span class="attr">value</span>={input}
+        <span class="attr">onChange</span>={e => <span class="fn">setInput</span>(e.target.value)}
+        <span class="attr">onKeyDown</span>={e => e.key === <span class="str">'Enter'</span> &amp;&amp; !e.shiftKey &amp;&amp; <span class="fn">enviar</span>()}
+        <span class="ari">aria-describedby</span>=<span class="str">"chat-hint"</span>
+        <span class="attr">disabled</span>={gerando}
+        <span class="attr">placeholder</span>=<span class="str">"Digite aqui..."</span>
+      /&gt;
+      &lt;<span class="tag">span</span> <span class="attr">id</span>=<span class="str">"chat-hint"</span> <span class="attr">className</span>=<span class="str">"sr-only"</span>&gt;
+        Pressione Enter para enviar, Shift+Enter para nova linha
+      &lt;/<span class="tag">span</span>&gt;
+
+      &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"chat__buttons"</span>&gt;
+        &lt;<span class="tag">button</span>
+          <span class="attr">onClick</span>={enviar}
+          <span class="ari">aria-label</span>=<span class="str">"Enviar mensagem"</span>
+          <span class="ari">aria-disabled</span>={gerando || !input.<span class="fn">trim</span>()}
+          <span class="attr">disabled</span>={gerando || !input.<span class="fn">trim</span>()}
+        &gt;
+          Enviar
+        &lt;/<span class="tag">button</span>&gt;
+
+        {gerando &amp;&amp; (
+          &lt;<span class="tag">button</span>
+            <span class="attr">onClick</span>={parar}
+            <span class="ari">aria-label</span>=<span class="str">"Parar geração da resposta"</span>
+          &gt;
+            ⏹ Parar
+          &lt;/<span class="tag">button</span>&gt;
+        )}
+
+        <span class="cm">{/* Thumbs up/down com aria-label descritivo */}</span>
+        &lt;<span class="tag">button</span>
+          <span class="attr">onClick</span>={() => <span class="fn">votar</span>(<span class="str">'up'</span>)}
+          <span class="ari">aria-label</span>=<span class="str">"Marcar resposta como útil"</span>
+          <span class="ari">aria-pressed</span>={voto === <span class="str">'up'</span>}
+        &gt;
+          👍
+        &lt;/<span class="tag">button</span>&gt;
+        &lt;<span class="tag">button</span>
+          <span class="attr">onClick</span>={() => <span class="fn">votar</span>(<span class="str">'down'</span>)}
+          <span class="ari">aria-label</span>=<span class="str">"Marcar resposta como não útil"</span>
+          <span class="ari">aria-pressed</span>={voto === <span class="str">'down'</span>}
+        &gt;
+          👎
+        &lt;/<span class="tag">button</span>&gt;
+      &lt;/<span class="tag">div</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  &lt;/<span class="tag">div</span>&gt;
+);</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-keyboard"></i>Navegação por teclado — foco visível e ordem lógica</div>
+      <p>Usuários que navegam por teclado (sem mouse) usam Tab para mover entre elementos focáveis, Enter/Space para ativar e Escape para fechar/cancelar. Toda funcionalidade do chatbot deve ser operável dessa forma. O foco visível é obrigatório (WCAG 2.4.7, AA) — remover outline sem substituição é uma violação grave.</p>
+
+      <div class="ba-grid">
+        <div class="ba-panel" style="border-color:rgba(239,68,68,.2);">
+          <div class="ba-header bad"><i class="fas fa-times-circle"></i> Focus invisível — viola WCAG 2.4.7</div>
+          <div class="ba-body">
+            <div class="focus-demo">
+              <button class="focus-btn bad-focus" style="background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:var(--text-secondary);">Enviar</button>
+              <button class="focus-btn bad-focus" style="background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:var(--text-secondary);">Parar</button>
+            </div>
+            <p style="font-size:.75rem;color:var(--text-muted);">outline: none — ao pressionar Tab, o usuário não vê onde o foco está.</p>
+            <div class="code-block" style="margin-top:.65rem;">
+              <pre style="padding:.75rem;"><code style="font-size:.78rem;color:#fca5a5;">button:focus { outline: none; } <span class="cm">/* ❌ jamais */</span></code></pre>
+            </div>
+          </div>
+        </div>
+        <div class="ba-panel" style="border-color:rgba(45,212,191,.2);">
+          <div class="ba-header good"><i class="fas fa-check-circle"></i> Focus visível — passa WCAG 2.4.7</div>
+          <div class="ba-body">
+            <div class="focus-demo">
+              <button class="focus-btn" style="background:rgba(45,212,191,.08);border-color:rgba(45,212,191,.25);color:var(--teal-400);">Enviar</button>
+              <button class="focus-btn" style="background:rgba(45,212,191,.08);border-color:rgba(45,212,191,.25);color:var(--teal-400);">Parar</button>
+            </div>
+            <p style="font-size:.75rem;color:var(--text-muted);">Clique em um botão e pressione Tab para ver o anel de foco. Foco visível e contrastado.</p>
+            <div class="code-block" style="margin-top:.65rem;">
+              <pre style="padding:.75rem;"><code style="font-size:.78rem;color:#99f6e4;"><span class="cm">/* :focus-visible mostra só com teclado, não clique */</span>
+button:focus-visible {
+  outline: 3px solid #2dd4bf;
+  outline-offset: 3px;
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS — classe sr-only para texto visualmente oculto mas acessível</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">/* Oculta visualmente mas mantém para leitores de tela
+   Usar para labels de botões de emoji, hints de teclado, etc. */</span>
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+<span class="cm">/* NÃO usar display:none ou visibility:hidden — remove do acessibility tree */</span>
+<span class="cm">/* NÃO usar opacity:0 — remove visualmente mas mantém interatividade */</span></code></pre>
+      </div>
+
+      <div class="aviso-teal">
+        <i class="fas fa-lightbulb"></i>
+        <span><strong>:focus-visible vs :focus:</strong> <code style="font-family:'JetBrains Mono',monospace;">:focus</code> dispara tanto para mouse quanto teclado — o anel aparece ao clicar, o que muitos designers removem por parecer "feio". <code style="font-family:'JetBrains Mono',monospace;">:focus-visible</code> é mais inteligente: só exibe o indicador quando o usuário navega por teclado (ou quando o browser determina que é necessário). Use sempre :focus-visible nos estilos de foco para a melhor UX.</span>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Um chatbot exibe respostas da IA em uma &lt;div&gt; que se atualiza com novos tokens. Um usuário de leitor de tela (NVDA) não ouve nada ao receber a resposta. Qual atributo resolve o problema?</div>
+      <div class="quiz-ops" id="quiz2-ops">
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">aria-label="resposta da IA" na div — nomeia o elemento para o leitor</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'B')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">B</div><span class="quiz-texto">tabindex="0" na div — torna o elemento focável pelo leitor</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,true,'C')"><div class="quiz-letra" style="background:rgba(45,212,191,.15);color:var(--teal-400);">C</div><span class="quiz-texto">aria-live="polite" na div — instrui o leitor a anunciar mudanças de conteúdo quando ocorrem</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'D')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">D</div><span class="quiz-texto">role="text" na div — indica que o conteúdo é texto para o leitor de tela</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz2-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3 · LAB</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · LAB · ~50 minutos</div>
+        <div class="secao-titulo">LAB — Auditoria completa do chatbot e correção dos problemas críticos</div>
+      </div>
+    </div>
+
+    <div class="aviso-teal">
+      <i class="fas fa-flask"></i>
+      <span>Objetivo: usar axe DevTools para auditar o chatbot completo, identificar os 5 problemas mais críticos, aplicar as correções e documentar cada um com o formato: Problema → Critério WCAG violado → Correção → Como testar.</span>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-tools"></i>Ferramentas — como usar cada uma</div>
+      <div class="grid-3">
+        <div style="background:var(--card-bg);border:1px solid rgba(45,212,191,.12);border-radius:12px;padding:1rem;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:700;color:var(--teal-400);margin-bottom:.5rem;"><i class="fas fa-bug"></i> axe DevTools</div>
+          <div style="font-size:.8rem;color:var(--text-secondary);line-height:1.55;">Instale a extensão. Abra DevTools → aba "axe DevTools" → "Scan ALL of my page". Lista violações por criticidade com link para documentação. Gratuito para uso básico.</div>
+        </div>
+        <div style="background:var(--card-bg);border:1px solid rgba(251,191,36,.12);border-radius:12px;padding:1rem;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:700;color:#fbbf24;margin-bottom:.5rem;"><i class="fas fa-lighthouse"></i> Lighthouse</div>
+          <div style="font-size:.8rem;color:var(--text-secondary);line-height:1.55;">DevTools → Lighthouse → marcar "Accessibility" → Generate report. Dá score 0–100 com itens específicos. Foque nos "Failing audits" marcados em vermelho.</div>
+        </div>
+        <div style="background:var(--card-bg);border:1px solid rgba(139,92,246,.12);border-radius:12px;padding:1rem;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:700;color:#a78bfa;margin-bottom:.5rem;"><i class="fas fa-keyboard"></i> Teste manual</div>
+          <div style="font-size:.8rem;color:var(--text-secondary);line-height:1.55;">Navegue pelo chatbot usando APENAS Tab, Enter, Escape e setas. Toda funcionalidade deve ser acessível. Observe se o foco é sempre visível e a ordem faz sentido.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>Passo a passo do LAB</div>
+      <div class="lab-steps">
+        <div class="lab-step">
+          <div class="lab-step__num">1</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Instalar axe DevTools e rodar o scan inicial</div>
+            <div class="lab-step__desc">Instale a extensão axe DevTools no Chrome. Abra seu chatbot em localhost, vá para DevTools → axe DevTools → "Scan ALL of my page". Tire um screenshot dos resultados e anote quantas violações críticas e sérias foram encontradas.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">2</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Checar contraste com Chrome DevTools</div>
+            <div class="lab-step__desc">Inspecione cada texto visível. Clique no seletor de cor no painel de estilos — o Chrome mostra o Contrast Ratio calculado. Textos abaixo de 4.5:1 precisam ser clareados. Use o "sugestão de cor mínima" que o Chrome oferece.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">3</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Adicionar aria-live e role ao histórico de chat</div>
+            <div class="lab-step__desc">Adicione role="log" aria-live="polite" aria-label="Histórico de conversa" na div que contém as mensagens. Adicione role="status" aria-label="Gerando resposta..." no skeleton. Teste com NVDA/VoiceOver — você deve ouvir as novas mensagens sendo anunciadas.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">4</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Adicionar aria-label em todos os botões de emoji/ícone</div>
+            <div class="lab-step__desc">Todos os botões que usam apenas emoji ou ícone (👍, 👎, ⏹, enviar com ícone, copiar) precisam de aria-label descritivo. Adicione também aria-pressed nos botões de thumbs para comunicar o estado selecionado.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">5</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Corrigir ordem de Tab e focus visível</div>
+            <div class="lab-step__desc">Navegue com Tab e verifique: (1) a ordem lógica é textarea → enviar → parar → histórico? (2) o foco é visível em todos os elementos? Adicione :focus-visible com outline colorido nos componentes onde o outline foi removido. Adicione label e htmlFor no textarea.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">6</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Documentar correções e rodar scan final</div>
+            <div class="lab-step__desc">Para cada problema: anote o critério WCAG (ex: 1.4.3), a violação encontrada, a correção aplicada e como testar (ex: "navegar com Tab e verificar foco visível"). Rode o axe novamente — compare o número de violações antes e depois.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1.25rem;background:rgba(45,212,191,.03);">
+        <div class="card-titulo"><i class="fas fa-file-alt"></i>Template de documentação — preencha para cada correção</div>
+        <div class="tabela-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Problema encontrado</th><th>Critério WCAG</th><th>Correção aplicada</th><th>Como testar</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Botão 👍 sem nome acessível</td><td>4.1.2 (A)</td><td>aria-label="Marcar resposta como útil"</td><td>NVDA lê "Marcar resposta como útil, botão" ao focar</td></tr>
+              <tr><td>2</td><td>Histórico não anunciado pelo leitor</td><td>4.1.3 (AA)</td><td>aria-live="polite" role="log" na div do histórico</td><td>VoiceOver anuncia cada nova mensagem ao chegar</td></tr>
+              <tr><td>3</td><td>Textarea sem label associado</td><td>1.3.1 (A)</td><td>label htmlFor="chat-input" com sr-only</td><td>Focar textarea: leitor anuncia "Digite sua mensagem para a IA"</td></tr>
+              <tr><td>4</td><td>Texto secundário contraste 3.2:1</td><td>1.4.3 (AA)</td><td>Alterar rgba(.62) para rgba(.72) → contraste 4.8:1</td><td>Chrome DevTools Contrast Ratio ≥ 4.5:1</td></tr>
+              <tr><td>5</td><td>Skeleton sem indicação de carregamento</td><td>4.1.3 (AA)</td><td>role="status" aria-label="Gerando resposta..."</td><td>Ao iniciar geração, leitor anuncia "Gerando resposta..."</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Exercícios</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">→</div>
+      <div class="secao-info">
+        <div class="secao-label">Exercícios · Conceito + LAB</div>
+        <div class="secao-titulo">4 exercícios — do contraste ao leitor de tela</div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Anunciar progresso de download do modelo</div>
+      <p>No classificador de imagem da Semana 10, o download do modelo MobileNet (~16MB) mostra uma barra de progresso visual. Para usuários de leitor de tela, a barra SVG é invisível. Adicione uma região aria-live="assertive" que anuncia o progresso a cada 25% (0%, 25%, 50%, 75%, 100% — "Baixando modelo: 50% completo") e um role="progressbar" com aria-valuenow, aria-valuemin e aria-valuemax na barra.</p>
+      <span class="dif-basico">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — barra de progresso acessível</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="cm">// Estado: progresso de 0 a 100</span>
+<span class="kw">const</span> [progresso, setProgresso] = <span class="fn">useState</span>(<span class="num">0</span>);
+<span class="kw">const</span> [anuncio, setAnuncio] = <span class="fn">useState</span>(<span class="str">''</span>);
+<span class="kw">const</span> marcosRef = <span class="fn">useRef</span>(<span class="kw">new</span> Set());
+
+<span class="fn">useEffect</span>(() => {
+  <span class="kw">const</span> marcos = [<span class="num">25</span>, <span class="num">50</span>, <span class="num">75</span>, <span class="num">100</span>];
+  marcos.<span class="fn">forEach</span>(m => {
+    <span class="kw">if</span> (progresso >= m && !marcosRef.current.<span class="fn">has</span>(m)) {
+      marcosRef.current.<span class="fn">add</span>(m);
+      <span class="fn">setAnuncio</span>(<span class="str">`Baixando modelo: ${m}% completo`</span>);
+      <span class="kw">if</span> (m === <span class="num">100</span>) <span class="fn">setAnuncio</span>(<span class="str">'Modelo carregado. Pronto para classificar imagens.'</span>);
+    }
+  });
+}, [progresso]);
+
+<span class="cm">// No JSX:</span>
+&lt;&gt;
+  <span class="cm">{/* Região de anúncio — visualmente oculta */}</span>
+  &lt;<span class="tag">div</span> <span class="ari">role</span>=<span class="str">"status"</span> <span class="ari">aria-live</span>=<span class="str">"assertive"</span> <span class="attr">className</span>=<span class="str">"sr-only"</span>&gt;
+    {anuncio}
+  &lt;/<span class="tag">div</span>&gt;
+
+  <span class="cm">{/* Barra visual com semântica ARIA */}</span>
+  &lt;<span class="tag">div</span>
+    <span class="ari">role</span>=<span class="str">"progressbar"</span>
+    <span class="ari">aria-valuenow</span>={progresso}
+    <span class="ari">aria-valuemin</span>={<span class="num">0</span>}
+    <span class="ari">aria-valuemax</span>={<span class="num">100</span>}
+    <span class="ari">aria-label</span>=<span class="str">"Progresso de download do modelo"</span>
+    <span class="attr">className</span>=<span class="str">"progress-track"</span>
+  &gt;
+    &lt;<span class="tag">div</span>
+      <span class="attr">className</span>=<span class="str">"progress-fill"</span>
+      <span class="attr">style</span>={{ width: `${progresso}%` }}
+    /&gt;
+  &lt;/<span class="tag">div</span>&gt;
+&lt;/&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Modal de confirmação acessível</div>
+      <p>Para o chatbot, implemente um dialog de confirmação que aparece antes de limpar o histórico ("Tem certeza? Esta ação não pode ser desfeita"). O modal deve: (1) ter role="dialog" com aria-modal="true" e aria-labelledby apontando para o título, (2) capturar o foco ao abrir (focus no botão de confirmação), (3) devolver o foco ao botão que o abriu ao fechar, (4) fechar com Escape, (5) impedir Tab de sair do modal (focus trap).</p>
+      <span class="dif-medio">LAB · foco</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — ModalConfirmacao com focus trap</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">import</span> { <span class="fn">useEffect</span>, <span class="fn">useRef</span> } <span class="pp">from</span> <span class="str">'react'</span>;
+
+<span class="kw">function</span> <span class="fn">ModalConfirmacao</span>({ onConfirmar, onCancelar, triggerRef }) {
+  <span class="kw">const</span> confirmarRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> modalRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+
+  <span class="fn">useEffect</span>(() => {
+    <span class="cm">// Foco no botão confirmar ao abrir</span>
+    confirmarRef.current?.<span class="fn">focus</span>();
+
+    <span class="cm">// Fechar com Escape</span>
+    <span class="kw">const</span> <span class="fn">onKeyDown</span> = (e) => {
+      <span class="kw">if</span> (e.key === <span class="str">'Escape'</span>) <span class="fn">onCancelar</span>();
+
+      <span class="cm">// Focus trap — manter Tab dentro do modal</span>
+      <span class="kw">if</span> (e.key === <span class="str">'Tab'</span>) {
+        <span class="kw">const</span> focaveis = modalRef.current.<span class="fn">querySelectorAll</span>(
+          <span class="str">'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'</span>
+        );
+        <span class="kw">const</span> primeiro = focaveis[<span class="num">0</span>];
+        <span class="kw">const</span> ultimo = focaveis[focaveis.length - <span class="num">1</span>];
+        <span class="kw">if</span> (e.shiftKey &amp;&amp; document.activeElement === primeiro) {
+          e.<span class="fn">preventDefault</span>(); ultimo.<span class="fn">focus</span>();
+        } <span class="kw">else if</span> (!e.shiftKey &amp;&amp; document.activeElement === ultimo) {
+          e.<span class="fn">preventDefault</span>(); primeiro.<span class="fn">focus</span>();
+        }
+      }
+    };
+    document.<span class="fn">addEventListener</span>(<span class="str">'keydown'</span>, onKeyDown);
+
+    <span class="kw">return</span> () => {
+      document.<span class="fn">removeEventListener</span>(<span class="str">'keydown'</span>, onKeyDown);
+      <span class="cm">// Devolver foco ao botão que abriu</span>
+      triggerRef.current?.<span class="fn">focus</span>();
+    };
+  }, []);
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"modal-overlay"</span>&gt;
+      &lt;<span class="tag">div</span>
+        <span class="attr">ref</span>={modalRef}
+        <span class="ari">role</span>=<span class="str">"dialog"</span>
+        <span class="ari">aria-modal</span>=<span class="str">"true"</span>
+        <span class="ari">aria-labelledby</span>=<span class="str">"modal-titulo"</span>
+        <span class="attr">className</span>=<span class="str">"modal"</span>
+      &gt;
+        &lt;<span class="tag">h2</span> <span class="attr">id</span>=<span class="str">"modal-titulo"</span>&gt;Limpar histórico?&lt;/<span class="tag">h2</span>&gt;
+        &lt;<span class="tag">p</span>&gt;Esta ação não pode ser desfeita.&lt;/<span class="tag">p</span>&gt;
+        &lt;<span class="tag">div</span>&gt;
+          &lt;<span class="tag">button</span> <span class="attr">ref</span>={confirmarRef} <span class="attr">onClick</span>={onConfirmar}&gt;Confirmar&lt;/<span class="tag">button</span>&gt;
+          &lt;<span class="tag">button</span> <span class="attr">onClick</span>={onCancelar}&gt;Cancelar&lt;/<span class="tag">button</span>&gt;
+        &lt;/<span class="tag">div</span>&gt;
+      &lt;/<span class="tag">div</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Modo alto contraste com prefers-contrast</div>
+      <p>A media query <code style="font-family:'JetBrains Mono',monospace;">@media (prefers-contrast: more)</code> detecta quando o sistema do usuário está configurado para alto contraste (comum em usuários com baixa visão). Adicione ao seu chatbot um conjunto de overrides CSS que: (1) aumenta contraste de todos os textos para 7:1+, (2) adiciona bordas visíveis em elementos interativos, (3) remove backgrounds semi-transparentes substituindo por sólidos, (4) aumenta o anel de foco para 4px. Teste ativando "Increase Contrast" no macOS.</p>
+      <span class="dif-medio">CSS</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">CSS — overrides para alto contraste</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code>@media (prefers-contrast: more) {
+  <span class="cm">/* Texto — forçar máximo contraste */</span>
+  .text-secondary, .text-muted,
+  [style*="rgba(255,255,255"] {
+    color: rgba(255,255,255,.95) !important;
+  }
+
+  <span class="cm">/* Backgrounds — remover transparência */</span>
+  .card, .bubble, .questao {
+    background: #111 !important;
+    border-color: rgba(255,255,255,.5) !important;
+    border-width: 2px !important;
+  }
+
+  <span class="cm">/* Botões — mais visíveis */</span>
+  button {
+    border: 2px solid currentColor !important;
+  }
+
+  <span class="cm">/* Foco — mais grosso */</span>
+  *:focus-visible {
+    outline-width: 4px !important;
+    outline-color: #fff !important;
+  }
+
+  <span class="cm">/* Skeleton — versão sólida */</span>
+  .skeleton {
+    background: #333 !important;
+    animation: none !important;
+  }
+
+  <span class="cm">/* Links — underline sempre visível */</span>
+  a { text-decoration: underline !important; }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 04 — Desafio: relatório de auditoria completo</div>
+      <p>Rode o axe DevTools e o Lighthouse Accessibility no chatbot. Para cada violação encontrada (mínimo 5): (1) descreva o problema em linguagem técnica, (2) cite o critério WCAG (ex: 1.4.3 AA), (3) explique o impacto no usuário afetado (ex: "usuário cego não ouve a resposta"), (4) escreva o código da correção, (5) descreva o teste de verificação. Entregue como um arquivo Markdown. O objetivo é alcançar score de Acessibilidade ≥ 90 no Lighthouse após as correções.</p>
+      <span class="dif-desafio">Desafio · Documentação</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Markdown — template de relatório de auditoria</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="cm"># Relatório de Auditoria de Acessibilidade — Chatbot Front-end IA
+Data: [data] | Ferramenta: axe DevTools + Lighthouse
+Score inicial: XX/100 | Score final: XX/100
+
+---
+
+## Violação 1: Botões sem nome acessível
+
+**Problema:** Botões 👍, 👎 e ⏹ não têm nome acessível.
+Usuário de leitor de tela ouve apenas "botão" sem saber a função.
+
+**Critério WCAG:** 4.1.2 — Nome, Função, Valor (nível A)
+
+**Impacto:** Usuário cego não consegue identificar a função do botão.
+Com NVDA: "botão" — sem contexto.
+
+**Correção:**
+```jsx
+&lt;button aria-label="Marcar resposta como útil"
+        aria-pressed={voto === 'up'}&gt;👍&lt;/button&gt;
+```
+
+**Teste:** Focar o botão com Tab + NVDA → deve anunciar
+"Marcar resposta como útil, botão de alternância, não pressionado"
+
+---
+
+## Violação 2: [próximo problema...]</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 14</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-list-ol"></i>
+        <strong>WCAG 2.1 POUR</strong>
+        <p>Perceptível (contraste ≥ 4.5:1), Operável (foco visível, teclado), Compreensível (labels, erros) e Robusto (semântica, ARIA). Níveis A, AA, AAA.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-tags"></i>
+        <strong>ARIA para interfaces de IA</strong>
+        <p>aria-live="polite" no histórico. role="status" no skeleton. role="alert" nos erros. aria-label nos botões de emoji. aria-pressed nos toggles. aria-describedby no textarea.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-tools"></i>
+        <strong>Auditoria e correção</strong>
+        <p>axe DevTools + Lighthouse para automático. Tab + leitor de tela para manual. sr-only para texto oculto. :focus-visible para anel de foco. prefers-reduced-motion para animações.</p>
+      </div>
+    </div>
+    <div class="aviso-green" style="margin-top:1.5rem;">
+      <i class="fas fa-question-circle"></i>
+      <span><strong>Checklist final:</strong> o score Lighthouse Accessibility está ≥ 90? O axe não encontra violações críticas? Navegar com Tab percorre todos os elementos interativos em ordem lógica com foco visível? NVDA anuncia novas mensagens do chatbot? O skeleton tem role="status"? Botões de emoji têm aria-label? Se sim — pronto para a Semana 15: Performance e PWA.</span>
+    </div>
+    <div class="proxima" onclick="window.location.href='semana-15-frontend.html'">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 15 — Performance: lazy loading, code splitting, Web Vitals e deploy de IA</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    :'<i class="fas fa-eye"></i> ver gabarito';
+}
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{btn.textContent='copiado!';setTimeout(()=>btn.textContent='copiar',2000);});
+}
+const quizData={
+  quiz1:{correct:'B',msg:'✅ Correto! O critério 1.4.3 (Contraste Mínimo, nível AA) exige razão de contraste de pelo menos 4.5:1 para texto normal (abaixo de 18pt sem negrito, ou 14pt com negrito). 1.8:1 está muito abaixo — o texto é praticamente ilegível para pessoas com baixa visão. Para verificar no DevTools: inspecione o elemento → clique na amostra de cor no CSS → veja o "Contrast ratio" no color picker. O critério 1.4.6 (AAA) exige 7:1 — ainda mais rigoroso.'},
+  quiz2:{correct:'C',msg:'✅ Correto! aria-live é a solução para conteúdo dinâmico que precisa ser anunciado por leitores de tela. Sem esse atributo, mudanças de conteúdo são completamente silenciosas para usuários de NVDA, VoiceOver e JAWS. aria-live="polite" anuncia quando o usuário não está interagindo ativamente — ideal para respostas do chatbot. aria-live="assertive" interrompe imediatamente (para alertas críticos). Para o histórico completo do chat, role="log" combinado com aria-live="polite" é a semântica mais precisa.'}
+};
+function responder(id,el,ok,letra){
+  const ops=document.getElementById(id+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  const correta=quizData[id].correct;
+  ops.querySelectorAll('.quiz-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    if(op.querySelector('.quiz-letra').textContent.trim()===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const fb=document.getElementById(id+'-feedback');
+  fb.textContent=quizData[id].msg;
+  fb.style.background=ok?'rgba(74,222,128,.08)':'rgba(239,68,68,.08)';
+  fb.style.border=ok?'1px solid rgba(74,222,128,.22)':'1px solid rgba(239,68,68,.25)';
+  fb.style.color=ok?'rgba(134,239,172,.9)':'#fca5a5';
+  fb.style.padding='.75rem 1rem';fb.style.borderRadius='8px';
+  fb.classList.add('show');
+}
+</script>
+</body>
+</html>

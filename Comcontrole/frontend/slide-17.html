@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 17 — Testes de Front-end · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#08110d;
+  --emerald-900:#022c1e;
+  --emerald-600:#059669;
+  --emerald-500:#10b981;
+  --emerald-400:#34d399;
+  --emerald-300:#6ee7b7;
+  --white:#fff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(52,211,153,.05);
+  --code-bg:#03130c;
+  --code-border:rgba(52,211,153,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.22;pointer-events:none;}
+.blob-1{width:680px;height:680px;background:#065f46;top:-240px;left:-200px;}
+.blob-2{width:540px;height:540px;background:#022c1e;bottom:-210px;right:-120px;}
+.blob-3{width:290px;height:290px;background:#10b981;top:36%;left:44%;opacity:.07;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(52,211,153,.14);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--emerald-300);border:1px solid rgba(52,211,153,.28);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--emerald-300);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(52,211,153,.07);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--emerald-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--emerald-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.11);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}.topico:nth-child(6){animation-delay:.6s;}.topico:nth-child(7){animation-delay:.7s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(52,211,153,.14);color:var(--emerald-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(52,211,153,.05);border-left:3px solid var(--emerald-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--emerald-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--emerald-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--emerald-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(52,211,153,.11);color:var(--emerald-400);border:1px solid rgba(52,211,153,.26);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(52,211,153,.11);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(52,211,153,.13);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--emerald-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(52,211,153,.17);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--emerald-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(52,211,153,.06);border-left:3px solid var(--emerald-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--emerald-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-emerald{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.18);font-size:.86rem;color:rgba(110,231,183,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-emerald i{color:var(--emerald-400);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(52,211,153,.08);}
+th{padding:.6rem 1rem;text-align:left;color:var(--emerald-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(52,211,153,.16);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(52,211,153,.03);}
+td strong{color:var(--text-primary);}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(52,211,153,.05);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--emerald-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--emerald-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#a7f3d0;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#4b5563;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(52,211,153,.11);color:var(--emerald-400);border:1px solid rgba(52,211,153,.22);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.22);}
+.badge-blue{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.22);}
+
+/* ── Pirâmide de testes ── */
+.piramide{display:flex;flex-direction:column;align-items:center;gap:6px;margin:1.25rem 0;}
+.piramide-nivel{border-radius:10px;padding:.85rem 1.5rem;text-align:center;color:rgba(255,255,255,.92);font-family:'Montserrat',sans-serif;font-weight:700;font-size:.85rem;position:relative;}
+.piramide-nivel small{display:block;font-family:'Inter',sans-serif;font-weight:400;font-size:.72rem;color:rgba(255,255,255,.65);margin-top:3px;}
+.pn-1{width:100%;background:linear-gradient(90deg,#059669,#10b981);}
+.pn-2{width:75%;background:linear-gradient(90deg,#0369a1,#38bdf8);}
+.pn-3{width:45%;background:linear-gradient(90deg,#7c3aed,#a78bfa);}
+
+/* ── Pass/fail terminal mockup ── */
+.term-mock{background:#02100a;border:1px solid rgba(52,211,153,.18);border-radius:12px;padding:1rem 1.25rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.75;margin:.75rem 0;}
+.term-pass{color:#34d399;}
+.term-fail{color:#f87171;}
+.term-muted{color:rgba(255,255,255,.4);}
+.term-white{color:rgba(255,255,255,.85);}
+
+/* ── Before/After grid ── */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
+.ba-panel{border-radius:12px;overflow:hidden;border:1px solid;}
+.ba-header{padding:.5rem 1rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;display:flex;align-items:center;gap:6px;}
+.ba-header.bad{background:rgba(239,68,68,.08);color:#f87171;border-bottom:1px solid rgba(239,68,68,.15);}
+.ba-header.good{background:rgba(52,211,153,.08);color:var(--emerald-400);border-bottom:1px solid rgba(52,211,153,.15);}
+.ba-body{padding:1rem;background:var(--card-bg);font-size:.82rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Lab steps ── */
+.lab-steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.lab-steps::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--emerald-400),rgba(52,211,153,.1));border-radius:1px;}
+.lab-step{display:flex;gap:1rem;padding:.75rem 0;}
+.lab-step__num{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;position:relative;z-index:2;background:rgba(52,211,153,.1);color:var(--emerald-400);border:2px solid rgba(52,211,153,.27);}
+.lab-step__body{flex:1;padding-top:8px;}
+.lab-step__title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#f8fafc;margin-bottom:.3rem;}
+.lab-step__desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--emerald-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(52,211,153,.17);border-radius:8px;padding:.5rem 1rem;color:var(--emerald-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(52,211,153,.07);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+/* ── Quiz ── */
+.quiz-box{background:rgba(52,211,153,.03);border:1px solid rgba(52,211,153,.12);border-radius:12px;padding:1.25rem;margin:1rem 0;}
+.quiz-pergunta{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700;color:var(--white);margin-bottom:1rem;}
+.quiz-ops{display:flex;flex-direction:column;gap:.5rem;}
+.quiz-op{display:flex;align-items:center;gap:10px;padding:.6rem .9rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:9px;cursor:pointer;transition:all .2s;}
+.quiz-op:hover{background:rgba(52,211,153,.06);border-color:rgba(52,211,153,.2);}
+.quiz-op.correto{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);}
+.quiz-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);}
+.quiz-letra{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;}
+.quiz-texto{font-size:.85rem;color:var(--text-secondary);}
+.quiz-feedback{display:none;padding:.75rem 1rem;border-radius:8px;font-size:.83rem;line-height:1.55;margin-top:.75rem;}
+.quiz-feedback.show{display:block;}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--emerald-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(52,211,153,.09);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--emerald-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.ba-grid,.resumo-grid{grid-template-columns:1fr 1fr;}
+  .piramide-nivel{width:100% !important;}
+}
+@media(max-width:520px){.resumo-grid,.grid-3{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">✅ LAB + Conteúdo</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">17</div>
+    <h1 class="capa-titulo">Testes de<br><em>Front-end</em><br>para Apps de IA</h1>
+    <p class="capa-sub">4 aulas · Jest, React Testing Library e mocks de API</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-layer-group"></i></div><span>Pirâmide de testes — unitários, integração e E2E, e onde o front-end de IA investe mais</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-vial"></i></div><span>Jest — test, expect, matchers e como rodar a suíte</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-mouse-pointer"></i></div><span>React Testing Library — testar comportamento, não implementação</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-user-check"></i></div><span>user-event — simulando digitação, clique e navegação por teclado</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-plug"></i></div><span>Mockando chamadas de IA — jest.mock, MSW e streaming simulado</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-flask"></i></div><span>LAB: suíte de testes completa para o componente de chatbot</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade LAB</div>
+      <p>Escrever testes para o componente de chatbot cobrindo: renderização inicial, envio de mensagem, resposta mockada da API de IA, estado de erro com retry e acessibilidade básica (roles e labels).</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>Ferramentas da semana</div>
+      <ul class="info-lista">
+        <li>Jest — <code style="font-family:'JetBrains Mono',monospace;">npm install -D jest @testing-library/jest-dom</code></li>
+        <li>React Testing Library — <code style="font-family:'JetBrains Mono',monospace;">npm install -D @testing-library/react</code></li>
+        <li>user-event — <code style="font-family:'JetBrains Mono',monospace;">npm install -D @testing-library/user-event</code></li>
+        <li>MSW (Mock Service Worker) — <code style="font-family:'JetBrains Mono',monospace;">npm install -D msw</code></li>
+        <li>Vitest como alternativa (Vite) — API quase idêntica ao Jest</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 15 — Performance (Web Vitals, lazy loading, caching)</li>
+        <li>✅ Sem. 16 — Estado global: Zustand, Redux Toolkit, persistência</li>
+        <li>▶ Sem. 17 — Testes: Jest, React Testing Library, mocks de API</li>
+        <li>Sem. 18 — Revisão Geral + Deploy: Vercel, CI/CD, Lighthouse</li>
+        <li>Sem. 19 — Prova Final (P3) + apresentação do projeto</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que isso importa especialmente em IA</div>
+      <ul class="info-lista">
+        <li>Chamadas de IA são caras e lentas — testes NUNCA devem bater na API real, sempre mockadas</li>
+        <li>Streaming, erros de rate limit e timeouts são cenários difíceis de reproduzir manualmente — testes automatizados cobrem isso de forma confiável</li>
+        <li>Respostas de LLM são não-determinísticas — o teste deve validar comportamento da UI, não o conteúdo exato gerado pelo modelo</li>
+        <li>CI/CD (Semana 18) só é confiável se a suíte de testes rodar sem depender de rede ou de uma API key real</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1</div>
+        <div class="secao-titulo">Por que testar front-end, a pirâmide de testes e primeiros passos com Jest</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-question-circle"></i>Por que testar interfaces de IA especificamente</div>
+      <p>Testar front-end sempre foi importante, mas em apps de IA existe um motivo extra: a camada de IA é <strong>lenta, cara e não-determinística</strong>. Chamar a API real da OpenAI a cada teste seria lento (segundos por chamada), custaria dinheiro literal a cada execução da suíte, e o texto de retorno muda a cada chamada — impossibilitando um <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">expect(resposta).toBe(...)</code> confiável.</p>
+      <p>A solução: <strong>nunca testar contra a API real</strong>. Testes de front-end mockam a chamada de IA e verificam se a interface reage corretamente — mostra o skeleton, renderiza a resposta, trata o erro 429, habilita o botão de retry. O que importa não é o que o modelo disse, é como a UI se comportou.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-layer-group"></i>A pirâmide de testes</div>
+      <p>A pirâmide de testes descreve a proporção ideal de cada tipo de teste em um projeto saudável: muitos testes unitários rápidos e baratos na base, uma camada média de testes de integração, e poucos testes end-to-end (E2E) no topo — mais lentos e caros de manter.</p>
+
+      <div class="piramide">
+        <div class="piramide-nivel pn-3">E2E (Playwright/Cypress)<small>Poucos — fluxo completo no browser real</small></div>
+        <div class="piramide-nivel pn-2">Integração (RTL + MSW)<small>Camada média — componente + API mockada</small></div>
+        <div class="piramide-nivel pn-1">Unitários (Jest)<small>Muitos — funções puras, hooks isolados, utils</small></div>
+      </div>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Nível</th><th>O que testa</th><th>Exemplo em app de IA</th><th>Velocidade</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Unitário</strong></td><td>Uma função ou hook isolado, sem renderizar componentes</td><td><code style="font-family:'JetBrains Mono',monospace;">traduzirErro()</code>, <code style="font-family:'JetBrains Mono',monospace;">estimarTokens()</code>, um seletor de store</td><td>Milissegundos</td></tr>
+            <tr><td><strong>Integração</strong></td><td>Um componente renderizado interagindo com outros componentes ou uma API mockada</td><td>Enviar mensagem no chatbot → API mockada responde → bubble aparece</td><td>Dezenas a centenas de ms</td></tr>
+            <tr><td><strong>E2E</strong></td><td>Fluxo completo no browser real, do clique inicial ao resultado final</td><td>Abrir o app → digitar pergunta → ver resposta renderizada → dar thumbs up</td><td>Segundos</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="destaque">
+        <strong>Onde investir mais tempo:</strong> para esta disciplina e para a maioria dos projetos de front-end de IA, o foco principal deve estar nos testes de <strong>integração com React Testing Library</strong> — eles validam o comportamento real que o usuário vê, com um custo de manutenção razoável. Testes unitários cobrem a lógica pura (funções auxiliares). E2E fica para poucos fluxos críticos, se houver tempo.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-vial"></i>Jest — test, expect e matchers</div>
+      <p>Jest é o test runner mais usado no ecossistema React: executa arquivos de teste, fornece as funções <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">test</code>/<code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">describe</code> para organizar, e <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">expect</code> com matchers para fazer as verificações (assertions).</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — primeiro teste unitário com Jest</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">// utils/estimarTokens.js</span>
+<span class="kw">export function</span> <span class="fn">estimarTokens</span>(historico) {
+  <span class="kw">return</span> historico.<span class="fn">reduce</span>((acc, m) => acc + m.content.<span class="fn">split</span>(/\s+/).length, <span class="num">0</span>) * <span class="num">1.3</span>;
+}
+
+<span class="cm">// utils/estimarTokens.test.js</span>
+<span class="pp">import</span> { estimarTokens } <span class="pp">from</span> <span class="str">'./estimarTokens'</span>;
+
+<span class="fn">describe</span>(<span class="str">'estimarTokens'</span>, () => {
+  <span class="fn">test</span>(<span class="str">'retorna 0 para histórico vazio'</span>, () => {
+    <span class="fn">expect</span>(<span class="fn">estimarTokens</span>([])).<span class="fn">toBe</span>(<span class="num">0</span>);
+  });
+
+  <span class="fn">test</span>(<span class="str">'estima tokens proporcionalmente ao número de palavras'</span>, () => {
+    <span class="kw">const</span> historico = [{ content: <span class="str">'uma frase com cinco palavras'</span> }]; <span class="cm">// 5 palavras</span>
+    <span class="fn">expect</span>(<span class="fn">estimarTokens</span>(historico)).<span class="fn">toBeCloseTo</span>(<span class="num">6.5</span>); <span class="cm">// 5 * 1.3</span>
+  });
+
+  <span class="fn">test</span>(<span class="str">'soma palavras de múltiplas mensagens'</span>, () => {
+    <span class="kw">const</span> historico = [
+      { content: <span class="str">'oi tudo bem'</span> },      <span class="cm">// 3 palavras</span>
+      { content: <span class="str">'sim e você'</span> },       <span class="cm">// 3 palavras</span>
+    ];
+    <span class="fn">expect</span>(<span class="fn">estimarTokens</span>(historico)).<span class="fn">toBeCloseTo</span>(<span class="num">7.8</span>); <span class="cm">// 6 * 1.3</span>
+  });
+});</code></pre>
+      </div>
+
+      <div class="term-mock">
+        <div class="term-white">$ npx jest estimarTokens</div>
+        <div class="term-pass"> PASS  utils/estimarTokens.test.js</div>
+        <div class="term-muted">  estimarTokens</div>
+        <div class="term-pass">    ✓ retorna 0 para histórico vazio (2 ms)</div>
+        <div class="term-pass">    ✓ estima tokens proporcionalmente ao número de palavras (1 ms)</div>
+        <div class="term-pass">    ✓ soma palavras de múltiplas mensagens (1 ms)</div>
+        <div class="term-muted"><br>Test Suites: 1 passed, 1 total</div>
+        <div class="term-muted">Tests:       3 passed, 3 total</div>
+      </div>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Matcher</th><th>O que verifica</th><th>Exemplo</th></tr></thead>
+          <tbody>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">toBe</code></td><td>Igualdade estrita (===) — primitivos</td><td><code style="font-family:'JetBrains Mono',monospace;">expect(2 + 2).toBe(4)</code></td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">toEqual</code></td><td>Igualdade profunda — objetos e arrays</td><td><code style="font-family:'JetBrains Mono',monospace;">expect(msg).toEqual({role:'user', content:'oi'})</code></td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">toBeCloseTo</code></td><td>Números de ponto flutuante (evita erro de precisão)</td><td><code style="font-family:'JetBrains Mono',monospace;">expect(0.1 + 0.2).toBeCloseTo(0.3)</code></td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">toThrow</code></td><td>Verifica se uma função lança erro</td><td><code style="font-family:'JetBrains Mono',monospace;">expect(() => parse(x)).toThrow()</code></td></tr>
+            <tr><td><code style="font-family:'JetBrains Mono',monospace;">toHaveBeenCalledWith</code></td><td>Verifica argumentos de uma chamada mockada</td><td><code style="font-family:'JetBrains Mono',monospace;">expect(mockFn).toHaveBeenCalledWith('oi')</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Por que os testes de front-end de um chatbot de IA NUNCA devem chamar a API real da OpenAI/HuggingFace durante a execução da suíte?</div>
+      <div class="quiz-ops" id="quiz1-ops">
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">Porque o Jest tecnicamente não consegue fazer chamadas de rede</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">Porque a resposta é não-determinística, a chamada é lenta, custa dinheiro a cada execução e amarra a suíte a uma conexão de rede e a uma API key válida</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">Porque as APIs de IA bloqueiam requisições vindas de ferramentas de teste automatizado</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">Não há problema real nisso — é só uma boa prática opcional sem justificativa técnica forte</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz1-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2</div>
+        <div class="secao-titulo">React Testing Library — testar comportamento, não implementação</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-mouse-pointer"></i>A filosofia da RTL</div>
+      <p>React Testing Library (RTL) tem uma filosofia declarada: <strong>"quanto mais seus testes se parecem com a forma como o software é usado, mais confiança eles te dão"</strong>. Isso significa: não teste detalhes de implementação (nome de uma variável de estado interna, se um componente usa useState ou useReducer). Teste o que o usuário vê e faz: texto na tela, clique em um botão, o que aparece depois.</p>
+
+      <div class="ba-grid">
+        <div class="ba-panel" style="border-color:rgba(239,68,68,.2);">
+          <div class="ba-header bad"><i class="fas fa-times-circle"></i> Testando implementação (frágil)</div>
+          <div class="ba-body">
+            Acessar <code style="font-family:'JetBrains Mono',monospace;">wrapper.state('mensagens')</code> ou <code style="font-family:'JetBrains Mono',monospace;">wrapper.instance().enviar()</code> diretamente. Quebra a cada refatoração interna, mesmo que o comportamento visível não tenha mudado.
+          </div>
+        </div>
+        <div class="ba-panel" style="border-color:rgba(52,211,153,.2);">
+          <div class="ba-header good"><i class="fas fa-check-circle"></i> Testando comportamento (resiliente)</div>
+          <div class="ba-body">
+            Buscar o texto "Enviar" na tela, clicar nele, e verificar que a mensagem do usuário aparece na tela. Continua passando mesmo se você trocar useState por Zustand por dentro.
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — primeiro teste de integração com RTL</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { render, screen } <span class="pp">from</span> <span class="str">'@testing-library/react'</span>;
+<span class="pp">import</span> <span class="str">'@testing-library/jest-dom'</span>;
+<span class="pp">import</span> { ChatInput } <span class="pp">from</span> <span class="str">'./ChatInput'</span>;
+
+<span class="fn">test</span>(<span class="str">'renderiza o campo de mensagem e o botão de enviar'</span>, () => {
+  <span class="fn">render</span>(&lt;<span class="tag">ChatInput</span> <span class="attr">onEnviar</span>={() => {}} /&gt;);
+
+  <span class="cm">// getByRole busca pelo papel semântico do elemento — não pelo seletor CSS
+  // Isso é exatamente o que um leitor de tela e um usuário enxergam</span>
+  <span class="kw">const</span> campo = screen.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>, { name: /digite sua mensagem/i });
+  <span class="kw">const</span> botao = screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /enviar/i });
+
+  <span class="fn">expect</span>(campo).<span class="fn">toBeInTheDocument</span>();
+  <span class="fn">expect</span>(botao).<span class="fn">toBeInTheDocument</span>();
+  <span class="fn">expect</span>(botao).<span class="fn">toBeDisabled</span>(); <span class="cm">// campo vazio → botão desabilitado</span>
+});</code></pre>
+      </div>
+
+      <div class="aviso-emerald">
+        <i class="fas fa-lightbulb"></i>
+        <span><strong>Prioridade de queries da RTL:</strong> prefira <code style="font-family:'JetBrains Mono',monospace;">getByRole</code> (mais próximo do que tecnologia assistiva percebe) &gt; <code style="font-family:'JetBrains Mono',monospace;">getByLabelText</code> &gt; <code style="font-family:'JetBrains Mono',monospace;">getByText</code> &gt; <code style="font-family:'JetBrains Mono',monospace;">getByTestId</code> (último recurso, quando não há forma semântica de encontrar o elemento). Essa hierarquia empurra você a escrever HTML mais acessível — se getByRole falha, geralmente é sinal de falta de aria-label ou semântica correta, não um problema do teste.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-user-check"></i>user-event — simulando interação real do usuário</div>
+      <p>A biblioteca <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">@testing-library/user-event</code> simula eventos de forma mais realista que disparar eventos DOM sintéticos diretamente — ela simula a sequência completa de eventos que o browser dispararia (keydown, keypress, input, keyup), incluindo async/await para cada interação.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — testando digitação e envio com user-event</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { render, screen } <span class="pp">from</span> <span class="str">'@testing-library/react'</span>;
+<span class="pp">import</span> userEvent <span class="pp">from</span> <span class="str">'@testing-library/user-event'</span>;
+<span class="pp">import</span> { ChatInput } <span class="pp">from</span> <span class="str">'./ChatInput'</span>;
+
+<span class="fn">test</span>(<span class="str">'habilita o botão ao digitar e chama onEnviar com o texto'</span>, <span class="kw">async</span> () => {
+  <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>();
+  <span class="kw">const</span> aoEnviar = jest.<span class="fn">fn</span>(); <span class="cm">// função mockada — rastreia como foi chamada</span>
+
+  <span class="fn">render</span>(&lt;<span class="tag">ChatInput</span> <span class="attr">onEnviar</span>={aoEnviar} /&gt;);
+
+  <span class="kw">const</span> campo = screen.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>, { name: /digite sua mensagem/i });
+  <span class="kw">const</span> botao = screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /enviar/i });
+
+  <span class="fn">expect</span>(botao).<span class="fn">toBeDisabled</span>(); <span class="cm">// estado inicial</span>
+
+  <span class="kw">await</span> user.<span class="fn">type</span>(campo, <span class="str">'Qual a capital da França?'</span>);
+  <span class="fn">expect</span>(botao).<span class="fn">not</span>.<span class="fn">toBeDisabled</span>(); <span class="cm">// habilitou após digitar</span>
+
+  <span class="kw">await</span> user.<span class="fn">click</span>(botao);
+  <span class="fn">expect</span>(aoEnviar).<span class="fn">toHaveBeenCalledWith</span>(<span class="str">'Qual a capital da França?'</span>);
+  <span class="fn">expect</span>(campo).<span class="fn">toHaveValue</span>(<span class="str">''</span>); <span class="cm">// campo limpo após enviar</span>
+});
+
+<span class="fn">test</span>(<span class="str">'envia com Enter, mas não com Shift+Enter'</span>, <span class="kw">async</span> () => {
+  <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>();
+  <span class="kw">const</span> aoEnviar = jest.<span class="fn">fn</span>();
+  <span class="fn">render</span>(&lt;<span class="tag">ChatInput</span> <span class="attr">onEnviar</span>={aoEnviar} /&gt;);
+  <span class="kw">const</span> campo = screen.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>);
+
+  <span class="kw">await</span> user.<span class="fn">type</span>(campo, <span class="str">'oi{Shift>}{Enter}{/Shift}'</span>); <span class="cm">// Shift+Enter = nova linha</span>
+  <span class="fn">expect</span>(aoEnviar).<span class="fn">not</span>.<span class="fn">toHaveBeenCalled</span>();
+
+  <span class="kw">await</span> user.<span class="fn">type</span>(campo, <span class="str">'{Enter}'</span>); <span class="cm">// Enter puro = envia</span>
+  <span class="fn">expect</span>(aoEnviar).<span class="fn">toHaveBeenCalled</span>();
+});</code></pre>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Por que a RTL recomenda usar <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">getByRole</code> em vez de <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">getByTestId</code> como primeira opção?</div>
+      <div class="quiz-ops" id="quiz2-ops">
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">getByTestId é mais lento de executar durante a suíte de testes</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">getByRole reflete o que tecnologia assistiva e usuários reais percebem; se a query falha, geralmente revela falta de semântica/acessibilidade no componente, não um problema do teste</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">data-testid não é suportado pelo Jest, apenas pelo Cypress</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">Não há diferença real — é apenas uma preferência estética da equipe da RTL</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz2-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3</div>
+        <div class="secao-titulo">Mockando chamadas de IA — jest.mock, MSW e streaming simulado</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-plug"></i>jest.mock — substituindo o módulo de chamada de API</div>
+      <p>A forma mais direta de mockar é substituir inteiramente o módulo que faz a chamada HTTP por uma versão falsa controlada pelo teste. <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">jest.mock()</code> intercepta o import e injeta uma implementação fake.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — testando o chatbot com jest.mock</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">// api/chamarIA.js — módulo real que faz a chamada HTTP</span>
+<span class="kw">export async function</span> <span class="fn">chamarIA</span>(mensagens) {
+  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/chat'</span>, {
+    method: <span class="str">'POST'</span>,
+    body: <span class="fn">JSON.stringify</span>({ mensagens }),
+  });
+  <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">`HTTP ${res.status}`</span>);
+  <span class="kw">return</span> res.<span class="fn">json</span>();
+}
+
+<span class="cm">// Chatbot.test.jsx</span>
+<span class="pp">import</span> { render, screen, waitFor } <span class="pp">from</span> <span class="str">'@testing-library/react'</span>;
+<span class="pp">import</span> userEvent <span class="pp">from</span> <span class="str">'@testing-library/user-event'</span>;
+<span class="pp">import</span> { Chatbot } <span class="pp">from</span> <span class="str">'./Chatbot'</span>;
+<span class="pp">import</span> { chamarIA } <span class="pp">from</span> <span class="str">'./api/chamarIA'</span>;
+
+<span class="cm">// Substitui TODO o módulo — chamarIA agora é uma função mockada</span>
+jest.<span class="fn">mock</span>(<span class="str">'./api/chamarIA'</span>);
+
+<span class="fn">test</span>(<span class="str">'exibe a resposta da IA após enviar uma mensagem'</span>, <span class="kw">async</span> () => {
+  chamarIA.<span class="fn">mockResolvedValue</span>({ content: <span class="str">'Paris é a capital da França.'</span> });
+
+  <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>();
+  <span class="fn">render</span>(&lt;<span class="tag">Chatbot</span> /&gt;);
+
+  <span class="kw">await</span> user.<span class="fn">type</span>(screen.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>), <span class="str">'Qual a capital da França?{Enter}'</span>);
+
+  <span class="cm">// waitFor espera a UI se atualizar de forma assíncrona (o "setState" do fetch)</span>
+  <span class="kw">await</span> <span class="fn">waitFor</span>(() => {
+    <span class="fn">expect</span>(screen.<span class="fn">getByText</span>(<span class="str">'Paris é a capital da França.'</span>)).<span class="fn">toBeInTheDocument</span>();
+  });
+
+  <span class="fn">expect</span>(chamarIA).<span class="fn">toHaveBeenCalledWith</span>(
+    <span class="fn">expect.arrayContaining</span>([<span class="fn">expect.objectContaining</span>({ role: <span class="str">'user'</span>, content: <span class="str">'Qual a capital da França?'</span> })])
+  );
+});
+
+<span class="fn">test</span>(<span class="str">'exibe erro amigável quando a API retorna rate limit'</span>, <span class="kw">async</span> () => {
+  chamarIA.<span class="fn">mockRejectedValue</span>({ status: <span class="num">429</span> });
+
+  <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>();
+  <span class="fn">render</span>(&lt;<span class="tag">Chatbot</span> /&gt;);
+  <span class="kw">await</span> user.<span class="fn">type</span>(screen.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>), <span class="str">'oi{Enter}'</span>);
+
+  <span class="kw">await</span> <span class="fn">waitFor</span>(() => {
+    <span class="fn">expect</span>(screen.<span class="fn">getByText</span>(/muitas mensagens em pouco tempo/i)).<span class="fn">toBeInTheDocument</span>();
+  });
+  <span class="fn">expect</span>(screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /tentar novamente/i })).<span class="fn">toBeInTheDocument</span>();
+});</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-server"></i>MSW (Mock Service Worker) — mockando na camada de rede</div>
+      <p><code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">jest.mock</code> substitui o módulo JavaScript — funciona bem, mas exige mockar cada função separadamente. O <strong>MSW</strong> intercepta a requisição HTTP em si (na camada de rede), permitindo testar o código exatamente como ele chama <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">fetch</code> de verdade, sem mockar módulos internos. É mais realista e escala melhor para apps com muitas chamadas de API.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — configurando MSW para interceptar a API de IA</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="cm">// mocks/handlers.js</span>
+<span class="pp">import</span> { http, HttpResponse, delay } <span class="pp">from</span> <span class="str">'msw'</span>;
+
+<span class="kw">export const</span> handlers = [
+  http.<span class="fn">post</span>(<span class="str">'/api/chat'</span>, <span class="kw">async</span> ({ request }) => {
+    <span class="kw">const</span> body = <span class="kw">await</span> request.<span class="fn">json</span>();
+    <span class="kw">const</span> ultimaMensagem = body.mensagens.<span class="fn">at</span>(-<span class="num">1</span>).content;
+
+    <span class="kw">await</span> <span class="fn">delay</span>(<span class="num">50</span>); <span class="cm">// simula latência mínima, sem deixar o teste lento</span>
+
+    <span class="kw">if</span> (ultimaMensagem.<span class="fn">includes</span>(<span class="str">'erro'</span>)) {
+      <span class="kw">return</span> <span class="kw">new</span> HttpResponse(<span class="kw">null</span>, { status: <span class="num">500</span> });
+    }
+
+    <span class="kw">return</span> HttpResponse.<span class="fn">json</span>({ content: <span class="str">`Resposta simulada para: "${ultimaMensagem}"`</span> });
+  }),
+];
+
+<span class="cm">// mocks/server.js — servidor de mocks para os testes (Node)</span>
+<span class="pp">import</span> { setupServer } <span class="pp">from</span> <span class="str">'msw/node'</span>;
+<span class="pp">import</span> { handlers } <span class="pp">from</span> <span class="str">'./handlers'</span>;
+<span class="kw">export const</span> server = <span class="fn">setupServer</span>(...handlers);
+
+<span class="cm">// setupTests.js — liga o servidor antes de todos os testes</span>
+<span class="pp">import</span> { server } <span class="pp">from</span> <span class="str">'./mocks/server'</span>;
+<span class="fn">beforeAll</span>(() => server.<span class="fn">listen</span>());
+<span class="fn">afterEach</span>(() => server.<span class="fn">resetHandlers</span>()); <span class="cm">// limpa overrides entre testes</span>
+<span class="fn">afterAll</span>(() => server.<span class="fn">close</span>());
+
+<span class="cm">// Chatbot.test.jsx — usando o handler global e sobrescrevendo por teste</span>
+<span class="pp">import</span> { http, HttpResponse } <span class="pp">from</span> <span class="str">'msw'</span>;
+<span class="pp">import</span> { server } <span class="pp">from</span> <span class="str">'./mocks/server'</span>;
+
+<span class="fn">test</span>(<span class="str">'trata erro 500 da API de IA com mensagem amigável'</span>, <span class="kw">async</span> () => {
+  <span class="cm">// Sobrescreve o handler SÓ para este teste</span>
+  server.<span class="fn">use</span>(
+    http.<span class="fn">post</span>(<span class="str">'/api/chat'</span>, () => <span class="kw">new</span> HttpResponse(<span class="kw">null</span>, { status: <span class="num">500</span> }))
+  );
+
+  <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>();
+  <span class="fn">render</span>(&lt;<span class="tag">Chatbot</span> /&gt;);
+  <span class="kw">await</span> user.<span class="fn">type</span>(screen.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>), <span class="str">'oi{Enter}'</span>);
+
+  <span class="kw">await</span> <span class="fn">waitFor</span>(() => {
+    <span class="fn">expect</span>(screen.<span class="fn">getByText</span>(/algo deu errado/i)).<span class="fn">toBeInTheDocument</span>();
+  });
+});</code></pre>
+      </div>
+
+      <div class="destaque">
+        <strong>jest.mock vs MSW — quando usar cada um:</strong> jest.mock é mais rápido de configurar para testes pontuais de um módulo isolado. MSW é preferível quando o app tem várias chamadas de API espalhadas, quando você quer testar o código de fetch em si (não só o componente que o chama), ou quando o mesmo mock de rede será reusado tanto em testes quanto durante desenvolvimento local (MSW funciona no browser também, não só em testes).
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Qual a principal diferença entre mockar com <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">jest.mock('./api/chamarIA')</code> e usar MSW para mockar a mesma chamada?</div>
+      <div class="quiz-ops" id="quiz3-ops">
+        <div class="quiz-op" onclick="responder('quiz3',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">Não há diferença nenhuma — são exatamente a mesma técnica com nomes diferentes</span></div>
+        <div class="quiz-op" onclick="responder('quiz3',this,true,'B')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">B</div><span class="quiz-texto">jest.mock substitui o módulo JS inteiro (a função chamarIA em si); MSW intercepta a requisição na camada de rede, então o código real de fetch continua sendo executado e testado</span></div>
+        <div class="quiz-op" onclick="responder('quiz3',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">MSW só funciona com Axios, nunca com fetch nativo</span></div>
+        <div class="quiz-op" onclick="responder('quiz3',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">jest.mock é mais lento porque precisa iniciar um servidor de verdade</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz3-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 4 · LAB</span></div>
+
+  <!-- ── AULA 4 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">04</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 4 · LAB</div>
+        <div class="secao-titulo">LAB — Suíte de testes completa para o componente de chatbot</div>
+      </div>
+    </div>
+
+    <div class="aviso-emerald">
+      <i class="fas fa-flask"></i>
+      <span>Objetivo: escrever uma suíte de testes para o chatbot cobrindo renderização inicial, envio de mensagem com resposta mockada, estado de erro com retry, e verificações básicas de acessibilidade — sem nenhuma chamada de rede real.</span>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>Passo a passo do LAB</div>
+      <div class="lab-steps">
+        <div class="lab-step">
+          <div class="lab-step__num">1</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Configurar o ambiente de testes</div>
+            <div class="lab-step__desc">Instale jest, @testing-library/react, @testing-library/jest-dom, @testing-library/user-event e msw. Crie o arquivo setupTests.js importando '@testing-library/jest-dom' e configurando o servidor MSW (beforeAll/afterEach/afterAll).</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">2</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Teste de renderização inicial</div>
+            <div class="lab-step__desc">Verifique que o chatbot renderiza vazio: o campo de texto está presente (getByRole 'textbox'), o botão de enviar está desabilitado, e não há nenhuma mensagem na tela (queryByRole 'log' sem filhos, ou histórico vazio).</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">3</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Teste de envio com resposta mockada (MSW)</div>
+            <div class="lab-step__desc">Configure um handler MSW para /api/chat retornando uma resposta fixa. Digite uma mensagem com user-event, pressione Enter, e use waitFor para confirmar que a bubble do usuário E a resposta da IA aparecem na tela, nessa ordem.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">4</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Teste de estado de erro com retry</div>
+            <div class="lab-step__desc">Sobrescreva o handler MSW para retornar status 429 nesse teste específico (server.use). Verifique que a mensagem de erro amigável aparece e que o botão "Tentar novamente" está presente e clicável.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">5</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Teste de acessibilidade básica</div>
+            <div class="lab-step__desc">Verifique que o container do histórico tem role="log", que o textarea tem um nome acessível (getByRole 'textbox', { name: ... }), e que os botões de thumbs up/down têm aria-label. Isso serve como uma rede de segurança contra regressões de acessibilidade da Semana 14.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">6</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Rodar a suíte e checar cobertura</div>
+            <div class="lab-step__desc">Rode <code style="font-family:'JetBrains Mono',monospace;">npx jest --coverage</code>. Analise o relatório: quais arquivos/linhas não foram exercitados por nenhum teste? Não busque 100% de cobertura — priorize os caminhos críticos (envio, erro, retry) sobre cobertura de vaidade.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — suíte completa de Chatbot.test.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { render, screen, waitFor, within } <span class="pp">from</span> <span class="str">'@testing-library/react'</span>;
+<span class="pp">import</span> userEvent <span class="pp">from</span> <span class="str">'@testing-library/user-event'</span>;
+<span class="pp">import</span> { http, HttpResponse } <span class="pp">from</span> <span class="str">'msw'</span>;
+<span class="pp">import</span> { server } <span class="pp">from</span> <span class="str">'./mocks/server'</span>;
+<span class="pp">import</span> { Chatbot } <span class="pp">from</span> <span class="str">'./Chatbot'</span>;
+
+<span class="fn">describe</span>(<span class="str">'Chatbot'</span>, () => {
+
+  <span class="fn">test</span>(<span class="str">'renderiza vazio, com botão de enviar desabilitado'</span>, () => {
+    <span class="fn">render</span>(&lt;<span class="tag">Chatbot</span> /&gt;);
+    <span class="fn">expect</span>(screen.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>, { name: /digite sua mensagem/i })).<span class="fn">toBeInTheDocument</span>();
+    <span class="fn">expect</span>(screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /enviar/i })).<span class="fn">toBeDisabled</span>();
+    <span class="fn">expect</span>(screen.<span class="fn">queryByRole</span>(<span class="str">'log'</span>)).<span class="fn">toBeEmptyDOMElement</span>();
+  });
+
+  <span class="fn">test</span>(<span class="str">'envia mensagem e exibe a resposta mockada da IA'</span>, <span class="kw">async</span> () => {
+    server.<span class="fn">use</span>(
+      http.<span class="fn">post</span>(<span class="str">'/api/chat'</span>, () => HttpResponse.<span class="fn">json</span>({ content: <span class="str">'Resposta de teste.'</span> }))
+    );
+
+    <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>();
+    <span class="fn">render</span>(&lt;<span class="tag">Chatbot</span> /&gt;);
+
+    <span class="kw">await</span> user.<span class="fn">type</span>(screen.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>), <span class="str">'Olá, IA{Enter}'</span>);
+
+    <span class="kw">const</span> historico = screen.<span class="fn">getByRole</span>(<span class="str">'log'</span>);
+    <span class="fn">expect</span>(<span class="fn">within</span>(historico).<span class="fn">getByText</span>(<span class="str">'Olá, IA'</span>)).<span class="fn">toBeInTheDocument</span>();
+
+    <span class="kw">await</span> <span class="fn">waitFor</span>(() => {
+      <span class="fn">expect</span>(<span class="fn">within</span>(historico).<span class="fn">getByText</span>(<span class="str">'Resposta de teste.'</span>)).<span class="fn">toBeInTheDocument</span>();
+    });
+  });
+
+  <span class="fn">test</span>(<span class="str">'exibe erro amigável e botão de retry em falha de rede'</span>, <span class="kw">async</span> () => {
+    server.<span class="fn">use</span>(
+      http.<span class="fn">post</span>(<span class="str">'/api/chat'</span>, () => <span class="kw">new</span> HttpResponse(<span class="kw">null</span>, { status: <span class="num">429</span> }))
+    );
+
+    <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>();
+    <span class="fn">render</span>(&lt;<span class="tag">Chatbot</span> /&gt;);
+    <span class="kw">await</span> user.<span class="fn">type</span>(screen.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>), <span class="str">'oi{Enter}'</span>);
+
+    <span class="kw">await</span> <span class="fn">waitFor</span>(() => {
+      <span class="fn">expect</span>(screen.<span class="fn">getByText</span>(/muitas mensagens em pouco tempo/i)).<span class="fn">toBeInTheDocument</span>();
+    });
+    <span class="fn">expect</span>(screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /tentar novamente/i })).<span class="fn">toBeInTheDocument</span>();
+  });
+
+  <span class="fn">test</span>(<span class="str">'botões de feedback têm nome acessível'</span>, <span class="kw">async</span> () => {
+    server.<span class="fn">use</span>(
+      http.<span class="fn">post</span>(<span class="str">'/api/chat'</span>, () => HttpResponse.<span class="fn">json</span>({ content: <span class="str">'ok'</span> }))
+    );
+    <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>();
+    <span class="fn">render</span>(&lt;<span class="tag">Chatbot</span> /&gt;);
+    <span class="kw">await</span> user.<span class="fn">type</span>(screen.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>), <span class="str">'oi{Enter}'</span>);
+
+    <span class="kw">await</span> <span class="fn">waitFor</span>(() => {
+      <span class="fn">expect</span>(screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /resposta útil/i })).<span class="fn">toBeInTheDocument</span>();
+      <span class="fn">expect</span>(screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /resposta não útil/i })).<span class="fn">toBeInTheDocument</span>();
+    });
+  });
+});</code></pre>
+      </div>
+
+      <div class="term-mock">
+        <div class="term-white">$ npx jest Chatbot --coverage</div>
+        <div class="term-pass"> PASS  src/Chatbot.test.jsx</div>
+        <div class="term-pass">  ✓ renderiza vazio, com botão de enviar desabilitado (18 ms)</div>
+        <div class="term-pass">  ✓ envia mensagem e exibe a resposta mockada da IA (64 ms)</div>
+        <div class="term-pass">  ✓ exibe erro amigável e botão de retry em falha de rede (41 ms)</div>
+        <div class="term-pass">  ✓ botões de feedback têm nome acessível (52 ms)</div>
+        <div class="term-muted"><br>Tests:       4 passed, 4 total</div>
+        <div class="term-muted">Coverage:    87.4% Chatbot.jsx</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Exercícios</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">→</div>
+      <div class="secao-info">
+        <div class="secao-label">Exercícios · Conceito + LAB</div>
+        <div class="secao-titulo">4 exercícios — do teste unitário ao mock de streaming</div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Teste unitário para traduzirErro()</div>
+      <p>Escreva testes unitários para a função <code style="font-family:'JetBrains Mono',monospace;">traduzirErro()</code> criada na Semana 12. Cubra pelo menos: status 429 (rate limit), status 401 (autenticação), status 400 com mensagem contendo "context length", erro de rede (offline) e o caso genérico de fallback. Use <code style="font-family:'JetBrains Mono',monospace;">toEqual</code> para verificar o objeto completo retornado.</p>
+      <span class="dif-basico">Jest</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JavaScript — traduzirErro.test.js</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="pp">import</span> { traduzirErro } <span class="pp">from</span> <span class="str">'./traduzirErro'</span>;
+
+<span class="fn">describe</span>(<span class="str">'traduzirErro'</span>, () => {
+  <span class="fn">test</span>(<span class="str">'traduz rate limit (429)'</span>, () => {
+    <span class="kw">const</span> resultado = <span class="fn">traduzirErro</span>({ status: <span class="num">429</span> });
+    <span class="fn">expect</span>(resultado.titulo).<span class="fn">toBe</span>(<span class="str">'Muitas mensagens em pouco tempo'</span>);
+    <span class="fn">expect</span>(resultado.acao).<span class="fn">toBe</span>(<span class="str">'retry'</span>);
+  });
+
+  <span class="fn">test</span>(<span class="str">'traduz erro de autenticação (401)'</span>, () => {
+    <span class="kw">const</span> resultado = <span class="fn">traduzirErro</span>({ status: <span class="num">401</span> });
+    <span class="fn">expect</span>(resultado.acao).<span class="fn">toBe</span>(<span class="str">'none'</span>);
+    <span class="fn">expect</span>(resultado.titulo).<span class="fn">toMatch</span>(/autenticação/i);
+  });
+
+  <span class="fn">test</span>(<span class="str">'traduz contexto muito longo (400)'</span>, () => {
+    <span class="kw">const</span> resultado = <span class="fn">traduzirErro</span>({ status: <span class="num">400</span>, message: <span class="str">'context length exceeded'</span> });
+    <span class="fn">expect</span>(resultado.acao).<span class="fn">toBe</span>(<span class="str">'new-chat'</span>);
+  });
+
+  <span class="fn">test</span>(<span class="str">'trata falha de rede (offline)'</span>, () => {
+    <span class="kw">const</span> spy = jest.<span class="fn">spyOn</span>(navigator, <span class="str">'onLine'</span>, <span class="str">'get'</span>).<span class="fn">mockReturnValue</span>(<span class="kw">false</span>);
+    <span class="kw">const</span> resultado = <span class="fn">traduzirErro</span>({ message: <span class="str">'fetch failed'</span> });
+    <span class="fn">expect</span>(resultado.titulo).<span class="fn">toMatch</span>(/sem conexão/i);
+    spy.<span class="fn">mockRestore</span>();
+  });
+
+  <span class="fn">test</span>(<span class="str">'cai no fallback genérico para erros desconhecidos'</span>, () => {
+    <span class="kw">const</span> resultado = <span class="fn">traduzirErro</span>({ status: <span class="num">500</span> });
+    <span class="fn">expect</span>(resultado.acao).<span class="fn">toBe</span>(<span class="str">'retry'</span>);
+    <span class="fn">expect</span>(resultado.titulo).<span class="fn">toBe</span>(<span class="str">'Algo deu errado'</span>);
+  });
+});</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Testando a store Zustand isoladamente</div>
+      <p>Escreva testes para a store <code style="font-family:'JetBrains Mono',monospace;">useChatStore</code> da Semana 16, sem renderizar nenhum componente React — acesse o hook diretamente via <code style="font-family:'JetBrains Mono',monospace;">useChatStore.getState()</code> nos testes. Verifique: novaConversa() cria uma conversa e a torna ativa, adicionarMensagem() adiciona à conversa correta, e excluirConversa() remove a conversa e limpa conversaAtivaId se ela era a ativa.</p>
+      <span class="dif-medio">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JavaScript — useChatStore.test.js</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="pp">import</span> { useChatStore } <span class="pp">from</span> <span class="str">'./useChatStore'</span>;
+
+<span class="cm">// Reseta a store para um estado limpo antes de cada teste</span>
+<span class="fn">beforeEach</span>(() => {
+  useChatStore.<span class="fn">setState</span>({ conversas: [], conversaAtivaId: <span class="kw">null</span> });
+});
+
+<span class="fn">test</span>(<span class="str">'novaConversa cria e ativa uma conversa'</span>, () => {
+  useChatStore.<span class="fn">getState</span>().<span class="fn">novaConversa</span>();
+  <span class="kw">const</span> { conversas, conversaAtivaId } = useChatStore.<span class="fn">getState</span>();
+
+  <span class="fn">expect</span>(conversas).<span class="fn">toHaveLength</span>(<span class="num">1</span>);
+  <span class="fn">expect</span>(conversaAtivaId).<span class="fn">toBe</span>(conversas[<span class="num">0</span>].id);
+});
+
+<span class="fn">test</span>(<span class="str">'adicionarMensagem adiciona à conversa ativa correta'</span>, () => {
+  useChatStore.<span class="fn">getState</span>().<span class="fn">novaConversa</span>();
+  useChatStore.<span class="fn">getState</span>().<span class="fn">adicionarMensagem</span>({ role: <span class="str">'user'</span>, content: <span class="str">'oi'</span> });
+
+  <span class="kw">const</span> { conversas, conversaAtivaId } = useChatStore.<span class="fn">getState</span>();
+  <span class="kw">const</span> ativa = conversas.<span class="fn">find</span>(c => c.id === conversaAtivaId);
+  <span class="fn">expect</span>(ativa.mensagens).<span class="fn">toHaveLength</span>(<span class="num">1</span>);
+  <span class="fn">expect</span>(ativa.mensagens[<span class="num">0</span>].content).<span class="fn">toBe</span>(<span class="str">'oi'</span>);
+});
+
+<span class="fn">test</span>(<span class="str">'excluirConversa limpa conversaAtivaId se era a ativa'</span>, () => {
+  useChatStore.<span class="fn">getState</span>().<span class="fn">novaConversa</span>();
+  <span class="kw">const</span> id = useChatStore.<span class="fn">getState</span>().conversaAtivaId;
+
+  useChatStore.<span class="fn">getState</span>().<span class="fn">excluirConversa</span>(id);
+  <span class="kw">const</span> { conversas, conversaAtivaId } = useChatStore.<span class="fn">getState</span>();
+
+  <span class="fn">expect</span>(conversas).<span class="fn">toHaveLength</span>(<span class="num">0</span>);
+  <span class="fn">expect</span>(conversaAtivaId).<span class="fn">toBeNull</span>();
+});</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Mockando streaming token a token</div>
+      <p>O chatbot da Semana 7 recebe a resposta via streaming (tokens chegando um a um), não como um JSON único. Configure um handler MSW usando <code style="font-family:'JetBrains Mono',monospace;">ReadableStream</code> para simular tokens chegando com pequenos delays, e escreva um teste que verifica que o texto na tela cresce progressivamente (verificar um estado intermediário parcial, depois o texto completo).</p>
+      <span class="dif-medio">MSW · Streaming</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JavaScript — handler MSW simulando streaming</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="pp">import</span> { http, HttpResponse, delay } <span class="pp">from</span> <span class="str">'msw'</span>;
+
+<span class="kw">function</span> <span class="fn">criarStreamDeTokens</span>(tokens, delayMs = <span class="num">10</span>) {
+  <span class="kw">const</span> encoder = <span class="kw">new</span> <span class="fn">TextEncoder</span>();
+  <span class="kw">return new</span> <span class="fn">ReadableStream</span>({
+    <span class="kw">async start</span>(controller) {
+      <span class="kw">for</span> (<span class="kw">const</span> token <span class="kw">of</span> tokens) {
+        <span class="kw">await new</span> <span class="fn">Promise</span>(r => <span class="fn">setTimeout</span>(r, delayMs));
+        controller.<span class="fn">enqueue</span>(encoder.<span class="fn">encode</span>(token));
+      }
+      controller.<span class="fn">close</span>();
+    },
+  });
+}
+
+<span class="cm">// Handler que simula tokens chegando aos poucos</span>
+http.<span class="fn">post</span>(<span class="str">'/api/chat/stream'</span>, () => {
+  <span class="kw">const</span> tokens = [<span class="str">'Pa'</span>, <span class="str">'ris'</span>, <span class="str">' é'</span>, <span class="str">' a'</span>, <span class="str">' capital'</span>, <span class="str">' da'</span>, <span class="str">' França.'</span>];
+  <span class="kw">return new</span> HttpResponse(<span class="fn">criarStreamDeTokens</span>(tokens), {
+    headers: { <span class="str">'Content-Type'</span>: <span class="str">'text/event-stream'</span> },
+  });
+});
+
+<span class="cm">// Teste — verifica crescimento progressivo do texto</span>
+<span class="fn">test</span>(<span class="str">'texto cresce progressivamente durante o streaming'</span>, <span class="kw">async</span> () => {
+  <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>();
+  <span class="fn">render</span>(&lt;<span class="tag">Chatbot</span> /&gt;);
+  <span class="kw">await</span> user.<span class="fn">type</span>(screen.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>), <span class="str">'Qual a capital?{Enter}'</span>);
+
+  <span class="cm">// Estado intermediário — texto parcial já visível antes do fim do stream</span>
+  <span class="kw">await</span> <span class="fn">waitFor</span>(() => {
+    <span class="fn">expect</span>(screen.<span class="fn">getByText</span>(/^Pa/)).<span class="fn">toBeInTheDocument</span>();
+  });
+
+  <span class="cm">// Estado final — texto completo após o stream fechar</span>
+  <span class="kw">await</span> <span class="fn">waitFor</span>(() => {
+    <span class="fn">expect</span>(screen.<span class="fn">getByText</span>(<span class="str">'Paris é a capital da França.'</span>)).<span class="fn">toBeInTheDocument</span>();
+  }, { timeout: <span class="num">2000</span> });
+});</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 04 — Desafio: teste E2E com Playwright</div>
+      <p>Instale o Playwright e escreva um teste E2E do fluxo completo: abrir a aplicação no browser real (Chromium), digitar uma pergunta, aguardar a resposta (contra um servidor de desenvolvimento local com a API mockada ou um backend de teste), e verificar visualmente que a resposta aparece. Compare o tempo de execução e a complexidade de setup desse teste com os testes de integração RTL já escritos — isso ilustra por que E2E fica no topo da pirâmide.</p>
+      <span class="dif-desafio">Desafio · E2E</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JavaScript — teste E2E com Playwright</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="cm">// npm install -D @playwright/test
+// npx playwright install chromium</span>
+
+<span class="cm">// e2e/chatbot.spec.js</span>
+<span class="pp">import</span> { test, expect } <span class="pp">from</span> <span class="str">'@playwright/test'</span>;
+
+test(<span class="str">'usuário consegue enviar uma mensagem e ver a resposta'</span>, <span class="kw">async</span> ({ page }) => {
+  <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">'http://localhost:5173'</span>);
+
+  <span class="kw">const</span> campo = page.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>, { name: /digite sua mensagem/i });
+  <span class="kw">await</span> campo.<span class="fn">fill</span>(<span class="str">'Qual a capital da França?'</span>);
+  <span class="kw">await</span> campo.<span class="fn">press</span>(<span class="str">'Enter'</span>);
+
+  <span class="cm">// Espera a resposta aparecer no DOM real, no browser real</span>
+  <span class="kw">await</span> expect(page.<span class="fn">getByText</span>(/paris/i)).<span class="fn">toBeVisible</span>({ timeout: <span class="num">10000</span> });
+
+  <span class="cm">// Screenshot para inspeção visual em caso de falha</span>
+  <span class="kw">await</span> page.<span class="fn">screenshot</span>({ path: <span class="str">'e2e/screenshots/resposta-recebida.png'</span> });
+});
+
+<span class="cm">/* Comparação com o teste RTL equivalente:
+ * - RTL: roda em milissegundos, em memória (jsdom), sem browser real
+ * - Playwright: roda em segundos, abre um Chromium de verdade, precisa
+ *   do servidor de dev rodando, é mais fiel ao ambiente real do usuário
+ *   mas mais lento e mais frágil (timing, flakiness de rede)
+ * - Por isso a pirâmide recomenda MUITOS testes RTL e POUCOS E2E:
+ *   o custo de manutenção e o tempo de execução do E2E não escalam bem
+ *   para cobrir todos os cenários de erro e borda do app.
+ */</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 17</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-layer-group"></i>
+        <strong>Pirâmide de testes</strong>
+        <p>Muitos unitários (Jest), camada média de integração (RTL), poucos E2E (Playwright). Foco principal em integração para apps de IA.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-mouse-pointer"></i>
+        <strong>RTL e comportamento</strong>
+        <p>getByRole antes de getByTestId. Testar o que o usuário vê e faz, não detalhes de implementação interna. user-event simula interação real.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-plug"></i>
+        <strong>Mocks de API de IA</strong>
+        <p>Nunca chamar a API real nos testes. jest.mock substitui o módulo; MSW intercepta na camada de rede. Streaming pode ser simulado com ReadableStream.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-vial"></i>
+        <strong>Cobertura com critério</strong>
+        <p>Priorizar caminhos críticos (envio, erro, retry, acessibilidade) sobre 100% de cobertura. waitFor para asserções assíncronas.</p>
+      </div>
+    </div>
+    <div class="aviso-green" style="margin-top:1.5rem;">
+      <i class="fas fa-question-circle"></i>
+      <span><strong>Checklist final:</strong> a suíte roda sem nenhuma chamada de rede real? Os testes usam getByRole como prioridade? Erros de API (429, 500) têm teste dedicado com o mock correspondente? Os botões de feedback e o histórico têm verificação de acessibilidade no teste? Se sim — pronto para a Semana 18: Revisão Geral e Deploy.</span>
+    </div>
+    <div class="proxima" onclick="window.location.href='semana-18-frontend.html'">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 18 — Revisão Geral + Deploy: Vercel, variáveis de ambiente em produção, GitHub Actions e Lighthouse</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    :'<i class="fas fa-eye"></i> ver gabarito';
+}
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{btn.textContent='copiado!';setTimeout(()=>btn.textContent='copiar',2000);});
+}
+const quizData={
+  quiz1:{correct:'B',msg:'✅ Correto! Chamar a API real em testes traz três problemas sérios: (1) não-determinismo — o texto gerado muda a cada chamada, tornando expect(resposta).toBe(...) impossível de escrever de forma confiável; (2) custo — cada execução da suíte (rodada dezenas de vezes por dia em CI) geraria cobranças reais; (3) dependência de rede e de uma API key válida, o que quebra a suíte em ambientes de CI sem credenciais ou offline. Por isso a regra é: sempre mockar a camada de IA e testar o comportamento da UI diante de diferentes respostas simuladas.'},
+  quiz2:{correct:'B',msg:'✅ Correto! getByRole busca elementos pela árvore de acessibilidade (accessibility tree) — a mesma forma como leitores de tela e tecnologia assistiva enxergam a página. Se um botão não é encontrado por getByRole porque não tem um nome acessível, isso geralmente significa que falta um aria-label ou texto visível — um problema real de acessibilidade que data-testid mascararia completamente, já que testid não reflete nada sobre como o elemento é percebido por um usuário real.'},
+  quiz3:{correct:'B',msg:'✅ Correto! jest.mock(\'./api/chamarIA\') substitui inteiramente o módulo JavaScript — o código de fetch dentro de chamarIA nunca é executado, só a função mockada. MSW funciona em uma camada mais baixa: intercepta a requisição HTTP em si (via Service Worker no browser ou interceptação de rede no Node), então o código real de fetch/axios dentro do seu app roda normalmente e é de fato exercitado pelo teste — só a resposta do "servidor" é que é fake. Isso torna o teste mais próximo do comportamento real em produção.'}
+};
+function responder(id,el,ok,letra){
+  const ops=document.getElementById(id+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  const correta=quizData[id].correct;
+  ops.querySelectorAll('.quiz-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    if(op.querySelector('.quiz-letra').textContent.trim()===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const fb=document.getElementById(id+'-feedback');
+  fb.textContent=quizData[id].msg;
+  fb.style.background=ok?'rgba(74,222,128,.08)':'rgba(239,68,68,.08)';
+  fb.style.border=ok?'1px solid rgba(74,222,128,.22)':'1px solid rgba(239,68,68,.25)';
+  fb.style.color=ok?'rgba(134,239,172,.9)':'#fca5a5';
+  fb.style.padding='.75rem 1rem';fb.style.borderRadius='8px';
+  fb.classList.add('show');
+}
+</script>
+</body>
+</html>

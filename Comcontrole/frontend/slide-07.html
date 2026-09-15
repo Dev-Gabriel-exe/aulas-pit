@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 07 — Streaming de IA · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#0d0d1a;
+  --violet-900:#130d2e;
+  --violet-700:#3b1fa8;
+  --violet-500:#7c3aed;
+  --violet-400:#8b5cf6;
+  --violet-300:#a78bfa;
+  --violet-200:#c4b5fd;
+  --white:#fff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(139,92,246,.06);
+  --code-bg:#08060f;
+  --code-border:rgba(139,92,246,.22);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;}
+.blob-1{width:680px;height:680px;background:#3b1fa8;top:-240px;left:-200px;}
+.blob-2{width:540px;height:540px;background:#1e1040;bottom:-210px;right:-120px;}
+.blob-3{width:290px;height:290px;background:#7c3aed;top:36%;left:44%;opacity:.1;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(139,92,246,.18);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--violet-300);border:1px solid rgba(139,92,246,.32);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--violet-300);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(139,92,246,.1);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--violet-300);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--violet-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.14);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}.topico:nth-child(6){animation-delay:.6s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(139,92,246,.18);color:var(--violet-300);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(139,92,246,.05);border-left:3px solid var(--violet-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--violet-300);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--violet-300);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--violet-300);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(139,92,246,.14);color:var(--violet-300);border:1px solid rgba(139,92,246,.32);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(139,92,246,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(139,92,246,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--violet-300);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(139,92,246,.22);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--violet-300);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(139,92,246,.07);border-left:3px solid var(--violet-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--violet-300);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-violet{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.2);font-size:.86rem;color:rgba(196,181,253,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-violet i{color:var(--violet-300);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(139,92,246,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--violet-300);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(139,92,246,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(139,92,246,.03);}
+td strong{color:var(--text-primary);}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(139,92,246,.07);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--violet-300);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--violet-300);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#ddd6fe;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#374151;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(139,92,246,.12);color:var(--violet-300);border:1px solid rgba(139,92,246,.24);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-blue{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.22);}
+.badge-orange{background:rgba(251,146,60,.12);color:#fb923c;border:1px solid rgba(251,146,60,.22);}
+.badge-yellow{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.22);}
+.badge-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.22);}
+
+/* ── Comparativo cards ── */
+.proto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:.75rem 0;}
+.proto-card{border-radius:14px;padding:1.25rem;border:1px solid;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.proto-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(0,0,0,.5);}
+.proto-card__bg{position:absolute;top:-20px;right:-10px;font-size:4.5rem;opacity:.04;pointer-events:none;font-family:'JetBrains Mono',monospace;font-weight:700;}
+.proto-card__name{font-family:'Montserrat',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:.15rem;}
+.proto-card__full{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;opacity:.55;margin-bottom:.9rem;}
+.proto-card__spec{display:flex;justify-content:space-between;padding:.28rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.8rem;}
+.proto-card__spec:last-of-type{border-bottom:none;}
+.proto-card__spec-label{color:var(--text-muted);}
+.proto-card__spec-value{color:var(--text-primary);font-weight:600;text-align:right;max-width:60%;}
+
+/* ── Stream mockup ── */
+.stream-mock{background:#08060f;border:1px solid rgba(139,92,246,.25);border-radius:12px;padding:1.25rem;margin:.75rem 0;font-family:'JetBrains Mono',monospace;}
+.stream-mock__title{font-size:.65rem;color:var(--violet-300);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.75rem;}
+.stream-bubble{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;font-family:'Inter',sans-serif;font-size:.87rem;color:var(--text-primary);line-height:1.6;position:relative;}
+.stream-bubble.user{background:rgba(56,189,248,.08);border-color:rgba(56,189,248,.18);margin-left:2rem;}
+.stream-bubble.ai{margin-right:2rem;}
+.stream-bubble__label{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.3rem;}
+.stream-bubble.user .stream-bubble__label{color:#38bdf8;}
+.stream-bubble.ai .stream-bubble__label{color:var(--violet-300);}
+.cursor-blink{display:inline-block;width:2px;height:1em;background:var(--violet-300);animation:blink .7s step-end infinite;vertical-align:text-bottom;margin-left:1px;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ── SSE event mockup ── */
+.sse-mock{background:#08060f;border:1px solid rgba(139,92,246,.2);border-radius:12px;padding:1.25rem;margin:.75rem 0;}
+.sse-mock__title{font-size:.65rem;color:var(--violet-300);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.75rem;}
+.sse-event{display:flex;gap:.75rem;margin-bottom:.4rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.5;}
+.sse-event__field{color:rgba(139,92,246,.7);min-width:50px;}
+.sse-event__value{color:#ddd6fe;}
+.sse-event__value.data{color:#fde68a;}
+.sse-event__value.done{color:#4ade80;}
+.sse-divider{height:1px;background:rgba(255,255,255,.04);margin:.5rem 0;}
+
+/* ── Lab steps ── */
+.lab-steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.lab-steps::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--violet-400),rgba(139,92,246,.1));border-radius:1px;}
+.lab-step{display:flex;gap:1rem;padding:.75rem 0;}
+.lab-step__num{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;position:relative;z-index:2;background:rgba(139,92,246,.12);color:var(--violet-300);border:2px solid rgba(139,92,246,.3);}
+.lab-step__body{flex:1;padding-top:8px;}
+.lab-step__title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#f8fafc;margin-bottom:.3rem;}
+.lab-step__desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--violet-300);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;background:rgba(139,92,246,.1);color:var(--violet-300);border:1px solid rgba(139,92,246,.2);}
+.dif-medio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;letter-spacing:.05em;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(139,92,246,.2);border-radius:8px;padding:.5rem 1rem;color:var(--violet-300);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(139,92,246,.08);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+/* ── Quiz ── */
+.quiz-box{background:rgba(139,92,246,.04);border:1px solid rgba(139,92,246,.15);border-radius:12px;padding:1.25rem;margin:1rem 0;}
+.quiz-pergunta{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700;color:var(--white);margin-bottom:1rem;}
+.quiz-ops{display:flex;flex-direction:column;gap:.5rem;}
+.quiz-op{display:flex;align-items:center;gap:10px;padding:.6rem .9rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:9px;cursor:pointer;transition:all .2s;}
+.quiz-op:hover{background:rgba(139,92,246,.07);border-color:rgba(139,92,246,.22);}
+.quiz-op.correto{background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.45);}
+.quiz-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);}
+.quiz-letra{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;}
+.quiz-texto{font-size:.85rem;color:var(--text-secondary);}
+.quiz-feedback{display:none;padding:.75rem 1rem;border-radius:8px;font-size:.83rem;line-height:1.55;margin-top:.75rem;}
+.quiz-feedback.show{display:block;}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--violet-300);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(139,92,246,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--violet-300);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.proto-grid,.resumo-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:520px){
+  .proto-grid,.resumo-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">⚡ LAB + Conteúdo</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">07</div>
+    <h1 class="capa-titulo">Respostas em<br><em>Tempo Real</em><br>SSE, WebSocket e Streaming</h1>
+    <p class="capa-sub">4 aulas · 200 minutos · Fazendo a IA digitar na sua frente</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-question-circle"></i></div><span>Por que streaming muda a experiência — latência percebida vs real</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-broadcast-tower"></i></div><span>Server-Sent Events (SSE) — conexão unidirecional persistente</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-exchange-alt"></i></div><span>WebSocket — canal bidirecional full-duplex</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-stream"></i></div><span>fetch com ReadableStream — leitura incremental de chunks</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-keyboard"></i></div><span>Efeito de digitação — acumular tokens e atualizar o DOM suavemente</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-flask"></i></div><span>LAB: chatbot com streaming real usando a API da OpenAI</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade LAB</div>
+      <p>Construir um chatbot em React onde as respostas da IA aparecem token a token, com cursor piscante durante a geração e botão de cancelamento do stream.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>O que você vai usar hoje</div>
+      <ul class="info-lista">
+        <li>React com useState e useRef</li>
+        <li>fetch nativo com ReadableStream e TextDecoder</li>
+        <li>AbortController para cancelar streams</li>
+        <li>API da OpenAI (stream: true) ou Fake Stream Server local</li>
+        <li>CSS para cursor piscante e bubbles de chat</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 1–5 — HTML, React, APIs REST, APIs de IA</li>
+        <li>✅ Sem. 6 — P1</li>
+        <li>▶ Sem. 7 — Streaming: SSE, WebSocket, ReadableStream</li>
+        <li>Sem. 8 — Exibindo resultados de IA: markdown, código formatado</li>
+        <li>Sem. 9 — Visualização de dados com Chart.js e Recharts</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que isso importa</div>
+      <ul class="info-lista">
+        <li>Usuários abandonam interfaces que travam por 3–5s aguardando resposta completa</li>
+        <li>Streaming reduz a latência percebida de segundos para milissegundos</li>
+        <li>ChatGPT, Claude, Copilot — todos usam essa técnica</li>
+        <li>Entender SSE vs WebSocket define a arquitetura certa para cada produto</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">O problema da espera — e três formas de resolver</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-hourglass-half"></i>Por que streaming existe</div>
+      <p>Quando você faz uma pergunta a um LLM, o modelo não "pensa" a resposta completa e depois a envia. Ele gera <strong>um token de cada vez</strong> — cada token é uma palavra ou parte de palavra. Com uma resposta de 300 tokens a 30 tokens/segundo, você esperaria <strong>10 segundos olhando para uma tela em branco</strong>.</p>
+      <p>Streaming resolve isso enviando cada token ao cliente assim que é gerado. A resposta começa a aparecer em milissegundos. O tempo total de geração é o mesmo, mas a <strong>latência percebida</strong> cai drasticamente. É a mesma diferença de assistir um vídeo em streaming vs baixar o arquivo completo antes de abrir.</p>
+      <div class="destaque">
+        <strong>Latência percebida vs latência real:</strong> um modelo que gera 300 tokens em 10s tem a mesma latência real com ou sem streaming. Mas com streaming, o usuário começa a ler na frente enquanto o modelo ainda gera o final. A experiência muda completamente.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-balance-scale"></i>SSE vs WebSocket vs Polling — comparativo</div>
+      <div class="proto-grid">
+        <div class="proto-card" style="background:rgba(139,92,246,.05);border-color:rgba(139,92,246,.22);">
+          <div class="proto-card__bg">SSE</div>
+          <div class="proto-card__name" style="color:var(--violet-300);">SSE</div>
+          <div class="proto-card__full" style="color:var(--violet-200);">Server-Sent Events</div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Direção</span><span class="proto-card__spec-value">Servidor → Cliente</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Protocolo</span><span class="proto-card__spec-value">HTTP/1.1 ou 2</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Conexão</span><span class="proto-card__spec-value">Persistente, unidirecional</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Reconnect</span><span class="proto-card__spec-value">✅ Automático</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Complexidade</span><span class="proto-card__spec-value">Baixa</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Quando usar</span><span class="proto-card__spec-value">Stream de IA, notificações, feeds</span></div>
+          <div style="margin-top:.75rem;"><span class="badge">ChatGPT, Claude</span></div>
+        </div>
+        <div class="proto-card" style="background:rgba(56,189,248,.05);border-color:rgba(56,189,248,.2);">
+          <div class="proto-card__bg">WS</div>
+          <div class="proto-card__name" style="color:#38bdf8;">WebSocket</div>
+          <div class="proto-card__full" style="color:#7dd3fc;">Full-Duplex Channel</div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Direção</span><span class="proto-card__spec-value">Bidirecional</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Protocolo</span><span class="proto-card__spec-value">ws:// ou wss://</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Conexão</span><span class="proto-card__spec-value">Persistente, full-duplex</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Reconnect</span><span class="proto-card__spec-value">❌ Manual</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Complexidade</span><span class="proto-card__spec-value">Média</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Quando usar</span><span class="proto-card__spec-value">Chat ao vivo, jogos, colaboração</span></div>
+          <div style="margin-top:.75rem;"><span class="badge-blue">Figma, Discord, Slack</span></div>
+        </div>
+        <div class="proto-card" style="background:rgba(251,146,60,.05);border-color:rgba(251,146,60,.18);">
+          <div class="proto-card__bg">Poll</div>
+          <div class="proto-card__name" style="color:#fb923c;">Polling</div>
+          <div class="proto-card__full" style="color:#fed7aa;">Fetch Repetido</div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Direção</span><span class="proto-card__spec-value">Cliente → Servidor</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Protocolo</span><span class="proto-card__spec-value">HTTP padrão</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Conexão</span><span class="proto-card__spec-value">Nova a cada requisição</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Reconnect</span><span class="proto-card__spec-value">N/A</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Complexidade</span><span class="proto-card__spec-value">Mínima</span></div>
+          <div class="proto-card__spec"><span class="proto-card__spec-label">Quando usar</span><span class="proto-card__spec-value">Status de job, checks simples</span></div>
+          <div style="margin-top:.75rem;"><span class="badge-orange">GitHub Actions status</span></div>
+        </div>
+      </div>
+      <div class="aviso-violet">
+        <i class="fas fa-hand-paper"></i>
+        <span><strong>Pergunta para a turma:</strong> você está construindo a interface de um assistente de IA como o ChatGPT — o servidor envia tokens e o usuário pode digitar a próxima mensagem. SSE ou WebSocket? O que muda se você adicionar colaboração em tempo real, onde dois usuários podem editar o mesmo prompt?</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-broadcast-tower"></i>SSE por dentro — o formato de evento</div>
+      <p>SSE usa uma <strong>conexão HTTP persistente</strong>. O servidor mantém a conexão aberta e envia eventos em texto puro com um formato específico. O cliente usa a API <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">EventSource</code> nativa do browser — sem bibliotecas.</p>
+
+      <div class="sse-mock">
+        <div class="sse-mock__title">Formato de evento SSE — o que chega no navegador</div>
+        <div class="sse-event"><span class="sse-event__field">id:</span><span class="sse-event__value">1</span></div>
+        <div class="sse-event"><span class="sse-event__field">event:</span><span class="sse-event__value">token</span></div>
+        <div class="sse-event"><span class="sse-event__field">data:</span><span class="sse-event__value data">{"token": "Claro"}</span></div>
+        <div class="sse-divider"></div>
+        <div class="sse-event"><span class="sse-event__field">id:</span><span class="sse-event__value">2</span></div>
+        <div class="sse-event"><span class="sse-event__field">event:</span><span class="sse-event__value">token</span></div>
+        <div class="sse-event"><span class="sse-event__field">data:</span><span class="sse-event__value data">{"token": ", aqui"}</span></div>
+        <div class="sse-divider"></div>
+        <div class="sse-event"><span class="sse-event__field">id:</span><span class="sse-event__value">3</span></div>
+        <div class="sse-event"><span class="sse-event__field">event:</span><span class="sse-event__value">token</span></div>
+        <div class="sse-event"><span class="sse-event__field">data:</span><span class="sse-event__value data">{"token": " está"}</span></div>
+        <div class="sse-divider"></div>
+        <div class="sse-event"><span class="sse-event__field">data:</span><span class="sse-event__value done">[DONE]</span></div>
+        <div style="margin-top:.75rem;font-family:'Inter',sans-serif;font-size:.76rem;color:var(--text-muted);">Cada bloco separado por linha em branco é um evento. data: [DONE] é a convenção da OpenAI para sinalizar fim do stream.</div>
+      </div>
+
+      <div class="destaque">
+        <strong>Formato obrigatório:</strong> cada campo termina com <code style="font-family:'JetBrains Mono',monospace;">\n</code> e cada evento termina com <code style="font-family:'JetBrains Mono',monospace;">\n\n</code> (linha em branco). O campo <code style="font-family:'JetBrains Mono',monospace;">data:</code> é o único obrigatório. Campos opcionais: <code style="font-family:'JetBrains Mono',monospace;">id:</code> (para replay), <code style="font-family:'JetBrains Mono',monospace;">event:</code> (tipo do evento), <code style="font-family:'JetBrains Mono',monospace;">retry:</code> (intervalo de reconexão em ms).
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Você precisa construir um painel de notificações: o servidor avisa o cliente quando um processamento termina. O usuário não envia nada de volta. Qual tecnologia é a mais adequada e mais simples de implementar?</div>
+      <div class="quiz-ops" id="quiz1-ops">
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'A')"><div class="quiz-letra" style="background:rgba(56,189,248,.15);color:#60a5fa;">A</div><span class="quiz-texto">WebSocket — mais moderno e versátil para comunicação em tempo real</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,true,'B')"><div class="quiz-letra" style="background:rgba(139,92,246,.15);color:var(--violet-300);">B</div><span class="quiz-texto">Server-Sent Events (SSE) — unidirecional, reconexão automática, funciona sobre HTTP puro</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">Polling a cada 1 segundo — simples e funciona em qualquer servidor</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">WebRTC — protocolo ideal para comunicação servidor-cliente de baixa latência</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz1-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">fetch com ReadableStream — lendo tokens da OpenAI</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-stream"></i>Por que não usar EventSource com a OpenAI</div>
+      <p>A API nativa <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">EventSource</code> do browser só faz requisições GET e não permite enviar cabeçalhos customizados como o <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">Authorization: Bearer TOKEN</code>. A API da OpenAI exige um POST com o body da requisição e o token de autenticação no header.</p>
+      <p>A solução é usar <strong>fetch com ReadableStream</strong> — a API fetch retorna um objeto <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">Response</code> que expõe <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">response.body</code>, um ReadableStream. Em vez de aguardar <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">res.json()</code> (que espera a resposta completa), lemos o stream em pedaços (<strong>chunks</strong>) à medida que chegam.</p>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Abordagem</th><th>Como funciona</th><th>Problema</th></tr></thead>
+          <tbody>
+            <tr><td><strong>EventSource</strong></td><td>API nativa, reconexão automática</td><td>Só GET, sem headers customizados — não funciona com OpenAI diretamente</td></tr>
+            <tr><td><strong>fetch + res.json()</strong></td><td>Aguarda resposta completa</td><td>Bloqueia por 5–15s antes de mostrar qualquer coisa — sem streaming</td></tr>
+            <tr><td><strong>fetch + ReadableStream</strong></td><td>Lê chunks conforme chegam</td><td>✅ Solução correta — POST, headers livres, streaming real</td></tr>
+            <tr><td><strong>WebSocket</strong></td><td>Canal bidirecional persistente</td><td>Necessário quando o cliente também envia dados em tempo real durante a geração</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-code"></i>ReadableStream — o fluxo de leitura</div>
+      <p>Quando o fetch retorna com <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">stream: true</code>, o corpo da resposta não é JSON — são <strong>linhas de texto SSE</strong> chegando incrementalmente. Cada linha começa com <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">data: </code> e contém um JSON com o delta do token. Precisamos de um <code style="font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;">TextDecoder</code> para converter os bytes em texto.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JavaScript — lendo ReadableStream da OpenAI</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="kw">async function</span> <span class="fn">streamOpenAI</span>(mensagem, <span class="fn">onToken</span>, <span class="fn">onFim</span>) {
+  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://api.openai.com/v1/chat/completions'</span>, {
+    method: <span class="str">'POST'</span>,
+    headers: {
+      <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+      <span class="str">'Authorization'</span>: <span class="str">`Bearer ${process.env.REACT_APP_OPENAI_KEY}`</span>,
+    },
+    body: <span class="fn">JSON.stringify</span>({
+      model: <span class="str">'gpt-4o-mini'</span>,
+      stream: <span class="kw">true</span>,              <span class="cm">// ← ativa o streaming</span>
+      messages: [{ role: <span class="str">'user'</span>, content: mensagem }],
+    }),
+  });
+
+  <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">`HTTP ${res.status}`</span>);
+
+  <span class="kw">const</span> reader = res.body.<span class="fn">getReader</span>();   <span class="cm">// ReadableStreamDefaultReader</span>
+  <span class="kw">const</span> decoder = <span class="kw">new</span> <span class="fn">TextDecoder</span>();     <span class="cm">// converte Uint8Array → string</span>
+
+  <span class="kw">while</span> (<span class="kw">true</span>) {
+    <span class="kw">const</span> { done, value } = <span class="kw">await</span> reader.<span class="fn">read</span>();
+    <span class="kw">if</span> (done) { <span class="fn">onFim</span>(); <span class="kw">break</span>; }
+
+    <span class="kw">const</span> texto = decoder.<span class="fn">decode</span>(value, { stream: <span class="kw">true</span> });
+
+    <span class="cm">// cada chunk pode conter várias linhas SSE</span>
+    <span class="kw">const</span> linhas = texto.<span class="fn">split</span>(<span class="str">'\n'</span>).<span class="fn">filter</span>(l => l.<span class="fn">startsWith</span>(<span class="str">'data: '</span>));
+
+    <span class="kw">for</span> (<span class="kw">const</span> linha <span class="kw">of</span> linhas) {
+      <span class="kw">const</span> payload = linha.<span class="fn">slice</span>(<span class="num">6</span>);        <span class="cm">// remove "data: "</span>
+      <span class="kw">if</span> (payload === <span class="str">'[DONE]'</span>) { <span class="fn">onFim</span>(); <span class="kw">return</span>; }
+
+      <span class="kw">try</span> {
+        <span class="kw">const</span> obj = <span class="fn">JSON.parse</span>(payload);
+        <span class="kw">const</span> token = obj.choices[<span class="num">0</span>]?.delta?.content ?? <span class="str">''</span>;
+        <span class="kw">if</span> (token) <span class="fn">onToken</span>(token);         <span class="cm">// callback por token</span>
+      } <span class="kw">catch</span> { <span class="cm">/* linha incompleta — ignorar */</span> }
+    }
+  }
+}</code></pre>
+      </div>
+
+      <div class="destaque">
+        <strong>Por que o try/catch dentro do loop?</strong> Um chunk pode chegar com uma linha SSE cortada no meio — o JSON incompleto falha no parse. Isso é normal: o próximo chunk trará o restante. Ignorar silenciosamente é a abordagem correta.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-stop-circle"></i>AbortController — cancelando o stream</div>
+      <p>O usuário clicou em "Parar" no meio da geração. Sem cancelamento, o fetch continua consumindo dados em background mesmo que você não precise mais deles. O <strong>AbortController</strong> resolve isso: um sinal que pode ser enviado ao fetch para abortar a requisição a qualquer momento.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — AbortController com streaming</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="kw">const</span> [gerando, setGerando] = <span class="fn">useState</span>(<span class="kw">false</span>);
+<span class="kw">const</span> abortRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+
+<span class="kw">async function</span> <span class="fn">enviar</span>(mensagem) {
+  <span class="cm">// cancela qualquer stream anterior</span>
+  <span class="kw">if</span> (abortRef.current) abortRef.current.<span class="fn">abort</span>();
+
+  abortRef.current = <span class="kw">new</span> <span class="fn">AbortController</span>();
+  <span class="fn">setGerando</span>(<span class="kw">true</span>);
+
+  <span class="kw">try</span> {
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(url, {
+      method: <span class="str">'POST'</span>, headers, body,
+      signal: abortRef.current.signal,   <span class="cm">// ← conecta o controlador</span>
+    });
+    <span class="cm">// ... ler o stream normalmente ...</span>
+  } <span class="kw">catch</span> (e) {
+    <span class="kw">if</span> (e.name === <span class="str">'AbortError'</span>) {
+      <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'Stream cancelado pelo usuário'</span>);
+    } <span class="kw">else</span> {
+      <span class="fn">console</span>.<span class="fn">error</span>(<span class="str">'Erro no stream:'</span>, e);
+    }
+  } <span class="kw">finally</span> {
+    <span class="fn">setGerando</span>(<span class="kw">false</span>);
+  }
+}
+
+<span class="cm">// botão de parar:</span>
+<span class="cm">// &lt;button onClick={() => abortRef.current?.abort()}&gt;Parar&lt;/button&gt;</span></code></pre>
+      </div>
+
+      <div class="aviso-red">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span><strong>Por que useRef e não useState para o AbortController?</strong> O AbortController não é um dado que o componente exibe — é uma referência a um objeto externo. Colocá-lo em useState causaria um re-render toda vez que fosse criado. useRef persiste entre renders sem causá-los.</span>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Por que usar <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">useRef</code> para armazenar o AbortController em vez de <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">useState</code>?</div>
+      <div class="quiz-ops" id="quiz2-ops">
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'A')"><div class="quiz-letra" style="background:rgba(56,189,248,.15);color:#60a5fa;">A</div><span class="quiz-texto">useState não consegue armazenar objetos — só primitivos como strings e números</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,true,'B')"><div class="quiz-letra" style="background:rgba(139,92,246,.15);color:var(--violet-300);">B</div><span class="quiz-texto">useRef persiste o valor entre renders sem disparar um novo render — ideal para referências imperativas que não precisam ser exibidas</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'C')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div><span class="quiz-texto">AbortController só funciona dentro de refs — é uma limitação da API do browser</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'D')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">D</div><span class="quiz-texto">useState é assíncrono — o AbortController precisa ser criado sincronicamente</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz2-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3 · LAB</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · LAB · ~50 minutos</div>
+        <div class="secao-titulo">LAB — Chatbot com streaming real, cursor piscante e botão de parar</div>
+      </div>
+    </div>
+
+    <div class="aviso-violet">
+      <i class="fas fa-flask"></i>
+      <span>Objetivo: construir um chatbot React onde as respostas da IA aparecem token a token, com cursor piscante durante a geração, histórico de conversa e botão para cancelar o stream a qualquer momento.</span>
+    </div>
+
+    <!-- Preview do chatbot -->
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-eye"></i>O que o componente final faz</div>
+      <div class="stream-mock">
+        <div class="stream-mock__title">Preview — Chatbot com streaming</div>
+        <div class="stream-bubble user">
+          <div class="stream-bubble__label">Você</div>
+          Explique o que é um closure em JavaScript de forma simples.
+        </div>
+        <div class="stream-bubble ai">
+          <div class="stream-bubble__label">IA · gerando...</div>
+          Um closure é quando uma função "lembra" das variáveis do ambiente onde foi criada, mesmo depois que esse ambiente não existe mais. Imagine uma mochila: a função carrega consigo as variáveis que estavam ao redor quando foi definida.<div class="cursor-blink"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>Passo a passo do LAB</div>
+      <div class="lab-steps">
+        <div class="lab-step">
+          <div class="lab-step__num">1</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Criar o projeto e configurar o .env</div>
+            <div class="lab-step__desc">Use o projeto React da P1 ou crie um novo com <code style="font-family:'JetBrains Mono',monospace;">npx create-react-app chatbot-stream</code>. Crie <code style="font-family:'JetBrains Mono',monospace;">.env</code> na raiz com <code style="font-family:'JetBrains Mono',monospace;">REACT_APP_OPENAI_KEY=sk-...</code>. Adicione <code style="font-family:'JetBrains Mono',monospace;">.env</code> ao <code style="font-family:'JetBrains Mono',monospace;">.gitignore</code> antes de qualquer commit.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">2</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Estruturar os estados do componente</div>
+            <div class="lab-step__desc">Declare: <code style="font-family:'JetBrains Mono',monospace;">historico</code> (array de mensagens), <code style="font-family:'JetBrains Mono',monospace;">input</code> (texto do campo), <code style="font-family:'JetBrains Mono',monospace;">gerando</code> (boolean) e <code style="font-family:'JetBrains Mono',monospace;">respostaAtual</code> (string que cresce com os tokens). O AbortController vai em um <code style="font-family:'JetBrains Mono',monospace;">useRef</code>.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">3</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Implementar a função de stream</div>
+            <div class="lab-step__desc">Use o padrão ReadableStream da Aula 2. A cada token recebido, chame <code style="font-family:'JetBrains Mono',monospace;">setRespostaAtual(prev => prev + token)</code>. Ao receber [DONE], mova a resposta para o histórico e limpe <code style="font-family:'JetBrains Mono',monospace;">respostaAtual</code>.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">4</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Construir o JSX do chat</div>
+            <div class="lab-step__desc">Renderize o historico com map. Abaixo, se gerando === true, mostre uma bubble extra com respostaAtual + cursor piscante (span com animation blink em CSS). Input com botão Enviar (desabilitado durante geração) e botão Parar (visível só durante geração).</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">5</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Auto-scroll para o final</div>
+            <div class="lab-step__desc">Use um <code style="font-family:'JetBrains Mono',monospace;">useRef</code> em um div ao final das mensagens e chame <code style="font-family:'JetBrains Mono',monospace;">endRef.current?.scrollIntoView()</code> dentro de um <code style="font-family:'JetBrains Mono',monospace;">useEffect</code> que observa <code style="font-family:'JetBrains Mono',monospace;">respostaAtual</code> — assim o scroll acompanha os tokens em tempo real.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — ChatbotStream.jsx completo</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { <span class="fn">useState</span>, <span class="fn">useRef</span>, <span class="fn">useEffect</span> } <span class="pp">from</span> <span class="str">'react'</span>;
+<span class="pp">import</span> <span class="str">'./ChatbotStream.css'</span>;
+
+<span class="kw">export default function</span> <span class="fn">ChatbotStream</span>() {
+  <span class="kw">const</span> [historico, setHistorico] = <span class="fn">useState</span>([]);
+  <span class="kw">const</span> [input, setInput] = <span class="fn">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> [gerando, setGerando] = <span class="fn">useState</span>(<span class="kw">false</span>);
+  <span class="kw">const</span> [respostaAtual, setRespostaAtual] = <span class="fn">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> abortRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> endRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+
+  <span class="cm">// auto-scroll quando novos tokens chegam</span>
+  <span class="fn">useEffect</span>(() => {
+    endRef.current?.<span class="fn">scrollIntoView</span>({ behavior: <span class="str">'smooth'</span> });
+  }, [respostaAtual, historico]);
+
+  <span class="kw">async function</span> <span class="fn">enviar</span>() {
+    <span class="kw">if</span> (!input.<span class="fn">trim</span>() || gerando) <span class="kw">return</span>;
+
+    <span class="kw">const</span> novaMensagem = { role: <span class="str">'user'</span>, content: input };
+    <span class="kw">const</span> novoHistorico = [...historico, novaMensagem];
+    <span class="fn">setHistorico</span>(novoHistorico);
+    <span class="fn">setInput</span>(<span class="str">''</span>);
+    <span class="fn">setRespostaAtual</span>(<span class="str">''</span>);
+    <span class="fn">setGerando</span>(<span class="kw">true</span>);
+
+    abortRef.current = <span class="kw">new</span> <span class="fn">AbortController</span>();
+
+    <span class="kw">try</span> {
+      <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://api.openai.com/v1/chat/completions'</span>, {
+        method: <span class="str">'POST'</span>,
+        headers: {
+          <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+          <span class="str">'Authorization'</span>: <span class="str">`Bearer ${process.env.REACT_APP_OPENAI_KEY}`</span>,
+        },
+        body: <span class="fn">JSON.stringify</span>({
+          model: <span class="str">'gpt-4o-mini'</span>,
+          stream: <span class="kw">true</span>,
+          messages: novoHistorico,
+        }),
+        signal: abortRef.current.signal,
+      });
+
+      <span class="kw">if</span> (!res.ok) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">`HTTP ${res.status}`</span>);
+
+      <span class="kw">const</span> reader = res.body.<span class="fn">getReader</span>();
+      <span class="kw">const</span> decoder = <span class="kw">new</span> <span class="fn">TextDecoder</span>();
+      <span class="kw">let</span> textoCompleto = <span class="str">''</span>;
+
+      <span class="kw">while</span> (<span class="kw">true</span>) {
+        <span class="kw">const</span> { done, value } = <span class="kw">await</span> reader.<span class="fn">read</span>();
+        <span class="kw">if</span> (done) <span class="kw">break</span>;
+
+        <span class="kw">const</span> chunk = decoder.<span class="fn">decode</span>(value, { stream: <span class="kw">true</span> });
+        <span class="kw">const</span> linhas = chunk.<span class="fn">split</span>(<span class="str">'\n'</span>).<span class="fn">filter</span>(l => l.<span class="fn">startsWith</span>(<span class="str">'data: '</span>));
+
+        <span class="kw">for</span> (<span class="kw">const</span> linha <span class="kw">of</span> linhas) {
+          <span class="kw">const</span> payload = linha.<span class="fn">slice</span>(<span class="num">6</span>);
+          <span class="kw">if</span> (payload === <span class="str">'[DONE]'</span>) <span class="kw">break</span>;
+          <span class="kw">try</span> {
+            <span class="kw">const</span> token = <span class="fn">JSON.parse</span>(payload).choices[<span class="num">0</span>]?.delta?.content ?? <span class="str">''</span>;
+            <span class="kw">if</span> (token) {
+              textoCompleto += token;
+              <span class="fn">setRespostaAtual</span>(textoCompleto);
+            }
+          } <span class="kw">catch</span> {}
+        }
+      }
+
+      <span class="cm">// adiciona resposta completa ao histórico</span>
+      <span class="fn">setHistorico</span>(prev => [...prev, { role: <span class="str">'assistant'</span>, content: textoCompleto }]);
+
+    } <span class="kw">catch</span> (e) {
+      <span class="kw">if</span> (e.name !== <span class="str">'AbortError'</span>) {
+        <span class="fn">setHistorico</span>(prev => [...prev, { role: <span class="str">'assistant'</span>, content: <span class="str">'Erro ao gerar resposta.'</span> }]);
+      }
+    } <span class="kw">finally</span> {
+      <span class="fn">setGerando</span>(<span class="kw">false</span>);
+      <span class="fn">setRespostaAtual</span>(<span class="str">''</span>);
+    }
+  }
+
+  <span class="kw">function</span> <span class="fn">parar</span>() {
+    abortRef.current?.<span class="fn">abort</span>();
+  }
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"chat"</span>&gt;
+      &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"chat__mensagens"</span>&gt;
+        {historico.<span class="fn">map</span>((m, i) => (
+          &lt;<span class="tag">div</span> <span class="attr">key</span>={i} <span class="attr">className</span>={<span class="str">`bubble bubble--${m.role}`</span>}&gt;
+            &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"bubble__label"</span>&gt;{m.role === <span class="str">'user'</span> ? <span class="str">'Você'</span> : <span class="str">'IA'</span>}&lt;/<span class="tag">span</span>&gt;
+            {m.content}
+          &lt;/<span class="tag">div</span>&gt;
+        ))}
+        {gerando &amp;&amp; respostaAtual &amp;&amp; (
+          &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"bubble bubble--assistant"</span>&gt;
+            &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"bubble__label"</span>&gt;IA · gerando...&lt;/<span class="tag">span</span>&gt;
+            {respostaAtual}
+            &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"cursor"</span>&gt;&lt;/<span class="tag">span</span>&gt;
+          &lt;/<span class="tag">div</span>&gt;
+        )}
+        &lt;<span class="tag">div</span> <span class="attr">ref</span>={endRef} /&gt;
+      &lt;/<span class="tag">div</span>&gt;
+
+      &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"chat__input-area"</span>&gt;
+        &lt;<span class="tag">textarea</span>
+          <span class="attr">value</span>={input}
+          <span class="attr">onChange</span>={e => <span class="fn">setInput</span>(e.target.value)}
+          <span class="attr">onKeyDown</span>={e => e.key === <span class="str">'Enter'</span> &amp;&amp; !e.shiftKey &amp;&amp; (<span class="fn">enviar</span>(), e.<span class="fn">preventDefault</span>())}
+          <span class="attr">placeholder</span>=<span class="str">"Digite sua mensagem... (Enter para enviar)"</span>
+          <span class="attr">disabled</span>={gerando}
+        /&gt;
+        &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"chat__buttons"</span>&gt;
+          &lt;<span class="tag">button</span> <span class="attr">onClick</span>={enviar} <span class="attr">disabled</span>={gerando || !input.<span class="fn">trim</span>()}&gt;Enviar&lt;/<span class="tag">button</span>&gt;
+          {gerando &amp;&amp; &lt;<span class="tag">button</span> <span class="attr">onClick</span>={parar} <span class="attr">className</span>=<span class="str">"btn-parar"</span>&gt;⏹ Parar&lt;/<span class="tag">button</span>&gt;}
+        &lt;/<span class="tag">div</span>&gt;
+      &lt;/<span class="tag">div</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS — ChatbotStream.css</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code>.chat {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 720px;
+  margin: 0 auto;
+  background: #0d0d1a;
+}
+.chat__mensagens {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.bubble {
+  padding: .75rem 1rem;
+  border-radius: 12px;
+  font-size: .92rem;
+  line-height: 1.65;
+  max-width: 85%;
+}
+.bubble--user {
+  background: rgba(56,189,248,.1);
+  border: 1px solid rgba(56,189,248,.2);
+  align-self: flex-end;
+  color: #e0f2fe;
+}
+.bubble--assistant {
+  background: rgba(139,92,246,.1);
+  border: 1px solid rgba(139,92,246,.2);
+  align-self: flex-start;
+  color: #ede9fe;
+}
+.bubble__label {
+  display: block;
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-weight: 700;
+  margin-bottom: .35rem;
+  opacity: .6;
+}
+<span class="cm">/* cursor piscante */</span>
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #a78bfa;
+  animation: piscar .7s step-end infinite;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+}
+@keyframes piscar { 0%,100% { opacity:1 } 50% { opacity:0 } }
+
+.chat__input-area {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255,255,255,.07);
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+textarea {
+  width: 100%;
+  padding: .75rem 1rem;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: .9rem;
+  resize: none;
+  min-height: 60px;
+}
+.chat__buttons { display: flex; gap: .75rem; }
+button {
+  padding: .6rem 1.4rem;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  background: #7c3aed;
+  color: white;
+  transition: background .2s;
+}
+button:disabled { opacity: .4; cursor: not-allowed; }
+button:not(:disabled):hover { background: #6d28d9; }
+.btn-parar { background: rgba(239,68,68,.2); border: 1px solid rgba(239,68,68,.3); color: #fca5a5; }
+.btn-parar:hover { background: rgba(239,68,68,.35) !important; }</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Exercícios</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">→</div>
+      <div class="secao-info">
+        <div class="secao-label">Exercícios · Conceito + LAB</div>
+        <div class="secao-titulo">4 exercícios — do conceito ao streaming avançado</div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — Entendendo o chunk</div>
+      <p>Adicione um <code style="font-family:'JetBrains Mono',monospace;">console.log(chunk)</code> dentro do loop de leitura do stream e observe o output no DevTools. Responda: (a) cada chunk corresponde a exatamente um token? (b) o que acontece quando uma linha SSE chega cortada no meio de um chunk? Como o código atual lida com isso?</p>
+      <span class="dif-basico">Conceito + observação</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="card" style="margin-top:.5rem;">
+          <ul class="icon-list">
+            <li><i class="fas fa-check-circle"></i><span><strong>(a)</strong> Não — um chunk pode conter zero, um ou vários tokens. O tamanho do chunk depende da velocidade da rede e do buffer do servidor. Em condições rápidas, um único chunk pode trazer 5–10 linhas SSE de uma vez.</span></li>
+            <li><i class="fas fa-check-circle"></i><span><strong>(b)</strong> Quando a linha SSE é cortada no meio, <code style="font-family:'JetBrains Mono',monospace;">JSON.parse(payload)</code> falha com SyntaxError. O <code style="font-family:'JetBrains Mono',monospace;">try/catch</code> captura o erro silenciosamente e passa para o próximo chunk. O próximo chunk trará a continuação da linha — mas como cada chunk é processado de forma independente, o fragmento anterior é descartado. Para casos críticos, a solução robusta é um buffer acumulador que junta fragmentos entre chunks antes de tentar o parse.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Indicador de tokens por segundo</div>
+      <p>Adicione ao chatbot um contador que mostra a velocidade do stream em tempo real: "X tokens/s". Use um <code style="font-family:'JetBrains Mono',monospace;">useRef</code> para guardar o timestamp do início da geração e o total de tokens recebidos. Atualize o display a cada token com <code style="font-family:'JetBrains Mono',monospace;">useState</code>. Some o estado de geração para exibir "— tokens/s" quando não está gerando.</p>
+      <span class="dif-medio">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Trecho — adicionar ao ChatbotStream.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="cm">// Dentro do componente, antes do return:</span>
+<span class="kw">const</span> [velocidade, setVelocidade] = <span class="fn">useState</span>(<span class="num">0</span>);
+<span class="kw">const</span> inicioRef = <span class="fn">useRef</span>(<span class="kw">null</span>);
+<span class="kw">const</span> tokensRef = <span class="fn">useRef</span>(<span class="num">0</span>);
+
+<span class="cm">// Na função enviar(), antes do while loop:</span>
+inicioRef.current = <span class="fn">Date.now</span>();
+tokensRef.current = <span class="num">0</span>;
+
+<span class="cm">// Dentro do loop, após acumular o token:</span>
+<span class="kw">if</span> (token) {
+  textoCompleto += token;
+  tokensRef.current++;
+  <span class="fn">setRespostaAtual</span>(textoCompleto);
+  <span class="kw">const</span> segundos = (<span class="fn">Date.now</span>() - inicioRef.current) / <span class="num">1000</span>;
+  <span class="fn">setVelocidade</span>(<span class="fn">Math.round</span>(tokensRef.current / segundos));
+}
+
+<span class="cm">// No JSX, dentro da bubble de geração:</span>
+<span class="cm">// &lt;span className="velocidade"&gt;{velocidade} tokens/s&lt;/span&gt;</span></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Múltiplas conversas (sidebar)</div>
+      <p>Implemente uma sidebar com lista de conversas. Cada clique em "Nova conversa" cria um historico separado. Ao clicar em uma conversa da lista, o chat principal exibe o historico daquela conversa. Use um array de conversas no estado: <code style="font-family:'JetBrains Mono',monospace;">[{ id, titulo, mensagens }]</code>. O título de cada conversa deve ser gerado automaticamente a partir das primeiras palavras da primeira mensagem do usuário.</p>
+      <span class="dif-medio">Integração</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="card" style="margin-top:.5rem;">
+          <div class="card-titulo"><i class="fas fa-lightbulb"></i>Estrutura sugerida</div>
+          <ul class="icon-list">
+            <li><i class="fas fa-check-circle"></i><span>Estado principal: <code style="font-family:'JetBrains Mono',monospace;">conversas</code> (array) e <code style="font-family:'JetBrains Mono',monospace;">idAtivo</code> (string/null)</span></li>
+            <li><i class="fas fa-check-circle"></i><span>Conversa ativa derivada: <code style="font-family:'JetBrains Mono',monospace;">const ativa = conversas.find(c => c.id === idAtivo)</code> — sem estado separado</span></li>
+            <li><i class="fas fa-check-circle"></i><span>"Nova conversa" gera um id com <code style="font-family:'JetBrains Mono',monospace;">crypto.randomUUID()</code>, título provisório "Nova conversa" e mensagens []</span></li>
+            <li><i class="fas fa-check-circle"></i><span>Após a primeira mensagem do usuário: <code style="font-family:'JetBrains Mono',monospace;">titulo = input.slice(0, 30) + (input.length > 30 ? '…' : '')</code></span></li>
+            <li><i class="fas fa-check-circle"></i><span>Ao finalizar o stream, atualizar o array de conversas imutavelmente: <code style="font-family:'JetBrains Mono',monospace;">conversas.map(c => c.id === idAtivo ? {...c, mensagens: novoHist} : c)</code></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 04 — Desafio: fake stream sem API key</div>
+      <p>Crie uma função <code style="font-family:'JetBrains Mono',monospace;">fakeStream(texto, onToken, onFim)</code> que simula o streaming palavra a palavra, com intervalo de 80ms entre tokens, usando <code style="font-family:'JetBrains Mono',monospace;">setTimeout</code> e <code style="font-family:'JetBrains Mono',monospace;">AbortController</code> para cancelamento. Use para testar toda a interface do chatbot sem precisar de chave de API. A função deve respeitar o sinal de abort e parar a geração imediatamente quando acionado.</p>
+      <span class="dif-desafio">Desafio</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">JavaScript — fakeStream.js</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">export function</span> <span class="fn">fakeStream</span>(texto, <span class="fn">onToken</span>, <span class="fn">onFim</span>, signal) {
+  <span class="kw">const</span> tokens = texto.<span class="fn">split</span>(<span class="str">' '</span>);  <span class="cm">// divide em palavras</span>
+  <span class="kw">let</span> i = <span class="num">0</span>;
+  <span class="kw">let</span> timeoutId;
+
+  <span class="kw">function</span> <span class="fn">enviarProximo</span>() {
+    <span class="kw">if</span> (signal?.aborted || i >= tokens.length) {
+      <span class="fn">onFim</span>();
+      <span class="kw">return</span>;
+    }
+    <span class="cm">// adiciona espaço antes de cada palavra (exceto a primeira)</span>
+    <span class="fn">onToken</span>(i === <span class="num">0</span> ? tokens[i] : <span class="str">' '</span> + tokens[i]);
+    i++;
+    timeoutId = <span class="fn">setTimeout</span>(enviarProximo, <span class="num">80</span>);
+  }
+
+  <span class="cm">// para imediatamente se o abort já foi acionado</span>
+  signal?.addEventListener(<span class="str">'abort'</span>, () => {
+    <span class="fn">clearTimeout</span>(timeoutId);
+    <span class="fn">onFim</span>();
+  });
+
+  <span class="fn">enviarProximo</span>();
+}
+
+<span class="cm">// Uso no componente — substitui o fetch no modo de teste:</span>
+<span class="cm">// const respostas = ['Olá! Sou um assistente...', 'Claro, posso ajudar...'];</span>
+<span class="cm">// fakeStream(respostas[0], token => setRespostaAtual(p => p+token), onFim, abortRef.current.signal);</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 7</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-broadcast-tower"></i>
+        <strong>SSE vs WebSocket</strong>
+        <p>SSE: unidirecional, HTTP puro, reconexão automática — ideal para stream de IA. WebSocket: bidirecional, full-duplex — para chat ao vivo e colaboração.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-stream"></i>
+        <strong>ReadableStream + TextDecoder</strong>
+        <p>fetch retorna response.body como stream. getReader().read() lê chunks. TextDecoder converte bytes em texto. Filtrar linhas data: e ignorar [DONE].</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-stop-circle"></i>
+        <strong>AbortController + useRef</strong>
+        <p>AbortController cancela o fetch. Fica em useRef (não useState) para não causar re-renders. Verificar e.name === 'AbortError' para distinguir de outros erros.</p>
+      </div>
+    </div>
+    <div class="aviso-green" style="margin-top:1.5rem;">
+      <i class="fas fa-question-circle"></i>
+      <span><strong>Checklist:</strong> o cursor piscante aparece durante a geração e some ao terminar? O botão Parar cancela o stream imediatamente? O histórico é enviado corretamente em cada mensagem? Se sim — pronto para a Semana 8: renderizando markdown e código formatado nas respostas da IA.</span>
+    </div>
+    <div class="proxima" onclick="window.location.href='semana-08-frontend.html'">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 8 — Exibindo resultados de IA: react-markdown, syntax highlighting e tabelas dinâmicas</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    :'<i class="fas fa-eye"></i> ver gabarito';
+}
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{btn.textContent='copiado!';setTimeout(()=>btn.textContent='copiar',2000);});
+}
+
+const quizData={
+  quiz1:{correct:'B',msg:'✅ Correto! SSE é a escolha natural para streams unidirecionais do servidor para o cliente. Funciona sobre HTTP puro (sem upgrade de protocolo), tem reconexão automática embutida, e a API EventSource do browser abstrai toda a complexidade. WebSocket exigiria um servidor de socket dedicado e implementação de reconexão manual — complexidade desnecessária quando o cliente não precisa enviar dados de volta. Polling desperdiça recursos com requisições desnecessárias quando não há atualizações. WebRTC é para comunicação ponto-a-ponto entre browsers, não servidor-cliente.'},
+  quiz2:{correct:'B',msg:'✅ Correto! useRef cria um objeto com uma propriedade .current que persiste entre renders sem causar re-renders quando muda. O AbortController é um objeto imperativo — não queremos que a interface re-renderize só porque criamos ou cancelamos um controller. Se estivesse em useState, cada new AbortController() dispararia um re-render desnecessário. A regra: use useState para dados que a interface precisa exibir; use useRef para referências a objetos externos, timers, e qualquer valor que precisa persistir sem afetar a renderização.'}
+};
+
+function responder(id,el,ok,letra){
+  const ops=document.getElementById(id+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  const correta=quizData[id].correct;
+  ops.querySelectorAll('.quiz-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    if(op.querySelector('.quiz-letra').textContent.trim()===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const fb=document.getElementById(id+'-feedback');
+  fb.textContent=quizData[id].msg;
+  fb.style.background=ok?'rgba(139,92,246,.1)':'rgba(239,68,68,.08)';
+  fb.style.border=ok?'1px solid rgba(139,92,246,.3)':'1px solid rgba(239,68,68,.25)';
+  fb.style.color=ok?'var(--violet-200)':'#fca5a5';
+  fb.style.padding='.75rem 1rem';fb.style.borderRadius='8px';
+  fb.classList.add('show');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 20 — Segunda Chamada (P3) · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#150707;
+  --red-900:#3a0a0a;
+  --red-600:#dc2626;
+  --red-500:#ef4444;
+  --red-400:#f87171;
+  --red-300:#fca5a5;
+  --white:#ffffff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(239,68,68,.05);
+  --code-bg:#120404;
+  --code-border:rgba(239,68,68,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:#7f1d1d;top:-220px;left:-180px;}
+.blob-2{width:500px;height:500px;background:#3a0a0a;bottom:-200px;right:-100px;}
+.blob-3{width:260px;height:260px;background:#ef4444;top:38%;left:42%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(239,68,68,.2);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--red-300);border:1px solid rgba(239,68,68,.35);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--red-300);animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(239,68,68,.1);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2.1rem;font-weight:800;color:var(--white);line-height:1.1;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--red-400);}
+.capa-sub{font-size:.9rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--red-400);border-radius:2px;margin-bottom:2rem;}
+.cobertura{display:flex;flex-direction:column;gap:.65rem;}
+.cob-item{display:flex;align-items:center;gap:12px;padding:.65rem 1rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);font-size:.83rem;animation:slideIn .5s ease both;}
+.cob-item:nth-child(1){animation-delay:.1s;}.cob-item:nth-child(2){animation-delay:.2s;}.cob-item:nth-child(3){animation-delay:.3s;}.cob-item:nth-child(4){animation-delay:.4s;}.cob-item:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.cob-num{width:28px;height:28px;border-radius:8px;flex-shrink:0;background:rgba(239,68,68,.15);color:var(--red-400);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:800;}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--red-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--red-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(239,68,68,.15);color:var(--red-400);border:1px solid rgba(239,68,68,.35);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══════════════════════════ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(239,68,68,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(239,68,68,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--red-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(239,68,68,.2);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--red-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.07);border-left:3px solid var(--red-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--red-400);}
+.aviso-exam{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-exam i{color:var(--red-400);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-orange{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,146,60,.06);border:1px solid rgba(251,146,60,.2);font-size:.86rem;color:rgba(253,186,116,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-orange i{color:#fb923c;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(239,68,68,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--red-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(239,68,68,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(239,68,68,.03);}
+td strong{color:var(--text-primary);}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(239,68,68,.12);color:var(--red-400);border:1px solid rgba(239,68,68,.22);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-orange{background:rgba(251,146,60,.12);color:#fb923c;border:1px solid rgba(251,146,60,.22);}
+.badge-purple{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.22);}
+.badge-emerald{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.22);}
+.badge-teal{background:rgba(45,212,191,.12);color:#2dd4bf;border:1px solid rgba(45,212,191,.22);}
+
+/* ── Simulado / prova ── */
+.questao{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s;}
+.questao:hover{border-color:rgba(239,68,68,.2);}
+.q-header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;}
+.q-num{width:32px;height:32px;border-radius:9px;background:rgba(239,68,68,.12);color:var(--red-400);font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.q-semana{font-size:.65rem;padding:2px 7px;border-radius:4px;font-weight:600;margin-top:6px;flex-shrink:0;}
+.q-texto{font-size:.92rem;color:var(--text-primary);line-height:1.6;font-weight:500;}
+.q-opcoes{display:flex;flex-direction:column;gap:.45rem;}
+.q-op{display:flex;align-items:flex-start;gap:.65rem;padding:.6rem .85rem;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);transition:all .2s;font-size:.85rem;color:var(--text-secondary);}
+.q-op:hover{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.2);}
+.q-op.correto{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.35);color:#86efac;}
+.q-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);}
+.q-letra{width:22px;height:22px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;margin-top:1px;}
+.q-gabarito{display:none;margin-top:.85rem;padding:.85rem 1rem;border-radius:9px;font-size:.83rem;line-height:1.6;}
+.q-gabarito.show{display:block;}
+
+/* ── Score ── */
+.score-box{display:none;margin-top:1rem;padding:1rem 1.25rem;border-radius:12px;text-align:center;}
+.score-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;}
+
+/* ── Elegibilidade ── */
+.elig-item{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.elig-item:last-child{border-bottom:none;}
+.elig-item i{color:var(--red-400);font-size:.9rem;margin-top:3px;flex-shrink:0;width:16px;}
+.elig-item span{font-size:.86rem;color:var(--text-secondary);line-height:1.55;}
+
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(239,68,68,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+
+.encerramento{padding:1.5rem 1.75rem;border-radius:16px;background:linear-gradient(135deg,rgba(239,68,68,.1),rgba(127,29,29,.06));border:1px solid rgba(239,68,68,.25);margin-top:3rem;text-align:center;}
+.encerramento i{font-size:1.8rem;color:var(--red-400);margin-bottom:.75rem;display:block;}
+.encerramento-titulo{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:800;color:var(--white);margin-bottom:.5rem;}
+.encerramento p{font-size:.88rem;color:var(--text-secondary);line-height:1.65;max-width:640px;margin:0 auto;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">🔴 Segunda Chamada</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">20</div>
+    <h1 class="capa-titulo"><em>Segunda Chamada</em><br>Prova Substitutiva (P3)</h1>
+    <p class="capa-sub">Prova objetiva · Conteúdo das Semanas 14 a 18</p>
+    <div class="divider"></div>
+    <p style="font-size:.85rem;color:var(--text-secondary);margin-bottom:1.25rem;">Esta prova substitutiva é destinada exclusivamente a alunos com frequência válida que não puderam realizar a P3 na data regular (Semana 19). O conteúdo cobrado é o mesmo da P3: Semanas 14 a 18.</p>
+    <div class="cobertura">
+      <div class="cob-item"><div class="cob-num">S14</div><span>Acessibilidade (a11y) — WCAG, ARIA, foco visível</span></div>
+      <div class="cob-item"><div class="cob-num">S15</div><span>Performance — Core Web Vitals, code splitting, caching</span></div>
+      <div class="cob-item"><div class="cob-num">S16</div><span>Estado global — Zustand, Redux Toolkit, persistência</span></div>
+      <div class="cob-item"><div class="cob-num">S17</div><span>Testes — Jest, React Testing Library, mocks de API</span></div>
+      <div class="cob-item"><div class="cob-num">S18</div><span>Deploy e CI/CD — Vercel, variáveis de ambiente, Lighthouse</span></div>
+    </div>
+  </div>
+
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-clipboard-list"></i>Formato da prova</div>
+      <ul class="info-lista">
+        <li>20 questões objetivas de múltipla escolha (A/B/C/D)</li>
+        <li>4 questões por bloco temático, 5 blocos no total</li>
+        <li>Valor de 0,5 ponto por questão — total de 10,0 pontos</li>
+        <li>Prova sem consulta</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-user-check"></i>Elegibilidade</div>
+      <ul class="info-lista">
+        <li>Somente alunos com frequência válida no período</li>
+        <li>Destinada a quem não realizou a P3 na Semana 19</li>
+        <li>Substitui exclusivamente a nota da P3 — não repõe P1 ou P2</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Dica de ouro</div>
+      <ul class="info-lista">
+        <li>O conteúdo é idêntico ao da P3 — revisar a página da Semana 19 (simulado + dissertativas) é a preparação mais direta</li>
+        <li>Preste atenção a questões que conectam mais de um tema (ex: como o Lighthouse CI automatiza a11y e performance)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>ver a prova</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">ℹ</div>
+      <div class="secao-info">
+        <div class="secao-label">Antes de começar</div>
+        <div class="secao-titulo">Regras da Segunda Chamada</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="elig-item"><i class="fas fa-check-circle"></i><span>A Segunda Chamada é exclusiva para alunos com <strong>frequência válida</strong> que não realizaram a P3 na data regular por motivo justificado.</span></div>
+      <div class="elig-item"><i class="fas fa-check-circle"></i><span>Esta prova <strong>substitui apenas a nota da P3</strong> — não é possível usá-la para repor P1 ou P2.</span></div>
+      <div class="elig-item"><i class="fas fa-check-circle"></i><span>O conteúdo cobrado é <strong>idêntico</strong> ao da P3 regular: Semanas 14 a 18 (a11y, performance, estado global, testes, deploy/CI-CD).</span></div>
+      <div class="elig-item"><i class="fas fa-check-circle"></i><span>A prova é <strong>sem consulta</strong>, com 20 questões objetivas — marque apenas uma alternativa por questão.</span></div>
+    </div>
+    <div class="aviso-exam">
+      <i class="fas fa-stopwatch"></i>
+      <span>Clique em uma alternativa para ver se está correta. Ao final, use o botão "Ver meu score" para conferir o resultado completo.</span>
+    </div>
+  </section>
+
+  <div class="sep"><span>Bloco 1 — Acessibilidade (Semana 14)</span></div>
+
+  <section class="secao">
+    <!-- Q1 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">1</div>
+        <span class="q-semana badge-teal">a11y</span>
+        <div class="q-texto">O critério WCAG 2.1 1.4.3 (Contraste Mínimo, nível AA) exige qual razão mínima de contraste para texto normal?</div>
+      </div>
+      <div class="q-opcoes" id="q1-ops">
+        <div class="q-op" onclick="respQ('q1',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>2:1</div>
+        <div class="q-op" onclick="respQ('q1',this,'B',false)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>3:1</div>
+        <div class="q-op" onclick="respQ('q1',this,'C',true)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>4.5:1</div>
+        <div class="q-op" onclick="respQ('q1',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>7:1</div>
+      </div>
+      <div class="q-gabarito" id="q1-gab"><strong>✅ Alternativa C.</strong> O critério 1.4.3 (nível AA) exige razão de contraste ≥ 4.5:1 para texto normal (abaixo de 18pt ou 14pt em negrito) e ≥ 3:1 apenas para texto grande. 7:1 é o exigido pelo critério 1.4.6 (nível AAA, mais rigoroso).</div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">2</div>
+        <span class="q-semana badge-teal">a11y</span>
+        <div class="q-texto">Um chatbot exibe novos tokens em uma &lt;div&gt; comum, sem nenhum atributo ARIA. Qual combinação resolve o problema de leitores de tela não anunciarem as novas mensagens?</div>
+      </div>
+      <div class="q-opcoes" id="q2-ops">
+        <div class="q-op" onclick="respQ('q2',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>tabindex="0" na div</div>
+        <div class="q-op" onclick="respQ('q2',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>role="log" + aria-live="polite"</div>
+        <div class="q-op" onclick="respQ('q2',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>aria-label em cada palavra</div>
+        <div class="q-op" onclick="respQ('q2',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>trocar a div por um &lt;span&gt;</div>
+      </div>
+      <div class="q-gabarito" id="q2-gab"><strong>✅ Alternativa B.</strong> aria-live="polite" instrui o leitor de tela a anunciar mudanças de conteúdo naquela região sem interromper agressivamente. role="log" complementa indicando que é uma região que recebe adições ao final — a combinação usada no histórico de mensagens de um chatbot.</div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">3</div>
+        <span class="q-semana badge-teal">a11y</span>
+        <div class="q-texto">Por que usar :focus-visible em vez de :focus para estilizar o indicador de foco?</div>
+      </div>
+      <div class="q-opcoes" id="q3-ops">
+        <div class="q-op" onclick="respQ('q3',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>São exatamente a mesma coisa, só nomes diferentes</div>
+        <div class="q-op" onclick="respQ('q3',this,'B',false)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>:focus-visible funciona apenas em Safari</div>
+        <div class="q-op" onclick="respQ('q3',this,'C',true)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>:focus-visible só exibe o indicador quando a navegação é por teclado, evitando o anel aparecer em cliques de mouse</div>
+        <div class="q-op" onclick="respQ('q3',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>:focus-visible desabilita completamente a navegação por mouse</div>
+      </div>
+      <div class="q-gabarito" id="q3-gab"><strong>✅ Alternativa C.</strong> :focus dispara tanto para clique quanto para teclado — o anel aparece mesmo ao clicar, o que muitos designers acham indesejado. :focus-visible é mais inteligente: só exibe o indicador quando o browser determina que a navegação é por teclado.</div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">4</div>
+        <span class="q-semana badge-teal">a11y</span>
+        <div class="q-texto">Qual é o propósito da classe utilitária "sr-only" (ou equivalente) usada em labels de botões de emoji?</div>
+      </div>
+      <div class="q-opcoes" id="q4-ops">
+        <div class="q-op" onclick="respQ('q4',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Remove o elemento completamente da árvore de acessibilidade</div>
+        <div class="q-op" onclick="respQ('q4',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Esconde visualmente o texto mas mantém acessível para leitores de tela</div>
+        <div class="q-op" onclick="respQ('q4',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Aumenta o tamanho da fonte apenas para leitores de tela</div>
+        <div class="q-op" onclick="respQ('q4',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Só funciona dentro de tabelas</div>
+      </div>
+      <div class="q-gabarito" id="q4-gab"><strong>✅ Alternativa B.</strong> A classe sr-only usa técnicas de CSS (position:absolute, clip, width/height de 1px) para ocultar visualmente um texto sem removê-lo da árvore de acessibilidade — ao contrário de display:none ou visibility:hidden, que removem o elemento completamente para leitores de tela também.</div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Bloco 2 — Performance (Semana 15)</span></div>
+
+  <section class="secao">
+    <!-- Q5 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">5</div>
+        <span class="q-semana badge-orange">perf</span>
+        <div class="q-texto">Quais são os limites de "bom" desempenho (nível verde) para LCP e INP segundo o Google?</div>
+      </div>
+      <div class="q-opcoes" id="q5-ops">
+        <div class="q-op" onclick="respQ('q5',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>LCP ≤ 1s, INP ≤ 50ms</div>
+        <div class="q-op" onclick="respQ('q5',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>LCP ≤ 2.5s, INP ≤ 200ms</div>
+        <div class="q-op" onclick="respQ('q5',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>LCP ≤ 5s, INP ≤ 500ms</div>
+        <div class="q-op" onclick="respQ('q5',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>LCP ≤ 10s, INP ≤ 1000ms</div>
+      </div>
+      <div class="q-gabarito" id="q5-gab"><strong>✅ Alternativa B.</strong> LCP (Largest Contentful Paint) "bom" é ≤ 2.5s. INP (Interaction to Next Paint) "bom" é ≤ 200ms. Esses são os limiares que o Google usa como referência de boa experiência do usuário nos Core Web Vitals.</div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">6</div>
+        <span class="q-semana badge-orange">perf</span>
+        <div class="q-texto">Um chatbot com Transformers.js roda a inferência do modelo na thread principal. Qual é a consequência mais provável para o INP?</div>
+      </div>
+      <div class="q-opcoes" id="q6-ops">
+        <div class="q-op" onclick="respQ('q6',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Nenhuma — a inferência não afeta métricas de interação</div>
+        <div class="q-op" onclick="respQ('q6',this,'B',false)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>O INP melhora, pois a thread principal fica mais ocupada e otimizada</div>
+        <div class="q-op" onclick="respQ('q6',this,'C',true)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>O INP piora, pois a inferência bloqueia a atualização visual até terminar</div>
+        <div class="q-op" onclick="respQ('q6',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>O INP só é afetado se o modelo tiver mais de 1GB</div>
+      </div>
+      <div class="q-gabarito" id="q6-gab"><strong>✅ Alternativa C.</strong> Inferência rodando na thread principal bloqueia todo o JavaScript, incluindo a atualização da UI que mostraria feedback ao clique do usuário. A correção é mover a inferência para um Web Worker, liberando a thread principal.</div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">7</div>
+        <span class="q-semana badge-orange">perf</span>
+        <div class="q-texto">O que React.lazy() + Suspense permitem fazer em termos de bundle?</div>
+      </div>
+      <div class="q-opcoes" id="q7-ops">
+        <div class="q-op" onclick="respQ('q7',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Compactar todo o CSS em um único arquivo</div>
+        <div class="q-op" onclick="respQ('q7',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Carregar um componente (e seu código) somente quando ele for de fato renderizado, dividindo o bundle em chunks</div>
+        <div class="q-op" onclick="respQ('q7',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Eliminar completamente a necessidade de testes</div>
+        <div class="q-op" onclick="respQ('q7',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Rodar o React sem JavaScript no cliente</div>
+      </div>
+      <div class="q-gabarito" id="q7-gab"><strong>✅ Alternativa B.</strong> React.lazy() faz o import dinâmico de um componente, cujo código só é baixado quando ele é renderizado pela primeira vez. Suspense exibe um fallback enquanto esse chunk carrega — a base do code splitting em React.</div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">8</div>
+        <span class="q-semana badge-orange">perf</span>
+        <div class="q-texto">Por que importar seletivamente um tema do react-syntax-highlighter (em vez do pacote completo de temas) reduz o bundle em centenas de KB?</div>
+      </div>
+      <div class="q-opcoes" id="q8-ops">
+        <div class="q-op" onclick="respQ('q8',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Porque o React remove automaticamente qualquer CSS não utilizado</div>
+        <div class="q-op" onclick="respQ('q8',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Porque a importação completa inclui dezenas de temas não usados, e a seletiva evita empacotar esse código morto</div>
+        <div class="q-op" onclick="respQ('q8',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Porque temas de highlight são sempre carregados via streaming</div>
+        <div class="q-op" onclick="respQ('q8',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Não há diferença real de tamanho, apenas de organização</div>
+      </div>
+      <div class="q-gabarito" id="q8-gab"><strong>✅ Alternativa B.</strong> O pacote completo empacota todos os temas disponíveis mesmo que só um seja usado. Importar diretamente o caminho do tema específico evita ~840KB de código morto no bundle final — um dos ajustes de maior impacto visto na Semana 15.</div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Bloco 3 — Estado Global (Semana 16)</span></div>
+
+  <section class="secao">
+    <!-- Q9 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">9</div>
+        <span class="q-semana badge-purple">estado</span>
+        <div class="q-texto">Qual é o principal problema de usar Context API para armazenar estado que muda com alta frequência (ex: streaming de mensagens)?</div>
+      </div>
+      <div class="q-opcoes" id="q9-ops">
+        <div class="q-op" onclick="respQ('q9',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Context API não suporta arrays</div>
+        <div class="q-op" onclick="respQ('q9',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Todo componente que consome o Context re-renderiza a cada mudança do value, mesmo usando só uma fatia dele</div>
+        <div class="q-op" onclick="respQ('q9',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Context API exige um servidor Redis para funcionar</div>
+        <div class="q-op" onclick="respQ('q9',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Context API não pode ser usado dentro de componentes funcionais</div>
+      </div>
+      <div class="q-gabarito" id="q9-gab"><strong>✅ Alternativa B.</strong> Qualquer mudança no value de um Provider re-renderiza todos os consumidores daquele Context, independente de qual fatia específica cada um usa. Em estado de alta frequência (streaming), isso gera re-renders em cascata desnecessários.</div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">10</div>
+        <span class="q-semana badge-purple">estado</span>
+        <div class="q-texto">Como o Zustand evita o problema de re-render em cascata que a Context API tem?</div>
+      </div>
+      <div class="q-opcoes" id="q10-ops">
+        <div class="q-op" onclick="respQ('q10',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Ele não permite múltiplos componentes lerem a mesma store</div>
+        <div class="q-op" onclick="respQ('q10',this,'B',false)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Ele força o uso de Redux por baixo dos panos</div>
+        <div class="q-op" onclick="respQ('q10',this,'C',true)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Seletores granulares (useStore(estado => estado.campo)) fazem o componente re-renderizar só quando aquela fatia específica muda</div>
+        <div class="q-op" onclick="respQ('q10',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Ele desabilita o React Strict Mode automaticamente</div>
+      </div>
+      <div class="q-gabarito" id="q10-gab"><strong>✅ Alternativa C.</strong> O Zustand compara o retorno do seletor entre renders e só dispara re-render se aquele valor específico mudou — diferente da Context API, que propaga qualquer mudança do value para todos os consumidores.</div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">11</div>
+        <span class="q-semana badge-purple">estado</span>
+        <div class="q-texto">No middleware persist do Zustand, qual é a função do partialize?</div>
+      </div>
+      <div class="q-opcoes" id="q11-ops">
+        <div class="q-op" onclick="respQ('q11',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Compactar o JSON salvo no localStorage usando gzip</div>
+        <div class="q-op" onclick="respQ('q11',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Escolher quais campos da store são persistidos, permitindo excluir estado transitório como "streaming: true"</div>
+        <div class="q-op" onclick="respQ('q11',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Dividir a store em múltiplos arquivos separados</div>
+        <div class="q-op" onclick="respQ('q11',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Criptografar automaticamente os dados sensíveis</div>
+      </div>
+      <div class="q-gabarito" id="q11-gab"><strong>✅ Alternativa B.</strong> partialize decide o que sobrevive a um reload da página, permitindo excluir campos transitórios (como um "streaming: true" que não faz sentido persistir) e manter só o que deve de fato ser recuperado, como o histórico de conversas.</div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">12</div>
+        <span class="q-semana badge-purple">estado</span>
+        <div class="q-texto">Em qual cenário Redux Toolkit tende a compensar mais que Zustand?</div>
+      </div>
+      <div class="q-opcoes" id="q12-ops">
+        <div class="q-op" onclick="respQ('q12',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Sempre — Redux Toolkit é superior em qualquer projeto</div>
+        <div class="q-op" onclick="respQ('q12',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Em times grandes, projetos de longa duração com convenções rígidas, ou quando há necessidade de ferramentas como RTK Query e DevTools nativo</div>
+        <div class="q-op" onclick="respQ('q12',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Apenas quando o projeto não faz nenhuma chamada de API</div>
+        <div class="q-op" onclick="respQ('q12',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Zustand não pode persistir dados, então RTK é sempre obrigatório</div>
+      </div>
+      <div class="q-gabarito" id="q12-gab"><strong>✅ Alternativa B.</strong> Não existe uma escolha universalmente "melhor" — é um trade-off. Zustand é mais ágil para projetos pequenos/médios; RTK compensa em times grandes com mais convenções e ferramentas de ecossistema.</div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Bloco 4 — Testes de Front-end (Semana 17)</span></div>
+
+  <section class="secao">
+    <!-- Q13 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">13</div>
+        <span class="q-semana badge-emerald">testes</span>
+        <div class="q-texto">Por que testes de front-end de um chatbot de IA nunca devem chamar a API real da OpenAI/HuggingFace durante a suíte?</div>
+      </div>
+      <div class="q-opcoes" id="q13-ops">
+        <div class="q-op" onclick="respQ('q13',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Porque o Jest bloqueia tecnicamente qualquer chamada de rede</div>
+        <div class="q-op" onclick="respQ('q13',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Porque a resposta é não-determinística, a chamada é lenta e custosa, e depende de rede/API key válida</div>
+        <div class="q-op" onclick="respQ('q13',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Porque as APIs de IA bloqueiam automaticamente ferramentas de teste</div>
+        <div class="q-op" onclick="respQ('q13',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Não há problema real, é apenas uma convenção estética</div>
+      </div>
+      <div class="q-gabarito" id="q13-gab"><strong>✅ Alternativa B.</strong> Não-determinismo, custo e dependência de rede/API key tornam a API real inviável para testes automatizados. A prática correta é mockar sempre a camada de IA com jest.mock ou MSW.</div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">14</div>
+        <span class="q-semana badge-emerald">testes</span>
+        <div class="q-texto">Qual é a principal diferença entre jest.mock('./api/chamarIA') e usar MSW para mockar a mesma chamada?</div>
+      </div>
+      <div class="q-opcoes" id="q14-ops">
+        <div class="q-op" onclick="respQ('q14',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Não há diferença nenhuma entre as duas técnicas</div>
+        <div class="q-op" onclick="respQ('q14',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>jest.mock substitui o módulo JS inteiro; MSW intercepta a requisição na camada de rede, mantendo o código real de fetch em execução</div>
+        <div class="q-op" onclick="respQ('q14',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>MSW só funciona com Axios, nunca com fetch nativo</div>
+        <div class="q-op" onclick="respQ('q14',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>jest.mock é mais lento pois inicia um servidor de verdade</div>
+      </div>
+      <div class="q-gabarito" id="q14-gab"><strong>✅ Alternativa B.</strong> jest.mock troca a função/módulo inteiro. MSW opera na camada de rede, deixando o código real de fetch/axios ser exercitado de fato — só a resposta do "servidor" é fake, tornando o teste mais fiel ao comportamento real.</div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">15</div>
+        <span class="q-semana badge-emerald">testes</span>
+        <div class="q-texto">Por que a React Testing Library recomenda getByRole antes de getByTestId?</div>
+      </div>
+      <div class="q-opcoes" id="q15-ops">
+        <div class="q-op" onclick="respQ('q15',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>getByTestId é mais lento de executar durante a suíte</div>
+        <div class="q-op" onclick="respQ('q15',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>getByRole reflete o que tecnologia assistiva percebe; se falhar, geralmente revela um problema real de acessibilidade</div>
+        <div class="q-op" onclick="respQ('q15',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>data-testid não é suportado pelo Jest</div>
+        <div class="q-op" onclick="respQ('q15',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Não há diferença real de propósito entre as duas queries</div>
+      </div>
+      <div class="q-gabarito" id="q15-gab"><strong>✅ Alternativa B.</strong> getByRole busca pela árvore de acessibilidade — a mesma forma como leitores de tela enxergam a página. Falhar nessa query geralmente expõe falta de aria-label ou semântica correta, não um problema do teste em si.</div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">16</div>
+        <span class="q-semana badge-emerald">testes</span>
+        <div class="q-texto">Segundo a pirâmide de testes, qual é a distribuição recomendada entre os tipos de teste em um projeto saudável?</div>
+      </div>
+      <div class="q-opcoes" id="q16-ops">
+        <div class="q-op" onclick="respQ('q16',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Muitos E2E, poucos unitários</div>
+        <div class="q-op" onclick="respQ('q16',this,'B',false)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Quantidade igual de unitários, integração e E2E</div>
+        <div class="q-op" onclick="respQ('q16',this,'C',true)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Muitos unitários na base, camada média de integração, poucos E2E no topo</div>
+        <div class="q-op" onclick="respQ('q16',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Apenas testes E2E são necessários, os demais são dispensáveis</div>
+      </div>
+      <div class="q-gabarito" id="q16-gab"><strong>✅ Alternativa C.</strong> A pirâmide recomenda muitos testes unitários (rápidos e baratos) na base, uma camada média de integração (RTL), e poucos E2E no topo — mais lentos e caros de manter.</div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Bloco 5 — Deploy e CI/CD (Semana 18)</span></div>
+
+  <section class="secao">
+    <!-- Q17 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">17</div>
+        <span class="q-semana badge">deploy</span>
+        <div class="q-texto">Um estudante configura a chave da OpenAI na Vercel como VITE_OPENAI_KEY e a usa direto em um componente React. Isso é seguro em produção?</div>
+      </div>
+      <div class="q-opcoes" id="q17-ops">
+        <div class="q-op" onclick="respQ('q17',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Sim, configurar no dashboard da Vercel já protege a chave automaticamente</div>
+        <div class="q-op" onclick="respQ('q17',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Não — o prefixo VITE_ injeta a variável no bundle do cliente, expondo a chave via DevTools, independente de onde foi configurada</div>
+        <div class="q-op" onclick="respQ('q17',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Sim, desde que o domínio use HTTPS</div>
+        <div class="q-op" onclick="respQ('q17',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Depende apenas de a chave ter sido gerada recentemente</div>
+      </div>
+      <div class="q-gabarito" id="q17-gab"><strong>✅ Alternativa B.</strong> O prefixo VITE_ instrui o Vite a injetar a variável no bundle JavaScript enviado ao browser — uma decisão de design da ferramenta, não um bug. A única forma segura é usar uma variável sem esse prefixo, consumida apenas dentro de uma API Route.</div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">18</div>
+        <span class="q-semana badge">deploy</span>
+        <div class="q-texto">O que é um Preview Deployment na Vercel?</div>
+      </div>
+      <div class="q-opcoes" id="q18-ops">
+        <div class="q-op" onclick="respQ('q18',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>A versão de produção que substitui automaticamente o app antigo</div>
+        <div class="q-op" onclick="respQ('q18',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Uma URL única e isolada gerada para cada Pull Request/branch, sem afetar a produção</div>
+        <div class="q-op" onclick="respQ('q18',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Um ambiente que só funciona localmente, nunca publicado</div>
+        <div class="q-op" onclick="respQ('q18',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Um recurso exclusivo para projetos Next.js</div>
+      </div>
+      <div class="q-gabarito" id="q18-gab"><strong>✅ Alternativa B.</strong> A cada Pull Request ou push em uma branch diferente da main, a Vercel gera automaticamente uma URL de Preview isolada e totalmente funcional, sem impactar a versão de produção.</div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">19</div>
+        <span class="q-semana badge">deploy</span>
+        <div class="q-texto">Um workflow de GitHub Actions roda apenas os testes Jest, sem Lighthouse CI configurado. Um componente pesado sem lazy loading é mesclado na main. O que acontece?</div>
+      </div>
+      <div class="q-opcoes" id="q19-ops">
+        <div class="q-op" onclick="respQ('q19',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>O GitHub Actions bloqueia o merge automaticamente por bundle size</div>
+        <div class="q-op" onclick="respQ('q19',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>O merge é aceito normalmente — testes Jest não avaliam performance, então a regressão passa despercebida sem Lighthouse CI</div>
+        <div class="q-op" onclick="respQ('q19',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>A Vercel recusa deploys de bundles acima de um tamanho fixo</div>
+        <div class="q-op" onclick="respQ('q19',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>O React lança erro em build se um componente for muito pesado</div>
+      </div>
+      <div class="q-gabarito" id="q19-gab"><strong>✅ Alternativa B.</strong> Testes funcionais não medem bundle size ou performance. Sem um portão de qualidade dedicado (Lighthouse CI), regressões de performance chegam à produção silenciosamente.</div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">20</div>
+        <span class="q-semana badge">deploy</span>
+        <div class="q-texto">Qual é a principal vantagem de um "rollback" na Vercel em comparação a um git revert seguido de novo deploy?</div>
+      </div>
+      <div class="q-opcoes" id="q20-ops">
+        <div class="q-op" onclick="respQ('q20',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Não existe diferença real entre as duas abordagens</div>
+        <div class="q-op" onclick="respQ('q20',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>O rollback aponta o domínio de produção para um deploy anterior já buildado, sem rodar um novo ciclo de build, sendo muito mais rápido</div>
+        <div class="q-op" onclick="respQ('q20',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Rollback exclui permanentemente o commit problemático do histórico do Git</div>
+        <div class="q-op" onclick="respQ('q20',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Rollback só está disponível em planos pagos</div>
+      </div>
+      <div class="q-gabarito" id="q20-gab"><strong>✅ Alternativa B.</strong> O rollback reaponta a produção para um artefato de build já existente, eliminando o tempo de um novo ciclo completo de instalação/build/deploy — muito mais rápido para recuperar produção em caso de bug crítico.</div>
+    </div>
+
+    <!-- Score -->
+    <div class="score-box" id="score-box">
+      <div class="score-num" id="score-num">0/20</div>
+      <div style="font-size:.85rem;color:var(--text-secondary);margin-top:.25rem;" id="score-msg"></div>
+    </div>
+
+    <div style="text-align:center;margin-top:1rem;">
+      <button onclick="calcScore()" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--red-400);padding:.7rem 2rem;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(239,68,68,.25)'" onmouseout="this.style.background='rgba(239,68,68,.15)'">
+        <i class="fas fa-calculator" style="margin-right:8px;"></i>Ver meu score
+      </button>
+    </div>
+  </section>
+
+  <!-- ── ENCERRAMENTO ── -->
+  <div class="encerramento">
+    <i class="fas fa-flag-checkered"></i>
+    <div class="encerramento-titulo">Fim do semestre</div>
+    <p>Esta é a última avaliação do calendário letivo de Desenvolvimento Front-end para IA. Boa prova — e parabéns pela jornada até aqui, do HTML/CSS/JS da Semana 1 ao deploy com CI/CD da Semana 18.</p>
+  </div>
+</main>
+
+<script>
+const correctAnswers={q1:'C',q2:'B',q3:'C',q4:'B',q5:'B',q6:'C',q7:'B',q8:'B',q9:'B',q10:'C',q11:'B',q12:'B',q13:'B',q14:'B',q15:'B',q16:'C',q17:'B',q18:'B',q19:'B',q20:'B'};
+const userAnswers={};
+
+function respQ(qId,el,letra,isCorrect){
+  const ops=document.getElementById(qId+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  userAnswers[qId]=letra;
+  const correta=correctAnswers[qId];
+  ops.querySelectorAll('.q-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    const l=op.querySelector('.q-letra').textContent.trim();
+    if(l===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const gab=document.getElementById(qId+'-gab');
+  gab.style.background=isCorrect?'rgba(74,222,128,.07)':'rgba(239,68,68,.07)';
+  gab.style.border=isCorrect?'1px solid rgba(74,222,128,.2)':'1px solid rgba(239,68,68,.2)';
+  gab.style.color=isCorrect?'rgba(134,239,172,.9)':'rgba(252,165,165,.9)';
+  gab.classList.add('show');
+}
+
+function calcScore(){
+  const total=Object.keys(correctAnswers).length;
+  let correct=0;
+  for(const [q,ans] of Object.entries(userAnswers)){
+    if(ans===correctAnswers[q])correct++;
+  }
+  const unanswered=total-Object.keys(userAnswers).length;
+  const box=document.getElementById('score-box');
+  const num=document.getElementById('score-num');
+  const msg=document.getElementById('score-msg');
+  box.style.display='block';
+  num.textContent=`${correct}/${total}`;
+  const pct=Math.round(correct/total*100);
+  if(pct>=80){num.style.color='#4ade80';msg.textContent=`${pct}% — Excelente!`;}
+  else if(pct>=60){num.style.color='#fbbf24';msg.textContent=`${pct}% — Bom! Revise os temas que errou.`;}
+  else{num.style.color='#f87171';msg.textContent=`${pct}% — Atenção! Revise os blocos com mais erros.`;}
+  if(unanswered>0)msg.textContent+=` (${unanswered} questão(ões) não respondida(s))`;
+  box.style.padding='1.25rem';
+  box.style.borderRadius='12px';
+  box.style.background='rgba(255,255,255,.04)';
+  box.style.border='1px solid rgba(255,255,255,.08)';
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+</script>
+</body>
+</html>

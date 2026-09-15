@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 19 — Prova Final (P3) · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#160610;
+  --rose-900:#3a0517;
+  --rose-700:#be123c;
+  --rose-500:#f43f5e;
+  --rose-400:#fb7185;
+  --rose-300:#fda4af;
+  --white:#ffffff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(244,63,94,.05);
+  --code-bg:#12040d;
+  --code-border:rgba(244,63,94,.2);
+  --exam-acc:#fb7185;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═════════════════════════════ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;pointer-events:none;}
+.blob-1{width:650px;height:650px;background:#7f1d3a;top:-220px;left:-180px;}
+.blob-2{width:500px;height:500px;background:#3a0517;bottom:-200px;right:-100px;}
+.blob-3{width:260px;height:260px;background:#f43f5e;top:38%;left:42%;opacity:.12;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(244,63,94,.2);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--rose-300);border:1px solid rgba(244,63,94,.35);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--rose-300);animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(244,63,94,.1);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2.2rem;font-weight:800;color:var(--white);line-height:1.1;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--rose-400);}
+.capa-sub{font-size:.9rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--rose-400);border-radius:2px;margin-bottom:2rem;}
+.cobertura{display:flex;flex-direction:column;gap:.65rem;}
+.cob-item{display:flex;align-items:center;gap:12px;padding:.65rem 1rem;border-radius:10px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);font-size:.83rem;animation:slideIn .5s ease both;}
+.cob-item:nth-child(1){animation-delay:.1s;}.cob-item:nth-child(2){animation-delay:.2s;}.cob-item:nth-child(3){animation-delay:.3s;}.cob-item:nth-child(4){animation-delay:.4s;}.cob-item:nth-child(5){animation-delay:.5s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.cob-num{width:28px;height:28px;border-radius:8px;flex-shrink:0;background:rgba(244,63,94,.15);color:var(--rose-400);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:800;}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--rose-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--rose-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(244,63,94,.15);color:var(--rose-400);border:1px solid rgba(244,63,94,.35);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══════════════════════════ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(244,63,94,.15);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(244,63,94,.18);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--rose-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(244,63,94,.2);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--rose-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(244,63,94,.07);border-left:3px solid var(--rose-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--rose-400);}
+.aviso-exam{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.2);font-size:.86rem;color:rgba(253,164,175,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-exam i{color:var(--rose-400);flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-orange{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,146,60,.06);border:1px solid rgba(251,146,60,.2);font-size:.86rem;color:rgba(253,186,116,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-orange i{color:#fb923c;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(244,63,94,.1);}
+th{padding:.6rem 1rem;text-align:left;color:var(--rose-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(244,63,94,.2);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(244,63,94,.03);}
+td strong{color:var(--text-primary);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--rose-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(244,63,94,.12);color:var(--rose-400);border:1px solid rgba(244,63,94,.22);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-purple{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.22);}
+.badge-orange{background:rgba(251,146,60,.12);color:#fb923c;border:1px solid rgba(251,146,60,.22);}
+.badge-emerald{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.22);}
+
+/* ── Semana cards ── */
+.semana-card{border-radius:14px;padding:1.25rem;border:1px solid;margin-bottom:0;}
+.s14{background:rgba(45,212,191,.04);border-color:rgba(45,212,191,.2);}
+.s15{background:rgba(249,115,22,.04);border-color:rgba(249,115,22,.18);}
+.s16{background:rgba(139,92,246,.04);border-color:rgba(139,92,246,.18);}
+.s17{background:rgba(52,211,153,.04);border-color:rgba(52,211,153,.18);}
+.s-titulo{font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.7rem;display:flex;align-items:center;gap:8px;}
+.s14 .s-titulo{color:#2dd4bf;}
+.s15 .s-titulo{color:#f97316;}
+.s16 .s-titulo{color:#a78bfa;}
+.s17 .s-titulo{color:#34d399;}
+.s-item{font-size:.8rem;color:var(--text-secondary);margin-bottom:.35rem;padding-left:.7rem;position:relative;line-height:1.5;}
+.s-item::before{content:'▸';position:absolute;left:0;font-size:.6rem;color:var(--text-muted);margin-top:2px;}
+.s-armadilha{font-size:.75rem;margin-top:.6rem;padding:.5rem .75rem;border-radius:7px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.18);color:rgba(253,230,138,.8);}
+.s-armadilha::before{content:'⚠ ';font-weight:700;}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(244,63,94,.07);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--rose-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--rose-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#fecdd3;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#4b5563;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}
+
+/* ── Simulado ── */
+.questao{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s;}
+.questao:hover{border-color:rgba(244,63,94,.2);}
+.q-header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;}
+.q-num{width:32px;height:32px;border-radius:9px;background:rgba(244,63,94,.12);color:var(--rose-400);font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.q-semana{font-size:.65rem;padding:2px 7px;border-radius:4px;font-weight:600;margin-top:6px;flex-shrink:0;}
+.q-texto{font-size:.92rem;color:var(--text-primary);line-height:1.6;font-weight:500;}
+.q-opcoes{display:flex;flex-direction:column;gap:.45rem;}
+.q-op{display:flex;align-items:flex-start;gap:.65rem;padding:.6rem .85rem;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);transition:all .2s;font-size:.85rem;color:var(--text-secondary);}
+.q-op:hover{background:rgba(244,63,94,.06);border-color:rgba(244,63,94,.2);}
+.q-op.correto{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.35);color:#86efac;}
+.q-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);color:#fca5a5;}
+.q-letra{width:22px;height:22px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;margin-top:1px;}
+.q-gabarito{display:none;margin-top:.85rem;padding:.85rem 1rem;border-radius:9px;font-size:.83rem;line-height:1.6;}
+.q-gabarito.show{display:block;}
+
+/* ── Dissertativas ── */
+.dissertativa{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;}
+.d-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--rose-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}
+.d-enunciado{font-size:.92rem;color:var(--text-primary);line-height:1.65;margin-bottom:1rem;padding:.85rem 1rem;border-radius:9px;background:rgba(244,63,94,.05);border:1px solid rgba(244,63,94,.12);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(244,63,94,.2);border-radius:8px;padding:.5rem 1rem;color:var(--rose-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(244,63,94,.08);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+.modelo-resposta{padding:1rem 1.1rem;border-radius:10px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);font-size:.85rem;color:var(--text-secondary);line-height:1.7;}
+.modelo-resposta strong{color:#4ade80;}
+
+/* ── Checklist interativo ── */
+.checklist-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.75rem 0;}
+.check-item{display:flex;align-items:flex-start;gap:.6rem;padding:.55rem .8rem;border-radius:8px;border:1px solid var(--card-border);background:var(--card-bg);cursor:pointer;transition:all .2s;}
+.check-item:hover{border-color:rgba(74,222,128,.3);}
+.check-item.checked{background:rgba(74,222,128,.07);border-color:rgba(74,222,128,.3);}
+.check-box{width:18px;height:18px;border-radius:4px;border:1px solid rgba(255,255,255,.2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .2s;}
+.check-item.checked .check-box{background:rgba(74,222,128,.3);border-color:#4ade80;color:#4ade80;}
+.check-label{font-size:.8rem;color:var(--text-secondary);line-height:1.45;}
+.check-item.checked .check-label{color:rgba(134,239,172,.8);}
+.progress-bar-wrap{margin:1rem 0;padding:1rem 1.25rem;border-radius:12px;background:var(--card-bg);border:1px solid var(--card-border);}
+.progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;}
+.progress-label span{font-size:.78rem;color:var(--text-secondary);}
+.progress-label strong{font-size:.82rem;color:var(--text-primary);}
+.progress-track{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#be123c,#fb7185);border-radius:4px;transition:width .4s ease;}
+
+/* ── Instrução de prova / apresentação ── */
+.prova-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.75rem 0;}
+.prova-etapa{border-radius:12px;padding:1.1rem;border:1px solid rgba(255,255,255,.07);background:var(--card-bg);}
+.prova-num{font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:800;color:rgba(244,63,94,.15);line-height:1;margin-bottom:.4rem;}
+.prova-titulo{font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:700;color:var(--rose-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;}
+.prova-texto{font-size:.8rem;color:var(--text-secondary);line-height:1.55;}
+
+/* ── Critérios de avaliação da apresentação ── */
+.criterio{display:flex;align-items:center;gap:1rem;padding:.85rem 1rem;border-radius:10px;background:var(--card-bg);border:1px solid var(--card-border);margin-bottom:.6rem;}
+.criterio__peso{width:52px;height:52px;border-radius:10px;background:rgba(244,63,94,.1);color:var(--rose-400);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.95rem;flex-shrink:0;}
+.criterio__body{flex:1;}
+.criterio__titulo{font-size:.85rem;font-weight:700;color:var(--text-primary);margin-bottom:.15rem;}
+.criterio__desc{font-size:.78rem;color:var(--text-secondary);line-height:1.5;}
+
+/* Score */
+.score-box{display:none;margin-top:1rem;padding:1rem 1.25rem;border-radius:12px;text-align:center;}
+.score-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;}
+
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(244,63,94,.12);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.encerramento{padding:1.5rem 1.75rem;border-radius:16px;background:linear-gradient(135deg,rgba(244,63,94,.1),rgba(190,18,60,.06));border:1px solid rgba(244,63,94,.25);margin-top:3rem;text-align:center;}
+.encerramento i{font-size:1.8rem;color:var(--rose-400);margin-bottom:.75rem;display:block;}
+.encerramento-titulo{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:800;color:var(--white);margin-bottom:.5rem;}
+.encerramento p{font-size:.88rem;color:var(--text-secondary);line-height:1.65;max-width:640px;margin:0 auto;}
+.encerramento .segunda-chamada{margin-top:1.25rem;font-size:.78rem;color:var(--text-muted);}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.checklist-grid,.prova-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ CAPA ════════════════════════════════════════════════════════════ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">🏁 Prova Final (P3)</span>
+
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">19</div>
+    <h1 class="capa-titulo"><em>Prova Final (P3)</em><br>+ Apresentação</h1>
+    <p class="capa-sub">Semana de prova e apresentação · Conteúdo das semanas 14 a 17 + revisão geral</p>
+    <div class="divider"></div>
+    <p style="font-size:.85rem;color:var(--text-secondary);margin-bottom:1.25rem;">Esta é a última semana de conteúdo do semestre. Use o simulado, os gabaritos das questões dissertativas, o checklist interativo e a instrução de apresentação para chegar preparado tanto para a prova quanto para a defesa do projeto final.</p>
+    <div class="cobertura">
+      <div class="cob-item"><div class="cob-num">S14</div><span>Acessibilidade (a11y) — WCAG, ARIA, navegação por teclado</span></div>
+      <div class="cob-item"><div class="cob-num">S15</div><span>Performance — Web Vitals, code splitting, caching de modelos</span></div>
+      <div class="cob-item"><div class="cob-num">S16</div><span>Estado global — Zustand, Redux Toolkit, persistência</span></div>
+      <div class="cob-item"><div class="cob-num">S17</div><span>Testes — Jest, React Testing Library, mocks de API</span></div>
+      <div class="cob-item"><div class="cob-num">S18</div><span>Deploy e CI/CD — revisão geral aplicada em produção</span></div>
+    </div>
+  </div>
+
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-clipboard-list"></i>Formato da P3</div>
+      <ul class="info-lista">
+        <li>Questões de múltipla escolha — conceito e análise de código das Semanas 14 a 17</li>
+        <li>Questões dissertativas — explicar decisões técnicas e conectar os temas do semestre</li>
+        <li>Apresentação do projeto final — defesa oral com demonstração ao vivo</li>
+        <li>Consulta: sem consulta na parte escrita (prova fechada)</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-star"></i>Temas mais importantes</div>
+      <ul class="info-lista">
+        <li>WCAG 2.1 — os quatro princípios e o critério de contraste (1.4.3)</li>
+        <li>Core Web Vitals — LCP, INP, CLS e por que importam para apps de IA</li>
+        <li>Zustand — seletores granulares e por que evitam re-render em cascata</li>
+        <li>Por que testes de front-end de IA nunca chamam a API real</li>
+        <li>Como cada tema das Semanas 14-17 aparece automatizado no deploy (Semana 18)</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Dica de ouro</div>
+      <ul class="info-lista">
+        <li>A P3 tende a cobrar conexões entre semanas — não trate a11y, performance, estado e testes como caixas isoladas</li>
+        <li>Para a apresentação, tenha um plano B se a demo ao vivo falhar (print/vídeo de backup)</li>
+        <li>Pratique explicar o "porquê" de cada decisão técnica do projeto, não só o "o quê"</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>começar a revisão</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ═══ CONTEÚDO ════════════════════════════════════════════════════════ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── REVISÃO RÁPIDA ────────────────────────────────────────────── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">①</div>
+      <div class="secao-info">
+        <div class="secao-label">Revisão rápida</div>
+        <div class="secao-titulo">Os 4 temas — pontos-chave e armadilhas comuns</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="semana-card s14">
+        <div class="s-titulo"><i class="fas fa-universal-access"></i>Semana 14 — Acessibilidade (a11y)</div>
+        <div class="s-item"><strong>WCAG 2.1 POUR:</strong> Perceptível, Operável, Compreensível, Robusto — níveis A, AA, AAA</div>
+        <div class="s-item"><strong>Contraste (1.4.3):</strong> ≥ 4.5:1 para texto normal, ≥ 3:1 para texto grande</div>
+        <div class="s-item"><strong>ARIA em IA:</strong> aria-live="polite" + role="log" no histórico, role="status" no skeleton, role="alert" em erros</div>
+        <div class="s-item"><strong>Foco visível:</strong> :focus-visible em vez de :focus — nunca outline:none sem substituto</div>
+        <div class="s-item"><strong>sr-only:</strong> esconde visualmente mas mantém para leitor de tela — nunca display:none para isso</div>
+        <div class="s-item"><strong>prefers-reduced-motion:</strong> desativa shimmer/cursor piscante para quem tem essa preferência ativada</div>
+        <div class="s-armadilha">Armadilha: aria-label em botão de emoji sem pensar no aria-pressed para toggles (👍/👎) — o estado "pressionado" também precisa ser comunicado.</div>
+      </div>
+
+      <div class="semana-card s15">
+        <div class="s-titulo"><i class="fas fa-tachometer-alt"></i>Semana 15 — Performance</div>
+        <div class="s-item"><strong>Core Web Vitals:</strong> LCP ≤ 2.5s, INP ≤ 200ms, CLS ≤ 0.1</div>
+        <div class="s-item"><strong>INP em apps de IA:</strong> inferência na thread principal bloqueia a UI — usar Web Worker</div>
+        <div class="s-item"><strong>Code splitting:</strong> React.lazy() + Suspense para componentes pesados (syntax-highlighter, recharts, TF.js)</div>
+        <div class="s-item"><strong>Importação seletiva:</strong> importar só o tema do syntax-highlighter usado economiza centenas de KB</div>
+        <div class="s-item"><strong>Caching de modelos:</strong> IndexedDB para TF.js, cache automático do browser para Transformers.js</div>
+        <div class="s-item"><strong>useMemo/useCallback:</strong> só compensam para cálculos caros com re-render frequente</div>
+        <div class="s-armadilha">Armadilha: achar que useMemo/useCallback devem ser usados em todo lugar — o custo de comparação de dependências pode superar o ganho em casos simples.</div>
+      </div>
+
+      <div class="semana-card s16">
+        <div class="s-titulo"><i class="fas fa-cube"></i>Semana 16 — Estado Global</div>
+        <div class="s-item"><strong>Limite do Context:</strong> todo consumidor re-renderiza quando qualquer parte do value muda</div>
+        <div class="s-item"><strong>Zustand:</strong> sem Provider, seletores granulares evitam re-render desnecessário</div>
+        <div class="s-item"><strong>persist + partialize:</strong> escolhe o que é salvo, excluindo estado transitório (ex: streaming:true)</div>
+        <div class="s-item"><strong>Redux Toolkit:</strong> createSlice + Immer permitem "mutação" segura dentro de reducers</div>
+        <div class="s-item"><strong>Zustand vs RTK:</strong> Zustand para projetos ágeis/pequenos; RTK para times grandes com mais convenção</div>
+        <div class="s-item"><strong>IndexedDB:</strong> alternativa ao localStorage para históricos muito grandes (limite maior, assíncrono)</div>
+        <div class="s-armadilha">Armadilha: persistir campos transitórios (ex: streaming, loading) faz a UI mostrar um estado "congelado" incorreto após reload.</div>
+      </div>
+
+      <div class="semana-card s17">
+        <div class="s-titulo"><i class="fas fa-vial"></i>Semana 17 — Testes</div>
+        <div class="s-item"><strong>Pirâmide de testes:</strong> muitos unitários, camada média de integração, poucos E2E</div>
+        <div class="s-item"><strong>Nunca chamar API real:</strong> não-determinismo, custo e dependência de rede/API key quebram a suíte</div>
+        <div class="s-item"><strong>RTL:</strong> testar comportamento (o que o usuário vê/faz), não implementação interna</div>
+        <div class="s-item"><strong>getByRole &gt; getByTestId:</strong> reflete o que tecnologia assistiva percebe — falha revela problema de a11y</div>
+        <div class="s-item"><strong>jest.mock vs MSW:</strong> jest.mock troca o módulo JS; MSW intercepta na camada de rede, mais realista</div>
+        <div class="s-item"><strong>waitFor:</strong> necessário para asserções sobre UI que atualiza de forma assíncrona</div>
+        <div class="s-armadilha">Armadilha: perseguir 100% de cobertura em vez de priorizar os caminhos críticos (envio, erro, retry, acessibilidade).</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Simulado — 12 questões</span></div>
+
+  <!-- ── SIMULADO ──────────────────────────────────────────────────── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">②</div>
+      <div class="secao-info">
+        <div class="secao-label">Simulado</div>
+        <div class="secao-titulo">12 questões de múltipla escolha — clique para revelar o gabarito</div>
+      </div>
+    </div>
+
+    <div class="aviso-exam">
+      <i class="fas fa-stopwatch"></i>
+      <span>Para simular a prova, tente responder todas as questões SEM ver o gabarito. Marque sua resposta mentalmente, depois revele. O score aparece ao final.</span>
+    </div>
+
+    <!-- Q1 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">1</div>
+        <span class="q-semana badge">Semana 14</span>
+        <div class="q-texto">Um texto secundário em uma interface dark tem contraste calculado de 3.1:1 contra o fundo. Isso passa no critério WCAG 2.1 AA de Contraste Mínimo (1.4.3) para texto normal?</div>
+      </div>
+      <div class="q-opcoes" id="q1-ops">
+        <div class="q-op" onclick="respQ('q1',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Sim, pois qualquer contraste acima de 3:1 já é considerado acessível</div>
+        <div class="q-op" onclick="respQ('q1',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Não, o critério 1.4.3 exige ≥ 4.5:1 para texto normal — 3.1:1 falha</div>
+        <div class="q-op" onclick="respQ('q1',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Depende do tamanho da fonte — qualquer fonte acima de 12px aceita 3:1</div>
+        <div class="q-op" onclick="respQ('q1',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Sim, pois o critério de contraste só se aplica a botões, não a texto secundário</div>
+      </div>
+      <div class="q-gabarito" id="q1-gab"><strong>✅ Alternativa B.</strong> O critério 1.4.3 (Contraste Mínimo, nível AA) exige razão ≥ 4.5:1 para texto normal (abaixo de 18pt ou 14pt em negrito) e ≥ 3:1 apenas para texto grande. 3.1:1 falha para texto normal — é um valor comum em textos "secundários" ou "muted" de interfaces dark, e uma das violações mais frequentes encontradas em auditorias com axe DevTools.</div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">2</div>
+        <span class="q-semana badge">Semana 14</span>
+        <div class="q-texto">Um chatbot exibe novos tokens em uma &lt;div&gt; comum, sem nenhum atributo ARIA. Um usuário de NVDA não ouve nada quando a resposta chega. Qual mudança resolve isso?</div>
+      </div>
+      <div class="q-opcoes" id="q2-ops">
+        <div class="q-op" onclick="respQ('q2',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Adicionar tabindex="0" na div para torná-la focável</div>
+        <div class="q-op" onclick="respQ('q2',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Adicionar role="log" e aria-live="polite" na div do histórico</div>
+        <div class="q-op" onclick="respQ('q2',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Adicionar aria-label="mensagem" em cada bubble individual</div>
+        <div class="q-op" onclick="respQ('q2',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Trocar a div por um &lt;button&gt;</div>
+      </div>
+      <div class="q-gabarito" id="q2-gab"><strong>✅ Alternativa B.</strong> aria-live="polite" instrui o leitor de tela a anunciar mudanças de conteúdo naquela região sem interromper o que o usuário está fazendo. role="log" complementa indicando que é uma região de mensagens que recebe adições ao final. Sem esses atributos, conteúdo dinâmico é completamente silencioso para tecnologia assistiva — um dos problemas mais específicos de interfaces de IA com streaming.</div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">3</div>
+        <span class="q-semana badge-orange">Semana 15</span>
+        <div class="q-texto">Um chatbot tem INP de 700ms sempre que o usuário clica em "Enviar" enquanto usa Transformers.js. Qual é a causa mais provável e a correção?</div>
+      </div>
+      <div class="q-opcoes" id="q3-ops">
+        <div class="q-op" onclick="respQ('q3',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Bundle grande demais — corrigir com code splitting apenas</div>
+        <div class="q-op" onclick="respQ('q3',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Inferência rodando na thread principal, bloqueando a atualização da UI — mover para um Web Worker</div>
+        <div class="q-op" onclick="respQ('q3',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Latência de rede até o servidor de IA — usar um CDN mais próximo</div>
+        <div class="q-op" onclick="respQ('q3',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>CLS alto — adicionar min-height nos elementos</div>
+      </div>
+      <div class="q-gabarito" id="q3-gab"><strong>✅ Alternativa B.</strong> INP (Interaction to Next Paint) mede o tempo entre a interação e o próximo frame pintado. Quando a inferência de um modelo roda na thread principal, ela bloqueia toda a JavaScript engine — incluindo a atualização visual que mostraria feedback do clique. A solução correta (vista na Semana 11 e reforçada na 15) é mover a inferência para um Web Worker, liberando a thread principal para responder à UI imediatamente.</div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">4</div>
+        <span class="q-semana badge-orange">Semana 15</span>
+        <div class="q-texto">Por que importar apenas um tema específico do react-syntax-highlighter (em vez do pacote de temas completo) reduz tanto o tamanho do bundle?</div>
+      </div>
+      <div class="q-opcoes" id="q4-ops">
+        <div class="q-op" onclick="respQ('q4',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Porque o React comprime automaticamente imports não utilizados em tempo de execução</div>
+        <div class="q-op" onclick="respQ('q4',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Porque a importação completa inclui dezenas de temas não usados; importar só o necessário evita empacotar código morto no bundle final</div>
+        <div class="q-op" onclick="respQ('q4',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Porque temas de syntax highlight são carregados via streaming, independente do import</div>
+        <div class="q-op" onclick="respQ('q4',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Não há diferença real de tamanho, apenas de organização do código</div>
+      </div>
+      <div class="q-gabarito" id="q4-gab"><strong>✅ Alternativa B.</strong> O pacote completo de temas do react-syntax-highlighter empacota todos os temas disponíveis (dezenas deles) no bundle, mesmo que o app só use um. Importar diretamente o caminho do tema específico (ex: from 'react-syntax-highlighter/dist/esm/styles/prism') permite que o bundler inclua só aquele arquivo, evitando ~840KB de código morto — um dos ajustes de maior impacto/esforço vistos na Semana 15.</div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">5</div>
+        <span class="q-semana badge-purple">Semana 16</span>
+        <div class="q-texto">Um componente Sidebar lê apenas useChatStore(estado => estado.tema). Uma nova mensagem chega e é adicionada ao array mensagens na mesma store. A Sidebar re-renderiza?</div>
+      </div>
+      <div class="q-opcoes" id="q5-ops">
+        <div class="q-op" onclick="respQ('q5',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Sim, toda mudança na store re-renderiza todos os componentes que a usam, como no Context</div>
+        <div class="q-op" onclick="respQ('q5',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Não, porque o seletor só observa "tema", que não mudou — o Zustand compara o retorno do seletor entre renders</div>
+        <div class="q-op" onclick="respQ('q5',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Só se houver um Provider envolvendo a Sidebar</div>
+        <div class="q-op" onclick="respQ('q5',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Depende de a store usar o middleware persist ou não</div>
+      </div>
+      <div class="q-gabarito" id="q5-gab"><strong>✅ Alternativa B.</strong> Essa é a diferença central entre Zustand e Context API: o seletor passado a useChatStore extrai só a fatia desejada, e o Zustand compara esse valor entre o estado antigo e o novo. Como "tema" não mudou, não há re-render — mesmo que outra parte da store (mensagens) tenha mudado. Zustand também não usa Provider, então a opção C está incorreta por dois motivos.</div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">6</div>
+        <span class="q-semana badge-purple">Semana 16</span>
+        <div class="q-texto">Por que o campo streaming (booleano indicando se uma resposta está sendo gerada) deve ser excluído do partialize de uma store Zustand com persist?</div>
+      </div>
+      <div class="q-opcoes" id="q6-ops">
+        <div class="q-op" onclick="respQ('q6',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Porque booleanos não podem ser serializados em JSON</div>
+        <div class="q-op" onclick="respQ('q6',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Porque é estado transitório da sessão — persistir "true" faria a UI parecer travada em "gerando resposta" após um reload, mesmo sem requisição real em andamento</div>
+        <div class="q-op" onclick="respQ('q6',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Porque o localStorage tem uma cota específica só para booleanos</div>
+        <div class="q-op" onclick="respQ('q6',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Não há motivo técnico — é apenas uma escolha estética</div>
+      </div>
+      <div class="q-gabarito" id="q6-gab"><strong>✅ Alternativa B.</strong> partialize decide o que sobrevive a um reload. Campos que refletem "algo está acontecendo agora" (streaming, um AbortController em andamento) perdem sentido depois que a página recarrega — a requisição real já foi perdida. Se persistidos, a UI mostraria um estado inconsistente com a realidade (ex: "gerando resposta..." para sempre, sem nenhuma requisição ativa por trás).</div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">7</div>
+        <span class="q-semana badge-emerald">Semana 17</span>
+        <div class="q-texto">Por que os testes de front-end de um chatbot de IA nunca devem chamar a API real da OpenAI durante a suíte?</div>
+      </div>
+      <div class="q-opcoes" id="q7-ops">
+        <div class="q-op" onclick="respQ('q7',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Porque o Jest bloqueia tecnicamente qualquer chamada de rede</div>
+        <div class="q-op" onclick="respQ('q7',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Porque a resposta é não-determinística, a chamada é lenta e custa dinheiro a cada execução, além de amarrar a suíte a uma conexão de rede e credenciais válidas</div>
+        <div class="q-op" onclick="respQ('q7',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Porque APIs de IA bloqueiam User-Agents de ferramentas de teste automaticamente</div>
+        <div class="q-op" onclick="respQ('q7',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Não há problema real nisso, é só uma convenção sem justificativa técnica</div>
+      </div>
+      <div class="q-gabarito" id="q7-gab"><strong>✅ Alternativa B.</strong> O motivo é uma combinação de três fatores: não-determinismo (o texto muda a cada chamada, impossibilitando expect().toBe() confiável), custo real (cada execução da suíte em CI gera uma chamada cobrada) e dependência externa (rede e API key, que quebram a suíte em ambientes sem credenciais). A prática correta é sempre mockar a camada de IA com jest.mock ou MSW.</div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">8</div>
+        <span class="q-semana badge-emerald">Semana 17</span>
+        <div class="q-texto">Qual a diferença entre mockar com jest.mock('./api/chamarIA') e usar MSW (Mock Service Worker) para a mesma chamada?</div>
+      </div>
+      <div class="q-opcoes" id="q8-ops">
+        <div class="q-op" onclick="respQ('q8',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Não há diferença — são a mesma técnica com nomes diferentes</div>
+        <div class="q-op" onclick="respQ('q8',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>jest.mock substitui o módulo JS inteiro; MSW intercepta a requisição na camada de rede, então o código real de fetch continua sendo executado e testado</div>
+        <div class="q-op" onclick="respQ('q8',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>MSW só funciona com Axios, nunca com fetch nativo</div>
+        <div class="q-op" onclick="respQ('q8',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>jest.mock é mais lento porque inicia um servidor de verdade</div>
+      </div>
+      <div class="q-gabarito" id="q8-gab"><strong>✅ Alternativa B.</strong> jest.mock troca a função inteira — o código real de fetch dentro dela nunca roda. MSW opera uma camada abaixo: intercepta a requisição HTTP em si, deixando o código real de fetch/axios do app ser exercitado de verdade, com apenas a resposta do "servidor" sendo fake. Isso torna o teste mais fiel ao comportamento real em produção.</div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">9</div>
+        <span class="q-semana badge">Semana 14</span>
+        <div class="q-texto">Por que a RTL recomenda getByRole antes de getByTestId ao localizar elementos em um teste?</div>
+      </div>
+      <div class="q-opcoes" id="q9-ops">
+        <div class="q-op" onclick="respQ('q9',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>getByTestId é mais lento de executar na suíte</div>
+        <div class="q-op" onclick="respQ('q9',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>getByRole reflete o que tecnologia assistiva percebe; se falhar, geralmente revela falta de semântica/acessibilidade real no componente</div>
+        <div class="q-op" onclick="respQ('q9',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>data-testid não é suportado pelo Jest</div>
+        <div class="q-op" onclick="respQ('q9',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Não há diferença real de propósito entre as duas queries</div>
+      </div>
+      <div class="q-gabarito" id="q9-gab"><strong>✅ Alternativa B.</strong> Essa questão conecta diretamente as Semanas 14 e 17: getByRole busca pela árvore de acessibilidade, a mesma forma como leitores de tela enxergam a página. Quando a query falha, isso geralmente expõe um problema real de acessibilidade (falta de aria-label, elemento sem role correto) — o teste, nesse caso, funciona como uma auditoria de a11y automática, não apenas uma ferramenta de teste.</div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">10</div>
+        <span class="q-semana badge-orange">Semana 15</span>
+        <div class="q-texto">Como o Lighthouse CI (Semana 18) se conecta diretamente com os conceitos de Performance e Acessibilidade das Semanas 14 e 15?</div>
+      </div>
+      <div class="q-opcoes" id="q10-ops">
+        <div class="q-op" onclick="respQ('q10',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>São sistemas completamente independentes, sem relação técnica entre si</div>
+        <div class="q-op" onclick="respQ('q10',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Lighthouse CI automatiza exatamente as mesmas auditorias manuais do DevTools vistas nas Semanas 14 e 15, podendo falhar o build se os scores caírem abaixo de um limite</div>
+        <div class="q-op" onclick="respQ('q10',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Lighthouse CI substitui completamente a necessidade de aplicar boas práticas de a11y e performance no código</div>
+        <div class="q-op" onclick="respQ('q10',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Lighthouse CI só mede SEO, não performance nem acessibilidade</div>
+      </div>
+      <div class="q-gabarito" id="q10-gab"><strong>✅ Alternativa B.</strong> O Lighthouse CI não introduz novos conceitos — ele automatiza a mesma auditoria que você já rodava manualmente no DevTools nas Semanas 14 e 15, agora rodando a cada push/PR e podendo bloquear o merge se os scores de Performance ou Acessibilidade caírem abaixo de um limite (ex: 0.85). É a prova de que o cuidado aplicado durante o desenvolvimento realmente se sustenta ao longo do tempo, sem depender de alguém lembrar de checar manualmente.</div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">11</div>
+        <span class="q-semana badge-purple">Semana 16</span>
+        <div class="q-texto">Quando faz mais sentido escolher Redux Toolkit em vez de Zustand para um projeto de front-end de IA?</div>
+      </div>
+      <div class="q-opcoes" id="q11-ops">
+        <div class="q-op" onclick="respQ('q11',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>Sempre — Redux Toolkit é estritamente superior em qualquer cenário</div>
+        <div class="q-op" onclick="respQ('q11',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>Quando o time é grande, o projeto já usa Redux em outras partes, ou há necessidade de ferramentas avançadas como RTK Query e DevTools nativo com time-travel</div>
+        <div class="q-op" onclick="respQ('q11',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>Zustand não suporta múltiplas conversas persistidas, então RTK é obrigatório nesse caso</div>
+        <div class="q-op" onclick="respQ('q11',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>Apenas quando o app não usa nenhuma chamada de API</div>
+      </div>
+      <div class="q-gabarito" id="q11-gab"><strong>✅ Alternativa B.</strong> Não existe uma resposta universalmente "melhor" — é uma escolha de trade-off. Zustand é mais rápido de configurar e ideal para MVPs e projetos pequenos/médios (a maioria dos projetos acadêmicos desta disciplina). Redux Toolkit compensa seu boilerplate extra em times grandes, projetos de longa duração com convenções rígidas, ou quando o ecossistema RTK (como RTK Query para cache de API) já resolve outros problemas do projeto.</div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="questao">
+      <div class="q-header">
+        <div class="q-num">12</div>
+        <span class="q-semana badge-emerald">Semana 17</span>
+        <div class="q-texto">Um workflow de CI roda apenas testes Jest, sem Lighthouse CI configurado. Um componente pesado sem lazy loading é mesclado na main. O que acontece?</div>
+      </div>
+      <div class="q-opcoes" id="q12-ops">
+        <div class="q-op" onclick="respQ('q12',this,'A',false)"><div class="q-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div>O GitHub Actions bloqueia o merge automaticamente por bundle size</div>
+        <div class="q-op" onclick="respQ('q12',this,'B',true)"><div class="q-letra" style="background:rgba(139,92,246,.15);color:#c4b5fd;">B</div>O merge é aceito normalmente — testes Jest não avaliam performance/bundle size, então a regressão passa despercebida sem Lighthouse CI</div>
+        <div class="q-op" onclick="respQ('q12',this,'C',false)"><div class="q-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">C</div>A Vercel recusa deploys de bundles acima de um tamanho fixo automaticamente</div>
+        <div class="q-op" onclick="respQ('q12',this,'D',false)"><div class="q-letra" style="background:rgba(52,211,153,.15);color:#34d399;">D</div>O React lança erro em build se um componente for muito pesado</div>
+      </div>
+      <div class="q-gabarito" id="q12-gab"><strong>✅ Alternativa B.</strong> Testes funcionais (Jest/RTL) verificam comportamento, não métricas de performance. Sem um portão de qualidade dedicado (Lighthouse CI), nada impede que uma regressão de performance chegue à produção silenciosamente. Essa questão conecta diretamente Semana 15 (a causa raiz do problema) com Semana 17/18 (por que testes por si só não bastam, e por que CI/CD com Lighthouse fecha essa lacuna).</div>
+    </div>
+
+    <!-- Score -->
+    <div class="score-box" id="score-box">
+      <div class="score-num" id="score-num">0/12</div>
+      <div style="font-size:.85rem;color:var(--text-secondary);margin-top:.25rem;" id="score-msg"></div>
+    </div>
+
+    <div style="text-align:center;margin-top:1rem;">
+      <button onclick="calcScore()" style="background:rgba(244,63,94,.15);border:1px solid rgba(244,63,94,.3);color:var(--rose-400);padding:.7rem 2rem;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(244,63,94,.25)'" onmouseout="this.style.background='rgba(244,63,94,.15)'">
+        <i class="fas fa-calculator" style="margin-right:8px;"></i>Ver meu score
+      </button>
+    </div>
+  </section>
+
+  <div class="sep"><span>Questões Dissertativas</span></div>
+
+  <!-- ── DISSERTATIVAS ──────────────────────────────────────────────── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">③</div>
+      <div class="secao-info">
+        <div class="secao-label">Questões dissertativas</div>
+        <div class="secao-titulo">4 questões abertas — modelo de resposta completo</div>
+      </div>
+    </div>
+
+    <div class="dissertativa">
+      <div class="d-num">Questão Dissertativa 1 — Semana 14</div>
+      <div class="d-enunciado">Explique por que interfaces de IA com conteúdo dinâmico (streaming de respostas, skeletons de carregamento) apresentam desafios específicos de acessibilidade que interfaces estáticas não têm. Cite pelo menos três padrões ARIA que resolvem esses desafios e o que cada um comunica a um leitor de tela.</div>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-lightbulb"></i> ver modelo de resposta</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta">
+          Interfaces estáticas têm seu conteúdo totalmente presente quando a página carrega — um leitor de tela consegue navegar e ler tudo de forma previsível. Interfaces de IA quebram essa previsibilidade: o conteúdo aparece progressivamente (streaming), muda de estado sem ação explícita do usuário (loading → sucesso/erro), e usa elementos visuais sem texto (emojis em botões, skeletons animados) que não têm significado semântico por padrão.
+          <br><br>
+          <strong>role="log" + aria-live="polite"</strong> no container do histórico: comunica que aquela região recebe novas mensagens ao final e que o leitor deve anunciá-las sem interromper agressivamente o que o usuário está fazendo — essencial porque, sem isso, tokens chegando via streaming são completamente silenciosos.
+          <br><br>
+          <strong>role="status"</strong> no skeleton loader: informa que aquela região está em atualização/carregamento, permitindo que o leitor comunique "carregando" de forma discreta, sem soar como um alerta urgente.
+          <br><br>
+          <strong>role="alert"</strong> nos estados de erro: ao contrário do role="status", interrompe o usuário imediatamente — apropriado para falhas que exigem atenção, como um erro de rate limit ou de rede.
+          <br><br>
+          <strong>aria-label</strong> em botões de emoji (👍/👎): sem ele, o leitor de tela só anuncia "botão", sem contexto nenhum sobre a função. Complementado por aria-pressed quando o botão é um toggle, para comunicar o estado selecionado.
+        </div>
+      </div>
+    </div>
+
+    <div class="dissertativa">
+      <div class="d-num">Questão Dissertativa 2 — Semanas 15 e 16</div>
+      <div class="d-enunciado">Um chatbot apresenta INP alto (acima de 500ms) sempre que uma nova mensagem chega, mesmo com a inferência de IA rodando em um Web Worker. Ao investigar com React DevTools Profiler, você descobre que o componente Sidebar (que só exibe o tema atual) está re-renderizando a cada token do streaming. Explique a causa provável e a correção, conectando os conceitos de Context API, Zustand e performance de re-render.</div>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-lightbulb"></i> ver modelo de resposta</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta">
+          <strong>Causa provável:</strong> se o app ainda usa Context API para gerenciar tanto o histórico de mensagens quanto o tema (um único ChatContext, por exemplo), qualquer atualização no value do Provider — mesmo que seja só o array de mensagens crescendo com o streaming — recria o objeto de value inteiro. Todo componente que consome esse Context via useContext re-renderiza, independentemente de qual fatia específica ele usa. A Sidebar, mesmo lendo só "tema", é arrastada nesse re-render em cascata porque ela está inscrita no Context inteiro, não em uma fatia dele.
+          <br><br>
+          <strong>Por que isso afeta o INP:</strong> mesmo com a inferência isolada em um Web Worker (resolvendo o bloqueio da thread principal durante o cálculo), re-renders desnecessários e frequentes de componentes não relacionados ainda consomem tempo de CPU na thread principal a cada token — múltiplos desses re-renders acumulados podem, juntos, degradar o INP percebido, especialmente em dispositivos mais fracos.
+          <br><br>
+          <strong>Correção:</strong> migrar o estado para uma store Zustand com seletores granulares. A Sidebar passaria a usar useChatStore(estado => estado.tema) — o Zustand compara esse valor específico entre renders e só dispara re-render se "tema" de fato mudou, ignorando completamente as atualizações do array de mensagens. Isso elimina o re-render em cascata característico da Context API e reduz o trabalho da thread principal a cada token do streaming.
+        </div>
+      </div>
+    </div>
+
+    <div class="dissertativa">
+      <div class="d-num">Questão Dissertativa 3 — Semana 17</div>
+      <div class="d-enunciado">Escreva (em pseudocódigo ou código real) um teste de integração usando React Testing Library e MSW para o cenário: o usuário digita uma mensagem, pressiona Enter, a API de IA (mockada) retorna um erro 429, e a interface deve exibir uma mensagem amigável com um botão "Tentar novamente". Explique por que esse teste NÃO deveria verificar o texto exato retornado por uma chamada real de IA.</div>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-lightbulb"></i> ver modelo de resposta</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — teste de integração para o cenário de rate limit</span></div>
+          <pre><code><span class="fn">test</span>(<span class="str">'exibe erro amigável e botão de retry em rate limit (429)'</span>, <span class="kw">async</span> () => {
+  server.<span class="fn">use</span>(
+    http.<span class="fn">post</span>(<span class="str">'/api/chat'</span>, () => <span class="kw">new</span> HttpResponse(<span class="kw">null</span>, { status: <span class="num">429</span> }))
+  );
+
+  <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>();
+  <span class="fn">render</span>(&lt;<span class="tag">Chatbot</span> /&gt;);
+
+  <span class="kw">await</span> user.<span class="fn">type</span>(screen.<span class="fn">getByRole</span>(<span class="str">'textbox'</span>), <span class="str">'oi{Enter}'</span>);
+
+  <span class="kw">await</span> <span class="fn">waitFor</span>(() => {
+    <span class="fn">expect</span>(screen.<span class="fn">getByText</span>(/muitas mensagens em pouco tempo/i)).<span class="fn">toBeInTheDocument</span>();
+  });
+  <span class="fn">expect</span>(screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /tentar novamente/i })).<span class="fn">toBeInTheDocument</span>();
+});</code></pre>
+        </div>
+        <div class="modelo-resposta" style="margin-top:.75rem;">
+          <strong>Por que não verificar texto exato de uma chamada real de IA:</strong> respostas de LLMs são não-determinísticas por natureza — a mesma pergunta pode gerar respostas diferentes em chamadas distintas, mesmo com temperature=0 em alguns modelos. Um teste com <code style="font-family:'JetBrains Mono',monospace;">expect(texto).toBe("resposta exata")</code> contra uma chamada real seria frágil e falharia aleatoriamente sem relação com um bug real no código. O teste deve validar o <strong>comportamento da interface diante de diferentes respostas simuladas</strong> — se o app mostra a bubble corretamente quando a IA responde X, se trata o erro Y corretamente — nunca o conteúdo específico gerado pelo modelo em si.
+        </div>
+      </div>
+    </div>
+
+    <div class="dissertativa">
+      <div class="d-num">Questão Dissertativa 4 — Revisão geral (Semanas 14 a 18)</div>
+      <div class="d-enunciado">Descreva o "fio condutor" que conecta Acessibilidade (S14), Performance (S15), Estado Global (S16), Testes (S17) e Deploy/CI-CD (S18) em um único projeto de front-end de IA. Por que faz sentido tratá-los como uma cadeia de qualidade, e não como tópicos isolados?</div>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-lightbulb"></i> ver modelo de resposta</button>
+      <div class="gabarito-content">
+        <div class="modelo-resposta">
+          Cada uma dessas semanas resolve um risco específico de um app de IA em produção, e cada risco resolvido em uma semana só se sustenta de verdade quando as semanas seguintes o automatizam e verificam continuamente.
+          <br><br>
+          Acessibilidade (S14) garante que a interface funcione para usuários com deficiência, mas depende de disciplina manual para não regredir a cada mudança de código. Performance (S15) garante velocidade, mas da mesma forma pode degradar silenciosamente com o tempo se ninguém monitorar. Estado Global (S16) resolve como a aplicação gerencia dados complexos (histórico de conversas, configurações) de forma confiável e persistente — mas um bug de re-render ou de persistência mal configurada só é pego com atenção ativa.
+          <br><br>
+          É aqui que Testes (S17) entram: eles transformam "eu verifiquei manualmente que funciona" em "há uma verificação automática de que continua funcionando", cobrindo os comportamentos de a11y (via getByRole), performance de re-render (indiretamente, testando a store) e o fluxo de erro/retry.
+          <br><br>
+          Mas testes que só rodam quando alguém lembra de executá-los manualmente também não escalam — por isso Deploy/CI-CD (S18) fecha o ciclo: GitHub Actions garante que os testes da S17 rodem em toda Pull Request, e o Lighthouse CI garante que os scores de Performance (S15) e Acessibilidade (S14) sejam checados automaticamente antes de qualquer código chegar à produção. O Estado Global bem configurado (S16) é validado na prática quando o app publicado (S18) mantém o histórico após um F5 real, em produção.
+          <br><br>
+          Tratar esses temas isoladamente perde essa cadeia: a11y sem testes automatizados regride silenciosamente; testes sem CI dependem de disciplina humana; performance sem Lighthouse CI não tem um portão de qualidade. Juntos, formam um pipeline onde cada camada verifica e sustenta a anterior.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Apresentação do Projeto Final</span></div>
+
+  <!-- ── APRESENTAÇÃO ──────────────────────────────────────────────── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">④</div>
+      <div class="secao-info">
+        <div class="secao-label">Instrução</div>
+        <div class="secao-titulo">Como funciona a apresentação do projeto final</div>
+      </div>
+    </div>
+
+    <div class="aviso-orange">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span><strong>Atenção:</strong> a apresentação do projeto final é parte da nota da P3, junto com a prova escrita. Ambas avaliam a mesma jornada do semestre, de ângulos diferentes: a prova avalia sua compreensão conceitual; a apresentação avalia sua capacidade de aplicar e defender o que foi construído.</span>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-route"></i>Passo a passo da apresentação</div>
+      <div class="prova-grid">
+        <div class="prova-etapa">
+          <div class="prova-num">01</div>
+          <div class="prova-titulo">Contexto e problema</div>
+          <div class="prova-texto">Comece explicando o que o app faz e para quem — 1 a 2 minutos. Evite entrar direto na demo sem contextualizar o objetivo do projeto.</div>
+        </div>
+        <div class="prova-etapa">
+          <div class="prova-num">02</div>
+          <div class="prova-titulo">Demonstração ao vivo</div>
+          <div class="prova-texto">Mostre o app funcionando na URL de produção (Semana 18). Priorize o fluxo principal — enviar mensagem, ver resposta, algum diferencial do seu projeto.</div>
+        </div>
+        <div class="prova-etapa">
+          <div class="prova-num">03</div>
+          <div class="prova-titulo">Decisões técnicas</div>
+          <div class="prova-texto">Explique 2-3 decisões relevantes: por que Zustand em vez de Context, como o CI/CD está configurado, alguma escolha de UX para lidar com erros de IA.</div>
+        </div>
+        <div class="prova-etapa">
+          <div class="prova-num">04</div>
+          <div class="prova-titulo">Perguntas e defesa</div>
+          <div class="prova-texto">Esteja pronto para justificar escolhas ("por que não usou Redux?", "como você testou isso?"). Não há problema em admitir uma limitação conhecida do projeto.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-clipboard-check"></i>Critérios de avaliação da apresentação</div>
+      <div class="criterio">
+        <div class="criterio__peso">30%</div>
+        <div class="criterio__body">
+          <div class="criterio__titulo">Funcionamento do projeto em produção</div>
+          <div class="criterio__desc">O app está de fato publicado e acessível (Semana 18)? O fluxo principal funciona sem erros durante a demo?</div>
+        </div>
+      </div>
+      <div class="criterio">
+        <div class="criterio__peso">25%</div>
+        <div class="criterio__body">
+          <div class="criterio__titulo">Aplicação dos conceitos do semestre</div>
+          <div class="criterio__desc">O projeto demonstra cuidado com acessibilidade, performance, gerenciamento de estado e/ou testes — não precisa ter todos, mas o que tem deve estar bem aplicado.</div>
+        </div>
+      </div>
+      <div class="criterio">
+        <div class="criterio__peso">25%</div>
+        <div class="criterio__body">
+          <div class="criterio__titulo">Clareza da explicação técnica</div>
+          <div class="criterio__desc">Você consegue explicar o "porquê" das decisões, não só descrever o que o código faz.</div>
+        </div>
+      </div>
+      <div class="criterio">
+        <div class="criterio__peso">20%</div>
+        <div class="criterio__body">
+          <div class="criterio__titulo">Resposta a perguntas</div>
+          <div class="criterio__desc">Capacidade de defender escolhas técnicas e reconhecer limitações do projeto com honestidade.</div>
+        </div>
+      </div>
+      <div class="aviso-exam" style="margin-top:1rem;">
+        <i class="fas fa-life-ring"></i>
+        <span><strong>Plano B para a demo:</strong> tenha um vídeo curto ou screenshots do fluxo principal preparados com antecedência. Falhas de rede, API fora do ar ou problemas de Wi-Fi na sala acontecem — isso não deve impedir a apresentação de acontecer.</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Checklist de Preparação</span></div>
+
+  <!-- ── CHECKLIST ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">⑤</div>
+      <div class="secao-info">
+        <div class="secao-label">Checklist interativo</div>
+        <div class="secao-titulo">Marque o que você já domina — clique para marcar</div>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-label">
+        <span>Progresso de revisão</span>
+        <strong id="progress-text">0 / 20 conceitos</strong>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%;"></div></div>
+    </div>
+
+    <div class="checklist-grid" id="checklist">
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei explicar os 4 princípios WCAG (POUR) e dar um exemplo de cada</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei o valor mínimo de contraste exigido pelo critério 1.4.3 (AA)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei quando usar role="log", role="status" e role="alert" em conteúdo dinâmico</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei a diferença entre :focus e :focus-visible</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei os limites de LCP, INP e CLS para Core Web Vitals</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei por que inferência de IA na thread principal prejudica o INP</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei aplicar React.lazy + Suspense para code splitting</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei quando useMemo/useCallback realmente compensam o custo</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei explicar por que Context API pode causar re-render em cascata</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei usar seletores granulares no Zustand para evitar re-render desnecessário</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei o que partialize faz no middleware persist e por que excluir estado transitório</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei quando Redux Toolkit compensa mais que Zustand</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei explicar a pirâmide de testes (unitário, integração, E2E)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei por que testes de IA nunca chamam a API real</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei a diferença entre jest.mock e MSW</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei escrever um teste RTL usando getByRole e user-event</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei por que variáveis com prefixo VITE_/REACT_APP_/NEXT_PUBLIC_ vazam para o cliente</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei configurar um workflow básico de GitHub Actions rodando testes</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Sei o que o Lighthouse CI automatiza e por que isso importa</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-label">Consigo explicar como a11y, performance, estado, testes e deploy se conectam num projeto real</div></div>
+    </div>
+
+    <div class="aviso-green" style="margin-top:1.25rem;">
+      <i class="fas fa-check-circle"></i>
+      <span><strong>Dica de estudo:</strong> para cada item não marcado, volte à semana correspondente e refaça um dos exercícios de LAB daquela semana em vez de só reler o conteúdo. Aplicar de novo fixa muito mais que revisar passivamente — principalmente a uma semana da apresentação final.</span>
+    </div>
+  </section>
+
+  <!-- ── ENCERRAMENTO ── -->
+  <div class="encerramento">
+    <i class="fas fa-flag-checkered"></i>
+    <div class="encerramento-titulo">Fim da jornada — boa prova e boa apresentação!</div>
+    <p>Do HTML/CSS/JS da Semana 1 até o deploy com CI/CD da Semana 18, o fio condutor sempre foi o mesmo: construir interfaces de IA que funcionam de verdade para pessoas reais — rápidas, acessíveis, testadas e publicadas com cuidado. Leve esse raciocínio para a prova e para a defesa do projeto.</p>
+    <div class="segunda-chamada">Semana 20 — Segunda Chamada: prova substitutiva disponível apenas para alunos com frequência válida que não puderam realizar a P3 na data regular.</div>
+  </div>
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar modelo de resposta'
+    :'<i class="fas fa-lightbulb"></i> ver modelo de resposta';
+}
+
+const correctAnswers={q1:'B',q2:'B',q3:'B',q4:'B',q5:'B',q6:'B',q7:'B',q8:'B',q9:'B',q10:'B',q11:'B',q12:'B'};
+const userAnswers={};
+
+function respQ(qId,el,letra,isCorrect){
+  const ops=document.getElementById(qId+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  userAnswers[qId]=letra;
+  const correta=correctAnswers[qId];
+  ops.querySelectorAll('.q-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    const l=op.querySelector('.q-letra').textContent.trim();
+    if(l===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const gab=document.getElementById(qId+'-gab');
+  gab.style.background=isCorrect?'rgba(74,222,128,.07)':'rgba(239,68,68,.07)';
+  gab.style.border=isCorrect?'1px solid rgba(74,222,128,.2)':'1px solid rgba(239,68,68,.2)';
+  gab.style.color=isCorrect?'rgba(134,239,172,.9)':'rgba(252,165,165,.9)';
+  gab.classList.add('show');
+}
+
+function calcScore(){
+  const total=Object.keys(correctAnswers).length;
+  let correct=0;
+  for(const [q,ans] of Object.entries(userAnswers)){
+    if(ans===correctAnswers[q])correct++;
+  }
+  const unanswered=total-Object.keys(userAnswers).length;
+  const box=document.getElementById('score-box');
+  const num=document.getElementById('score-num');
+  const msg=document.getElementById('score-msg');
+  box.style.display='block';
+  num.textContent=`${correct}/${total}`;
+  const pct=Math.round(correct/total*100);
+  if(pct>=80){num.style.color='#4ade80';msg.textContent=`${pct}% — Excelente! Você está pronto para a P3.`;}
+  else if(pct>=60){num.style.color='#fbbf24';msg.textContent=`${pct}% — Bom! Revise os temas que errou antes da prova.`;}
+  else{num.style.color='#f87171';msg.textContent=`${pct}% — Atenção! Volte às semanas com mais erros e revise os pontos-chave.`;}
+  if(unanswered>0)msg.textContent+=` (${unanswered} questão(ões) não respondida(s))`;
+  box.style.padding='1.25rem';
+  box.style.borderRadius='12px';
+  box.style.background='rgba(255,255,255,.04)';
+  box.style.border='1px solid rgba(255,255,255,.08)';
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function toggleCheck(el){
+  el.classList.toggle('checked');
+  if(el.classList.contains('checked'))el.querySelector('.check-box').innerHTML='✓';
+  else el.querySelector('.check-box').innerHTML='';
+  updateProgress();
+}
+function updateProgress(){
+  const total=document.querySelectorAll('.check-item').length;
+  const checked=document.querySelectorAll('.check-item.checked').length;
+  const pct=Math.round(checked/total*100);
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-text').textContent=`${checked} / ${total} conceitos`;
+}
+</script>
+</body>
+</html>

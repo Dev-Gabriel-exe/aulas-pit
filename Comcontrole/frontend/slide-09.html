@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Semana 09 — Visualização de Dados · Front-end para IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg-900:#0f0d1a;
+  --amber-900:#1c1000;
+  --amber-600:#d97706;
+  --amber-500:#f59e0b;
+  --amber-400:#fbbf24;
+  --amber-300:#fcd34d;
+  --white:#fff;
+  --text-primary:rgba(255,255,255,.92);
+  --text-secondary:rgba(255,255,255,.62);
+  --text-muted:rgba(255,255,255,.35);
+  --card-bg:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.08);
+  --card-hover:rgba(251,191,36,.05);
+  --code-bg:#080600;
+  --code-border:rgba(251,191,36,.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-900);color:var(--text-primary);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
+
+/* ═══ CAPA ═══ */
+.capa{min-height:100vh;display:grid;grid-template-columns:1fr 1.4fr;position:relative;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.25;pointer-events:none;}
+.blob-1{width:680px;height:680px;background:#451a03;top:-240px;left:-200px;}
+.blob-2{width:540px;height:540px;background:#1c1000;bottom:-210px;right:-120px;}
+.blob-3{width:290px;height:290px;background:#d97706;top:36%;left:44%;opacity:.08;}
+.capa-left{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;border-right:1px solid rgba(251,191,36,.15);}
+.semana-badge{display:inline-flex;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--amber-300);border:1px solid rgba(251,191,36,.3);padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:2rem;}
+.semana-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--amber-300);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.semana-num{font-family:'Montserrat',sans-serif;font-size:7rem;font-weight:800;color:rgba(251,191,36,.08);line-height:1;letter-spacing:-.05em;margin-bottom:.25rem;}
+.capa-titulo{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--white);line-height:1.15;margin-bottom:.4rem;letter-spacing:-.025em;}
+.capa-titulo em{font-style:normal;color:var(--amber-400);}
+.capa-sub{font-size:.88rem;color:var(--text-secondary);margin-bottom:2.5rem;}
+.divider{width:44px;height:3px;background:var(--amber-400);border-radius:2px;margin-bottom:2rem;}
+.topicos{display:flex;flex-direction:column;gap:.65rem;}
+.topico{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.12);color:var(--text-primary);font-size:.83rem;animation:slideIn .5s ease both;}
+.topico:nth-child(1){animation-delay:.1s;}.topico:nth-child(2){animation-delay:.2s;}.topico:nth-child(3){animation-delay:.3s;}.topico:nth-child(4){animation-delay:.4s;}.topico:nth-child(5){animation-delay:.5s;}.topico:nth-child(6){animation-delay:.6s;}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.topico-icon{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(251,191,36,.15);color:var(--amber-400);display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+.atividade-box{margin-top:1.75rem;padding:.85rem 1.1rem;border-radius:10px;background:rgba(251,191,36,.05);border-left:3px solid var(--amber-400);}
+.atividade-box .label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-400);font-weight:600;margin-bottom:4px;}
+.atividade-box p{font-size:.82rem;color:var(--text-secondary);}
+.capa-right{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;gap:1.25rem;}
+.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.25rem 1.5rem;animation:fadeUp .6s ease both;}
+.info-card:nth-child(1){animation-delay:.2s;}.info-card:nth-child(2){animation-delay:.35s;}.info-card:nth-child(3){animation-delay:.5s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.info-card-titulo{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--amber-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.info-lista{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.info-lista li{font-size:.82rem;color:var(--text-secondary);line-height:1.5;display:flex;align-items:flex-start;gap:8px;}
+.info-lista li::before{content:'▸';color:var(--amber-400);font-size:.7rem;margin-top:3px;flex-shrink:0;}
+.tipo-badge{position:absolute;top:1.5rem;right:1.5rem;z-index:10;font-size:.63rem;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;background:rgba(251,191,36,.12);color:var(--amber-400);border:1px solid rgba(251,191,36,.28);}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;animation:bounce 2.5s ease-in-out infinite;z-index:10;cursor:pointer;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* ═══ CONTEÚDO ═══ */
+.conteudo{max-width:1100px;margin:0 auto;padding:4rem 2rem 6rem;}
+.secao{margin-bottom:4rem;}
+.secao-header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(251,191,36,.12);}
+.secao-num{font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:800;color:rgba(251,191,36,.15);line-height:1;letter-spacing:-.04em;flex-shrink:0;}
+.secao-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--amber-400);font-weight:600;margin-bottom:2px;}
+.secao-titulo{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:700;color:var(--white);letter-spacing:-.02em;}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;transition:border-color .2s,background .2s;}
+.card:hover{border-color:rgba(251,191,36,.18);background:var(--card-hover);}
+.card-titulo{font-family:'Montserrat',sans-serif;font-size:.85rem;font-weight:700;color:var(--amber-400);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;}
+.card p{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card strong{color:var(--text-primary);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+.destaque{padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border-left:3px solid var(--amber-400);font-size:.88rem;color:var(--text-secondary);margin:.75rem 0;line-height:1.65;}
+.destaque strong{color:var(--amber-400);}
+.aviso{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:.86rem;color:rgba(253,230,138,.8);margin:.75rem 0;line-height:1.6;}
+.aviso i{color:#fbbf24;flex-shrink:0;margin-top:2px;}
+.aviso-green{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.18);font-size:.86rem;color:rgba(134,239,172,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-green i{color:#4ade80;flex-shrink:0;margin-top:2px;}
+.aviso-blue{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.18);font-size:.86rem;color:rgba(125,211,252,.85);margin:.75rem 0;line-height:1.6;}
+.aviso-blue i{color:#38bdf8;flex-shrink:0;margin-top:2px;}
+.aviso-red{display:flex;gap:12px;padding:1rem 1.25rem;border-radius:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.86rem;color:rgba(252,165,165,.9);margin:.75rem 0;line-height:1.6;}
+.aviso-red i{color:#f87171;flex-shrink:0;margin-top:2px;}
+.tabela-wrap{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;}
+thead tr{background:rgba(251,191,36,.08);}
+th{padding:.6rem 1rem;text-align:left;color:var(--amber-400);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid rgba(251,191,36,.18);}
+td{padding:.65rem 1rem;color:var(--text-secondary);border-bottom:1px solid rgba(255,255,255,.05);line-height:1.5;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(251,191,36,.03);}
+td strong{color:var(--text-primary);}
+
+/* ── Code block ── */
+.code-block{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin:.75rem 0;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:rgba(251,191,36,.06);border-bottom:1px solid var(--code-border);}
+.code-lang{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber-400);font-family:'JetBrains Mono',monospace;font-weight:500;}
+.code-copy{font-size:.65rem;color:var(--text-muted);cursor:pointer;background:none;border:none;letter-spacing:.05em;font-family:'Inter',sans-serif;transition:color .2s;}
+.code-copy:hover{color:var(--amber-400);}
+pre{padding:1.25rem;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;color:#fef3c7;}
+.kw{color:#f9a8d4;}.fn{color:#93c5fd;}.str{color:#fde68a;}.cm{color:#374151;font-style:italic;}.num{color:#fca5a5;}.op{color:#c4b5fd;}.pp{color:#fb923c;}.tag{color:#86efac;}.attr{color:#7dd3fc;}
+
+/* ── Badges ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:600;letter-spacing:.04em;background:rgba(251,191,36,.12);color:var(--amber-400);border:1px solid rgba(251,191,36,.22);}
+.badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.22);}
+.badge-blue{background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.22);}
+.badge-purple{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.22);}
+.badge-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.22);}
+
+/* ── Comparativo libs ── */
+.lib-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:.75rem 0;}
+.lib-card{border-radius:14px;padding:1.25rem;border:1px solid;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.lib-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.4);}
+.lib-card__bg{position:absolute;top:-15px;right:-10px;font-size:5rem;opacity:.04;pointer-events:none;font-family:'JetBrains Mono',monospace;font-weight:700;}
+.lib-card__name{font-family:'Montserrat',sans-serif;font-size:1.15rem;font-weight:800;margin-bottom:.15rem;}
+.lib-card__tag{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;opacity:.55;margin-bottom:.9rem;}
+.lib-card__row{display:flex;justify-content:space-between;padding:.28rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.8rem;}
+.lib-card__row:last-of-type{border-bottom:none;}
+.lib-card__label{color:var(--text-muted);}
+.lib-card__val{color:var(--text-primary);font-weight:600;text-align:right;max-width:55%;}
+
+/* ── Gráfico SVG mockup ── */
+.chart-mock{background:#080600;border:1px solid rgba(251,191,36,.18);border-radius:14px;padding:1.25rem;margin:.75rem 0;}
+.chart-mock__title{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:700;color:var(--amber-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;}
+
+/* barras inline */
+.bar-chart{display:flex;flex-direction:column;gap:.65rem;margin:.5rem 0;}
+.bar-row{display:flex;align-items:center;gap:.85rem;}
+.bar-label{font-size:.75rem;color:var(--text-secondary);width:90px;flex-shrink:0;text-align:right;}
+.bar-track{flex:1;height:22px;background:rgba(255,255,255,.04);border-radius:6px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:.5rem;font-size:.7rem;font-weight:700;color:rgba(255,255,255,.9);transition:width .6s ease;}
+.bar-val{font-size:.75rem;color:var(--text-muted);width:38px;text-align:right;flex-shrink:0;}
+
+/* linha sparkline SVG */
+.sparkline{width:100%;overflow:visible;}
+
+/* pizza donut */
+.donut-wrap{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;}
+.donut-legend{display:flex;flex-direction:column;gap:.5rem;}
+.donut-legend-item{display:flex;align-items:center;gap:.55rem;font-size:.8rem;color:var(--text-secondary);}
+.donut-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* ── Lab steps ── */
+.lab-steps{display:flex;flex-direction:column;gap:0;position:relative;}
+.lab-steps::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--amber-400),rgba(251,191,36,.1));border-radius:1px;}
+.lab-step{display:flex;gap:1rem;padding:.75rem 0;}
+.lab-step__num{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:.78rem;font-weight:800;position:relative;z-index:2;background:rgba(251,191,36,.1);color:var(--amber-400);border:2px solid rgba(251,191,36,.28);}
+.lab-step__body{flex:1;padding-top:8px;}
+.lab-step__title{font-family:'Montserrat',sans-serif;font-size:.9rem;font-weight:700;color:#f8fafc;margin-bottom:.3rem;}
+.lab-step__desc{font-size:.85rem;color:var(--text-secondary);line-height:1.6;}
+
+/* ── Exercícios ── */
+.exercicio{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem;margin-bottom:.85rem;}
+.exercicio-num{font-family:'Montserrat',sans-serif;font-size:.65rem;font-weight:700;color:var(--amber-400);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem;}
+.exercicio p{font-size:.88rem;color:var(--text-secondary);line-height:1.6;}
+.dif-basico{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.2);}
+.dif-medio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);}
+.dif-desafio{display:inline-block;margin-top:.6rem;padding:2px 8px;border-radius:6px;font-size:.65rem;font-weight:600;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.gabarito-toggle{display:flex;align-items:center;gap:8px;background:none;border:1px solid rgba(251,191,36,.18);border-radius:8px;padding:.5rem 1rem;color:var(--amber-400);font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;margin-top:.5rem;transition:background .2s;}
+.gabarito-toggle:hover{background:rgba(251,191,36,.07);}
+.gabarito-content{display:none;margin-top:.75rem;}
+.gabarito-content.open{display:block;}
+
+/* ── Quiz ── */
+.quiz-box{background:rgba(251,191,36,.03);border:1px solid rgba(251,191,36,.13);border-radius:12px;padding:1.25rem;margin:1rem 0;}
+.quiz-pergunta{font-family:'Montserrat',sans-serif;font-size:.92rem;font-weight:700;color:var(--white);margin-bottom:1rem;}
+.quiz-ops{display:flex;flex-direction:column;gap:.5rem;}
+.quiz-op{display:flex;align-items:center;gap:10px;padding:.6rem .9rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:9px;cursor:pointer;transition:all .2s;}
+.quiz-op:hover{background:rgba(251,191,36,.06);border-color:rgba(251,191,36,.2);}
+.quiz-op.correto{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);}
+.quiz-op.errado{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);}
+.quiz-letra{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;}
+.quiz-texto{font-size:.85rem;color:var(--text-secondary);}
+.quiz-feedback{display:none;padding:.75rem 1rem;border-radius:8px;font-size:.83rem;line-height:1.55;margin-top:.75rem;}
+.quiz-feedback.show{display:block;}
+
+/* ── Resumo ── */
+.resumo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.resumo-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem;text-align:center;}
+.resumo-item i{font-size:1.4rem;color:var(--amber-400);margin-bottom:.5rem;display:block;}
+.resumo-item strong{color:var(--text-primary);display:block;font-size:.85rem;margin-bottom:3px;}
+.resumo-item p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.proxima{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-radius:14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);margin-top:3rem;cursor:pointer;transition:background .2s,border-color .2s;}
+.proxima:hover{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.38);}
+.proxima-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:#4ade80;margin-bottom:3px;}
+.proxima-titulo{font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;color:var(--white);}
+.proxima i{font-size:1.25rem;color:#4ade80;}
+.sep{display:flex;align-items:center;gap:12px;margin:3rem 0 2rem;}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:rgba(251,191,36,.1);}
+.sep span{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);}
+.icon-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;}
+.icon-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--text-secondary);line-height:1.55;}
+.icon-list li i{color:var(--amber-400);font-size:.8rem;margin-top:3px;flex-shrink:0;width:14px;}
+
+@media(max-width:900px){
+  .capa{grid-template-columns:1fr;}.capa-right{display:none;}
+  .grid-2,.lib-grid,.resumo-grid{grid-template-columns:1fr;}
+}
+@media(max-width:520px){.resumo-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ CAPA ══ -->
+<section class="capa" id="topo">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <span class="tipo-badge">📊 LAB + Conteúdo</span>
+  <div class="capa-left">
+    <div class="semana-badge"><span class="dot"></span>Desenvolvimento Front-end para IA · Bacharelado · 3° Período</div>
+    <div class="semana-num">09</div>
+    <h1 class="capa-titulo">Visualização<br><em>de Dados</em><br>Chart.js e Recharts</h1>
+    <p class="capa-sub">4 aulas · 200 minutos · Transformando números de modelos em gráficos que comunicam</p>
+    <div class="divider"></div>
+    <div class="topicos">
+      <div class="topico"><div class="topico-icon"><i class="fas fa-chart-bar"></i></div><span>Quando um gráfico comunica melhor do que uma tabela</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-balance-scale"></i></div><span>Chart.js vs Recharts — escolha para cada contexto</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-chart-line"></i></div><span>Gráficos de linha — métricas de modelo ao longo do tempo</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-chart-bar"></i></div><span>Gráficos de barras — comparando modelos e categorias</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-chart-pie"></i></div><span>Gráfico de pizza/donut — distribuição de classes e sentimentos</span></div>
+      <div class="topico"><div class="topico-icon"><i class="fas fa-flask"></i></div><span>LAB: dashboard de métricas de classificação com dados de IA</span></div>
+    </div>
+    <div class="atividade-box">
+      <div class="label">Atividade LAB</div>
+      <p>Construir um dashboard React que exibe métricas de um modelo de classificação (accuracy, precision, recall por época e por classe) usando Recharts — com dados reais ou simulados de um modelo de sentimento.</p>
+    </div>
+  </div>
+  <div class="capa-right">
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-tools"></i>O que você vai usar hoje</div>
+      <ul class="info-lista">
+        <li>recharts — gráficos declarativos em React com SVG</li>
+        <li>chart.js + react-chartjs-2 — alternativa imperativa com Canvas</li>
+        <li>Dados de treinamento de modelo (accuracy, loss, confusion matrix)</li>
+        <li>useState + useEffect para simular dados chegando em tempo real</li>
+        <li>CSS Grid para layout de dashboard responsivo</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-map-signs"></i>Onde estamos</div>
+      <ul class="info-lista">
+        <li>✅ Sem. 7 — Streaming: SSE, ReadableStream</li>
+        <li>✅ Sem. 8 — Exibindo resultados: markdown, highlight</li>
+        <li>▶ Sem. 9 — Visualização de dados com Chart.js e Recharts</li>
+        <li>Sem. 10 — TensorFlow.js: carregar modelo e inferência client-side</li>
+        <li>Sem. 11 — Transformers.js: NLP no browser sem servidor</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-titulo"><i class="fas fa-lightbulb"></i>Por que isso importa</div>
+      <ul class="info-lista">
+        <li>Métricas de IA em tabela são ilegíveis — um gráfico de linha de accuracy por época revela overfitting imediatamente</li>
+        <li>Dashboards de predição são o produto final da maioria dos projetos de IA aplicada</li>
+        <li>Recharts é declarativo como o React — componibilidade ao invés de configuração</li>
+        <li>Saber escolher o tipo de gráfico certo é habilidade de produto, não só de código</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint" onclick="document.getElementById('conteudo').scrollIntoView({behavior:'smooth'})">
+    <span>role para o conteúdo</span><i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<!-- ══ CONTEÚDO ══ -->
+<main class="conteudo" id="conteudo">
+
+  <!-- ── AULA 1 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">01</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 1 · ~50 minutos</div>
+        <div class="secao-titulo">Quando visualizar — e qual biblioteca escolher</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-question-circle"></i>A escolha certa de gráfico comunica, a errada confunde</div>
+      <p>Antes de escrever uma linha de código, a pergunta certa é: <strong>o que o usuário precisa entender com esse dado?</strong> Cada tipo de gráfico responde a uma pergunta diferente. Usar o tipo errado é pior do que usar uma tabela.</p>
+
+      <div class="tabela-wrap">
+        <table>
+          <thead><tr><th>Pergunta que o dado responde</th><th>Tipo de gráfico</th><th>Exemplo em IA</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Como X muda ao longo do tempo?</strong></td><td>Linha (LineChart)</td><td>Accuracy e loss por época de treinamento</td></tr>
+            <tr><td><strong>Como X se compara a Y e Z?</strong></td><td>Barras (BarChart)</td><td>Precision por classe, score de modelos diferentes</td></tr>
+            <tr><td><strong>Qual a proporção de cada parte?</strong></td><td>Pizza / Donut (PieChart)</td><td>Distribuição de sentimentos, classes previstas</td></tr>
+            <tr><td><strong>Existe correlação entre X e Y?</strong></td><td>Dispersão (ScatterChart)</td><td>Confiança do modelo vs erro real</td></tr>
+            <tr><td><strong>Onde os valores se concentram?</strong></td><td>Área (AreaChart)</td><td>Distribuição de probabilidade de predição</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="destaque">
+        <strong>Regra de ouro:</strong> se você tem menos de 5 números, use uma tabela. Se você tem tendência temporal, use linha. Se você tem comparação entre categorias, use barras. Pizza só para até 5 fatias e quando a proporção é o que importa — nunca para comparar valores próximos.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-balance-scale"></i>Chart.js vs Recharts — quando usar cada um</div>
+      <div class="lib-grid">
+        <div class="lib-card" style="background:rgba(96,165,250,.04);border-color:rgba(96,165,250,.2);">
+          <div class="lib-card__bg">CJ</div>
+          <div class="lib-card__name" style="color:#60a5fa;">Chart.js</div>
+          <div class="lib-card__tag" style="color:#93c5fd;">+ react-chartjs-2</div>
+          <div class="lib-card__row"><span class="lib-card__label">Renderização</span><span class="lib-card__val">Canvas 2D</span></div>
+          <div class="lib-card__row"><span class="lib-card__label">Paradigma</span><span class="lib-card__val">Imperativo (config object)</span></div>
+          <div class="lib-card__row"><span class="lib-card__label">Performance</span><span class="lib-card__val">✅ Excelente (10k+ pontos)</span></div>
+          <div class="lib-card__row"><span class="lib-card__label">Animações</span><span class="lib-card__val">✅ Built-in, suaves</span></div>
+          <div class="lib-card__row"><span class="lib-card__label">Customização</span><span class="lib-card__val">Média (plugins)</span></div>
+          <div class="lib-card__row"><span class="lib-card__label">Curva de aprendizado</span><span class="lib-card__val">Média</span></div>
+          <div class="lib-card__row"><span class="lib-card__label">Melhor para</span><span class="lib-card__val">Dashboards com muitos dados, animações</span></div>
+          <div style="margin-top:.75rem;"><span class="badge-blue">npm: chart.js react-chartjs-2</span></div>
+        </div>
+        <div class="lib-card" style="background:rgba(251,191,36,.04);border-color:rgba(251,191,36,.2);">
+          <div class="lib-card__bg">RC</div>
+          <div class="lib-card__name" style="color:#fbbf24;">Recharts</div>
+          <div class="lib-card__tag" style="color:#fcd34d;">Gráficos declarativos para React</div>
+          <div class="lib-card__row"><span class="lib-card__label">Renderização</span><span class="lib-card__val">SVG</span></div>
+          <div class="lib-card__row"><span class="lib-card__label">Paradigma</span><span class="lib-card__val">Declarativo (JSX)</span></div>
+          <div class="lib-card__row"><span class="lib-card__label">Performance</span><span class="lib-card__val">Boa (até ~5k pontos)</span></div>
+          <div class="lib-card__row"><span class="lib-card__label">Animações</span><span class="lib-card__val">✅ Built-in</span></div>
+          <div class="lib-card__row"><span class="lib-card__label">Customização</span><span class="lib-card__val">✅ Alta (componentes React)</span></div>
+          <div class="lib-card__row"><span class="lib-card__label">Curva de aprendizado</span><span class="lib-card__val">Baixa (parece React)</span></div>
+          <div class="lib-card__row"><span class="lib-card__label">Melhor para</span><span class="lib-card__val">Projetos React, customização, SVG</span></div>
+          <div style="margin-top:.75rem;"><span class="badge">npm: recharts</span></div>
+        </div>
+      </div>
+
+      <div class="aviso">
+        <i class="fas fa-hand-paper"></i>
+        <span><strong>Pergunta para a turma:</strong> você está construindo um dashboard de monitoramento de um modelo em produção que recebe 50.000 predições por hora e precisa exibir distribuição de confiança em tempo real (histograma com 100 buckets atualizado a cada segundo). Chart.js ou Recharts? Por quê?</span>
+      </div>
+    </div>
+
+    <!-- Mockup de gráficos -->
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-chart-bar"></i>Prévia — os três gráficos que você vai construir hoje</div>
+      <div class="grid-3" style="gap:.85rem;">
+
+        <!-- Barra -->
+        <div class="chart-mock">
+          <div class="chart-mock__title">Precision por Classe</div>
+          <div class="bar-chart">
+            <div class="bar-row"><span class="bar-label">Positivo</span><div class="bar-track"><div class="bar-fill" style="width:92%;background:linear-gradient(90deg,#fbbf24,#f59e0b);">92%</div></div><span class="bar-val">0.92</span></div>
+            <div class="bar-row"><span class="bar-label">Negativo</span><div class="bar-track"><div class="bar-fill" style="width:87%;background:linear-gradient(90deg,#fbbf24,#f59e0b);">87%</div></div><span class="bar-val">0.87</span></div>
+            <div class="bar-row"><span class="bar-label">Neutro</span><div class="bar-track"><div class="bar-fill" style="width:74%;background:linear-gradient(90deg,#fbbf24,#f59e0b);">74%</div></div><span class="bar-val">0.74</span></div>
+            <div class="bar-row"><span class="bar-label">Misto</span><div class="bar-track"><div class="bar-fill" style="width:61%;background:linear-gradient(90deg,#fb923c,#ef4444);">61%</div></div><span class="bar-val">0.61</span></div>
+          </div>
+        </div>
+
+        <!-- Linha / sparkline -->
+        <div class="chart-mock">
+          <div class="chart-mock__title">Accuracy por Época</div>
+          <svg class="sparkline" viewBox="0 0 220 90" style="margin-top:.5rem;">
+            <!-- grid -->
+            <line x1="0" y1="15" x2="220" y2="15" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+            <line x1="0" y1="45" x2="220" y2="45" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+            <line x1="0" y1="75" x2="220" y2="75" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+            <!-- labels -->
+            <text x="0" y="14" fill="rgba(255,255,255,.25)" font-size="8">1.0</text>
+            <text x="0" y="44" fill="rgba(255,255,255,.25)" font-size="8">0.7</text>
+            <text x="0" y="74" fill="rgba(255,255,255,.25)" font-size="8">0.4</text>
+            <!-- área -->
+            <defs>
+              <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#fbbf24" stop-opacity=".3"/>
+                <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M20,72 L50,60 L80,45 L110,30 L140,20 L170,16 L200,14 L200,90 L20,90 Z" fill="url(#grad)"/>
+            <!-- linha principal -->
+            <polyline points="20,72 50,60 80,45 110,30 140,20 170,16 200,14" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <!-- pontos -->
+            <circle cx="20" cy="72" r="3.5" fill="#fbbf24"/><circle cx="80" cy="45" r="3.5" fill="#fbbf24"/><circle cx="140" cy="20" r="3.5" fill="#fbbf24"/><circle cx="200" cy="14" r="3.5" fill="#fbbf24"/>
+            <!-- época labels -->
+            <text x="17" y="88" fill="rgba(255,255,255,.3)" font-size="7">Ép.1</text>
+            <text x="77" y="88" fill="rgba(255,255,255,.3)" font-size="7">Ép.5</text>
+            <text x="137" y="88" fill="rgba(255,255,255,.3)" font-size="7">Ép.10</text>
+            <text x="193" y="88" fill="rgba(255,255,255,.3)" font-size="7">Ép.15</text>
+          </svg>
+        </div>
+
+        <!-- Donut -->
+        <div class="chart-mock">
+          <div class="chart-mock__title">Distribuição de Sentimento</div>
+          <div class="donut-wrap" style="margin-top:.5rem;">
+            <svg viewBox="0 0 80 80" width="80" height="80" style="flex-shrink:0;">
+              <!-- donut segmentos (stroke-dasharray) -->
+              <circle cx="40" cy="40" r="28" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="14"/>
+              <!-- positivo 52% = 175.9deg -->
+              <circle cx="40" cy="40" r="28" fill="none" stroke="#4ade80" stroke-width="14"
+                stroke-dasharray="87.96 175.92" stroke-dashoffset="0" transform="rotate(-90 40 40)"/>
+              <!-- negativo 28% -->
+              <circle cx="40" cy="40" r="28" fill="none" stroke="#f87171" stroke-width="14"
+                stroke-dasharray="47.4 175.92" stroke-dashoffset="-87.96" transform="rotate(-90 40 40)"/>
+              <!-- neutro 20% -->
+              <circle cx="40" cy="40" r="28" fill="none" stroke="#fbbf24" stroke-width="14"
+                stroke-dasharray="33.8 175.92" stroke-dashoffset="-135.36" transform="rotate(-90 40 40)"/>
+              <text x="40" y="44" text-anchor="middle" fill="white" font-size="10" font-weight="700">52%</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#4ade80;"></div>Positivo · 52%</div>
+              <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#f87171;"></div>Negativo · 28%</div>
+              <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#fbbf24;"></div>Neutro · 20%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 Um modelo de classificação de e-mails alcançou 94% de accuracy no dataset de teste. O cliente pergunta: "Mas ele classifica bem os spams em português?" Qual gráfico revelaria melhor essa informação específica?</div>
+      <div class="quiz-ops" id="quiz1-ops">
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">Gráfico de linha mostrando a accuracy ao longo do treinamento</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'B')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">B</div><span class="quiz-texto">Gráfico de pizza com a proporção de e-mails spam vs não-spam no dataset</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,true,'C')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">C</div><span class="quiz-texto">Gráfico de barras com precision, recall e F1-score por classe (spam PT, spam EN, legítimo)</span></div>
+        <div class="quiz-op" onclick="responder('quiz1',this,false,'D')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">D</div><span class="quiz-texto">Um número grande mostrando 94% de accuracy é suficiente para responder a pergunta</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz1-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 2</span></div>
+
+  <!-- ── AULA 2 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">02</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 2 · ~50 minutos</div>
+        <div class="secao-titulo">Recharts na prática — linha, barras e pizza</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-box-open"></i>Instalação e anatomia do Recharts</div>
+      <p>O Recharts segue o mesmo modelo mental do React: tudo é um componente. Um gráfico é composto de camadas — o container, os eixos, as séries de dados e elementos auxiliares como tooltips e legenda. Você os compõe como JSX.</p>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Terminal</span></div>
+        <pre><code>npm install recharts</code></pre>
+      </div>
+
+      <div class="destaque">
+        <strong>Anatomia de qualquer gráfico Recharts:</strong> (1) Container responsivo <code style="font-family:'JetBrains Mono',monospace;">ResponsiveContainer</code> que se ajusta ao pai — sempre o mais externo. (2) Tipo do gráfico (<code style="font-family:'JetBrains Mono',monospace;">LineChart</code>, <code style="font-family:'JetBrains Mono',monospace;">BarChart</code>, etc.) com a prop <code style="font-family:'JetBrains Mono',monospace;">data</code>. (3) Eixos: <code style="font-family:'JetBrains Mono',monospace;">XAxis</code> e <code style="font-family:'JetBrains Mono',monospace;">YAxis</code>. (4) Séries: <code style="font-family:'JetBrains Mono',monospace;">Line</code>, <code style="font-family:'JetBrains Mono',monospace;">Bar</code> com <code style="font-family:'JetBrains Mono',monospace;">dataKey</code> apontando para o campo do objeto de dados. (5) Opcionais: <code style="font-family:'JetBrains Mono',monospace;">Tooltip</code>, <code style="font-family:'JetBrains Mono',monospace;">Legend</code>, <code style="font-family:'JetBrains Mono',monospace;">CartesianGrid</code>.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-chart-line"></i>LineChart — accuracy e loss por época</div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — GraficoTreinamento.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> {
+  LineChart, Line, XAxis, YAxis, CartesianGrid,
+  Tooltip, Legend, ResponsiveContainer
+} <span class="pp">from</span> <span class="str">'recharts'</span>;
+
+<span class="cm">// Dados: array de objetos com um campo por série</span>
+<span class="kw">const</span> dadosTreinamento = [
+  { epoca: <span class="num">1</span>,  accuracy: <span class="num">0.52</span>, loss: <span class="num">0.88</span>, val_accuracy: <span class="num">0.49</span> },
+  { epoca: <span class="num">3</span>,  accuracy: <span class="num">0.71</span>, loss: <span class="num">0.62</span>, val_accuracy: <span class="num">0.67</span> },
+  { epoca: <span class="num">5</span>,  accuracy: <span class="num">0.82</span>, loss: <span class="num">0.44</span>, val_accuracy: <span class="num">0.78</span> },
+  { epoca: <span class="num">8</span>,  accuracy: <span class="num">0.89</span>, loss: <span class="num">0.28</span>, val_accuracy: <span class="num">0.85</span> },
+  { epoca: <span class="num">12</span>, accuracy: <span class="num">0.93</span>, loss: <span class="num">0.18</span>, val_accuracy: <span class="num">0.88</span> },
+  { epoca: <span class="num">15</span>, accuracy: <span class="num">0.96</span>, loss: <span class="num">0.11</span>, val_accuracy: <span class="num">0.87</span> },
+];
+
+<span class="kw">export default function</span> <span class="fn">GraficoTreinamento</span>() {
+  <span class="kw">return</span> (
+    &lt;<span class="tag">ResponsiveContainer</span> <span class="attr">width</span>=<span class="str">"100%"</span> <span class="attr">height</span>={<span class="num">280</span>}&gt;
+      &lt;<span class="tag">LineChart</span> <span class="attr">data</span>={dadosTreinamento} <span class="attr">margin</span>={{ top: <span class="num">5</span>, right: <span class="num">20</span>, left: <span class="num">0</span>, bottom: <span class="num">5</span> }}&gt;
+
+        &lt;<span class="tag">CartesianGrid</span> <span class="attr">strokeDasharray</span>=<span class="str">"3 3"</span> <span class="attr">stroke</span>=<span class="str">"rgba(255,255,255,.06)"</span> /&gt;
+
+        &lt;<span class="tag">XAxis</span>
+          <span class="attr">dataKey</span>=<span class="str">"epoca"</span>
+          <span class="attr">label</span>={{ value: <span class="str">'Época'</span>, position: <span class="str">'insideBottom'</span>, offset: -<span class="num">2</span> }}
+          <span class="attr">stroke</span>=<span class="str">"rgba(255,255,255,.3)"</span>
+          <span class="attr">tick</span>={{ fill: <span class="str">'rgba(255,255,255,.4)'</span>, fontSize: <span class="num">12</span> }}
+        /&gt;
+
+        &lt;<span class="tag">YAxis</span>
+          <span class="attr">domain</span>={[<span class="num">0</span>, <span class="num">1</span>]}
+          <span class="attr">tickFormatter</span>={(v) => v.<span class="fn">toFixed</span>(<span class="num">1</span>)}
+          <span class="attr">stroke</span>=<span class="str">"rgba(255,255,255,.3)"</span>
+          <span class="attr">tick</span>={{ fill: <span class="str">'rgba(255,255,255,.4)'</span>, fontSize: <span class="num">12</span> }}
+        /&gt;
+
+        &lt;<span class="tag">Tooltip</span>
+          <span class="attr">contentStyle</span>={{ background: <span class="str">'#1a1500'</span>, border: <span class="str">'1px solid rgba(251,191,36,.3)'</span>, borderRadius: <span class="str">'8px'</span> }}
+          <span class="attr">labelStyle</span>={{ color: <span class="str">'#fbbf24'</span> }}
+          <span class="attr">formatter</span>={(value, name) => [value.<span class="fn">toFixed</span>(<span class="num">3</span>), name]}
+        /&gt;
+
+        &lt;<span class="tag">Legend</span> <span class="attr">wrapperStyle</span>={{ color: <span class="str">'rgba(255,255,255,.6)'</span>, fontSize: <span class="str">'12px'</span> }} /&gt;
+
+        &lt;<span class="tag">Line</span> <span class="attr">type</span>=<span class="str">"monotone"</span> <span class="attr">dataKey</span>=<span class="str">"accuracy"</span>    <span class="attr">stroke</span>=<span class="str">"#fbbf24"</span> <span class="attr">strokeWidth</span>={<span class="num">2.5</span>} <span class="attr">dot</span>={{ r: <span class="num">4</span> }} /&gt;
+        &lt;<span class="tag">Line</span> <span class="attr">type</span>=<span class="str">"monotone"</span> <span class="attr">dataKey</span>=<span class="str">"val_accuracy"</span> <span class="attr">stroke</span>=<span class="str">"#38bdf8"</span> <span class="attr">strokeWidth</span>={<span class="num">2</span>}   <span class="attr">strokeDasharray</span>=<span class="str">"5 3"</span> <span class="attr">dot</span>={{ r: <span class="num">3</span> }} /&gt;
+        &lt;<span class="tag">Line</span> <span class="attr">type</span>=<span class="str">"monotone"</span> <span class="attr">dataKey</span>=<span class="str">"loss"</span>         <span class="attr">stroke</span>=<span class="str">"#f87171"</span> <span class="attr">strokeWidth</span>={<span class="num">2</span>}   <span class="attr">dot</span>={{ r: <span class="num">3</span> }} /&gt;
+
+      &lt;/<span class="tag">LineChart</span>&gt;
+    &lt;/<span class="tag">ResponsiveContainer</span>&gt;
+  );
+}</code></pre>
+      </div>
+
+      <div class="aviso-blue">
+        <i class="fas fa-info-circle"></i>
+        <span><strong>Detectando overfitting no gráfico:</strong> quando a linha de <code style="font-family:'JetBrains Mono',monospace;">accuracy</code> (treino) continua subindo mas <code style="font-family:'JetBrains Mono',monospace;">val_accuracy</code> (validação) começa a cair ou estagna, o modelo está memorizando o treino. Ver isso em um gráfico de linha é instantâneo — em tabela de números, você precisaria comparar linha por linha.
+      </span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-chart-bar"></i>BarChart — comparando métricas por classe</div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — GraficoMetricasPorClasse.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, Legend, ResponsiveContainer, Cell
+} <span class="pp">from</span> <span class="str">'recharts'</span>;
+
+<span class="kw">const</span> dadosClasses = [
+  { classe: <span class="str">'Positivo'</span>, precision: <span class="num">0.92</span>, recall: <span class="num">0.89</span>, f1: <span class="num">0.90</span> },
+  { classe: <span class="str">'Negativo'</span>, precision: <span class="num">0.87</span>, recall: <span class="num">0.85</span>, f1: <span class="num">0.86</span> },
+  { classe: <span class="str">'Neutro'</span>,   precision: <span class="num">0.74</span>, recall: <span class="num">0.79</span>, f1: <span class="num">0.76</span> },
+  { classe: <span class="str">'Misto'</span>,    precision: <span class="num">0.61</span>, recall: <span class="num">0.55</span>, f1: <span class="num">0.58</span> },
+];
+
+<span class="cm">// Tooltip customizado</span>
+<span class="kw">function</span> <span class="fn">TooltipCustom</span>({ active, payload, label }) {
+  <span class="kw">if</span> (!active || !payload?.length) <span class="kw">return null</span>;
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">style</span>={{ background: <span class="str">'#1a1500'</span>, border: <span class="str">'1px solid rgba(251,191,36,.3)'</span>, borderRadius: <span class="str">'8px'</span>, padding: <span class="str">'.75rem 1rem'</span> }}&gt;
+      &lt;<span class="tag">p</span> <span class="attr">style</span>={{ color: <span class="str">'#fbbf24'</span>, fontWeight: <span class="num">700</span>, marginBottom: <span class="str">'.4rem'</span> }}&gt;{label}&lt;/<span class="tag">p</span>&gt;
+      {payload.<span class="fn">map</span>(p => (
+        &lt;<span class="tag">p</span> <span class="attr">key</span>={p.dataKey} <span class="attr">style</span>={{ color: p.color, fontSize: <span class="str">'.82rem'</span> }}&gt;
+          {p.name}: {p.value.<span class="fn">toFixed</span>(<span class="num">2</span>)}
+        &lt;/<span class="tag">p</span>&gt;
+      ))}
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}
+
+<span class="kw">export default function</span> <span class="fn">GraficoMetricas</span>() {
+  <span class="kw">return</span> (
+    &lt;<span class="tag">ResponsiveContainer</span> <span class="attr">width</span>=<span class="str">"100%"</span> <span class="attr">height</span>={<span class="num">280</span>}&gt;
+      &lt;<span class="tag">BarChart</span> <span class="attr">data</span>={dadosClasses} <span class="attr">margin</span>={{ top: <span class="num">5</span>, right: <span class="num">20</span>, left: <span class="num">0</span>, bottom: <span class="num">5</span> }}&gt;
+        &lt;<span class="tag">CartesianGrid</span> <span class="attr">strokeDasharray</span>=<span class="str">"3 3"</span> <span class="attr">stroke</span>=<span class="str">"rgba(255,255,255,.06)"</span> /&gt;
+        &lt;<span class="tag">XAxis</span> <span class="attr">dataKey</span>=<span class="str">"classe"</span> <span class="attr">tick</span>={{ fill: <span class="str">'rgba(255,255,255,.5)'</span>, fontSize: <span class="num">12</span> }} /&gt;
+        &lt;<span class="tag">YAxis</span> <span class="attr">domain</span>={[<span class="num">0</span>, <span class="num">1</span>]} <span class="attr">tickFormatter</span>={(v) => v.<span class="fn">toFixed</span>(<span class="num">1</span>)} <span class="attr">tick</span>={{ fill: <span class="str">'rgba(255,255,255,.4)'</span>, fontSize: <span class="num">12</span> }} /&gt;
+        &lt;<span class="tag">Tooltip</span> <span class="attr">content</span>=&lt;<span class="tag">TooltipCustom</span> /&gt; /&gt;
+        &lt;<span class="tag">Legend</span> <span class="attr">wrapperStyle</span>={{ color: <span class="str">'rgba(255,255,255,.6)'</span>, fontSize: <span class="str">'12px'</span> }} /&gt;
+        &lt;<span class="tag">Bar</span> <span class="attr">dataKey</span>=<span class="str">"precision"</span> <span class="attr">fill</span>=<span class="str">"#fbbf24"</span> <span class="attr">radius</span>={[<span class="num">4</span>,<span class="num">4</span>,<span class="num">0</span>,<span class="num">0</span>]} /&gt;
+        &lt;<span class="tag">Bar</span> <span class="attr">dataKey</span>=<span class="str">"recall"</span>    <span class="attr">fill</span>=<span class="str">"#38bdf8"</span> <span class="attr">radius</span>={[<span class="num">4</span>,<span class="num">4</span>,<span class="num">0</span>,<span class="num">0</span>]} /&gt;
+        &lt;<span class="tag">Bar</span> <span class="attr">dataKey</span>=<span class="str">"f1"</span>        <span class="attr">fill</span>=<span class="str">"#4ade80"</span> <span class="attr">radius</span>={[<span class="num">4</span>,<span class="num">4</span>,<span class="num">0</span>,<span class="num">0</span>]} /&gt;
+      &lt;/<span class="tag">BarChart</span>&gt;
+    &lt;/<span class="tag">ResponsiveContainer</span>&gt;
+  );
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-chart-pie"></i>PieChart — distribuição de sentimentos</div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — GraficoDistribuicao.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } <span class="pp">from</span> <span class="str">'recharts'</span>;
+
+<span class="kw">const</span> distribuicao = [
+  { nome: <span class="str">'Positivo'</span>, valor: <span class="num">52</span>, cor: <span class="str">'#4ade80'</span> },
+  { nome: <span class="str">'Negativo'</span>, valor: <span class="num">28</span>, cor: <span class="str">'#f87171'</span> },
+  { nome: <span class="str">'Neutro'</span>,   valor: <span class="num">20</span>, cor: <span class="str">'#fbbf24'</span> },
+];
+
+<span class="cm">// Rótulo customizado no segmento</span>
+<span class="kw">const</span> <span class="fn">RotuloCustom</span> = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+  <span class="kw">const</span> RADIAN = Math.PI / <span class="num">180</span>;
+  <span class="kw">const</span> r = innerRadius + (outerRadius - innerRadius) * <span class="num">0.5</span>;
+  <span class="kw">const</span> x = cx + r * Math.<span class="fn">cos</span>(-midAngle * RADIAN);
+  <span class="kw">const</span> y = cy + r * Math.<span class="fn">sin</span>(-midAngle * RADIAN);
+  <span class="kw">return</span> (
+    &lt;<span class="tag">text</span> x={x} y={y} <span class="attr">fill</span>=<span class="str">"white"</span> <span class="attr">textAnchor</span>=<span class="str">"middle"</span> <span class="attr">dominantBaseline</span>=<span class="str">"central"</span> <span class="attr">fontSize</span>={<span class="num">13</span>} <span class="attr">fontWeight</span>=<span class="str">"700"</span>&gt;
+      {`${(percent * <span class="num">100</span>).<span class="fn">toFixed</span>(<span class="num">0</span>)}%`}
+    &lt;/<span class="tag">text</span>&gt;
+  );
+};
+
+<span class="kw">export default function</span> <span class="fn">GraficoDistribuicao</span>() {
+  <span class="kw">return</span> (
+    &lt;<span class="tag">ResponsiveContainer</span> <span class="attr">width</span>=<span class="str">"100%"</span> <span class="attr">height</span>={<span class="num">260</span>}&gt;
+      &lt;<span class="tag">PieChart</span>&gt;
+        &lt;<span class="tag">Pie</span>
+          <span class="attr">data</span>={distribuicao}
+          <span class="attr">dataKey</span>=<span class="str">"valor"</span>
+          <span class="attr">nameKey</span>=<span class="str">"nome"</span>
+          <span class="attr">cx</span>=<span class="str">"50%"</span> <span class="attr">cy</span>=<span class="str">"50%"</span>
+          <span class="attr">innerRadius</span>={<span class="num">55</span>}   <span class="cm">// 0 = pizza, &gt;0 = donut</span>
+          <span class="attr">outerRadius</span>={<span class="num">100</span>}
+          <span class="attr">labelLine</span>={<span class="kw">false</span>}
+          <span class="attr">label</span>={RotuloCustom}
+        &gt;
+          {distribuicao.<span class="fn">map</span>((entrada) => (
+            &lt;<span class="tag">Cell</span> <span class="attr">key</span>={entrada.nome} <span class="attr">fill</span>={entrada.cor} /&gt;
+          ))}
+        &lt;/<span class="tag">Pie</span>&gt;
+        &lt;<span class="tag">Tooltip</span>
+          <span class="attr">formatter</span>={(value, name) => [`${value}%`, name]}
+          <span class="attr">contentStyle</span>={{ background: <span class="str">'#1a1500'</span>, border: <span class="str">'1px solid rgba(251,191,36,.3)'</span>, borderRadius: <span class="str">'8px'</span> }}
+        /&gt;
+        &lt;<span class="tag">Legend</span> <span class="attr">wrapperStyle</span>={{ color: <span class="str">'rgba(255,255,255,.6)'</span>, fontSize: <span class="str">'12px'</span> }} /&gt;
+      &lt;/<span class="tag">PieChart</span>&gt;
+    &lt;/<span class="tag">ResponsiveContainer</span>&gt;
+  );
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-pergunta">🙋 No Recharts, o que a prop <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">dataKey</code> de um componente <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">Line</code> ou <code style="font-family:'JetBrains Mono',monospace;font-size:.88rem;">Bar</code> indica?</div>
+      <div class="quiz-ops" id="quiz2-ops">
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'A')"><div class="quiz-letra" style="background:rgba(96,165,250,.15);color:#60a5fa;">A</div><span class="quiz-texto">A cor da série no gráfico — cada dataKey tem uma cor automática diferente</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'B')"><div class="quiz-letra" style="background:rgba(251,191,36,.15);color:#fbbf24;">B</div><span class="quiz-texto">O campo do eixo X — qual propriedade do objeto de dados é usada como categoria</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,true,'C')"><div class="quiz-letra" style="background:rgba(74,222,128,.15);color:#4ade80;">C</div><span class="quiz-texto">Qual campo do objeto de dados essa série vai plotar — o nome da propriedade numérica que alimenta a série</span></div>
+        <div class="quiz-op" onclick="responder('quiz2',this,false,'D')"><div class="quiz-letra" style="background:rgba(244,114,182,.15);color:#f472b6;">D</div><span class="quiz-texto">O índice do array de dados que essa série representa</span></div>
+      </div>
+      <div class="quiz-feedback" id="quiz2-feedback"></div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Aula 3 · LAB</span></div>
+
+  <!-- ── AULA 3 ── -->
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">03</div>
+      <div class="secao-info">
+        <div class="secao-label">Aula 3 · LAB · ~50 minutos</div>
+        <div class="secao-titulo">LAB — Dashboard de métricas de um modelo de sentimento</div>
+      </div>
+    </div>
+
+    <div class="aviso-green">
+      <i class="fas fa-flask"></i>
+      <span>Objetivo: construir um dashboard React com três gráficos Recharts mostrando métricas de um modelo de análise de sentimento — curva de treinamento (linha), métricas por classe (barras) e distribuição de predições (donut) — com cards de KPI no topo e layout responsivo em grid.</span>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo"><i class="fas fa-list-ol"></i>Passo a passo do LAB</div>
+      <div class="lab-steps">
+        <div class="lab-step">
+          <div class="lab-step__num">1</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Criar o projeto e instalar</div>
+            <div class="lab-step__desc">Novo projeto React ou use o existente. <code style="font-family:'JetBrains Mono',monospace;">npm install recharts</code>. Crie um arquivo <code style="font-family:'JetBrains Mono',monospace;">dadosModelo.js</code> com os três conjuntos de dados das Aulas 1 e 2 — centralize aqui para reusar nos componentes.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">2</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Criar os três componentes de gráfico</div>
+            <div class="lab-step__desc">Um arquivo por gráfico: <code style="font-family:'JetBrains Mono',monospace;">GraficoTreinamento.jsx</code>, <code style="font-family:'JetBrains Mono',monospace;">GraficoMetricas.jsx</code>, <code style="font-family:'JetBrains Mono',monospace;">GraficoDistribuicao.jsx</code>. Cada componente recebe <code style="font-family:'JetBrains Mono',monospace;">dados</code> como prop — não hardcode dentro do gráfico.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">3</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Montar o Dashboard com cards KPI</div>
+            <div class="lab-step__desc">No <code style="font-family:'JetBrains Mono',monospace;">Dashboard.jsx</code>: quatro cards de KPI no topo (accuracy, precision, recall, F1 médios), abaixo o GraficoTreinamento em largura total, depois GraficoMetricas e GraficoDistribuicao lado a lado em grid 2 colunas. Use o código do componente abaixo.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">4</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Adicionar simulação de dados em tempo real</div>
+            <div class="lab-step__desc">Use <code style="font-family:'JetBrains Mono',monospace;">useState</code> para guardar as épocas exibidas e <code style="font-family:'JetBrains Mono',monospace;">useEffect</code> com <code style="font-family:'JetBrains Mono',monospace;">setInterval</code> de 800ms para adicionar uma época por vez ao array. O gráfico de linha cresce em tempo real simulando um treinamento ao vivo.</div>
+          </div>
+        </div>
+        <div class="lab-step">
+          <div class="lab-step__num">5</div>
+          <div class="lab-step__body">
+            <div class="lab-step__title">Tornar responsivo</div>
+            <div class="lab-step__desc">ResponsiveContainer já cuida da largura. Para o grid de 2 colunas virar 1 coluna em mobile, adicione um media query simples ou use CSS Grid com <code style="font-family:'JetBrains Mono',monospace;">grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))</code>.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">React — Dashboard.jsx completo</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code><span class="pp">import</span> { <span class="fn">useState</span>, <span class="fn">useEffect</span> } <span class="pp">from</span> <span class="str">'react'</span>;
+<span class="pp">import</span> GraficoTreinamento <span class="pp">from</span> <span class="str">'./GraficoTreinamento'</span>;
+<span class="pp">import</span> GraficoMetricas <span class="pp">from</span> <span class="str">'./GraficoMetricas'</span>;
+<span class="pp">import</span> GraficoDistribuicao <span class="pp">from</span> <span class="str">'./GraficoDistribuicao'</span>;
+<span class="pp">import</span> { todasEpocas, dadosClasses, distribuicao } <span class="pp">from</span> <span class="str">'./dadosModelo'</span>;
+<span class="pp">import</span> <span class="str">'./Dashboard.css'</span>;
+
+<span class="kw">function</span> <span class="fn">CardKPI</span>({ label, valor, cor }) {
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"kpi-card"</span>&gt;
+      &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"kpi-label"</span>&gt;{label}&lt;/<span class="tag">span</span>&gt;
+      &lt;<span class="tag">span</span> <span class="attr">className</span>=<span class="str">"kpi-valor"</span> <span class="attr">style</span>={{ color: cor }}&gt;{valor}&lt;/<span class="tag">span</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}
+
+<span class="kw">export default function</span> <span class="fn">Dashboard</span>() {
+  <span class="kw">const</span> [epocasVisiveis, setEpocasVisiveis] = <span class="fn">useState</span>([todasEpocas[<span class="num">0</span>]]);
+  <span class="kw">const</span> [simulando, setSimulando] = <span class="fn">useState</span>(<span class="kw">true</span>);
+
+  <span class="cm">// Simula treinamento em tempo real — adiciona uma época a cada 800ms</span>
+  <span class="fn">useEffect</span>(() => {
+    <span class="kw">if</span> (!simulando) <span class="kw">return</span>;
+    <span class="kw">const</span> id = <span class="fn">setInterval</span>(() => {
+      <span class="fn">setEpocasVisiveis</span>(prev => {
+        <span class="kw">if</span> (prev.length >= todasEpocas.length) {
+          <span class="fn">setSimulando</span>(<span class="kw">false</span>);
+          <span class="fn">clearInterval</span>(id);
+          <span class="kw">return</span> prev;
+        }
+        <span class="kw">return</span> [...prev, todasEpocas[prev.length]];
+      });
+    }, <span class="num">800</span>);
+    <span class="kw">return</span> () => <span class="fn">clearInterval</span>(id);
+  }, [simulando]);
+
+  <span class="kw">const</span> ultimaEpoca = epocasVisiveis[epocasVisiveis.length - <span class="num">1</span>];
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"dashboard"</span>&gt;
+      &lt;<span class="tag">header</span> <span class="attr">className</span>=<span class="str">"dash-header"</span>&gt;
+        &lt;<span class="tag">h1</span>&gt;Dashboard — Modelo de Sentimento&lt;/<span class="tag">h1</span>&gt;
+        &lt;<span class="tag">span</span> <span class="attr">className</span>={<span class="str">`status ${simulando ? 'treinando' : 'concluido'}`</span>}&gt;
+          {simulando ? <span class="str">'⏳ Treinando...'</span> : <span class="str">'✅ Treinamento concluído'</span>}
+        &lt;/<span class="tag">span</span>&gt;
+      &lt;/<span class="tag">header</span>&gt;
+
+      &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"kpi-row"</span>&gt;
+        &lt;<span class="tag">CardKPI</span> <span class="attr">label</span>=<span class="str">"Accuracy"</span>  <span class="attr">valor</span>={(ultimaEpoca.accuracy * <span class="num">100</span>).<span class="fn">toFixed</span>(<span class="num">1</span>) + <span class="str">'%'</span>}  <span class="attr">cor</span>=<span class="str">"#fbbf24"</span> /&gt;
+        &lt;<span class="tag">CardKPI</span> <span class="attr">label</span>=<span class="str">"Val Acc"</span>   <span class="attr">valor</span>={(ultimaEpoca.val_accuracy * <span class="num">100</span>).<span class="fn">toFixed</span>(<span class="num">1</span>) + <span class="str">'%'</span>} <span class="attr">cor</span>=<span class="str">"#38bdf8"</span> /&gt;
+        &lt;<span class="tag">CardKPI</span> <span class="attr">label</span>=<span class="str">"Loss"</span>      <span class="attr">valor</span>={ultimaEpoca.loss.<span class="fn">toFixed</span>(<span class="num">3</span>)}                        <span class="attr">cor</span>=<span class="str">"#f87171"</span> /&gt;
+        &lt;<span class="tag">CardKPI</span> <span class="attr">label</span>=<span class="str">"Época"</span>     <span class="attr">valor</span>={<span class="str">`${epocasVisiveis.length} / ${todasEpocas.length}`</span>}   <span class="attr">cor</span>=<span class="str">"#a78bfa"</span> /&gt;
+      &lt;/<span class="tag">div</span>&gt;
+
+      &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"chart-full"</span>&gt;
+        &lt;<span class="tag">h2</span>&gt;Curva de Treinamento&lt;/<span class="tag">h2</span>&gt;
+        &lt;<span class="tag">GraficoTreinamento</span> <span class="attr">dados</span>={epocasVisiveis} /&gt;
+      &lt;/<span class="tag">div</span>&gt;
+
+      &lt;<span class="tag">div</span> <span class="attr">className</span>=<span class="str">"chart-grid"</span>&gt;
+        &lt;<span class="tag">div</span>&gt;
+          &lt;<span class="tag">h2</span>&gt;Métricas por Classe&lt;/<span class="tag">h2</span>&gt;
+          &lt;<span class="tag">GraficoMetricas</span> <span class="attr">dados</span>={dadosClasses} /&gt;
+        &lt;/<span class="tag">div</span>&gt;
+        &lt;<span class="tag">div</span>&gt;
+          &lt;<span class="tag">h2</span>&gt;Distribuição de Predições&lt;/<span class="tag">h2</span>&gt;
+          &lt;<span class="tag">GraficoDistribuicao</span> <span class="attr">dados</span>={distribuicao} /&gt;
+        &lt;/<span class="tag">div</span>&gt;
+      &lt;/<span class="tag">div</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS — Dashboard.css</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+        <pre><code>.dashboard {
+  background: #0f0d1a;
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+}
+.dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.dash-header h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: white;
+}
+.status { font-size: .8rem; padding: .3rem .85rem; border-radius: 100px; font-weight: 600; }
+.status.treinando  { background: rgba(251,191,36,.12); color: #fbbf24; border: 1px solid rgba(251,191,36,.3); }
+.status.concluido  { background: rgba(74,222,128,.12);  color: #4ade80;  border: 1px solid rgba(74,222,128,.3); }
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.kpi-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+.kpi-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,.4); }
+.kpi-valor { font-family: 'Montserrat', sans-serif; font-size: 1.6rem; font-weight: 800; }
+
+.chart-full {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+}
+.chart-full h2, .chart-grid h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: .8rem;
+  font-weight: 700;
+  color: rgba(255,255,255,.5);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: .85rem;
+}
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.chart-grid > div {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+}
+@media (max-width: 768px) {
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .chart-grid { grid-template-columns: 1fr; }
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Exercícios</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">→</div>
+      <div class="secao-info">
+        <div class="secao-label">Exercícios · Conceito + LAB</div>
+        <div class="secao-titulo">4 exercícios — do gráfico básico ao dashboard interativo</div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 01 — AreaChart com gradiente</div>
+      <p>Substitua o LineChart do GraficoTreinamento por um <code style="font-family:'JetBrains Mono',monospace;">AreaChart</code> com gradiente de cor — a área abaixo da curva de accuracy preenche com a cor âmbar transparente, e a área de loss preenche com vermelho transparente. Use o componente <code style="font-family:'JetBrains Mono',monospace;">defs</code> e <code style="font-family:'JetBrains Mono',monospace;">linearGradient</code> do Recharts para definir o gradiente e referencie com <code style="font-family:'JetBrains Mono',monospace;">fill="url(#gradNome)"</code> na prop <code style="font-family:'JetBrains Mono',monospace;">Area</code>.</p>
+      <span class="dif-basico">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Trecho — AreaChart com gradiente</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="pp">import</span> { AreaChart, Area, XAxis, YAxis, CartesianGrid,
+  Tooltip, Legend, ResponsiveContainer, defs, linearGradient, stop } <span class="pp">from</span> <span class="str">'recharts'</span>;
+
+<span class="cm">// Dentro do JSX do AreaChart:</span>
+&lt;<span class="tag">defs</span>&gt;
+  &lt;<span class="tag">linearGradient</span> <span class="attr">id</span>=<span class="str">"gradAccuracy"</span> <span class="attr">x1</span>=<span class="str">"0"</span> <span class="attr">y1</span>=<span class="str">"0"</span> <span class="attr">x2</span>=<span class="str">"0"</span> <span class="attr">y2</span>=<span class="str">"1"</span>&gt;
+    &lt;<span class="tag">stop</span> <span class="attr">offset</span>=<span class="str">"5%"</span>  <span class="attr">stopColor</span>=<span class="str">"#fbbf24"</span> <span class="attr">stopOpacity</span>={<span class="num">0.3</span>} /&gt;
+    &lt;<span class="tag">stop</span> <span class="attr">offset</span>=<span class="str">"95%"</span> <span class="attr">stopColor</span>=<span class="str">"#fbbf24"</span> <span class="attr">stopOpacity</span>={<span class="num">0</span>} /&gt;
+  &lt;/<span class="tag">linearGradient</span>&gt;
+  &lt;<span class="tag">linearGradient</span> <span class="attr">id</span>=<span class="str">"gradLoss"</span> <span class="attr">x1</span>=<span class="str">"0"</span> <span class="attr">y1</span>=<span class="str">"0"</span> <span class="attr">x2</span>=<span class="str">"0"</span> <span class="attr">y2</span>=<span class="str">"1"</span>&gt;
+    &lt;<span class="tag">stop</span> <span class="attr">offset</span>=<span class="str">"5%"</span>  <span class="attr">stopColor</span>=<span class="str">"#f87171"</span> <span class="attr">stopOpacity</span>={<span class="num">0.2</span>} /&gt;
+    &lt;<span class="tag">stop</span> <span class="attr">offset</span>=<span class="str">"95%"</span> <span class="attr">stopColor</span>=<span class="str">"#f87171"</span> <span class="attr">stopOpacity</span>={<span class="num">0</span>} /&gt;
+  &lt;/<span class="tag">linearGradient</span>&gt;
+&lt;/<span class="tag">defs</span>&gt;
+
+&lt;<span class="tag">Area</span> <span class="attr">type</span>=<span class="str">"monotone"</span> <span class="attr">dataKey</span>=<span class="str">"accuracy"</span>
+  <span class="attr">stroke</span>=<span class="str">"#fbbf24"</span> <span class="attr">strokeWidth</span>={<span class="num">2.5</span>}
+  <span class="attr">fill</span>=<span class="str">"url(#gradAccuracy)"</span> /&gt;
+&lt;<span class="tag">Area</span> <span class="attr">type</span>=<span class="str">"monotone"</span> <span class="attr">dataKey</span>=<span class="str">"loss"</span>
+  <span class="attr">stroke</span>=<span class="str">"#f87171"</span> <span class="attr">strokeWidth</span>={<span class="num">2</span>}
+  <span class="attr">fill</span>=<span class="str">"url(#gradLoss)"</span> /&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 02 — Tooltip personalizado com delta</div>
+      <p>Melhore o tooltip do GraficoTreinamento para mostrar, além dos valores atuais, a variação em relação à época anterior (delta). Por exemplo: <em>"Accuracy: 0.89 (+0.07)"</em>. Para isso, o tooltip recebe o índice do ponto atual via <code style="font-family:'JetBrains Mono',monospace;">payload[0].index</code> — use-o para acessar o item anterior no array de dados.</p>
+      <span class="dif-medio">LAB</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — TooltipComDelta.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">function</span> <span class="fn">TooltipComDelta</span>({ active, payload, label, dados }) {
+  <span class="kw">if</span> (!active || !payload?.length) <span class="kw">return null</span>;
+  <span class="kw">const</span> idx = dados.<span class="fn">findIndex</span>(d => d.epoca === label);
+  <span class="kw">const</span> anterior = idx > <span class="num">0</span> ? dados[idx - <span class="num">1</span>] : <span class="kw">null</span>;
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="attr">style</span>={{ background: <span class="str">'#1a1500'</span>, border: <span class="str">'1px solid rgba(251,191,36,.3)'</span>, borderRadius: <span class="str">'8px'</span>, padding: <span class="str">'.75rem 1rem'</span> }}&gt;
+      &lt;<span class="tag">p</span> <span class="attr">style</span>={{ color: <span class="str">'#fbbf24'</span>, fontWeight: <span class="num">700</span>, marginBottom: <span class="str">'.4rem'</span> }}&gt;Época {label}&lt;/<span class="tag">p</span>&gt;
+      {payload.<span class="fn">map</span>(p => {
+        <span class="kw">const</span> delta = anterior ? p.value - anterior[p.dataKey] : <span class="num">0</span>;
+        <span class="kw">const</span> sinal = delta >= <span class="num">0</span> ? <span class="str">'+'</span> : <span class="str">''</span>;
+        <span class="kw">return</span> (
+          &lt;<span class="tag">p</span> <span class="attr">key</span>={p.dataKey} <span class="attr">style</span>={{ color: p.color, fontSize: <span class="str">'.82rem'</span> }}&gt;
+            {p.name}: {p.value.<span class="fn">toFixed</span>(<span class="num">3</span>)}
+            {anterior &amp;&amp; &lt;<span class="tag">span</span> <span class="attr">style</span>={{ color: delta >= <span class="num">0</span> ? <span class="str">'#4ade80'</span> : <span class="str">'#f87171'</span>, fontSize: <span class="str">'.75rem'</span>, marginLeft: <span class="str">'.35rem'</span> }}&gt;({sinal}{delta.<span class="fn">toFixed</span>(<span class="num">3</span>)})&lt;/<span class="tag">span</span>&gt;}
+          &lt;/<span class="tag">p</span>&gt;
+        );
+      })}
+    &lt;/<span class="tag">div</span>&gt;
+  );
+}
+
+<span class="cm">// No LineChart:</span>
+&lt;<span class="tag">Tooltip</span> <span class="attr">content</span>={&lt;<span class="tag">TooltipComDelta</span> <span class="attr">dados</span>={epocasVisiveis} /&gt;} /&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 03 — Filtro interativo de séries</div>
+      <p>Adicione checkboxes acima do GraficoTreinamento que permitem mostrar/ocultar cada série individualmente: Accuracy, Val Accuracy, Loss. Clicando em "Loss", a linha de loss some do gráfico sem destruir o componente. Use um estado <code style="font-family:'JetBrains Mono',monospace;">seriesVisiveis</code> e renderize condicionalmente cada componente <code style="font-family:'JetBrains Mono',monospace;">&lt;Line&gt;</code>.</p>
+      <span class="dif-medio">Integração</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="card" style="margin-top:.5rem;">
+          <ul class="icon-list">
+            <li><i class="fas fa-check-circle"></i><span>Estado: <code style="font-family:'JetBrains Mono',monospace;">const [visiveis, setVisiveis] = useState({accuracy: true, val_accuracy: true, loss: true})</code></span></li>
+            <li><i class="fas fa-check-circle"></i><span>Toggle: <code style="font-family:'JetBrains Mono',monospace;">setVisiveis(prev => ({...prev, [chave]: !prev[chave]}))</code></span></li>
+            <li><i class="fas fa-check-circle"></i><span>No LineChart: <code style="font-family:'JetBrains Mono',monospace;">{visiveis.accuracy && &lt;Line dataKey="accuracy" .../&gt;}</code> para cada série</span></li>
+            <li><i class="fas fa-check-circle"></i><span>Checkboxes estilizados com a cor de cada série para consistência visual com a legenda do gráfico</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercicio">
+      <div class="exercicio-num">Exercício 04 — Desafio: matriz de confusão como heatmap</div>
+      <p>Implemente uma matriz de confusão 4×4 (Positivo, Negativo, Neutro, Misto) como um heatmap usando apenas SVG e React — sem biblioteca adicional. Cada célula tem cor interpolada entre branco (valor 0) e verde/âmbar (valor máximo). Exiba o número de predições em cada célula. Dados sugeridos: diagonal principal com valores altos (verdadeiros positivos), células fora da diagonal com valores baixos (erros).</p>
+      <span class="dif-desafio">Desafio</span>
+      <button class="gabarito-toggle" onclick="toggleGab(this)"><i class="fas fa-eye"></i> ver gabarito</button>
+      <div class="gabarito-content">
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">React — MatrizConfusao.jsx</span><button class="code-copy" onclick="copiar(this)">copiar</button></div>
+          <pre><code><span class="kw">const</span> classes = [<span class="str">'Pos'</span>, <span class="str">'Neg'</span>, <span class="str">'Neu'</span>, <span class="str">'Mix'</span>];
+<span class="kw">const</span> matriz = [
+  [<span class="num">210</span>, <span class="num">12</span>,  <span class="num">8</span>,  <span class="num">5</span>],
+  [<span class="num">15</span>, <span class="num">195</span>, <span class="num">10</span>,  <span class="num">4</span>],
+  [<span class="num">9</span>,  <span class="num">11</span>, <span class="num">168</span>, <span class="num">18</span>],
+  [<span class="num">6</span>,   <span class="num">7</span>,  <span class="num">22</span>, <span class="num">130</span>],
+];
+<span class="kw">const</span> maxVal = Math.<span class="fn">max</span>(...matriz.<span class="fn">flat</span>());
+
+<span class="kw">function</span> <span class="fn">corCelula</span>(valor) {
+  <span class="kw">const</span> t = valor / maxVal;
+  <span class="cm">// interpola de rgba(255,255,255,.04) para #fbbf24</span>
+  <span class="kw">const</span> r = <span class="fn">Math.round</span>(<span class="num">15</span> + t * (<span class="num">251</span> - <span class="num">15</span>));
+  <span class="kw">const</span> g = <span class="fn">Math.round</span>(<span class="num">15</span> + t * (<span class="num">191</span> - <span class="num">15</span>));
+  <span class="kw">const</span> b = <span class="fn">Math.round</span>(<span class="num">20</span> + t * (<span class="num">36</span> - <span class="num">20</span>));
+  <span class="kw">return</span> <span class="str">`rgb(${r},${g},${b})`</span>;
+}
+
+<span class="kw">export default function</span> <span class="fn">MatrizConfusao</span>() {
+  <span class="kw">const</span> size = <span class="num">58</span>, padding = <span class="num">36</span>;
+  <span class="kw">const</span> total = size * classes.length + padding;
+  <span class="kw">return</span> (
+    &lt;<span class="tag">svg</span> <span class="attr">viewBox</span>={<span class="str">`0 0 ${total + padding} ${total + padding}`</span>} <span class="attr">width</span>=<span class="str">"100%"</span>&gt;
+      {<span class="cm">/* Labels eixo X (predito) */</span>}
+      {classes.<span class="fn">map</span>((c, j) => (
+        &lt;<span class="tag">text</span> <span class="attr">key</span>={j} <span class="attr">x</span>={padding + j * size + size / <span class="num">2</span>} <span class="attr">y</span>={<span class="num">18</span>}
+          <span class="attr">textAnchor</span>=<span class="str">"middle"</span> <span class="attr">fill</span>=<span class="str">"rgba(255,255,255,.4)"</span> <span class="attr">fontSize</span>={<span class="num">11</span>}&gt;{c}&lt;/<span class="tag">text</span>&gt;
+      ))}
+      {matriz.<span class="fn">map</span>((linha, i) =>
+        linha.<span class="fn">map</span>((val, j) => (
+          &lt;<span class="tag">g</span> <span class="attr">key</span>={<span class="str">`${i}-${j}`</span>}&gt;
+            &lt;<span class="tag">rect</span>
+              <span class="attr">x</span>={padding + j * size} <span class="attr">y</span>={padding + i * size}
+              <span class="attr">width</span>={size - <span class="num">2</span>} <span class="attr">height</span>={size - <span class="num">2</span>}
+              <span class="attr">fill</span>={<span class="fn">corCelula</span>(val)} <span class="attr">rx</span>={<span class="num">4</span>}
+            /&gt;
+            &lt;<span class="tag">text</span>
+              <span class="attr">x</span>={padding + j * size + size / <span class="num">2</span>}
+              <span class="attr">y</span>={padding + i * size + size / <span class="num">2</span> + <span class="num">5</span>}
+              <span class="attr">textAnchor</span>=<span class="str">"middle"</span>
+              <span class="attr">fill</span>={val / maxVal > <span class="num">0.5</span> ? <span class="str">'#0f0d1a'</span> : <span class="str">'rgba(255,255,255,.7)'</span>}
+              <span class="attr">fontSize</span>={<span class="num">13</span>} <span class="attr">fontWeight</span>=<span class="str">"700"</span>
+            &gt;{val}&lt;/<span class="tag">text</span>&gt;
+          &lt;/<span class="tag">g</span>&gt;
+        ))
+      )}
+    &lt;/<span class="tag">svg</span>&gt;
+  );
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"><span>Resumo</span></div>
+
+  <section class="secao">
+    <div class="secao-header">
+      <div class="secao-num">✓</div>
+      <div class="secao-info">
+        <div class="secao-label">Fechamento da Semana 9</div>
+        <div class="secao-titulo">O que você precisa ter saído daqui dominando</div>
+      </div>
+    </div>
+    <div class="resumo-grid">
+      <div class="resumo-item">
+        <i class="fas fa-balance-scale"></i>
+        <strong>Chart.js vs Recharts</strong>
+        <p>Chart.js com Canvas para grandes volumes e animações. Recharts com SVG para integração React, customização e séries menores. dataKey aponta para o campo numérico do objeto de dados.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-chart-line"></i>
+        <strong>Os três gráficos essenciais</strong>
+        <p>Linha para evolução temporal (overfitting visível). Barras para comparar categorias lado a lado. Donut para proporção com poucas fatias. ResponsiveContainer em todos.</p>
+      </div>
+      <div class="resumo-item">
+        <i class="fas fa-tachometer-alt"></i>
+        <strong>Dashboard com dados reais</strong>
+        <p>KPI cards derivados do estado. Simulação de treinamento com setInterval + cleanup. Dados em arquivo separado passados por props — nunca hardcoded nos componentes de gráfico.</p>
+      </div>
+    </div>
+    <div class="aviso-green" style="margin-top:1.5rem;">
+      <i class="fas fa-question-circle"></i>
+      <span><strong>Checklist:</strong> o gráfico de linha cresce em tempo real simulando treinamento? O tooltip mostra os valores corretamente? A pizza exibe os percentuais dentro dos segmentos? O layout é responsivo em tela pequena? Se sim — pronto para a Semana 10: TensorFlow.js e inferência de modelo direto no browser.</span>
+    </div>
+    <div class="proxima" onclick="window.location.href='semana-10-frontend.html'">
+      <div>
+        <div class="proxima-label">Próxima semana</div>
+        <div class="proxima-titulo">Semana 10 — TensorFlow.js: carregar modelo, pré-processamento e predição client-side</div>
+      </div>
+      <i class="fas fa-arrow-right"></i>
+    </div>
+  </section>
+</main>
+
+<script>
+function toggleGab(btn){
+  const c=btn.nextElementSibling;c.classList.toggle('open');
+  btn.innerHTML=c.classList.contains('open')
+    ?'<i class="fas fa-eye-slash"></i> ocultar gabarito'
+    :'<i class="fas fa-eye"></i> ver gabarito';
+}
+function copiar(btn){
+  const code=btn.closest('.code-block').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{btn.textContent='copiado!';setTimeout(()=>btn.textContent='copiar',2000);});
+}
+
+const quizData={
+  quiz1:{correct:'C',msg:'✅ Correto! A accuracy geral de 94% esconde o desempenho por subgrupo. Um gráfico de barras com precision, recall e F1-score separados por classe (spam PT, spam EN, legítimo) revelaria imediatamente se o modelo está mal em uma classe específica. É comum modelos terem 94% de accuracy mas precision de 40% para spam em português se esse grupo for sub-representado no treino. Esse é exatamente o problema que métricas globais escondem.'},
+  quiz2:{correct:'C',msg:'✅ Correto! dataKey é o nome do campo no objeto de dados que essa série vai usar como valor a plotar no eixo Y. Se seus dados são [{epoca: 1, accuracy: 0.52, loss: 0.88}], então dataKey="accuracy" plota a série de accuracy e dataKey="loss" plota a série de loss. O campo do eixo X é definido por dataKey no componente XAxis, não nas séries. A cor é controlada pela prop stroke (linha) ou fill (barra).'}
+};
+
+function responder(id,el,ok,letra){
+  const ops=document.getElementById(id+'-ops');
+  if(ops.dataset.answered)return;
+  ops.dataset.answered='1';
+  const correta=quizData[id].correct;
+  ops.querySelectorAll('.quiz-op').forEach(op=>{
+    op.style.pointerEvents='none';
+    if(op.querySelector('.quiz-letra').textContent.trim()===correta)op.classList.add('correto');
+  });
+  if(letra!==correta)el.classList.add('errado');
+  const fb=document.getElementById(id+'-feedback');
+  fb.textContent=quizData[id].msg;
+  fb.style.background=ok?'rgba(74,222,128,.08)':'rgba(239,68,68,.08)';
+  fb.style.border=ok?'1px solid rgba(74,222,128,.22)':'1px solid rgba(239,68,68,.25)';
+  fb.style.color=ok?'rgba(134,239,172,.9)':'#fca5a5';
+  fb.style.padding='.75rem 1rem';fb.style.borderRadius='8px';
+  fb.classList.add('show');
+}
+</script>
+</body>
+</html>
